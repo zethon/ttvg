@@ -1,9 +1,15 @@
 set(SOURCE_FILES
+    Engine.cpp
     main.cpp
+    ResourceManager.cpp
+    Screen.cpp
     TTUtils.cpp
 )
 
 set(HEADER_FILES
+    Engine.h
+    ResourceManager.h
+    Screen.h
     TTUtils.h
 )
 
