@@ -13,7 +13,7 @@ class AshConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
     requires = (
-        "boost/1.68.0@conan/stable",
+        "boost/1.71.0@conan/stable",
         "sfml/2.5.1@bincrafters/stable"
     )
 
@@ -22,11 +22,11 @@ class AshConan(ConanFile):
     default_options = {
         "boost:shared": False,
         "boost:without_test": False,
+        "boost:without_program_options": False,
         "boost:without_thread": True,
         "boost:without_filesystem": True,
         "boost:without_system": True,
         "boost:without_stacktrace": True,
-        "boost:without_program_options": True,
         "boost:without_math": True,
         "boost:without_wave": True,
         "boost:without_container": True,
@@ -40,7 +40,6 @@ class AshConan(ConanFile):
         "boost:without_regex": True,
         "boost:without_mpi": True,
         "boost:without_serialization": True,
-        "boost:without_signals": True,
         "boost:without_coroutine": True,
         "boost:without_fiber": True,
         "boost:without_context": True,

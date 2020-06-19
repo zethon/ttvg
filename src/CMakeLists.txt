@@ -1,9 +1,10 @@
 set(SOURCE_FILES
     main.cpp
+    TTUtils.cpp
 )
 
 set(HEADER_FILES
-
+    TTUtils.h
 )
 
 add_executable(tooter
