@@ -114,7 +114,6 @@ void IntroScreen::poll(const sf::Event& e)
         if (_selected > 0)
         {
             _selected--;
-            std::cout << "selectedA: " << _selected << '\n';
             updateMenu(_selected, _menuItems);
         }
     }
@@ -124,8 +123,24 @@ void IntroScreen::poll(const sf::Event& e)
         if (_selected < _menuItems.size() - 1)
         {
             _selected++;
-            std::cout << "selectedB: " << _selected << '\n';
             updateMenu(_selected, _menuItems);
+        }
+    }
+    else if (e.type == sf::Event::KeyReleased
+        && e.key.code == sf::Keyboard::Space)
+    {
+        switch (_selected)
+        {
+            default:
+            break;
+
+            case 2: //exit
+            {
+                // super hack! I'm too lazy and don't care enough right now
+                sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(&_window);
+                window->close();
+            }
+            break;
         }
     }
 }

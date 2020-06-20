@@ -15,7 +15,7 @@ class IntroScreen : public Screen
     sf::Font    _font;
     sf::Texture _bgt;
 
-    std::uint16_t               _selected = 1;
+    std::uint16_t               _selected = 0;
     TextList                    _menuItems;
     
     std::shared_ptr<sf::Sprite>  _sprite;
