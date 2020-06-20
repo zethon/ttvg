@@ -40,6 +40,20 @@ public:
 
         return {};
     }
+
+    template<typename T>
+    std::unique_ptr<T> openUniquePtr(const std::string& name)
+    {
+        auto filepath = _resourceFolder / name;
+        std::unique_ptr<T> item = std::make_unique<T>();
+        if (item->openFromFile(filepath.string()))
+        {
+            return item;
+        }
+
+        return {};
+    }
+
 };
 
 } // namespace tt
