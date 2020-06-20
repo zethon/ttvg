@@ -106,7 +106,7 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     addDrawable(textobj);
 }
 
-void IntroScreen::poll(const sf::Event& e)
+std::uint16_t IntroScreen::poll(const sf::Event& e)
 {
     if (e.type == sf::Event::KeyReleased
         && e.key.code == sf::Keyboard::Up)
@@ -134,7 +134,12 @@ void IntroScreen::poll(const sf::Event& e)
             default:
             break;
 
-            case 2: //exit
+            case 0: // play game
+            {
+                return SCREEN_GAME;
+            }
+
+            case 2: // exit
             {
                 // super hack! I'm too lazy and don't care enough right now
                 sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(&_window);
@@ -143,9 +148,11 @@ void IntroScreen::poll(const sf::Event& e)
             break;
         }
     }
+
+    return 0;
 }
 
-void IntroScreen::timestep()
+std::uint16_t IntroScreen::timestep()
 {
     auto[x, y] = _sprite->getPosition();
 
@@ -161,6 +168,8 @@ void IntroScreen::timestep()
         _sprite->setPosition(x, y);
         _clock.restart();
     }
+
+    return 0;
 }
 
 } // namespace tt

@@ -1,4 +1,6 @@
 #include "Engine.h"
+#include "IntroScreen.h"
+#include "GameScreen.h"
 
 namespace tt
 {
@@ -20,12 +22,35 @@ void TooterEngine::drawScreen()
 
 void TooterEngine::poll(const sf::Event& e)
 {
-    _currentScreen->poll(e);
+    if (auto id = _currentScreen->poll(e); id != 0)
+    {
+        changeScreen(id);
+    }
 }
 
 void TooterEngine::timestep()
 {
-    _currentScreen->timestep();
+    if (auto id = _currentScreen->timestep(); id != 0)
+    {
+        changeScreen(id);
+    }
+}
+
+void TooterEngine::changeScreen(std::uint16_t id)
+{
+    switch (id)
+    {
+        default:
+        break;
+
+        case SCREEN_INTRO:
+            _currentScreen = std::make_shared<IntroScreen>(_resourceManager, *_renderTarget);
+        break;
+
+        case SCREEN_GAME:
+            _currentScreen = std::make_shared<GameScreen>(_resourceManager, *_renderTarget);
+        break;
+    }
 }
 
 } // namespace tt

@@ -26,8 +26,8 @@ class IntroScreen : public Screen
 public:
     explicit IntroScreen(ResourceManager& res, sf::RenderTarget& target);
 
-    void poll(const sf::Event& e) override;
-    void timestep() override;
+    std::uint16_t poll(const sf::Event& e) override;
+    std::uint16_t timestep() override;
 };
 
 

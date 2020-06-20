@@ -9,9 +9,10 @@
 namespace tt
 {
 
-///////////////////////////////
-// Screen
-///////////////////////////////
+constexpr std::uint16_t SCREEN_INTRO = 0;
+constexpr std::uint16_t SCREEN_SHART = 1;
+constexpr std::uint16_t SCREEN_GAME = 2;
+constexpr std::uint16_t SCREEN_OUTRO = 3;
 
 class Screen
 {
@@ -38,22 +39,20 @@ public:
     }
 
     // poll system/user events
-    virtual void poll(const sf::Event&)
-    {}
+    virtual std::uint16_t poll(const sf::Event&)
+    {
+        return 0;
+    }
 
     // update positions and state
-    virtual void timestep()
-    {}
+    virtual std::uint16_t timestep()
+    {
+        return 0;
+    }
 
 protected:
     ResourceManager&    _resources;
     sf::RenderTarget&   _window;
-};
-
-class GameScreen : public Screen
-{
-public:
-    using Screen::Screen;
 };
 
 class ExitScreen : public Screen

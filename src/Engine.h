@@ -6,7 +6,6 @@
 
 #include "ResourceManager.h"
 #include "Screen.h"
-#include "IntroScreen.h"
 
 namespace tt
 {
@@ -28,6 +27,10 @@ public:
     void drawScreen();
     void poll(const sf::Event& e);
     void timestep();
+
+private:
+    void changeScreen(std::uint16_t id);
+
 };
 
 } // namespace tt

@@ -1,5 +1,6 @@
 set(SOURCE_FILES
     Engine.cpp
+    GameScreen.cpp
     IntroScreen.cpp
     main.cpp
     ResourceManager.cpp
@@ -9,6 +10,7 @@ set(SOURCE_FILES
 
 set(HEADER_FILES
     Engine.h
+    GameScreen.h
     IntroScreen.h
     ResourceManager.h
     Screen.h
