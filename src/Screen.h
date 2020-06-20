@@ -38,7 +38,7 @@ public:
     }
 
     // poll system/user events
-    virtual void poll()
+    virtual void poll(const sf::Event&)
     {}
 
     // update positions and state

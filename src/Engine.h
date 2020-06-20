@@ -26,7 +26,7 @@ public:
         RenderTargetPtr render);
     
     void drawScreen();
-    void poll();
+    void poll(const sf::Event& e);
     void timestep();
 };
 

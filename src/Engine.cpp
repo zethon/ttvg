@@ -18,9 +18,9 @@ void TooterEngine::drawScreen()
     }
 }
 
-void TooterEngine::poll()
+void TooterEngine::poll(const sf::Event& e)
 {
-    _currentScreen->poll();
+    _currentScreen->poll(e);
 }
 
 void TooterEngine::timestep()

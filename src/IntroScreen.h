@@ -7,12 +7,18 @@
 namespace tt
 {
 
+using TextPtr = std::shared_ptr<sf::Text>;
+using TextList = std::vector<TextPtr>;
+
 class IntroScreen : public Screen
 {
     sf::Font    _font;
     sf::Texture _bgt;
-    std::shared_ptr<sf::Sprite>  _sprite;
 
+    std::uint16_t               _selected = 1;
+    TextList                    _menuItems;
+    
+    std::shared_ptr<sf::Sprite>  _sprite;
     std::unique_ptr<sf::Music>   _bgsong;
 
     sf::Clock   _clock;
@@ -20,7 +26,8 @@ class IntroScreen : public Screen
 public:
     explicit IntroScreen(ResourceManager& res, sf::RenderTarget& target);
 
-    void poll() override;
+    void poll(const sf::Event& e) override;
+    void timestep() override;
 };
 
 

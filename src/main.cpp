@@ -13,7 +13,7 @@
 
 namespace po = boost::program_options;
 
-constexpr char window_title[] = "Tommy Tooter: The Official Game";
+constexpr char window_title[] = "Lord of the Dumpsters: A Tommy Tooter Game";
 constexpr std::size_t window_width = 1024;
 constexpr std::size_t window_height = 640;
 
@@ -51,19 +51,22 @@ int main(int argc, char *argv[])
 
     while (win->isOpen()) 
     {
-        engine.poll();
-        engine.timestep();
-
         sf::Event e;
         while (win->pollEvent(e)) 
         {
             switch (e.type) 
             {
+                default:
+                    engine.poll(e);
+                break;
+
                 case sf::Event::EventType::Closed:
                     win->close();
                 break;
             }
         }
+
+        engine.timestep();
 
         win->clear();
         engine.drawScreen();

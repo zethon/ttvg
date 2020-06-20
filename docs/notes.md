@@ -12,3 +12,11 @@ The Engine will consist of screens, where screens have one or more scenes. Namel
 - Game Screen
 - Finish Screen
 
+
+## 2020-06-20
+
+SFML does **NOT** support mp3 files (and CoolEdit does not support ogg files), so we'll use wav files.
+
+In order for audio files to play on Windows I had to download the driver here: https://openal.org/downloads/
+
+
