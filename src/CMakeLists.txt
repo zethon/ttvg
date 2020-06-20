@@ -1,5 +1,6 @@
 set(SOURCE_FILES
     Engine.cpp
+    IntroScreen.cpp
     main.cpp
     ResourceManager.cpp
     Screen.cpp
@@ -8,6 +9,7 @@ set(SOURCE_FILES
 
 set(HEADER_FILES
     Engine.h
+    IntroScreen.h
     ResourceManager.h
     Screen.h
     TTUtils.h

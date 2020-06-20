@@ -9,57 +9,45 @@
 namespace tt
 {
 
+///////////////////////////////
+// Screen
+///////////////////////////////
+
 class Screen
 {
     using DrawablePtr = std::shared_ptr<sf::Drawable>;
     std::vector<DrawablePtr>   _objects;
 
 public:
-    explicit Screen(ResourceManager& res)
-        : _resources{ res }
+    explicit Screen(ResourceManager& res, sf::RenderTarget& target)
+        : _resources{ res },
+          _window{target}
     {}
 
-    void addDrawable(std::shared_ptr<sf::Text> drawable)
+    void addDrawable(std::shared_ptr<sf::Drawable> drawable)
     {
         _objects.push_back(drawable);
     }
 
-    virtual void draw(sf::RenderWindow& window)
+    virtual void draw()
     {
         for (const auto& object : _objects)
         {
-            window.draw(*object);
+            _window.draw(*object);
         }
     }
 
-    // poll system events
+    // poll system/user events
     virtual void poll()
     {}
 
+    // update positions and state
+    virtual void timestep()
+    {}
+
 protected:
-    ResourceManager&            _resources;
-};
-
-class IntroScreen : public Screen
-{
-    sf::Font    _font;
-
-public:
-    explicit IntroScreen(ResourceManager& mgr)
-        : Screen(mgr)
-    {
-        auto temp =_resources.loadFont("hobo.ttf");
-        if (!temp.has_value())
-        {
-            throw std::runtime_error("hobo.ttf could not be loaded!");
-        }
-
-        _font = *temp; // copy?
-
-        auto text = std::make_shared<sf::Text>("Hello Hobo!", _font);
-        text->setPosition(120, 120);
-        addDrawable(text);
-    }
+    ResourceManager&    _resources;
+    sf::RenderTarget&   _window;
 };
 
 class GameScreen : public Screen

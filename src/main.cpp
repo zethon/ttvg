@@ -41,31 +41,33 @@ int main(int argc, char *argv[])
         resourceFolder = std::filesystem::path(vm["resources"].as<std::string>());
     }
 
-    sf::RenderWindow sfmlWin(
-        sf::VideoMode(window_width, window_height), 
-        window_title,
-        sf::Style::Titlebar | sf::Style::Close);
+    auto win = std::make_shared<sf::RenderWindow>(
+            sf::VideoMode(window_width, window_height),
+            window_title,
+            sf::Style::Titlebar | sf::Style::Close
+        );
 
-    tt::TooterEngine engine{ resourceFolder };
+    tt::TooterEngine engine{ resourceFolder, win };
 
-    while (sfmlWin.isOpen()) 
+    while (win->isOpen()) 
     {
         engine.poll();
+        engine.timestep();
 
         sf::Event e;
-        while (sfmlWin.pollEvent(e)) 
+        while (win->pollEvent(e)) 
         {
             switch (e.type) 
             {
                 case sf::Event::EventType::Closed:
-                    sfmlWin.close();
+                    win->close();
                 break;
             }
         }
 
-        sfmlWin.clear();
-        engine.drawScreen(sfmlWin);
-        sfmlWin.display();
+        win->clear();
+        engine.drawScreen();
+        win->display();
     }
     return 0;
 }

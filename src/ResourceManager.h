@@ -15,7 +15,31 @@ public:
 
     explicit ResourceManager(const std::filesystem::path& path);
 
-    std::optional<sf::Font> loadFont(const std::string& name);
+    template<typename T>
+    std::optional<T> load(const std::string& name)
+    {
+        auto filepath = _resourceFolder / name;
+        T item;
+        if (item.loadFromFile(filepath.string()))
+        {
+            return item;
+        }
+
+        return {};
+    }
+
+    template<typename T>
+    std::shared_ptr<T> loadPtr(const std::string& name)
+    {
+        auto filepath = _resourceFolder / name;
+        std::shared_ptr<T> item = std::make_shared<T>();
+        if (item->loadFromFile(filepath.string()))
+        {
+            return item;
+        }
+
+        return {};
+    }
 };
 
 } // namespace tt
