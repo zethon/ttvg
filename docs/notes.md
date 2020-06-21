@@ -19,4 +19,4 @@ SFML does **NOT** support mp3 files (and CoolEdit does not support ogg files), s
 
 In order for audio files to play on Windows I had to download the driver here: https://openal.org/downloads/
 
-
+For some reason Cool Edit's mp3->wav conversation doesn't work, so I've been using this website: https://audio.online-convert.com/convert-to-wav

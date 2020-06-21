@@ -104,6 +104,10 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
 
     addDrawable(_sprite);
     addDrawable(textobj);
+
+    // load sounds
+    _soundBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/selector.wav");
+    _sound = std::make_shared<sf::Sound>(*_soundBuffer);
 }
 
 std::uint16_t IntroScreen::poll(const sf::Event& e)
@@ -115,6 +119,7 @@ std::uint16_t IntroScreen::poll(const sf::Event& e)
         {
             _selected--;
             updateMenu(_selected, _menuItems);
+            _sound->play();
         }
     }
     else if (e.type == sf::Event::KeyReleased
@@ -124,6 +129,7 @@ std::uint16_t IntroScreen::poll(const sf::Event& e)
         {
             _selected++;
             updateMenu(_selected, _menuItems);
+            _sound->play();
         }
     }
     else if (e.type == sf::Event::KeyReleased
