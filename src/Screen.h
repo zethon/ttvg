@@ -20,10 +20,12 @@ class Screen
     std::vector<DrawablePtr>   _objects;
 
 public:
-    explicit Screen(ResourceManager& res, sf::RenderTarget& target)
+    Screen(ResourceManager& res, sf::RenderTarget& target)
         : _resources{ res },
           _window{target}
     {}
+
+    virtual ~Screen() = default;
 
     void addDrawable(std::shared_ptr<sf::Drawable> drawable)
     {
@@ -53,12 +55,6 @@ public:
 protected:
     ResourceManager&    _resources;
     sf::RenderTarget&   _window;
-};
-
-class ExitScreen : public Screen
-{
-public:
-    using Screen::Screen;
 };
 
 } // namespace tt

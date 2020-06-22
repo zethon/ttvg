@@ -1,5 +1,7 @@
 set(SOURCE_FILES
+    AnimatedSprite.cpp
     Engine.cpp
+    ExitScreen.cpp
     GameScreen.cpp
     IntroScreen.cpp
     main.cpp
@@ -9,7 +11,9 @@ set(SOURCE_FILES
 )
 
 set(HEADER_FILES
+    AnimatedSprite.h
     Engine.h
+    ExitScreen.h
     GameScreen.h
     IntroScreen.h
     ResourceManager.h

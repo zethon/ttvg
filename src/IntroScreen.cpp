@@ -1,6 +1,7 @@
 #include "IntroScreen.h"
 
 #include <cassert>
+#include <thread>
 #include <iostream>
 
 namespace tt
@@ -106,8 +107,8 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     addDrawable(textobj);
 
     // load sounds
-    _soundBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/selector.wav");
-    _sound = std::make_shared<sf::Sound>(*_soundBuffer);
+    _selectorBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/selector.wav");
+    _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
 }
 
 std::uint16_t IntroScreen::poll(const sf::Event& e)
@@ -119,7 +120,9 @@ std::uint16_t IntroScreen::poll(const sf::Event& e)
         {
             _selected--;
             updateMenu(_selected, _menuItems);
-            _sound->play();
+
+            _sound.setBuffer(*_selectorBuffer);
+            _sound.play();
         }
     }
     else if (e.type == sf::Event::KeyReleased
@@ -129,7 +132,9 @@ std::uint16_t IntroScreen::poll(const sf::Event& e)
         {
             _selected++;
             updateMenu(_selected, _menuItems);
-            _sound->play();
+
+            _sound.setBuffer(*_selectorBuffer);
+            _sound.play();
         }
     }
     else if (e.type == sf::Event::KeyReleased
@@ -147,6 +152,17 @@ std::uint16_t IntroScreen::poll(const sf::Event& e)
 
             case 2: // exit
             {
+                _bgsong->stop();
+
+                _sound.setBuffer(*_twkBuffer);
+                _sound.setLoop(false);
+                _sound.play();
+
+                while (_sound.getStatus() == sf::Sound::Playing)
+                {
+                    std::this_thread::yield();
+                }
+
                 // super hack! I'm too lazy and don't care enough right now
                 sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(&_window);
                 window->close();
@@ -166,9 +182,9 @@ std::uint16_t IntroScreen::timestep()
         elapsed.asMilliseconds() > 15)
     {
         y += 5;
-        if (y > 0)
+        if (y > _window.getSize().y)
         {
-            y = (_bgt.getSize().y - _window.getSize().y) * -1.f;
+            y = _bgt.getSize().y * -1.0f;
         }
 
         _sprite->setPosition(x, y);

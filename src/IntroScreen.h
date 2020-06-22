@@ -15,8 +15,9 @@ class IntroScreen : public Screen
     sf::Font    _font;
     sf::Texture _bgt;
 
-    std::shared_ptr<sf::SoundBuffer>    _soundBuffer;
-    std::shared_ptr<sf::Sound>          _sound;
+    std::shared_ptr<sf::SoundBuffer>    _selectorBuffer;
+    std::shared_ptr<sf::SoundBuffer>    _twkBuffer;
+    sf::Sound                           _sound;
 
     std::uint16_t               _selected = 0;
     TextList                    _menuItems;
