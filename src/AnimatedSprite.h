@@ -26,7 +26,7 @@ public:
 
     void timestep();
 
-private:
+protected:
 
     State           _state = State::STILL;
     sf::Texture     _texture;
@@ -41,5 +41,11 @@ private:
 
 
 };
+
+class MainCharacter : public AnimatedSprite
+{
+public:
+    using AnimatedSprite::AnimatedSprite;
+}
 
 } // namespace tt
