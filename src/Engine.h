@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <filesystem>
+#include <boost/filesystem.hpp>
 
 #include <SFML/Graphics.hpp>
 
@@ -21,7 +21,7 @@ class TooterEngine
     
 public:
     TooterEngine(
-        const std::filesystem::path& respath,
+        const boost::filesystem::path& respath,
         RenderTargetPtr render);
     
     void drawScreen();

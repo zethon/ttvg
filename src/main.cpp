@@ -1,8 +1,9 @@
 #include <cassert>
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #include <optional>
 
 #include <boost/program_options.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 #include <SFML/Graphics.hpp>
 
@@ -35,10 +36,10 @@ int main(int argc, char *argv[])
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
 
-    std::filesystem::path resourceFolder = tt::defaultResourceFolder();
+    std::string resourceFolder = tt::defaultResourceFolder();
     if (vm.count("resources") > 0)
     {
-        resourceFolder = std::filesystem::path(vm["resources"].as<std::string>());
+        resourceFolder = vm["resources"].as<std::string>();
     }
 
     auto win = std::make_shared<sf::RenderWindow>(
@@ -47,7 +48,10 @@ int main(int argc, char *argv[])
             sf::Style::Titlebar | sf::Style::Close
         );
 
-    tt::TooterEngine engine{ resourceFolder, win };
+    // leading spaces can cause problems on macOS
+    boost::algorithm::trim(resourceFolder);
+
+    tt::TooterEngine engine{ boost::filesystem::path{resourceFolder}, win };
 
     while (win->isOpen()) 
     {

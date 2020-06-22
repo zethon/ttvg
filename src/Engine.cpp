@@ -5,7 +5,7 @@
 namespace tt
 {
 
-TooterEngine::TooterEngine(const std::filesystem::path& respath, RenderTargetPtr render)
+TooterEngine::TooterEngine(const boost::filesystem::path& respath, RenderTargetPtr render)
     : _resourceManager{ respath },
       _renderTarget { render }
 {

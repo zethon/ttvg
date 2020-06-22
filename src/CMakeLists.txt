@@ -26,14 +26,11 @@ add_executable(tooter
     ${HEADER_FILES}
 )
 
+message(INFO "tt: ${CONAN_LIBS_BOOST}")
+
 target_link_libraries(tooter
 PUBLIC
     ${CONAN_LIBS}
     ${SFML_Libraries}
 )
 
-# if(SFML_FOUND)
-#     include_directories(${SFML_INCLUDE_DIR})
-#     target_link_libraries(tooter PUBLIC ${SFML_DEPENDENCIES})
-#     target_link_libraries(tooter PUBLIC ${SFML_LIBRARIES})
-# endif()

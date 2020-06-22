@@ -1,6 +1,8 @@
 #pragma once
-#include <filesystem>
 #include <optional>
+#include <iostream>
+
+#include <boost/filesystem.hpp>
 
 #include <SFML/Graphics/Font.hpp>
 
@@ -9,18 +11,17 @@ namespace tt
 
 class ResourceManager
 {
-    std::filesystem::path _resourceFolder;
+    boost::filesystem::path _resourceFolder;
 
 public:
 
-    explicit ResourceManager(const std::filesystem::path& path);
+    explicit ResourceManager(const boost::filesystem::path& path);
 
     template<typename T>
     std::optional<T> load(const std::string& name)
     {
         auto filepath = _resourceFolder / name;
-        T item;
-        if (item.loadFromFile(filepath.string()))
+        if (T item; item.loadFromFile(filepath.string()))
         {
             return item;
         }

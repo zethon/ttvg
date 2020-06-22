@@ -25,5 +25,6 @@ In order for audio files to play on Windows I had to download the driver here: h
 
 Saving audio files in Cool Edit as "ACM Waveform" and unchecking "Save extra non-audio information" allows the audio files to load in SFML.
 
+## 2020-06-22
 
-
+On macOS, passing `-r /some/folder` as a customer resource folder lead to the value of the folder having a leading space. This in turn caused all resources to fail loading.

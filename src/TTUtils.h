@@ -1,10 +1,10 @@
 #pragma once
 
-#include <filesystem>
+#include <string>
 
 namespace tt
 {
 
-std::filesystem::path defaultResourceFolder();
+std::string defaultResourceFolder();
     
 } // namespace tt
