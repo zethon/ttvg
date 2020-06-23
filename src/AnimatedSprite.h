@@ -46,6 +46,6 @@ class MainCharacter : public AnimatedSprite
 {
 public:
     using AnimatedSprite::AnimatedSprite;
-}
+};
 
 } // namespace tt

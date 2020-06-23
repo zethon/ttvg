@@ -8,6 +8,8 @@ set(SOURCE_FILES
     ResourceManager.cpp
     Screen.cpp
     TTUtils.cpp
+
+    Scenes/Opening.cpp
 )
 
 set(HEADER_FILES
@@ -19,6 +21,8 @@ set(HEADER_FILES
     ResourceManager.h
     Screen.h
     TTUtils.h
+
+    Scenes/Opening.h
 )
 
 add_executable(tooter

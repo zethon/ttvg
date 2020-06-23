@@ -11,7 +11,7 @@ conan_basic_setup(NO_OUTPUT_DIRS KEEP_RPATHS)
 # optional configuration
 option(UNIT_TEST "Build unit tests (default OFF)" OFF)
 
-find_package(Boost COMPONENTS filesystem REQUIRED)
+find_package(Boost COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS})
 
 set(SFML_STATIC_LIBRARIES TRUE)

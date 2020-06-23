@@ -16,6 +16,11 @@ class GameScreen : public Screen
     
     AnimatedSpritePtr   _tt;
 
+    sf::Texture _bgtext;
+    std::shared_ptr<sf::Sprite> _bgsprite;
+
+    sf::View    _view;
+
 public:
     GameScreen(ResourceManager& resmgr, sf::RenderTarget& target);
 
