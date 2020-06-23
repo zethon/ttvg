@@ -121,8 +121,8 @@ std::uint16_t IntroScreen::poll(const sf::Event& e)
             _selected--;
             updateMenu(_selected, _menuItems);
 
-            _sound.setBuffer(*_selectorBuffer);
-            _sound.play();
+            _tomWillKillSound.setBuffer(*_selectorBuffer);
+            _tomWillKillSound.play();
         }
     }
     else if (e.type == sf::Event::KeyReleased
@@ -133,8 +133,8 @@ std::uint16_t IntroScreen::poll(const sf::Event& e)
             _selected++;
             updateMenu(_selected, _menuItems);
 
-            _sound.setBuffer(*_selectorBuffer);
-            _sound.play();
+            _tomWillKillSound.setBuffer(*_selectorBuffer);
+            _tomWillKillSound.play();
         }
     }
     else if (e.type == sf::Event::KeyReleased
@@ -154,11 +154,12 @@ std::uint16_t IntroScreen::poll(const sf::Event& e)
             {
                 _bgsong->stop();
 
-                _sound.setBuffer(*_twkBuffer);
-                _sound.setLoop(false);
-                _sound.play();
+                _tomWillKillSound.setBuffer(*_twkBuffer);
+                _tomWillKillSound.setLoop(false);
+                _tomWillKillSound.play();
+                _tomWillKillSound.setVolume(50);
 
-                while (_sound.getStatus() == sf::Sound::Playing)
+                while (_tomWillKillSound.getStatus() == sf::Sound::Playing)
                 {
                     std::this_thread::yield();
                 }
@@ -192,6 +193,12 @@ std::uint16_t IntroScreen::timestep()
     }
 
     return 0;
+}
+
+void IntroScreen::close()
+{
+    Screen::close();
+    _bgsong->stop();
 }
 
 } // namespace tt

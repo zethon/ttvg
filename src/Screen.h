@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "ResourceManager.h"
+#include "IUpdateable.h"
 
 namespace tt
 {
@@ -14,47 +15,45 @@ constexpr std::uint16_t SCREEN_SHART = 1;
 constexpr std::uint16_t SCREEN_GAME = 2;
 constexpr std::uint16_t SCREEN_OUTRO = 3;
 
+using DrawablePtr = std::shared_ptr<sf::Drawable>;
+
 class Screen
 {
-    using DrawablePtr = std::shared_ptr<sf::Drawable>;
-    std::vector<DrawablePtr>   _objects;
 
 public:
-    Screen(ResourceManager& res, sf::RenderTarget& target)
-        : _resources{ res },
-          _window{target}
-    {}
+    Screen(ResourceManager& res, sf::RenderTarget& target);
 
     virtual ~Screen() = default;
 
-    void addDrawable(std::shared_ptr<sf::Drawable> drawable)
-    {
-        _objects.push_back(drawable);
-    }
+    void addDrawable(DrawablePtr drawable);
+    void clearDrawable();
 
-    virtual void draw()
-    {
-        for (const auto& object : _objects)
-        {
-            _window.draw(*object);
-        }
-    }
+    void addUpdateable(IUpdateablePtr updateable);
+    void clearUpdateable();
+
+    // iterate all draw'able obects
+    virtual void draw();
 
     // poll system/user events
-    virtual std::uint16_t poll(const sf::Event&)
-    {
-        return 0;
-    }
+    virtual std::uint16_t poll(const sf::Event&);
 
     // update positions and state
-    virtual std::uint16_t timestep()
+    virtual std::uint16_t timestep();
+
+    // clean up any resources
+    virtual void close()
     {
-        return 0;
+        clearDrawable();
+        clearUpdateable();
     }
 
 protected:
-    ResourceManager&    _resources;
-    sf::RenderTarget&   _window;
+    std::vector<DrawablePtr>        _objects;
+    std::vector<IUpdateablePtr>     _updateables;
+
+    ResourceManager&                _resources;
+    sf::RenderTarget&               _window;
+
 };
 
 } // namespace tt

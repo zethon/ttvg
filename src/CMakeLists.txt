@@ -1,5 +1,6 @@
 set(SOURCE_FILES
     AnimatedSprite.cpp
+    Background.cpp
     Engine.cpp
     ExitScreen.cpp
     GameScreen.cpp
@@ -10,10 +11,12 @@ set(SOURCE_FILES
     TTUtils.cpp
 
     Scenes/Opening.cpp
+    Scenes/Scene.cpp
 )
 
 set(HEADER_FILES
     AnimatedSprite.h
+    Background.h
     Engine.h
     ExitScreen.h
     GameScreen.h
@@ -23,14 +26,13 @@ set(HEADER_FILES
     TTUtils.h
 
     Scenes/Opening.h
+    Scenes/Scene.h
 )
 
 add_executable(tooter
     ${SOURCE_FILES}
     ${HEADER_FILES}
 )
-
-message(INFO "tt: ${CONAN_LIBS_BOOST}")
 
 target_link_libraries(tooter
 PUBLIC

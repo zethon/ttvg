@@ -2,13 +2,17 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "IUpdateable.h"
+
 namespace tt
 {
 
 class AnimatedSprite;
 using AnimatedSpritePtr = std::shared_ptr<AnimatedSprite>;
 
-class AnimatedSprite : public sf::Sprite
+class AnimatedSprite : 
+    public sf::Sprite,
+    public IUpdateable
 {
 
 public:
@@ -24,7 +28,9 @@ public:
     void setState(State state);
     void setMaxFramesPerRow(std::uint32_t max);
 
-    void timestep();
+    sf::Texture& texture();
+
+    std::uint16_t timestep() override;
 
 protected:
 
@@ -38,8 +44,6 @@ protected:
     // so this allows us to adjust how many frames get
     // animated in a particular row
     std::uint32_t   _maxFramesPerRow = 0;
-
-
 };
 
 class MainCharacter : public AnimatedSprite

@@ -32,7 +32,12 @@ void AnimatedSprite::setMaxFramesPerRow(std::uint32_t max)
     _maxFramesPerRow = max; 
 }
 
-void AnimatedSprite::timestep()
+sf::Texture& AnimatedSprite::texture()
+{
+    return _texture;
+}
+
+std::uint16_t AnimatedSprite::timestep()
 {
     if (State::ANIMATED == _state
         && _timer.getElapsedTime().asMilliseconds() > 100)
@@ -51,6 +56,8 @@ void AnimatedSprite::timestep()
         setSource(left, top);
         _timer.restart();
     }
+
+    return 0;
 }
 
 } // namespace tt

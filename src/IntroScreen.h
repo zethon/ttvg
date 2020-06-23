@@ -12,13 +12,13 @@ using TextList = std::vector<TextPtr>;
 
 class IntroScreen : public Screen
 {
-    sf::Font    _font;
-    sf::Texture _bgt;
-
+    sf::Font        _font;
+    sf::Texture     _bgt;
+    sf::Sound       _tomWillKillSound;
+    
     std::shared_ptr<sf::SoundBuffer>    _selectorBuffer;
     std::shared_ptr<sf::SoundBuffer>    _twkBuffer;
-    sf::Sound                           _sound;
-
+    
     std::uint16_t               _selected = 0;
     TextList                    _menuItems;
     
@@ -32,6 +32,7 @@ public:
 
     std::uint16_t poll(const sf::Event& e) override;
     std::uint16_t timestep() override;
+    void close() override;
 };
 
 

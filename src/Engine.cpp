@@ -44,10 +44,14 @@ void TooterEngine::changeScreen(std::uint16_t id)
         break;
 
         case SCREEN_INTRO:
+            _currentScreen->close();
+            _currentScreen.reset();
             _currentScreen = std::make_shared<IntroScreen>(_resourceManager, *_renderTarget);
         break;
 
         case SCREEN_GAME:
+            _currentScreen->close();
+            _currentScreen.reset();
             _currentScreen = std::make_shared<GameScreen>(_resourceManager, *_renderTarget);
         break;
     }
