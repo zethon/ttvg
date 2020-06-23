@@ -8,9 +8,15 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
 {
     sf::Texture temptext = *(_resources.load<sf::Texture>("textures/city1.png"));
     _background = std::make_shared<Background>(temptext);
-    _background->setScale(0.4f, 0.4f);
-    sf::View view;
-    view.setSize(500.f, 350.f);
+    _background->setScale(0.7, 0.7);
+    
+    
+    // sf::View view = _window.getDefaultView();
+    auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
+    // sf::FloatRect viewport = view.getViewPort();
+    // view.setViewport(sf::FloatRect(0, 0, 0.5, 1));
+
+    sf::View view(sf::FloatRect(0.f, top, 1000.f, _window.getSize().y));
     _window.setView(view);
     
     temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
