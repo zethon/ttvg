@@ -37,6 +37,11 @@ sf::Texture& AnimatedSprite::texture()
     return _texture;
 }
 
+AnimatedSprite::State AnimatedSprite::state() const
+{
+    return _state;
+}
+
 std::uint16_t AnimatedSprite::timestep()
 {
     if (State::ANIMATED == _state

@@ -35,10 +35,10 @@ public:
     virtual void draw();
 
     // poll system/user events
-    virtual std::uint16_t poll(const sf::Event&);
+    [[maybe_unused]] virtual std::uint16_t poll(const sf::Event&);
 
     // update positions and state
-    virtual std::uint16_t timestep();
+    [[maybe_unused]] virtual std::uint16_t timestep();
 
     // clean up any resources
     virtual void close()

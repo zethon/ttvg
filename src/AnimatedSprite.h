@@ -29,6 +29,7 @@ public:
     void setMaxFramesPerRow(std::uint32_t max);
 
     sf::Texture& texture();
+    AnimatedSprite::State state() const;
 
     std::uint16_t timestep() override;
 

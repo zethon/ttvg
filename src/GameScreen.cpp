@@ -70,12 +70,10 @@ std::uint16_t GameScreen::poll(const sf::Event& e)
 
 std::uint16_t GameScreen::timestep()
 {
-    std::for_each(_animes.begin(), _animes.end(),
-        [](AnimatedSpritePtr a) { a->timestep(); });
-
     assert(_currentScene);
     _currentScene->timestep();
-    return 0;
+
+    return Screen::timestep();
 }
 
 } // namespace tt

@@ -31,10 +31,8 @@ void Screen::clearUpdateable()
 
 void Screen::draw()
 {
-    for (const auto& object : _objects)
-    {
-        _window.draw(*object);
-    }
+    std::for_each(_objects.begin(), _objects.end(),
+        [&](DrawablePtr o) { _window.draw(*o); });
 }
 
 std::uint16_t Screen::poll(const sf::Event&)
@@ -44,6 +42,9 @@ std::uint16_t Screen::poll(const sf::Event&)
 
 std::uint16_t Screen::timestep()
 {
+    std::for_each(_updateables.begin(), _updateables.end(),
+        [](IUpdateablePtr i) { i->timestep(); });
+
     return 0;
 }
 

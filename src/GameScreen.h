@@ -16,7 +16,7 @@ class GameScreen : public Screen
 
     // TODO: maybe this should go into `Screen` of `Scene`
     // drawable animated items
-    std::vector<AnimatedSpritePtr> _animes;
+    //std::vector<AnimatedSpritePtr> _animes;
 
     // sf::Font    _font;
 
@@ -35,12 +35,6 @@ public:
     void draw() override;
     std::uint16_t poll(const sf::Event&) override;
     std::uint16_t timestep() override;
-
-    // TODO: maybe this should go into `Screen` or `Scene`?
-    void addAnime(AnimatedSpritePtr anime)
-    {
-        _animes.push_back(anime);
-    }
 
 private:
     ScenePtr    _currentScene;

@@ -38,7 +38,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
 
 std::uint16_t Opening::poll(const sf::Event& e)
 {
-    if (e.type == sf::Event::KeyReleased)
+    if (e.type == sf::Event::KeyPressed)
     {
         switch (e.key.code)
         {
@@ -47,46 +47,92 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Left:
             {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-                x -= 20;
-                view.setCenter(x, y);
-                _window.setView(view);
+                if (_player->state() == AnimatedSprite::ANIMATED) return 0;
+                _player->setSource(0, 9);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedSprite::ANIMATED);
             }
             break;
 
             case sf::Keyboard::Right:
             {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-                x += 20;
-                view.setCenter(x, y);
-                _window.setView(view);
-            }
-            break;
-
-            case sf::Keyboard::Up:
-            {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-                y -= 20;
-                view.setCenter(x, y);
-                _window.setView(view);
-            }
-            break;
-
-            case sf::Keyboard::Down:
-            {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-                y += 20;
-                view.setCenter(x, y);
-                _window.setView(view);
+                if (_player->state() == AnimatedSprite::ANIMATED) return 0;
+                _player->setSource(0, 11);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedSprite::ANIMATED);
             }
             break;
         }
     }
+    //if (e.type == sf::Event::KeyReleased)
+    //{
+    //    switch (e.key.code)
+    //    {
+    //        default:
+    //        break;
 
+    //        case sf::Keyboard::Left:
+    //        {
+    //            sf::View view = _window.getView();
+    //            auto [x,y] = view.getCenter();
+    //            x -= 20;
+    //            view.setCenter(x, y);
+    //            _window.setView(view);
+    //        }
+    //        break;
+
+    //        case sf::Keyboard::Right:
+    //        {
+    //            sf::View view = _window.getView();
+    //            auto [x,y] = view.getCenter();
+    //            x += 20;
+    //            view.setCenter(x, y);
+    //            _window.setView(view);
+    //        }
+    //        break;
+
+    //        case sf::Keyboard::Up:
+    //        {
+    //            sf::View view = _window.getView();
+    //            auto [x,y] = view.getCenter();
+    //            y -= 20;
+    //            view.setCenter(x, y);
+    //            _window.setView(view);
+    //        }
+    //        break;
+
+    //        case sf::Keyboard::Down:
+    //        {
+    //            sf::View view = _window.getView();
+    //            auto [x,y] = view.getCenter();
+    //            y += 20;
+    //            view.setCenter(x, y);
+    //            _window.setView(view);
+    //        }
+    //        break;
+    //    }
+    //}
+
+    return 0;
+}
+
+std::uint16_t Opening::timestep()
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+    {
+
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    {
+
+    }
+    else if (_player->state() == AnimatedSprite::ANIMATED)
+    {
+        _player->setSource(0, 2);
+        _player->setState(AnimatedSprite::STILL);
+    }
+
+    Scene::timestep();
     return 0;
 }
 
