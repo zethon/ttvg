@@ -2,28 +2,31 @@
 
 namespace tt
 {
+
+constexpr auto SCALE_PLAYER = 2.0f;
+constexpr auto SCALE_BACKGROUND = 0.7f;
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene(resmgr, target)
 {
     sf::Texture temptext = *(_resources.load<sf::Texture>("textures/city1.png"));
     _background = std::make_shared<Background>(temptext);
-    _background->setScale(0.7, 0.7);
-    
-    
-    // sf::View view = _window.getDefaultView();
-    auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
-    // sf::FloatRect viewport = view.getViewPort();
-    // view.setViewport(sf::FloatRect(0, 0, 0.5, 1));
+    _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
 
-    sf::View view(sf::FloatRect(0.f, top, 1000.f, _window.getSize().y));
+    auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
+    sf::View view(sf::FloatRect(0.f, top, 
+        static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
     
     temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
     _player = std::make_shared<AnimatedSprite>(temptext, sf::Vector2i{ 64, 64 });
     _player->texture().setSmooth(true);
     _player->setSource(0,2);
-    _player->setScale(2.5f, 2.5f);
+    _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
+    auto [playerx, playery] = _player->getPosition();
+    playerx = (_window.getSize().x / 2) - static_cast<float>(_player->getTextureRect().width);
+    playery = (_window.getSize().y - (_player->getTextureRect().height * SCALE_PLAYER)) - 5;
+    _player->setPosition(playerx, playery);
     addUpdateable(_player);    
 
     // the order in which we add everything to the draw'able

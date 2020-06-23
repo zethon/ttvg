@@ -63,13 +63,6 @@ void GameScreen::draw()
 
 std::uint16_t GameScreen::poll(const sf::Event& e)
 {
-    // if (e.type == sf::Event::KeyReleased
-    //     && e.key.code == sf::Keyboard::Left)
-    // {
-    //     _tt->setSource(0, 9);
-    //     _tt->setState(AnimatedSprite::State::ANIMATED);
-    // }
-
     assert(_currentScene);
     _currentScene->poll(e);
     return 0;
