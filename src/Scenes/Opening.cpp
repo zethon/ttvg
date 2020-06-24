@@ -1,3 +1,5 @@
+#include "../TTUtils.h"
+
 #include "Opening.h"
 
 namespace tt
@@ -5,6 +7,9 @@ namespace tt
 
 constexpr auto SCALE_PLAYER = 2.0f;
 constexpr auto SCALE_BACKGROUND = 0.7f;
+
+constexpr auto LEFT_LIMIT = 5.0f;
+constexpr auto RIGHT_LIMIT = 500.0f;
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene(resmgr, target)
@@ -62,6 +67,62 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 _player->setState(AnimatedSprite::ANIMATED);
             }
             break;
+
+            case sf::Keyboard::A: // LEFT
+            {
+                sf::View view = _window.getView();
+                auto [x,y] = view.getCenter();
+                if ((x - (view.getSize().x / 2)) > 20)
+                {
+                    x -= 20;
+                    view.setCenter(x, y);
+                    _window.setView(view);
+                }
+            }
+            break;
+
+            case sf::Keyboard::D: // RIGHT
+            {
+                sf::View view = _window.getView();
+                auto [x,y] = view.getCenter();
+                if (((x+20) + (view.getSize().x / 2))
+                    < _background->getTextureRect().width * SCALE_BACKGROUND)
+                {
+                    x += 20;
+                    view.setCenter(x, y);
+                    _window.setView(view);
+                }
+            }
+            break;
+
+            case sf::Keyboard::W: // UP
+            {
+                sf::View view = _window.getView();
+                auto [x,y] = view.getCenter();
+                if ((y - (view.getSize().y / 2)) > 20)
+                {
+                    y -= 20;
+                    view.setCenter(x, y);
+                    _window.setView(view);
+                }
+            }
+            break;
+
+            case sf::Keyboard::S: // DOWN
+            {
+                sf::View view = _window.getView();
+                auto [x,y] = view.getCenter();
+
+                if ((y + (view.getSize().y / 2)) 
+                    < _background->getTextureRect().height * SCALE_BACKGROUND)
+                {
+                    y += 20;
+                    view.setCenter(x, y);
+                    _window.setView(view);
+                }
+            }
+            break;
+
         }
     }
     //if (e.type == sf::Event::KeyReleased)

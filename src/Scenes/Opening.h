@@ -23,7 +23,6 @@ private:
 
     BackgroundSharedPtr     _background;
     AnimatedSpritePtr       _player;
-
 };
 
 } // namespace tt
