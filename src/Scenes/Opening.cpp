@@ -72,7 +72,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
             {
                 sf::View view = _window.getView();
                 auto [x,y] = view.getCenter();
-                if ((x - (view.getSize().x / 2)) > 20)
+                if ((x - (view.getSize().x / 2)) > 0)
                 {
                     x -= 20;
                     view.setCenter(x, y);
@@ -125,69 +125,15 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
         }
     }
-    //if (e.type == sf::Event::KeyReleased)
-    //{
-    //    switch (e.key.code)
-    //    {
-    //        default:
-    //        break;
-
-    //        case sf::Keyboard::Left:
-    //        {
-    //            sf::View view = _window.getView();
-    //            auto [x,y] = view.getCenter();
-    //            x -= 20;
-    //            view.setCenter(x, y);
-    //            _window.setView(view);
-    //        }
-    //        break;
-
-    //        case sf::Keyboard::Right:
-    //        {
-    //            sf::View view = _window.getView();
-    //            auto [x,y] = view.getCenter();
-    //            x += 20;
-    //            view.setCenter(x, y);
-    //            _window.setView(view);
-    //        }
-    //        break;
-
-    //        case sf::Keyboard::Up:
-    //        {
-    //            sf::View view = _window.getView();
-    //            auto [x,y] = view.getCenter();
-    //            y -= 20;
-    //            view.setCenter(x, y);
-    //            _window.setView(view);
-    //        }
-    //        break;
-
-    //        case sf::Keyboard::Down:
-    //        {
-    //            sf::View view = _window.getView();
-    //            auto [x,y] = view.getCenter();
-    //            y += 20;
-    //            view.setCenter(x, y);
-    //            _window.setView(view);
-    //        }
-    //        break;
-    //    }
-    //}
 
     return 0;
 }
 
 std::uint16_t Opening::timestep()
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-    {
-
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-    {
-
-    }
-    else if (_player->state() == AnimatedSprite::ANIMATED)
+    if (_player->state() == AnimatedSprite::ANIMATED
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
         _player->setSource(0, 2);
         _player->setState(AnimatedSprite::STILL);
