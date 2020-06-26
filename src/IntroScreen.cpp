@@ -204,10 +204,25 @@ void IntroScreen::close()
 SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
     : Screen(res, target)
 {
+    constexpr auto bgXScale = 0.33f;
+    constexpr auto bgYScale = 0.33f;
+
     _bg = *(_resources.load<sf::Texture>("images/splash.jpg"));
     auto sprite = std::make_shared<sf::Sprite>(_bg);
+    sprite->setScale(bgXScale, bgYScale);
+    
+    auto xpos = (_window.getSize().x / 2) - ((_bg.getSize().x * bgXScale) / 2);
+    auto ypos = (_window.getSize().y / 2) - ((_bg.getSize().y * bgYScale) / 2);
+    sprite->setPosition(xpos, ypos - 30);
     
     addDrawable(sprite);
+
+    _font = *(_resources.load<sf::Font>("hobo.ttf"));
+    auto logoText = std::make_shared<sf::Text>("Dog Finger Studios", _font);
+    logoText->setCharacterSize(100);
+    logoText->setPosition(xpos, _window.getSize().y - 150);
+
+    addDrawable(logoText);
 
     _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
     _tomWillKillSound.setBuffer(*_twkBuffer);
@@ -232,6 +247,7 @@ std::uint16_t SplashScreen::timestep()
     if (auto elapsed = _clock.getElapsedTime();
         elapsed.asMilliseconds() > 1500)
     {
+        _tomWillKillSound.stop();
         return SCREEN_INTRO;
     }
 

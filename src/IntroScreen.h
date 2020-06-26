@@ -42,6 +42,8 @@ class SplashScreen : public Screen
     sf::Sound       _tomWillKillSound;
     sf::Clock       _clock;
 
+    sf::Font        _font;
+
     std::shared_ptr<sf::SoundBuffer>    _twkBuffer;
 
 public:
