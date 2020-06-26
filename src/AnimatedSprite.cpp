@@ -59,6 +59,9 @@ std::uint16_t AnimatedSprite::timestep()
         }
 
         setSource(left, top);
+
+        if (_animeCallback) _animeCallback();
+
         _timer.restart();
     }
 

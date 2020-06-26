@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 
 #include <SFML/Graphics.hpp>
 
@@ -9,6 +10,8 @@ namespace tt
 
 class AnimatedSprite;
 using AnimatedSpritePtr = std::shared_ptr<AnimatedSprite>;
+
+using AnimeCallback = std::function<void()>;
 
 class AnimatedSprite : 
     public sf::Sprite,
@@ -27,6 +30,7 @@ public:
     void setSource(std::uint32_t x, std::uint32_t y);
     void setState(State state);
     void setMaxFramesPerRow(std::uint32_t max);
+    void setAnimeCallback(AnimeCallback cb) { _animeCallback = cb; }
 
     sf::Texture& texture();
     AnimatedSprite::State state() const;
@@ -45,6 +49,8 @@ protected:
     // so this allows us to adjust how many frames get
     // animated in a particular row
     std::uint32_t   _maxFramesPerRow = 0;
+
+    AnimeCallback   _animeCallback;
 };
 
 class MainCharacter : public AnimatedSprite

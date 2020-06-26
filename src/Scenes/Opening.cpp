@@ -8,8 +8,10 @@ namespace tt
 constexpr auto SCALE_PLAYER = 2.0f;
 constexpr auto SCALE_BACKGROUND = 0.7f;
 
-constexpr auto LEFT_LIMIT = 5.0f;
-constexpr auto RIGHT_LIMIT = 500.0f;
+constexpr auto BOUNDARY_LEFT = 5.0f;
+constexpr auto BOUNDARY_RIGHT = 500.0f;
+constexpr auto BOUNDARY_TOP = 5.0f;
+constexpr auto BOUNDARY_BOTTOM = 500.0f;
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene(resmgr, target)
@@ -32,6 +34,23 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     playerx = (_window.getSize().x / 2) - static_cast<float>(_player->getTextureRect().width);
     playery = (_window.getSize().y - (_player->getTextureRect().height * SCALE_PLAYER)) - 5;
     _player->setPosition(playerx, playery);
+
+    _player->setAnimeCallback(
+        [player = _player]() 
+        {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            {
+                auto [x, y] = player->getPosition();
+                player->setPosition(x - 20, y);
+            }
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            {
+                auto [x, y] = player->getPosition();
+                player->setPosition(x + 20, y);
+            }
+        }
+    );
+
     addUpdateable(_player);    
 
     // the order in which we add everything to the draw'able
