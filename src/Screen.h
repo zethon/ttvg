@@ -10,10 +10,11 @@
 namespace tt
 {
 
-constexpr std::uint16_t SCREEN_INTRO = 0;
-constexpr std::uint16_t SCREEN_SHART = 1;
-constexpr std::uint16_t SCREEN_GAME = 2;
-constexpr std::uint16_t SCREEN_OUTRO = 3;
+constexpr std::uint16_t SCREEN_SPLASH = 10;
+constexpr std::uint16_t SCREEN_INTRO = 20;
+constexpr std::uint16_t SCREEN_SHART = 30;
+constexpr std::uint16_t SCREEN_GAME = 40;
+constexpr std::uint16_t SCREEN_OUTRO = 50;
 
 using DrawablePtr = std::shared_ptr<sf::Drawable>;
 

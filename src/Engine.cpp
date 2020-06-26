@@ -9,7 +9,7 @@ TooterEngine::TooterEngine(const boost::filesystem::path& respath, RenderTargetP
     : _resourceManager{ respath },
       _renderTarget { render }
 {
-    _currentScreen = std::make_shared<IntroScreen>(_resourceManager, *_renderTarget);
+    _currentScreen = std::make_shared<SplashScreen>(_resourceManager, *_renderTarget);
 }
 
 void TooterEngine::drawScreen()

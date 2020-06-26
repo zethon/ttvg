@@ -28,13 +28,28 @@ class IntroScreen : public Screen
     sf::Clock   _clock;
 
 public:
-    explicit IntroScreen(ResourceManager& res, sf::RenderTarget& target);
+    IntroScreen(ResourceManager& res, sf::RenderTarget& target);
 
     std::uint16_t poll(const sf::Event& e) override;
     std::uint16_t timestep() override;
     void close() override;
 };
 
+
+class SplashScreen : public Screen
+{
+    sf::Texture     _bg;
+    sf::Sound       _tomWillKillSound;
+    sf::Clock       _clock;
+
+    std::shared_ptr<sf::SoundBuffer>    _twkBuffer;
+
+public:
+    SplashScreen(ResourceManager& res, sf::RenderTarget& target);
+
+    std::uint16_t poll(const sf::Event& e) override;
+    std::uint16_t timestep() override;
+};
 
 
 } // namespace tt

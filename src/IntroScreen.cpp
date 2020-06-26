@@ -201,4 +201,41 @@ void IntroScreen::close()
     _bgsong->stop();
 }
 
+SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
+    : Screen(res, target)
+{
+    _bg = *(_resources.load<sf::Texture>("images/splash.jpg"));
+    auto sprite = std::make_shared<sf::Sprite>(_bg);
+    
+    addDrawable(sprite);
+
+    _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
+    _tomWillKillSound.setBuffer(*_twkBuffer);
+    _tomWillKillSound.play();
+
+    _clock.restart();
+}
+
+std::uint16_t SplashScreen::poll(const sf::Event& e)
+{
+    if (e.type == sf::Event::KeyReleased
+            && e.key.code == sf::Keyboard::Space)
+    {
+        return SCREEN_INTRO;
+    }
+
+    return 0;
+}
+
+std::uint16_t SplashScreen::timestep()
+{
+    if (auto elapsed = _clock.getElapsedTime();
+        elapsed.asMilliseconds() > 1500)
+    {
+        return SCREEN_INTRO;
+    }
+
+    return 0;
+}
+
 } // namespace tt
