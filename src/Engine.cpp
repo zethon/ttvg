@@ -41,6 +41,7 @@ void TooterEngine::changeScreen(std::uint16_t id)
     switch (id)
     {
         default:
+            throw std::runtime_error("invalid screen id");
         break;
 
         case SCREEN_INTRO:

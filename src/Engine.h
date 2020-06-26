@@ -27,8 +27,6 @@ public:
     void drawScreen();
     void poll(const sf::Event& e);
     void timestep();
-
-private:
     void changeScreen(std::uint16_t id);
 
 };

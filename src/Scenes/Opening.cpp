@@ -81,19 +81,31 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Left:
             {
-                if (_player->state() == AnimatedSprite::ANIMATED) return 0;
+                if (_player->state() == AnimatedSprite::ANIMATED
+                    && _player->direction() == AnimatedSprite::LEFT)
+                {
+                    return 0;
+                }
+
                 _player->setSource(0, 9);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedSprite::ANIMATED);
+                _player->setDirection(AnimatedSprite::LEFT);
             }
             break;
 
             case sf::Keyboard::Right:
             {
-                if (_player->state() == AnimatedSprite::ANIMATED) return 0;
+                if (_player->state() == AnimatedSprite::ANIMATED
+                    && _player->direction() == AnimatedSprite::RIGHT)
+                {
+                    return 0;
+                }
+
                 _player->setSource(0, 11);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedSprite::ANIMATED);
+                _player->setDirection(AnimatedSprite::RIGHT);
             }
             break;
 
@@ -166,6 +178,7 @@ std::uint16_t Opening::timestep()
     {
         _player->setSource(0, 2);
         _player->setState(AnimatedSprite::STILL);
+        _player->setDirection(AnimatedSprite::DOWN);
     }
 
     Scene::timestep();

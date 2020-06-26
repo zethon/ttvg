@@ -25,6 +25,14 @@ public:
         ANIMATED
     };
 
+    enum Direction
+    {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    };
+
     AnimatedSprite(sf::Texture texture, const sf::Vector2i& size);
 
     void setSource(std::uint32_t x, std::uint32_t y);
@@ -37,9 +45,13 @@ public:
 
     std::uint16_t timestep() override;
 
+    Direction direction() const { return _direction; }
+    void setDirection(Direction val) { _direction = val; }
+
 protected:
 
     State           _state = State::STILL;
+    Direction       _direction = Direction::DOWN;
     sf::Texture     _texture;
     sf::Vector2i    _size;
     sf::Vector2i    _source;

@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
         ("help,?", "print help message")
         ("version,v", "print version string")
         ("resources,r", po::value<std::string>(), "path of resource folder")
+        ("screen,s", po::value<std::uint16_t>(), "start screen id")
         ;
 
     po::variables_map vm;
@@ -52,6 +53,11 @@ int main(int argc, char *argv[])
     boost::algorithm::trim(resourceFolder);
 
     tt::TooterEngine engine{ boost::filesystem::path{resourceFolder}, win };
+
+    if (vm.count("screen") > 0)
+    {
+        engine.changeScreen(vm["screen"].as<std::uint16_t>());
+    }
 
     while (win->isOpen()) 
     {
