@@ -228,6 +228,7 @@ SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
 
     _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
     _tomWillKillSound.setBuffer(*_twkBuffer);
+    _tomWillKillSound.setVolume(50);
     _tomWillKillSound.play();
 
     _clock.restart();

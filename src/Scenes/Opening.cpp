@@ -175,7 +175,8 @@ std::uint16_t Opening::timestep()
 void Opening::adjustView()
 {
     auto view = _window.getView();
-    auto xpos = (_player->getPosition().x + (_player->getTextureRect().width / 2));
+    auto xpos = (_player->getPosition().x 
+        + ((_player->getTextureRect().width * SCALE_PLAYER) / 2));
     
     auto totalWidth = _background->getTextureRect().width * SCALE_BACKGROUND;
 
