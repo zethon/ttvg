@@ -220,7 +220,9 @@ SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
     _font = *(_resources.load<sf::Font>("hobo.ttf"));
     auto logoText = std::make_shared<sf::Text>("Dog Finger Studios", _font);
     logoText->setCharacterSize(100);
-    logoText->setPosition(xpos, _window.getSize().y - 150);
+
+    auto txpos = (_window.getSize().x / 2) - ((logoText->getLocalBounds().width) / 2);
+    logoText->setPosition(txpos, _window.getSize().y - 150);
 
     addDrawable(logoText);
 

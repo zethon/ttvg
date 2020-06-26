@@ -9,9 +9,11 @@ constexpr auto SCALE_PLAYER = 2.0f;
 constexpr auto SCALE_BACKGROUND = 0.7f;
 
 constexpr auto BOUNDARY_LEFT = 5.0f;
-constexpr auto BOUNDARY_RIGHT = 500.0f;
+constexpr auto BOUNDARY_RIGHT = 2280.0f;
 constexpr auto BOUNDARY_TOP = 5.0f;
 constexpr auto BOUNDARY_BOTTOM = 500.0f;
+
+constexpr auto STEPSIZE = 16u;
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene(resmgr, target)
@@ -36,17 +38,25 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _player->setPosition(playerx, playery);
 
     _player->setAnimeCallback(
-        [player = _player]() 
+        [this]() 
         {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
-                auto [x, y] = player->getPosition();
-                player->setPosition(x - 20, y);
+                auto [x, y] = _player->getPosition();
+                if ((x - STEPSIZE) >= BOUNDARY_LEFT)
+                {
+                    _player->setPosition(x - STEPSIZE, y);
+                    adjustView();
+                }
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {
-                auto [x, y] = player->getPosition();
-                player->setPosition(x + 20, y);
+                auto [x, y] = _player->getPosition();
+                if ((x + STEPSIZE) <= BOUNDARY_RIGHT)
+                {
+                    _player->setPosition(x + STEPSIZE, y);
+                    adjustView();
+                }
             }
         }
     );
@@ -160,6 +170,21 @@ std::uint16_t Opening::timestep()
 
     Scene::timestep();
     return 0;
+}
+
+void Opening::adjustView()
+{
+    auto view = _window.getView();
+    auto xpos = (_player->getPosition().x + (_player->getTextureRect().width / 2));
+    
+    auto totalWidth = _background->getTextureRect().width * SCALE_BACKGROUND;
+
+    if (xpos >= (_window.getSize().x / 2)
+        && xpos <= (totalWidth - (_window.getSize().x / 2)))
+    {
+        view.setCenter(xpos, view.getCenter().y);
+        _window.setView(view);
+    }
 }
 
 } // namespace tt

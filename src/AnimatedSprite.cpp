@@ -45,7 +45,7 @@ AnimatedSprite::State AnimatedSprite::state() const
 std::uint16_t AnimatedSprite::timestep()
 {
     if (State::ANIMATED == _state
-        && _timer.getElapsedTime().asMilliseconds() > 100)
+        && _timer.getElapsedTime().asMilliseconds() > 65)
     {
         auto [left, top] = _source;
         left++;

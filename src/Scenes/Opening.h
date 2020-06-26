@@ -21,6 +21,8 @@ public:
 
 private:
 
+    void adjustView();
+
     BackgroundSharedPtr     _background;
     AnimatedSpritePtr       _player;
 };
