@@ -32,3 +32,7 @@ On macOS, passing `-r /some/folder` as a custom resource folder lead to the valu
 ## 2020-06-26
 
 My MBP will not load the .wav files saying it's a "unsupported format. I wasn't able to find anything definitive online but I'm guess it's because it's an older version of macOS (and for unrelated reasons, I cannot upgrade right now).
+
+## 2020-06-27
+
+I've started using the program here (https://github.com/colinvella/tIDE) to make words. It's a .NET map editor (Windows only) but is easy to use and not complidated.
