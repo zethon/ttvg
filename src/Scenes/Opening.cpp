@@ -11,7 +11,7 @@ constexpr auto SCALE_BACKGROUND = 0.7f;
 constexpr auto BOUNDARY_LEFT = 5.0f;
 constexpr auto BOUNDARY_RIGHT = 2280.0f;
 constexpr auto BOUNDARY_TOP = 5.0f;
-constexpr auto BOUNDARY_BOTTOM = 500.0f;
+constexpr auto BOUNDARY_BOTTOM = 1500.0f;
 
 constexpr auto STEPSIZE = 16u;
     
@@ -227,9 +227,7 @@ std::uint16_t Opening::timestep()
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        _player->setSource(0, 2);
         _player->setState(AnimatedSprite::STILL);
-        _player->setDirection(AnimatedSprite::DOWN);
     }
 
     Scene::timestep();
@@ -238,16 +236,27 @@ std::uint16_t Opening::timestep()
 
 void Opening::adjustView()
 {
-    auto view = _window.getView();
-    auto xpos = (_player->getPosition().x 
+    const auto xpos = (_player->getPosition().x 
         + ((_player->getTextureRect().width * SCALE_PLAYER) / 2));
-    
-    auto totalWidth = _background->getTextureRect().width * SCALE_BACKGROUND;
 
+    const auto ypos = (_player->getPosition().y
+        + ((_player->getTextureRect().height * SCALE_PLAYER) / 2));
+    
+    auto view = _window.getView();
+    auto totalWidth = _background->getTextureRect().width * SCALE_BACKGROUND;
     if (xpos >= (_window.getSize().x / 2)
         && xpos <= (totalWidth - (_window.getSize().x / 2)))
     {
         view.setCenter(xpos, view.getCenter().y);
+        _window.setView(view);
+    }
+
+    view = _window.getView();
+    auto totalHeight = _background->getTextureRect().height * SCALE_BACKGROUND;
+    if (ypos >= (_window.getSize().y / 2)
+        && ypos <= (totalHeight - (_window.getSize().y / 2)))
+    {
+        view.setCenter(view.getCenter().x, ypos);
         _window.setView(view);
     }
 }
