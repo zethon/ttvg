@@ -5,7 +5,8 @@ class AshConan(ConanFile):
 
     requires = (
         "boost/1.71.0@conan/stable",
-        "sfml/2.5.1@bincrafters/stable"
+        "sfml/2.5.1@bincrafters/stable",
+        "fmt/5.3.0@bincrafters/stable",
     )
 
     generators = "cmake"

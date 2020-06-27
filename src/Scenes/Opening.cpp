@@ -1,3 +1,5 @@
+#include <fmt/core.h>
+
 #include "../TTUtils.h"
 
 #include "Opening.h"
@@ -9,9 +11,9 @@ constexpr auto SCALE_PLAYER = 2.0f;
 constexpr auto SCALE_BACKGROUND = 0.7f;
 
 constexpr auto BOUNDARY_LEFT = 5.0f;
-constexpr auto BOUNDARY_RIGHT = 2280.0f;
-constexpr auto BOUNDARY_TOP = 5.0f;
-constexpr auto BOUNDARY_BOTTOM = 1500.0f;
+constexpr auto BOUNDARY_RIGHT = 2330.0f;
+constexpr auto BOUNDARY_TOP = 459.0f;
+constexpr auto BOUNDARY_BOTTOM = 539.0f;
 
 constexpr auto STEPSIZE = 16u;
     
@@ -87,6 +89,10 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     // the function
     addDrawable(_background);
     addDrawable(_player);
+
+    _debugText = std::make_shared<sf::Text>("", debugFont());
+    _debugText->setColor(sf::Color::Red);
+    addDrawable(_debugText);
 }
 
 std::uint16_t Opening::poll(const sf::Event& e)
@@ -229,6 +235,15 @@ std::uint16_t Opening::timestep()
     {
         _player->setState(AnimatedSprite::STILL);
     }
+
+    auto [playerXpos, playerYpos] = _player->getPosition();
+    auto posText = fmt::format("PLAYER X:{} Y:{}", playerXpos, playerYpos);
+    _debugText->setString(posText);
+
+    auto [xpos, ypos] = _window.getView().getCenter();
+    xpos -= ((_window.getSize().x / 2) - 10);
+    ypos -= ((_window.getSize().y / 2) - 10);
+    _debugText->setPosition(xpos, ypos);
 
     Scene::timestep();
     return 0;

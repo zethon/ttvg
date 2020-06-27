@@ -58,7 +58,7 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     : Screen(resmgr, target)
 {
     
-    if (auto temp = _resources.load<sf::Font>("hobo.ttf"); 
+    if (auto temp = _resources.load<sf::Font>("fonts/hobo.ttf"); 
         temp.has_value())
     {
         _font = *temp;
@@ -217,12 +217,12 @@ SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
     
     addDrawable(sprite);
 
-    _font = *(_resources.load<sf::Font>("hobo.ttf"));
+    _font = *(_resources.load<sf::Font>("fonts/hobo.ttf"));
     auto logoText = std::make_shared<sf::Text>("Dog Finger Studios", _font);
     logoText->setCharacterSize(100);
 
     auto txpos = (_window.getSize().x / 2) - ((logoText->getLocalBounds().width) / 2);
-    logoText->setPosition(txpos, _window.getSize().y - 150);
+    logoText->setPosition(txpos, _window.getSize().y - 150.0f);
 
     addDrawable(logoText);
 

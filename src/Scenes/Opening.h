@@ -23,8 +23,9 @@ private:
 
     void adjustView();
 
-    BackgroundSharedPtr     _background;
-    AnimatedSpritePtr       _player;
+    BackgroundSharedPtr         _background;
+    AnimatedSpritePtr           _player;
+    std::shared_ptr<sf::Text>   _debugText;
 };
 
 } // namespace tt
