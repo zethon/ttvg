@@ -58,6 +58,25 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
                     adjustView();
                 }
             }
+            
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            {
+                auto [x, y] = _player->getPosition();
+                if ((y - STEPSIZE) >= BOUNDARY_TOP)
+                {
+                    _player->setPosition(x, y - STEPSIZE);
+                    adjustView();
+                }
+            }
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+            {
+                auto [x, y] = _player->getPosition();
+                if ((y + STEPSIZE) <= BOUNDARY_BOTTOM)
+                {
+                    _player->setPosition(x, y + STEPSIZE);
+                    adjustView();
+                }
+            }
         }
     );
 
@@ -106,6 +125,36 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedSprite::ANIMATED);
                 _player->setDirection(AnimatedSprite::RIGHT);
+            }
+            break;
+
+            case sf::Keyboard::Up:
+            {
+                if ((_player->state() == AnimatedSprite::ANIMATED && _player->direction() == AnimatedSprite::UP)
+                    || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+                {
+                    return 0;
+                }
+
+                _player->setSource(0, 8);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedSprite::ANIMATED);
+                _player->setDirection(AnimatedSprite::UP);
+            }
+            break;
+
+            case sf::Keyboard::Down:
+            {
+                if ((_player->state() == AnimatedSprite::ANIMATED && _player->direction() == AnimatedSprite::DOWN)
+                    || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+                {
+                    return 0;
+                }
+
+                _player->setSource(0, 10);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedSprite::ANIMATED);
+                _player->setDirection(AnimatedSprite::DOWN);
             }
             break;
 
@@ -174,7 +223,9 @@ std::uint16_t Opening::timestep()
 {
     if (_player->state() == AnimatedSprite::ANIMATED
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
-        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         _player->setSource(0, 2);
         _player->setState(AnimatedSprite::STILL);
