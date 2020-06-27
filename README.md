@@ -1,10 +1,10 @@
 # The Tommy Tooter Video Game
 
-This is a 2D RPG game about the adventures of a fictional character named Tommy Tooter. 
+This is a 2D RPG game. 
 
 ## How to Install
 
-Right now there is no installer, so the game has be built manually. An installer for both Windows and Mac will be creaed as the game matures and nears a releaseable state.
+Right now there is no installer, so the game has be built manually. An installer for both Windows and Mac will be created as the game matures and nears a releaseable state.
 
 ## How to Build
 
@@ -47,9 +47,9 @@ If all goes well you should have a **ttvg.sln** in the `build` folder. This is a
 I do not use Xcode because I hate it. However, if you want to use Xcode than you should just have to change the generator (the `-G` argument) in the CMake command (see the Windows instructions for an example of how to specify the generator).
 
 #### Requirements
+* clang (any version that supports C++17)
 * CMake 3.10+
 * conan 1.21+
-* clang (any version that supports C++17)
 
 #### Instructions
 
@@ -76,9 +76,13 @@ At this point you should makefiles in the folder (Ninja files if that is your ge
 cmake --build .
 ```
 
+### Linux
+
+I have not tried to build this on Linux but there's no reason it shouldn't work on any distribution that support [SFML](http://sfml-dev.org/).
+
 ## How to Play
 
-Once the game has been built, if you try to run then you might notice that it crashes. This is because you must tell the game where to find all of the assets (i.e. images, sound files, etc). You can specify where the resources are with the `--resources` or `-r` option on the command line like so
+Once the game has been built and you try to run it, then you might notice that it crashes. This is because you must tell the game where to find all of the assets (i.e. images, sound files, etc). You can specify where the resources are with the `--resources` or `-r` option on the command line
 
 ```
 tooter -r c:\source\ttvg\resources
