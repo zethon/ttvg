@@ -28,3 +28,7 @@ Saving audio files in Cool Edit as "ACM Waveform" and unchecking "Save extra non
 ## 2020-06-22
 
 On macOS, passing `-r /some/folder` as a custom resource folder lead to the value of the folder having a leading space (i.e. `[ /some/folder]`). This caused all resources to fail loading.
+
+## 2020-06-26
+
+My MBP will not load the .wav files saying it's a "unsupported format. I wasn't able to find anything definitive online but I'm guess it's because it's an older version of macOS (and for unrelated reasons, I cannot upgrade right now).

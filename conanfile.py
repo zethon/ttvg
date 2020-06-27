@@ -1,12 +1,3 @@
-# Windows: 
-#   $ conan install .. --build missing
-#
-# macOS:
-#   $ conan install .. --build missing -s cppstd=17
-#
-# Linux:
-#   $ conan install .. --build missing  -s compiler.libcxx=libstdc++11
-
 from conans import ConanFile, CMake
 
 class AshConan(ConanFile):
