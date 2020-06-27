@@ -10,7 +10,7 @@ Right now there is no installer, so the game has be built manually. An installer
 
 ### Windows
 
-I have been using Visual Studio 2017 as my toolchain, even tough I've actually been using Visual 2019 as my editor/IDE. I've yet to figure out how to get **conan** to play nicely with Visual Studio 2019, but since VS2019 can load and use VS2017 solution files without a problem, this method works fine.
+I have been using Visual Studio 2017 as my toolchain, even tough I've actually been using Visual 2019 as my editor/IDE. I've yet to figure out how to get conan to play nicely with Visual Studio 2019, but since VS2019 can load and use VS2017 solution files without a problem, this method works fine.
 
 The [OpenAL Libraries](https://openal.org/downloads/) need to be installed for sound files to load on Windows. 
 
@@ -69,14 +69,14 @@ conan install ../ttvg -s build_type=Debug --build mising
 cmake .. -DCMAKE_BUILD_TYPE=Debug
 ```
 
-At this point you should makefiles in the folder (Ninja files if that is your generator). You can do a test build by doing
+At this point you should have makefiles in the folder (Ninja files if that is your generator). You can do a test build by doing
 ```
 cmake --build .
 ```
 
 ### Linux
 
-I have not tried to build this on Linux but there's no reason it shouldn't work on any distribution that support [SFML](http://sfml-dev.org/).
+I have not tried to build this on Linux but there's no reason it shouldn't work on any distribution that [SFML](http://sfml-dev.org/) supports.
 
 ## How to Play
 
