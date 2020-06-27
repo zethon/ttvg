@@ -1,6 +1,6 @@
 # The Tommy Tooter Video Game
 
-This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs Winows and Mac.
+This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs on Winows and Mac.
 
 ## How to Install
 
