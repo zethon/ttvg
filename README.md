@@ -1,6 +1,6 @@
 # The Tommy Tooter Video Game
 
-This is a 2D RPG game written in C++. It uses the [SFML](http://sfml-dev.org/) library for multimedia, and supports Winows and Mac.
+This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs Winows and Mac.
 
 ## How to Install
 
@@ -12,15 +12,14 @@ Right now there is no installer, so the game has be built manually. An installer
 
 I have been using Visual Studio 2017 as my toolchain, even tough I've actually been using Visual 2019 as my editor/IDE. I've yet to figure out how to get **conan** to play nicely with Visual Studio 2019, but since VS2019 can load and use VS2017 solution files without a problem, this method works fine.
 
+The [OpenAL Libraries](https://openal.org/downloads/) need to be installed for sound files to load on Windows. 
+
 #### Requirements
-* Visual Studio 2017
-* CMake 3.10+
-* conan 1.21+
-* OpenAL Libraries (https://openal.org/downloads/)
+* [Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/)
+* [CMake 3.10+](https://cmake.org/download/)
+* [conan 1.21+](https://conan.io/)
 
 #### Instructions
-
-(Note: these instructions may be _Linux'y_ since I use the bash shell on Windows more than I use PowerShell or cmd.exe)
 
 * Download the source code
 ```
@@ -44,12 +43,10 @@ If all goes well you should have a **ttvg.sln** in the `build` folder. This is a
 
 ### Mac
 
-I do not use Xcode because I hate it. However, if you want to use Xcode than you should just have to change the generator (the `-G` argument) in the CMake command (see the Windows instructions for an example of how to specify the generator).
-
 #### Requirements
 * clang (any version that supports C++17)
-* CMake 3.10+
-* conan 1.21+
+* [CMake 3.10+](https://cmake.org/download/)
+* [conan 1.21+](https://conan.io/)
 
 #### Instructions
 
@@ -66,7 +63,8 @@ cd build
 ```
 conan install ../ttvg -s build_type=Debug --build mising
 ```
-* Initialize CMake: 
+* Initialize CMake. This will create makefiles. If you want to use Xcode than you should just have to change the generator (the `-G` argument). See the Windows instructions for an example of how to specify the generator.
+
 ```
 cmake .. -DCMAKE_BUILD_TYPE=Debug
 ```
