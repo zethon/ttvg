@@ -1,7 +1,7 @@
 #include <cassert>
-#include <boost/filesystem.hpp>
 #include <optional>
 
+#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
@@ -17,11 +17,6 @@ namespace po = boost::program_options;
 constexpr char window_title[] = "Lord of the Dumpsters: A Tommy Tooter Game";
 constexpr std::size_t window_width = 1024;
 constexpr std::size_t window_height = 640;
-
-//  scenes:
-//  - intro screen
-//  - main menu (play game, play clip?, exit)
-//  - game play
 
 int main(int argc, char *argv[])
 {

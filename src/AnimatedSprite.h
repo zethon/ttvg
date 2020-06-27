@@ -65,10 +65,4 @@ protected:
     AnimeCallback   _animeCallback;
 };
 
-class MainCharacter : public AnimatedSprite
-{
-public:
-    using AnimatedSprite::AnimatedSprite;
-};
-
 } // namespace tt
