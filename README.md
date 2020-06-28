@@ -8,16 +8,23 @@ Right now there is no installer, so the game has be built manually. An installer
 
 ## How to Build
 
-### Windows
+All platforms require: 
 
-I have been using Visual Studio 2017 as my toolchain, even tough I've actually been using Visual 2019 as my editor/IDE. I've yet to figure out how to get conan to play nicely with Visual Studio 2019, but since VS2019 can load and use VS2017 solution files without a problem, this method works fine.
-
-The [OpenAL Libraries](https://openal.org/downloads/) need to be installed for sound files to load on Windows. 
-
-#### Requirements
-* [Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/)
 * [CMake 3.10+](https://cmake.org/download/)
 * [conan 1.21+](https://conan.io/)
+
+
+You must add a conan remote in order to download the [TMXLite Library](https://github.com/fallahn/tmxlite):
+
+```
+conan remote add zethon https://api.bintray.com/conan/zethon/arcc
+```
+
+### Windows
+
+I have been using [Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/) as my toolchain, even tough I've actually been using Visual 2019 as my editor/IDE. I've yet to figure out how to get conan to play nicely with Visual Studio 2019, but since VS2019 can load and use VS2017 solution files without a problem, this method works fine.
+
+The [OpenAL Libraries](https://openal.org/downloads/) need to be installed for sound files to load on Windows. 
 
 #### Instructions
 
@@ -43,10 +50,7 @@ If all goes well you should have a **ttvg.sln** in the `build` folder. This is a
 
 ### Mac
 
-#### Requirements
-* clang (any version that supports C++17)
-* [CMake 3.10+](https://cmake.org/download/)
-* [conan 1.21+](https://conan.io/)
+I am using a clang compiler on Mac. Any version of clang that supports C++17 should be fine.
 
 #### Instructions
 

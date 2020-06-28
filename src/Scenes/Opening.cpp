@@ -91,7 +91,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     addDrawable(_player);
 
     _debugText = std::make_shared<sf::Text>("", debugFont());
-    _debugText->setColor(sf::Color::Red);
+    _debugText->setFillColor(sf::Color::Red);
     addDrawable(_debugText);
 }
 
