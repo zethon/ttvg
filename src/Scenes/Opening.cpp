@@ -9,20 +9,20 @@
 namespace tt
 {
 
-constexpr auto SCALE_PLAYER = 2.0f;
-constexpr auto SCALE_BACKGROUND = 0.7f;
+constexpr auto SCALE_PLAYER = 1.50f;
+constexpr auto SCALE_BACKGROUND = 2.25f;
 
 constexpr auto BOUNDARY_LEFT = 5.0f;
 constexpr auto BOUNDARY_RIGHT = 2330.0f;
-constexpr auto BOUNDARY_TOP = 459.0f;
-constexpr auto BOUNDARY_BOTTOM = 539.0f;
+constexpr auto BOUNDARY_TOP = 10.0f;
+constexpr auto BOUNDARY_BOTTOM = 4390.0f;
 
 constexpr auto STEPSIZE = 16u;
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene(resmgr, target)
 {
-    sf::Texture temptext = *(_resources.load<sf::Texture>("textures/city1.png"));
+    sf::Texture temptext = *(_resources.load<sf::Texture>("maps/tucson.png"));
     _background = std::make_shared<Background>(temptext);
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
 
@@ -89,29 +89,15 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     // the order in which we add everything to the draw'able
     // vector is important, so we do it all at the end of
     // the function
-
-    //addDrawable(_background);
-    //auto bg = _resources.loadPtr<tmx::Map>("resources/test.tmx");
-    
-    _map = _resources.loadMapPtr("maps/tucson.tmx");
-    const auto& layers = _map->getLayers();
-    auto idx = 0u;
-
-    for (const auto& l : layers)
-    {
-        if (l->getType() != tmx::Layer::Type::Tile)
-        {
-            continue;
-        }
-
-        addDrawable(std::make_shared<MapLayer>(*_map, idx++));
-    }
-
+    addDrawable(_background);
     addDrawable(_player);
 
     _debugText = std::make_shared<sf::Text>("", debugFont());
     _debugText->setFillColor(sf::Color::Red);
     addDrawable(_debugText);
+
+    // after everything has been added, update our view
+    adjustView();
 }
 
 std::uint16_t Opening::poll(const sf::Event& e)
