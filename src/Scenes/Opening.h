@@ -1,18 +1,14 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <tmxlite/Map.hpp>
 
 #include "../Background.h"
 #include "../AnimatedSprite.h"
-#include "../SFMLOrthogonalLayer.hpp"
 
 #include "Scene.h"
 
 namespace tt
 {
-
-using MapPtr = std::shared_ptr<tmx::Map>;
 
 class Opening : public Scene
 {
@@ -30,8 +26,6 @@ private:
     BackgroundSharedPtr         _background;
     AnimatedSpritePtr           _player;
     std::shared_ptr<sf::Text>   _debugText;
-
-    std::shared_ptr<tmx::Map> _map;
 
     sf::Clock _globalClock;
 };
