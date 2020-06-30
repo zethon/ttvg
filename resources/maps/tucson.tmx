@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="150" height="150" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="1">
  <tileset firstgid="1" source="city_tileset.tsx"/>
- <tileset firstgid="1037" source="dumpter.tsx"/>
+ <tileset firstgid="1037" source="dumpster.tsx"/>
  <tileset firstgid="1049" source="houses1.tsx"/>
  <tileset firstgid="1099" source="houses2.tsx"/>
  <layer id="2" name="Terrain" width="150" height="150">
