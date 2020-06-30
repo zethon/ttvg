@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../Background.h"
-#include "../AnimatedSprite.h"
+#include "../Player.h"
 
 #include "Scene.h"
 
@@ -24,7 +24,8 @@ private:
     void adjustView();
 
     BackgroundSharedPtr         _background;
-    AnimatedSpritePtr           _player;
+    PlayerPtr                   _player;
+
     std::shared_ptr<sf::Text>   _debugText;
 
     sf::Clock _globalClock;

@@ -12,12 +12,10 @@ namespace tt
 constexpr auto SCALE_PLAYER = 1.50f;
 constexpr auto SCALE_BACKGROUND = 2.25f;
 
-constexpr auto BOUNDARY_LEFT = 5.0f;
-constexpr auto BOUNDARY_RIGHT = 2330.0f;
-constexpr auto BOUNDARY_TOP = 10.0f;
-constexpr auto BOUNDARY_BOTTOM = 4390.0f;
-
 constexpr auto STEPSIZE = 16u;
+
+constexpr auto PLAYER_START_X = 1616.0f;
+constexpr auto PLAYER_START_Y = 2875.0f;
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene(resmgr, target)
@@ -32,54 +30,63 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _window.setView(view);
     
     temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
-    _player = std::make_shared<AnimatedSprite>(temptext, sf::Vector2i{ 64, 64 });
+    _player = std::make_shared<Player>(temptext, sf::Vector2i{ 64, 64 });
     _player->texture().setSmooth(true);
     _player->setSource(0,2);
     _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
-    auto [playerx, playery] = _player->getPosition();
-    playerx = (_window.getSize().x / 2) - static_cast<float>(_player->getTextureRect().width);
-    playery = (_window.getSize().y - (_player->getTextureRect().height * SCALE_PLAYER)) - 5;
-    _player->setPosition(playerx, playery);
+    _player->setPosition(PLAYER_START_X, PLAYER_START_Y);
 
     _player->setAnimeCallback(
         [this]() 
         {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
+                const auto boundaryLeft = _background->getLeftBoundary();
                 auto [x, y] = _player->getPosition();
-                if ((x - STEPSIZE) >= BOUNDARY_LEFT)
-                {
-                    _player->setPosition(x - STEPSIZE, y);
-                    adjustView();
-                }
+                assert(x >= boundaryLeft);
+                if (x == boundaryLeft) return;
+
+                x -= STEPSIZE;
+                if (x < boundaryLeft) x = boundaryLeft;
+                _player->setPosition(x, y);
+                adjustView();
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {
+                const auto boundaryRight = _background->getRightBoundary();
                 auto [x, y] = _player->getPosition();
-                if ((x + STEPSIZE) <= BOUNDARY_RIGHT)
-                {
-                    _player->setPosition(x + STEPSIZE, y);
-                    adjustView();
-                }
+                assert(x <= boundaryRight);
+                if (x == boundaryRight) return;
+
+                x += STEPSIZE;
+                if (x > boundaryRight) x = boundaryRight;
+                _player->setPosition(x, y);
+                adjustView();
             }
             
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
             {
+                const auto boundaryTop = _background->getTopBoundary();
                 auto [x, y] = _player->getPosition();
-                if ((y - STEPSIZE) >= BOUNDARY_TOP)
-                {
-                    _player->setPosition(x, y - STEPSIZE);
-                    adjustView();
-                }
+                assert(y >= boundaryTop);
+                if (y == boundaryTop) return;
+
+                y -= STEPSIZE;
+                if (y < boundaryTop) y = boundaryTop;
+                _player->setPosition(x, y);
+                adjustView();
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
             {
+                const auto boundaryBottom = _background->getBottomBoundary();
                 auto [x, y] = _player->getPosition();
-                if ((y + STEPSIZE) <= BOUNDARY_BOTTOM)
-                {
-                    _player->setPosition(x, y + STEPSIZE);
-                    adjustView();
-                }
+                assert(y <= boundaryBottom);
+                if (y == boundaryBottom) return;
+
+                y += STEPSIZE;
+                if (y > boundaryBottom) y = boundaryBottom;
+                _player->setPosition(x, y);
+                adjustView();
             }
         }
     );
@@ -187,7 +194,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 sf::View view = _window.getView();
                 auto [x,y] = view.getCenter();
                 if (((x+20) + (view.getSize().x / 2))
-                    < _background->getTextureRect().width * SCALE_BACKGROUND)
+                    < _background->getRightBoundary())
                 {
                     x += 20;
                     view.setCenter(x, y);
@@ -215,7 +222,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 auto [x,y] = view.getCenter();
 
                 if ((y + (view.getSize().y / 2)) 
-                    < _background->getTextureRect().height * SCALE_BACKGROUND)
+                    < _background->getBottomBoundary())
                 {
                     y += 20;
                     view.setCenter(x, y);
