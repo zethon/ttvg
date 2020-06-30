@@ -87,7 +87,21 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     // the order in which we add everything to the draw'able
     // vector is important, so we do it all at the end of
     // the function
-    addDrawable(_background);
+
+    //addDrawable(_background);
+    //auto bg = _resources.loadPtr<tmx::Map>("resources/test.tmx");
+    
+    _map = _resources.loadMapPtr("maps/tucson.tmx");
+    //_map = _resources.loadMapPtr("maps2/demo.tmx");
+    
+    _l1 = std::make_shared<MapLayer>(*_map, 0);
+//    _l2 = std::make_shared<MapLayer>(*map, 1);
+//    _l3 = std::make_shared<MapLayer>(*map, 2);
+
+    addDrawable(_l1);
+    //addDrawable(_l2);
+    //addDrawable(_l3);
+
     addDrawable(_player);
 
     _debugText = std::make_shared<sf::Text>("", debugFont());
@@ -244,6 +258,9 @@ std::uint16_t Opening::timestep()
     xpos -= ((_window.getSize().x / 2) - 10);
     ypos -= ((_window.getSize().y / 2) - 10);
     _debugText->setPosition(xpos, ypos);
+
+    sf::Time duration = _globalClock.getElapsedTime();
+    _l1->update(duration);
 
     Scene::timestep();
     return 0;

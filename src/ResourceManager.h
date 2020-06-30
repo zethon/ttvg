@@ -6,8 +6,15 @@
 
 #include <SFML/Graphics/Font.hpp>
 
+namespace tmx
+{
+    class Map;
+}
+
 namespace tt
 {
+
+using MapPtr = std::shared_ptr<tmx::Map>;
 
 class ResourceManager
 {
@@ -54,6 +61,8 @@ public:
 
         return {};
     }
+
+    MapPtr loadMapPtr(const std::string& name);
 
 };
 

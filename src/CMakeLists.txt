@@ -27,6 +27,8 @@ set(HEADER_FILES
     Screen.h
     TTUtils.h
 
+    SFMLOrthogonalLayer.hpp
+
     Scenes/Opening.h
     Scenes/Scene.h
 )
