@@ -32,9 +32,7 @@ private:
     std::shared_ptr<sf::Text>   _debugText;
 
     std::shared_ptr<tmx::Map> _map;
-    std::shared_ptr<MapLayer> _l1;
-    std::shared_ptr<MapLayer> _l2;
-    std::shared_ptr<MapLayer> _l3;
+
     sf::Clock _globalClock;
 };
 

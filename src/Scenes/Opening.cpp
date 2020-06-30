@@ -1,3 +1,5 @@
+#include <boost/range/adaptor/indexed.hpp>
+
 #include <fmt/core.h>
 
 #include "../TTUtils.h"
@@ -92,15 +94,18 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     //auto bg = _resources.loadPtr<tmx::Map>("resources/test.tmx");
     
     _map = _resources.loadMapPtr("maps/tucson.tmx");
-    //_map = _resources.loadMapPtr("maps2/demo.tmx");
-    
-    _l1 = std::make_shared<MapLayer>(*_map, 0);
-//    _l2 = std::make_shared<MapLayer>(*map, 1);
-//    _l3 = std::make_shared<MapLayer>(*map, 2);
+    const auto& layers = _map->getLayers();
+    auto idx = 0u;
 
-    addDrawable(_l1);
-    //addDrawable(_l2);
-    //addDrawable(_l3);
+    for (const auto& l : layers)
+    {
+        if (l->getType() != tmx::Layer::Type::Tile)
+        {
+            continue;
+        }
+
+        addDrawable(std::make_shared<MapLayer>(*_map, idx++));
+    }
 
     addDrawable(_player);
 
@@ -258,9 +263,6 @@ std::uint16_t Opening::timestep()
     xpos -= ((_window.getSize().x / 2) - 10);
     ypos -= ((_window.getSize().y / 2) - 10);
     _debugText->setPosition(xpos, ypos);
-
-    sf::Time duration = _globalClock.getElapsedTime();
-    _l1->update(duration);
 
     Scene::timestep();
     return 0;
