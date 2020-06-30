@@ -23,6 +23,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     sf::Texture temptext = *(_resources.load<sf::Texture>("maps/tucson.png"));
     _background = std::make_shared<Background>(temptext);
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
+    _background->setPosition(0.0f, 0.0f);
 
     auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
     sf::View view(sf::FloatRect(0.f, top, 
@@ -39,6 +40,10 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _player->setAnimeCallback(
         [this]() 
         {
+            const auto stepSize = STEPSIZE 
+                + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
+
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
                 const auto boundaryLeft = _background->getLeftBoundary();
@@ -46,19 +51,21 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
                 assert(x >= boundaryLeft);
                 if (x == boundaryLeft) return;
 
-                x -= STEPSIZE;
+                x -= stepSize;
                 if (x < boundaryLeft) x = boundaryLeft;
                 _player->setPosition(x, y);
                 adjustView();
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {
-                const auto boundaryRight = _background->getRightBoundary();
+                const auto boundaryRight = _background->getRightBoundary() 
+                    - _player->getGlobalBounds().width;
+
                 auto [x, y] = _player->getPosition();
                 assert(x <= boundaryRight);
                 if (x == boundaryRight) return;
 
-                x += STEPSIZE;
+                x += stepSize;
                 if (x > boundaryRight) x = boundaryRight;
                 _player->setPosition(x, y);
                 adjustView();
@@ -71,20 +78,25 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
                 assert(y >= boundaryTop);
                 if (y == boundaryTop) return;
 
-                y -= STEPSIZE;
+                y -= stepSize;
                 if (y < boundaryTop) y = boundaryTop;
                 _player->setPosition(x, y);
                 adjustView();
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
             {
-                const auto boundaryBottom = _background->getBottomBoundary();
+                const auto boundaryBottom = _background->getBottomBoundary() 
+                    - (_player->getGlobalBounds().height + 32);
+
                 auto [x, y] = _player->getPosition();
                 assert(y <= boundaryBottom);
                 if (y == boundaryBottom) return;
 
-                y += STEPSIZE;
-                if (y > boundaryBottom) y = boundaryBottom;
+                y += stepSize;
+                if (y > boundaryBottom)
+                {
+                    y = boundaryBottom;
+                }
                 _player->setPosition(x, y);
                 adjustView();
             }
