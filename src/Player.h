@@ -5,6 +5,9 @@
 namespace tt
 {
 
+class Player;
+using PlayerPtr = std::shared_ptr<Player>;
+
 class Player : public AnimatedSprite
 {
 public:

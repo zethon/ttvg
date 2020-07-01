@@ -17,6 +17,14 @@ public:
 
     sf::Texture& texture() { return _texture; }
 
+    sf::FloatRect getWorldRect() const;
+
+    float getLeftBoundary() const { return 0; }
+    float getRightBoundary() const;
+
+    float getTopBoundary() const { return 0; }
+    float getBottomBoundary() const;
+
 protected:
 
     sf::Texture     _texture;
