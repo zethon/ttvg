@@ -26,7 +26,7 @@ set(HEADER_FILES
     ResourceManager.h
     Screen.h
     TTUtils.h
-
+    
     Scenes/Opening.h
     Scenes/Scene.h
 )

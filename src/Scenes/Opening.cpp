@@ -1,3 +1,5 @@
+#include <boost/range/adaptor/indexed.hpp>
+
 #include <fmt/core.h>
 
 #include "../TTUtils.h"
@@ -7,22 +9,21 @@
 namespace tt
 {
 
-constexpr auto SCALE_PLAYER = 2.0f;
-constexpr auto SCALE_BACKGROUND = 0.7f;
-
-constexpr auto BOUNDARY_LEFT = 5.0f;
-constexpr auto BOUNDARY_RIGHT = 2330.0f;
-constexpr auto BOUNDARY_TOP = 459.0f;
-constexpr auto BOUNDARY_BOTTOM = 539.0f;
+constexpr auto SCALE_PLAYER = 1.50f;
+constexpr auto SCALE_BACKGROUND = 2.25f;
 
 constexpr auto STEPSIZE = 16u;
+
+constexpr auto PLAYER_START_X = 1616.0f;
+constexpr auto PLAYER_START_Y = 2875.0f;
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene(resmgr, target)
 {
-    sf::Texture temptext = *(_resources.load<sf::Texture>("textures/city1.png"));
+    sf::Texture temptext = *(_resources.load<sf::Texture>("maps/tucson.png"));
     _background = std::make_shared<Background>(temptext);
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
+    _background->setPosition(0.0f, 0.0f);
 
     auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
     sf::View view(sf::FloatRect(0.f, top, 
@@ -30,54 +31,74 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _window.setView(view);
     
     temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
-    _player = std::make_shared<AnimatedSprite>(temptext, sf::Vector2i{ 64, 64 });
+    _player = std::make_shared<Player>(temptext, sf::Vector2i{ 64, 64 });
     _player->texture().setSmooth(true);
     _player->setSource(0,2);
     _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
-    auto [playerx, playery] = _player->getPosition();
-    playerx = (_window.getSize().x / 2) - static_cast<float>(_player->getTextureRect().width);
-    playery = (_window.getSize().y - (_player->getTextureRect().height * SCALE_PLAYER)) - 5;
-    _player->setPosition(playerx, playery);
+    _player->setPosition(PLAYER_START_X, PLAYER_START_Y);
 
     _player->setAnimeCallback(
         [this]() 
         {
+            const auto stepSize = STEPSIZE 
+                + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
+
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
+                const auto boundaryLeft = _background->getLeftBoundary();
                 auto [x, y] = _player->getPosition();
-                if ((x - STEPSIZE) >= BOUNDARY_LEFT)
-                {
-                    _player->setPosition(x - STEPSIZE, y);
-                    adjustView();
-                }
+                assert(x >= boundaryLeft);
+                if (x == boundaryLeft) return;
+
+                x -= stepSize;
+                if (x < boundaryLeft) x = boundaryLeft;
+                _player->setPosition(x, y);
+                adjustView();
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {
+                const auto boundaryRight = _background->getRightBoundary() 
+                    - _player->getGlobalBounds().width;
+
                 auto [x, y] = _player->getPosition();
-                if ((x + STEPSIZE) <= BOUNDARY_RIGHT)
-                {
-                    _player->setPosition(x + STEPSIZE, y);
-                    adjustView();
-                }
+                assert(x <= boundaryRight);
+                if (x == boundaryRight) return;
+
+                x += stepSize;
+                if (x > boundaryRight) x = boundaryRight;
+                _player->setPosition(x, y);
+                adjustView();
             }
             
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
             {
+                const auto boundaryTop = _background->getTopBoundary();
                 auto [x, y] = _player->getPosition();
-                if ((y - STEPSIZE) >= BOUNDARY_TOP)
-                {
-                    _player->setPosition(x, y - STEPSIZE);
-                    adjustView();
-                }
+                assert(y >= boundaryTop);
+                if (y == boundaryTop) return;
+
+                y -= stepSize;
+                if (y < boundaryTop) y = boundaryTop;
+                _player->setPosition(x, y);
+                adjustView();
             }
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
             {
+                const auto boundaryBottom = _background->getBottomBoundary() 
+                    - (_player->getGlobalBounds().height + 32);
+
                 auto [x, y] = _player->getPosition();
-                if ((y + STEPSIZE) <= BOUNDARY_BOTTOM)
+                assert(y <= boundaryBottom);
+                if (y == boundaryBottom) return;
+
+                y += stepSize;
+                if (y > boundaryBottom)
                 {
-                    _player->setPosition(x, y + STEPSIZE);
-                    adjustView();
+                    y = boundaryBottom;
                 }
+                _player->setPosition(x, y);
+                adjustView();
             }
         }
     );
@@ -93,6 +114,9 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _debugText = std::make_shared<sf::Text>("", debugFont());
     _debugText->setFillColor(sf::Color::Red);
     addDrawable(_debugText);
+
+    // after everything has been added, update our view
+    adjustView();
 }
 
 std::uint16_t Opening::poll(const sf::Event& e)
@@ -182,7 +206,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 sf::View view = _window.getView();
                 auto [x,y] = view.getCenter();
                 if (((x+20) + (view.getSize().x / 2))
-                    < _background->getTextureRect().width * SCALE_BACKGROUND)
+                    < _background->getRightBoundary())
                 {
                     x += 20;
                     view.setCenter(x, y);
@@ -210,7 +234,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 auto [x,y] = view.getCenter();
 
                 if ((y + (view.getSize().y / 2)) 
-                    < _background->getTextureRect().height * SCALE_BACKGROUND)
+                    < _background->getBottomBoundary())
                 {
                     y += 20;
                     view.setCenter(x, y);
