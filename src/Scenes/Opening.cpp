@@ -40,6 +40,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _player->setAnimeCallback(
         [this]() 
         {
+            _debugText->setString("");
             const auto stepSize = STEPSIZE 
                 + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
                     || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
@@ -112,7 +113,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     addDrawable(_player);
 
     _debugText = std::make_shared<sf::Text>("", debugFont());
-    _debugText->setFillColor(sf::Color::Red);
+    _debugText->setFillColor(sf::Color::White);
     addDrawable(_debugText);
 
     // after everything has been added, update our view
@@ -261,7 +262,11 @@ std::uint16_t Opening::timestep()
     }
 
     auto [playerXpos, playerYpos] = _player->getPosition();
-    auto posText = fmt::format("PLAYER X:{} Y:{}", playerXpos, playerYpos);
+
+    auto [tilex, tiley] = tt::getTileXY(_player->getPosition(), { 16, 16 });
+    auto posText = fmt::format("PLAYER X:{} Y:{}\nTILE X:{} Y:{}", 
+        playerXpos, playerYpos, tilex, tiley);
+
     _debugText->setString(posText);
 
     auto [xpos, ypos] = _window.getView().getCenter();
