@@ -33,76 +33,11 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
     _player = std::make_shared<Player>(temptext, sf::Vector2i{ 64, 64 });
     _player->texture().setSmooth(true);
-    _player->setSource(0,2);
+    _player->setSource(0, 2);
     _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
+    _player->setOrigin(0.0f, 0.0f);
     _player->setPosition(PLAYER_START_X, PLAYER_START_Y);
-
-    _player->setAnimeCallback(
-        [this]() 
-        {
-            _debugText->setString("");
-            const auto stepSize = STEPSIZE 
-                + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            {
-                const auto boundaryLeft = _background->getLeftBoundary();
-                auto [x, y] = _player->getPosition();
-                assert(x >= boundaryLeft);
-                if (x == boundaryLeft) return;
-
-                x -= stepSize;
-                if (x < boundaryLeft) x = boundaryLeft;
-                _player->setPosition(x, y);
-                adjustView();
-            }
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            {
-                const auto boundaryRight = _background->getRightBoundary() 
-                    - _player->getGlobalBounds().width;
-
-                auto [x, y] = _player->getPosition();
-                assert(x <= boundaryRight);
-                if (x == boundaryRight) return;
-
-                x += stepSize;
-                if (x > boundaryRight) x = boundaryRight;
-                _player->setPosition(x, y);
-                adjustView();
-            }
-            
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            {
-                const auto boundaryTop = _background->getTopBoundary();
-                auto [x, y] = _player->getPosition();
-                assert(y >= boundaryTop);
-                if (y == boundaryTop) return;
-
-                y -= stepSize;
-                if (y < boundaryTop) y = boundaryTop;
-                _player->setPosition(x, y);
-                adjustView();
-            }
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            {
-                const auto boundaryBottom = _background->getBottomBoundary() 
-                    - (_player->getGlobalBounds().height + 32);
-
-                auto [x, y] = _player->getPosition();
-                assert(y <= boundaryBottom);
-                if (y == boundaryBottom) return;
-
-                y += stepSize;
-                if (y > boundaryBottom)
-                {
-                    y = boundaryBottom;
-                }
-                _player->setPosition(x, y);
-                adjustView();
-            }
-        }
-    );
+    _player->setAnimeCallback([this](){ this->animeCallback(); });
 
     addUpdateable(_player);    
 
@@ -302,6 +237,71 @@ void Opening::adjustView()
     {
         view.setCenter(view.getCenter().x, ypos);
         _window.setView(view);
+    }
+}
+
+void Opening::animeCallback()
+{
+    _debugText->setString("");
+    const auto stepSize = STEPSIZE 
+        + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
+            || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+    {
+        const auto boundaryLeft = _background->getLeftBoundary();
+        auto [x, y] = _player->getPosition();
+        assert(x >= boundaryLeft);
+        if (x == boundaryLeft) return;
+
+        x -= stepSize;
+        if (x < boundaryLeft) x = boundaryLeft;
+        _player->setPosition(x, y);
+        adjustView();
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    {
+        const auto boundaryRight = _background->getRightBoundary() 
+            - _player->getGlobalBounds().width;
+
+        auto [x, y] = _player->getPosition();
+        assert(x <= boundaryRight);
+        if (x == boundaryRight) return;
+
+        x += stepSize;
+        if (x > boundaryRight) x = boundaryRight;
+        _player->setPosition(x, y);
+        adjustView();
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+    {
+        const auto boundaryTop = _background->getTopBoundary();
+        auto [x, y] = _player->getPosition();
+        assert(y >= boundaryTop);
+        if (y == boundaryTop) return;
+
+        y -= stepSize;
+        if (y < boundaryTop) y = boundaryTop;
+        _player->setPosition(x, y);
+        adjustView();
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    {
+        const auto boundaryBottom = _background->getBottomBoundary() 
+            - (_player->getGlobalBounds().height + 32);
+
+        auto [x, y] = _player->getPosition();
+        assert(y <= boundaryBottom);
+        if (y == boundaryBottom) return;
+
+        y += stepSize;
+        if (y > boundaryBottom)
+        {
+            y = boundaryBottom;
+        }
+        _player->setPosition(x, y);
+        adjustView();
     }
 }
 

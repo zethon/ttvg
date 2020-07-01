@@ -22,6 +22,7 @@ public:
 private:
 
     void adjustView();
+    void animeCallback();
 
     BackgroundSharedPtr         _background;
     PlayerPtr                   _player;
