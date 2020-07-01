@@ -15,8 +15,8 @@
 namespace po = boost::program_options;
 
 constexpr char window_title[] = "Lord of the Dumpsters: A Tommy Tooter Game";
-constexpr std::size_t window_width = 1024;
-constexpr std::size_t window_height = 640;
+constexpr std::size_t window_width = 1280;
+constexpr std::size_t window_height = 720;
 
 int main(int argc, char *argv[])
 {
