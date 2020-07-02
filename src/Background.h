@@ -6,6 +6,8 @@
 namespace tt
 {
 
+class ResourceManager;
+
 template<typename V>
 sf::Vector2u getTileXY(const V& position, const sf::Vector2u& tileSize)
 {
@@ -28,9 +30,9 @@ class Background : public sf::Sprite
 {
 
 public:
-    explicit Background(sf::Texture texture);
+    using Zone = std::tuple<std::string, sf::Vector2u>;
 
-    sf::Texture& texture() { return _texture; }
+    Background(std::string_view name, ResourceManager& resmgr);
 
     sf::FloatRect getWorldRect() const;
 
@@ -41,7 +43,8 @@ public:
 
 protected:
 
-    sf::Texture     _texture;
+    std::unique_ptr<sf::Texture>    _texture;
+    std::vector<Zone>               _zone;
 
 };
 

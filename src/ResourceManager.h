@@ -43,6 +43,19 @@ public:
     }
 
     template<typename T>
+    std::unique_ptr<T> loadUniquePtr(const std::string& name)
+    {
+        auto filepath = _resourceFolder / name;
+        std::unique_ptr<T> item = std::make_unique<T>();
+        if (item->loadFromFile(filepath.string()))
+        {
+            return item;
+        }
+
+        return {};
+    }
+
+    template<typename T>
     std::unique_ptr<T> openUniquePtr(const std::string& name)
     {
         auto filepath = _resourceFolder / name;
@@ -54,6 +67,8 @@ public:
 
         return {};
     }
+
+    std::string getFilename(const std::string& name);
 };
 
 } // namespace tt

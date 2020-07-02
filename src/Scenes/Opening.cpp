@@ -24,17 +24,16 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
       _statusBar(resmgr, target),
       _debugWindow(resmgr, target)
 {
-    sf::Texture temptext = *(_resources.load<sf::Texture>("maps/tucson.png"));
-    _background = std::make_shared<Background>(temptext);
+    _background = std::make_shared<Background>("tucson", _resources);
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
 
-    auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
-    sf::View view(sf::FloatRect(0.f, top,
+    // auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
+    sf::View view(sf::FloatRect(0.f, 0.f,
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
 
-    temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
+    auto temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
     _player = std::make_shared<Player>(temptext, sf::Vector2i{ 64, 64 });
     _player->texture().setSmooth(true);
     _player->setSource(0, 2);
