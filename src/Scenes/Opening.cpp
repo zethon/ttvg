@@ -193,18 +193,10 @@ std::uint16_t Opening::timestep()
         _player->setState(AnimatedSprite::STILL);
     }
 
-    auto playerCenter = _player->getGlobalCenter();
-    const auto xpos = (_player->getPosition().x 
-        + ((_player->getTextureRect().width * SCALE_PLAYER) / 2));
-
-    const auto ypos = (_player->getPosition().y
-        + ((_player->getTextureRect().height * SCALE_PLAYER) / 2));
-
-    // auto [playerXpos, playerYpos] = _player->getPosition();
-
-    // auto [tilex, tiley] = tt::getTileXY(_player->getPosition(), { 10, 10 });
-    auto posText = fmt::format("PLAYER {},{}; PLAYER CENTER: {},{}\n",
-        xpos, ypos, playerCenter.x, playerCenter.y);
+    auto pc = _player->getGlobalCenter();
+    auto [tilex, tiley] = tt::getTileXY(_player->getPosition(), { 10, 10 });
+    auto posText = fmt::format("PLAYER {},{}; TILE: {},{}\n",
+        pc.x, pc.y, tilex, tiley);
 
     _debugWindow.setText(posText);
 
@@ -266,46 +258,45 @@ void Opening::animeCallback()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
+        auto xx = _player->getGlobalLeft();
         const auto boundaryLeft = _background->getLeftBoundary();
         auto [x, y] = _player->getPosition();
-        assert(x >= boundaryLeft);
-        if (x == boundaryLeft) return;
+        assert(xx >= boundaryLeft);
+        if (xx == boundaryLeft) return;
 
-        x -= stepSize;
-        if (x < boundaryLeft) x = boundaryLeft;
-        _player->setPosition(x, y);
+        xx -= stepSize;
+        if (xx < boundaryLeft) xx = boundaryLeft;
+        _player->setGlobalLeft(xx);
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
-        const auto boundaryRight = _background->getRightBoundary() 
-            - _player->getGlobalBounds().width;
+        const auto boundaryRight = _background->getRightBoundary();
 
-        auto [x, y] = _player->getPosition();
+        auto x = _player->getGlobalRight();
         assert(x <= boundaryRight);
         if (x == boundaryRight) return;
 
         x += stepSize;
         if (x > boundaryRight) x = boundaryRight;
-        _player->setPosition(x, y);
+        _player->setGlobalRight(x);
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
         const auto boundaryTop = _background->getTopBoundary();
-        auto [x, y] = _player->getPosition();
+        auto y = _player->getGlobalTop();
         assert(y >= boundaryTop);
         if (y == boundaryTop) return;
 
         y -= stepSize;
         if (y < boundaryTop) y = boundaryTop;
-        _player->setPosition(x, y);
+        _player->setGlobalTop(y);
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        const auto boundaryBottom = _background->getBottomBoundary() 
-            - (_player->getGlobalBounds().height + 32);
+        const auto boundaryBottom = _background->getBottomBoundary();
 
-        auto [x, y] = _player->getPosition();
+        auto y = _player->getGlobalBottom();
         assert(y <= boundaryBottom);
         if (y == boundaryBottom) return;
 
@@ -314,7 +305,7 @@ void Opening::animeCallback()
         {
             y = boundaryBottom;
         }
-        _player->setPosition(x, y);
+        _player->setGlobalBottom(y);
     }
 }
 
