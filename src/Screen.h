@@ -62,6 +62,9 @@ public:
         return { x, y, size.x, size.y };
     }
 
+    void setVisible(bool var) { _visible = var; }
+    bool visible() const { return _visible; }
+
 protected:
     std::vector<DrawablePtr>        _objects;
     std::vector<IUpdateablePtr>     _updateables;
@@ -69,6 +72,7 @@ protected:
     ResourceManager&                _resources;
     sf::RenderTarget&               _window;
 
+    bool                            _visible = true;
 };
 
 } // namespace tt

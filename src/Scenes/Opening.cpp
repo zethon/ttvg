@@ -50,6 +50,8 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     // the function
     addDrawable(_background);
     addDrawable(_player);
+
+    _debugWindow.setVisible(false);
 }
 
 std::uint16_t Opening::poll(const sf::Event& e)
@@ -118,6 +120,12 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedSprite::ANIMATED);
                 _player->setDirection(AnimatedSprite::DOWN);
+            }
+            break;
+
+            case sf::Keyboard::Home:
+            {
+                _debugWindow.setVisible(!_debugWindow.visible());
             }
             break;
 
@@ -193,15 +201,18 @@ std::uint16_t Opening::timestep()
         _player->setState(AnimatedSprite::STILL);
     }
 
-    auto pc = _player->getGlobalCenter();
-    auto [tilex, tiley] = tt::getTileXY(_player->getPosition(), { 10, 10 });
-    auto posText = fmt::format("PLAYER {},{}; TILE: {},{}\n",
-        pc.x, pc.y, tilex, tiley);
-
+    auto [tilex, tiley] = getPlayerTile();
+    auto posText = fmt::format("LOC:({},{})\n", tilex, tiley);
     _debugWindow.setText(posText);
 
     Scene::timestep();
     return 0;
+}
+
+sf::Vector2u Opening::getPlayerTile() const
+{
+    auto pc = _player->getGlobalCenter();
+    return tt::getTileXY(_player->getPosition(), { 10, 10 });
 }
 
 void Opening::draw()
@@ -210,15 +221,8 @@ void Opening::draw()
     Scene::draw();
     
     _window.setView(_window.getDefaultView());
-    for (const auto& drawable : _statusBar.getDrawables())
-    {
-        _window.draw(*drawable);
-    }
-
-    for (const auto& drawable : _debugWindow.getDrawables())
-    { 
-        _window.draw(*drawable);
-    }
+    _statusBar.draw();
+    _debugWindow.draw();
 }
 
 void Opening::adjustView()

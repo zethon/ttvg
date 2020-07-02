@@ -31,6 +31,8 @@ void Screen::clearUpdateable()
 
 void Screen::draw()
 {
+    if (!_visible) return;
+    
     std::for_each(_objects.begin(), _objects.end(),
         [&](DrawablePtr o) { _window.draw(*o); });
 }
