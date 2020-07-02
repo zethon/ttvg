@@ -50,9 +50,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     // the function
     addDrawable(_background);
     addDrawable(_player);
-
-    // after everything has been added, update our view
-    adjustView();
 }
 
 std::uint16_t Opening::poll(const sf::Event& e)
@@ -196,10 +193,18 @@ std::uint16_t Opening::timestep()
         _player->setState(AnimatedSprite::STILL);
     }
 
-    auto [playerXpos, playerYpos] = _player->getPosition();
-    auto [tilex, tiley] = tt::getTileXY(_player->getPosition(), { 10, 10 });
-    auto posText = fmt::format("PLAYER X:{} Y:{} - TILE X:{} Y:{}\n",
-        playerXpos, playerYpos, tilex, tiley);
+    auto playerCenter = _player->getGlobalCenter();
+    const auto xpos = (_player->getPosition().x 
+        + ((_player->getTextureRect().width * SCALE_PLAYER) / 2));
+
+    const auto ypos = (_player->getPosition().y
+        + ((_player->getTextureRect().height * SCALE_PLAYER) / 2));
+
+    // auto [playerXpos, playerYpos] = _player->getPosition();
+
+    // auto [tilex, tiley] = tt::getTileXY(_player->getPosition(), { 10, 10 });
+    auto posText = fmt::format("PLAYER {},{}; PLAYER CENTER: {},{}\n",
+        xpos, ypos, playerCenter.x, playerCenter.y);
 
     _debugWindow.setText(posText);
 
@@ -226,29 +231,31 @@ void Opening::draw()
 
 void Opening::adjustView()
 {
-    const auto xpos = (_player->getPosition().x 
-        + ((_player->getTextureRect().width * SCALE_PLAYER) / 2));
-
-    const auto ypos = (_player->getPosition().y
-        + ((_player->getTextureRect().height * SCALE_PLAYER) / 2));
-    
     auto view = _window.getView();
-    auto totalWidth = _background->getTextureRect().width * SCALE_BACKGROUND;
-    if (xpos >= (_window.getSize().x / 2)
-        && xpos <= (totalWidth - (_window.getSize().x / 2)))
+    auto [xpos,ypos] = _player->getGlobalCenter();
+
+    if (xpos < (_window.getSize().x / 2))
     {
-        view.setCenter(xpos, view.getCenter().y);
-        _window.setView(view);
+        xpos = view.getCenter().x;
+    }
+    else if (auto totalWidth = _background->getGlobalBounds().width;
+                xpos > (totalWidth - (_window.getSize().x / 2)))
+    {
+        xpos = totalWidth - (view.getSize().x / 2);
     }
 
-    view = _window.getView();
-    auto totalHeight = _background->getTextureRect().height * SCALE_BACKGROUND;
-    if (ypos >= (_window.getSize().y / 2)
-        && ypos <= (totalHeight - (_window.getSize().y / 2)))
+    if (ypos < (_window.getSize().y / 2))
     {
-        view.setCenter(view.getCenter().x, ypos);
-        _window.setView(view);
+        ypos = view.getCenter().y;
     }
+    else if (auto totalHeight = _background->getGlobalBounds().height;
+                ypos > (totalHeight - (_window.getSize().y / 2)))
+    {
+        ypos = totalHeight - (view.getSize().y / 2);
+    }
+
+    view.setCenter(xpos, ypos);
+    _window.setView(view);
 }
 
 void Opening::animeCallback()
