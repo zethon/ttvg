@@ -30,7 +30,7 @@ class Background : public sf::Sprite
 {
 
 public:
-    using Zone = std::tuple<std::string, sf::Vector2u>;
+    using Zone = std::tuple<std::string, sf::FloatRect>;
 
     Background(std::string_view name, ResourceManager& resmgr);
 
