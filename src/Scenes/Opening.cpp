@@ -50,6 +50,9 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     addDrawable(_background);
     addDrawable(_player);
 
+    sf::Vector2f tile{ getPlayerTile() };
+    _statusBar.setZoneText(_background->zoneName(tile));
+
     _debugWindow.setVisible(false);
 }
 
@@ -208,7 +211,7 @@ std::uint16_t Opening::timestep()
     return 0;
 }
 
-sf::Vector2u Opening::getPlayerTile() const
+sf::Vector2f Opening::getPlayerTile() const
 {
     auto pc = _player->getGlobalCenter();
     return tt::getTileXY(_player->getPosition(), { 10, 10 });
@@ -259,6 +262,7 @@ void Opening::animeCallback()
         + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
             || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
 
+    bool moved = false;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
         auto xx = _player->getGlobalLeft();
@@ -269,7 +273,9 @@ void Opening::animeCallback()
 
         xx -= stepSize;
         if (xx < boundaryLeft) xx = boundaryLeft;
+
         _player->setGlobalLeft(xx);
+        moved = true;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
@@ -282,6 +288,7 @@ void Opening::animeCallback()
         x += stepSize;
         if (x > boundaryRight) x = boundaryRight;
         _player->setGlobalRight(x);
+        moved = true;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -294,6 +301,7 @@ void Opening::animeCallback()
         y -= stepSize;
         if (y < boundaryTop) y = boundaryTop;
         _player->setGlobalTop(y);
+        moved = true;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
@@ -309,6 +317,13 @@ void Opening::animeCallback()
             y = boundaryBottom;
         }
         _player->setGlobalBottom(y);
+        moved = true;
+    }
+
+    if (moved)
+    {
+        sf::Vector2f tile{ getPlayerTile() };
+        _statusBar.setZoneText(_background->zoneName(tile));
     }
 }
 

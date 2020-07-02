@@ -9,15 +9,15 @@ namespace tt
 class ResourceManager;
 
 template<typename V>
-sf::Vector2u getTileXY(const V& position, const sf::Vector2u& tileSize)
+sf::Vector2f getTileXY(const V& position, const sf::Vector2u& tileSize)
 {
-    auto x = static_cast<std::uint32_t>(std::floor(position.x / tileSize.x));
-    auto y = static_cast<std::uint32_t>(std::floor(position.y / tileSize.y));
+    auto x = static_cast<float>(std::floor(position.x / tileSize.x));
+    auto y = static_cast<float>(std::floor(position.y / tileSize.y));
     return { x, y };
 }
 
 template<typename Int>
-sf::Vector2u getTileXY(Int posx, Int posy, const sf::Vector2u& tileSize)
+sf::Vector2f getTileXY(Int posx, Int posy, const sf::Vector2u& tileSize)
 {
     return getTileXY({ posx, posy }, tileSize);
 }
@@ -41,10 +41,15 @@ public:
     float getTopBoundary() const { return 0; }
     float getBottomBoundary() const;
 
+    // TODO: there are some interesting optimizations that
+    // could be done here, which might be interesting to do
+    // but there are other things I want to do right now
+    std::string zoneName(const sf::Vector2f& v);
+
 protected:
 
     std::unique_ptr<sf::Texture>    _texture;
-    std::vector<Zone>               _zone;
+    std::vector<Zone>               _zones;
 
 };
 

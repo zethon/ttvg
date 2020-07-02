@@ -2,6 +2,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/spirit/home/x3.hpp>
+#include <boost/fusion/include/adapt_struct.hpp>
 
 #include <fmt/core.h>
 #include <nlohmann/json.hpp>
@@ -34,25 +35,37 @@ Background::Background(std::string_view name, ResourceManager& resmgr)
     if (!j.at("zones").is_array()) return;
 
     const auto realCSVParser
-        = x3::rule<class realCSVParserID, std::vector<float>, true> { "realCSVParser" }
-        = *(x3::lit('"')) >> x3::float_ >> x3::repeat(3)[',' >> x3::float_] >> *(x3::lit('"'));
+        = x3::rule<class realCSVParserID, sf::FloatRect>{}
+        = (x3::float_ >> ',' >> x3::float_ >> ',' >> x3::float_ >> ',' >> x3::float_)
+            [([](auto& ctx)
+                {
+                    auto& attr = x3::_attr(ctx);
+                    using boost::fusion::at_c;
+
+                    auto width = at_c<2>(attr) - at_c<0>(attr);
+                    auto height = at_c<3>(attr) - at_c<1>(attr);
+                    x3::_val(ctx)
+                        = sf::FloatRect{ at_c<0>(attr), at_c<1>(attr), width, height };
+                })
+            ];
 
     for (const auto& item : j["zones"].items())
     {
-        std::cout << "name: " << item.value()["name"] << '\n';
         for (const auto& c: item.value()["rects"].items())
         {
-            sf::FloatRect newrect;
-
-            std::vector<float> numbers;
             std::string temp { c.value().get<std::string>() };
             auto start = temp.begin();
             auto stop = temp.end();
 
+            sf::FloatRect rect;
             bool result =
-                phrase_parse(start, stop, realCSVParser, x3::ascii::space, numbers);
+                parse(start, stop, realCSVParser, rect);
 
-            std::cout << "y: [" << c.value() << "] :" << "bob" << '\n';
+            if (result)
+            {
+                _zones.emplace_back(item.value()["name"].get<std::string>(), rect);
+            }
+            
         }
     }
 }
@@ -70,6 +83,19 @@ float Background::getRightBoundary() const
 float Background::getBottomBoundary() const
 {
     return getTextureRect().height * this->getScale().y;;
+}
+
+std::string Background::zoneName(const sf::Vector2f& v)
+{
+    for (const auto& [name, rect] : _zones)
+    {
+        if (rect.contains(v))
+        {
+            return name;
+        }
+    }
+
+    return std::string();
 }
 
 } // namespace tt

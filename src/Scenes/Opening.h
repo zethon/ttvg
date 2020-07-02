@@ -12,17 +12,31 @@ namespace tt
 
 class StatusBar : public Scene
 {
+    sf::Font    _statusFont;
+
     std::shared_ptr<sf::RectangleShape> _background;
+    std::shared_ptr<sf::Text>           _zoneText;
 
 public: 
     StatusBar(ResourceManager& resmgr, sf::RenderTarget& target)
         : Scene(resmgr, target)
     {
         _background = std::make_shared<sf::RectangleShape>();
-        _background->setFillColor(sf::Color{ 0, 0, 0, 104 });
+        _background->setFillColor(sf::Color{ 100, 100, 0, 104 });
         _background->setPosition(5.f, 2.f);
         _background->setSize(sf::Vector2f{ _window.getSize().x - 10.f, 40.f });
         addDrawable(_background);
+
+        _statusFont = *(_resources.load<sf::Font>("fonts/mono_bold.ttf"));
+        _zoneText = std::make_shared<sf::Text>("", _statusFont);
+        _zoneText->setFillColor(sf::Color::White);
+        _zoneText->setPosition(10.f, 2.5f);
+        addDrawable(_zoneText);
+    }
+
+    void setZoneText(const std::string& zone)
+    {
+        _zoneText->setString(zone);
     }
 };
 
@@ -76,7 +90,7 @@ public:
     std::uint16_t timestep() override;
     void draw() override;
 
-    sf::Vector2u getPlayerTile() const;
+    sf::Vector2f getPlayerTile() const;
 
 private:
 
