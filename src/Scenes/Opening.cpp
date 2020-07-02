@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include <boost/range/adaptor/indexed.hpp>
 
 #include <fmt/core.h>
@@ -18,7 +20,9 @@ constexpr auto PLAYER_START_X = 1616.0f;
 constexpr auto PLAYER_START_Y = 2875.0f;
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
-    : Scene(resmgr, target)
+    : Scene(resmgr, target),
+      _statusBar(resmgr, target),
+      _debugWindow(resmgr, target)
 {
     sf::Texture temptext = *(_resources.load<sf::Texture>("maps/tucson.png"));
     _background = std::make_shared<Background>(temptext);
@@ -26,10 +30,10 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _background->setPosition(0.0f, 0.0f);
 
     auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
-    sf::View view(sf::FloatRect(0.f, top, 
+    sf::View view(sf::FloatRect(0.f, top,
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
-    
+
     temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
     _player = std::make_shared<Player>(temptext, sf::Vector2i{ 64, 64 });
     _player->texture().setSmooth(true);
@@ -37,19 +41,15 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
     _player->setOrigin(0.0f, 0.0f);
     _player->setPosition(PLAYER_START_X, PLAYER_START_Y);
-    _player->setAnimeCallback([this](){ this->animeCallback(); });
+    _player->setAnimeCallback([this]() { this->animeCallback(); });
 
-    addUpdateable(_player);    
+    addUpdateable(_player);
 
     // the order in which we add everything to the draw'able
     // vector is important, so we do it all at the end of
     // the function
     addDrawable(_background);
     addDrawable(_player);
-
-    _debugText = std::make_shared<sf::Text>("", debugFont());
-    _debugText->setFillColor(sf::Color::White);
-    addDrawable(_debugText);
 
     // after everything has been added, update our view
     adjustView();
@@ -197,20 +197,31 @@ std::uint16_t Opening::timestep()
     }
 
     auto [playerXpos, playerYpos] = _player->getPosition();
-
-    auto [tilex, tiley] = tt::getTileXY(_player->getPosition(), { 16, 16 });
-    auto posText = fmt::format("PLAYER X:{} Y:{}\nTILE X:{} Y:{}", 
+    auto [tilex, tiley] = tt::getTileXY(_player->getPosition(), { 10, 10 });
+    auto posText = fmt::format("PLAYER X:{} Y:{} - TILE X:{} Y:{}\n",
         playerXpos, playerYpos, tilex, tiley);
 
-    _debugText->setString(posText);
-
-    auto [xpos, ypos] = _window.getView().getCenter();
-    xpos -= ((_window.getSize().x / 2) - 10);
-    ypos -= ((_window.getSize().y / 2) - 10);
-    _debugText->setPosition(xpos, ypos);
+    _debugWindow.setText(posText);
 
     Scene::timestep();
     return 0;
+}
+
+void Opening::draw()
+{
+    adjustView();
+    Scene::draw();
+    
+    _window.setView(_window.getDefaultView());
+    for (const auto& drawable : _statusBar.getDrawables())
+    {
+        _window.draw(*drawable);
+    }
+
+    for (const auto& drawable : _debugWindow.getDrawables())
+    { 
+        _window.draw(*drawable);
+    }
 }
 
 void Opening::adjustView()
@@ -242,7 +253,6 @@ void Opening::adjustView()
 
 void Opening::animeCallback()
 {
-    _debugText->setString("");
     const auto stepSize = STEPSIZE 
         + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
             || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
@@ -257,7 +267,6 @@ void Opening::animeCallback()
         x -= stepSize;
         if (x < boundaryLeft) x = boundaryLeft;
         _player->setPosition(x, y);
-        adjustView();
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
@@ -271,7 +280,6 @@ void Opening::animeCallback()
         x += stepSize;
         if (x > boundaryRight) x = boundaryRight;
         _player->setPosition(x, y);
-        adjustView();
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -284,7 +292,6 @@ void Opening::animeCallback()
         y -= stepSize;
         if (y < boundaryTop) y = boundaryTop;
         _player->setPosition(x, y);
-        adjustView();
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
@@ -301,7 +308,6 @@ void Opening::animeCallback()
             y = boundaryBottom;
         }
         _player->setPosition(x, y);
-        adjustView();
     }
 }
 

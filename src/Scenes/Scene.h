@@ -11,12 +11,10 @@ using SceneSharedPtr = std::shared_ptr<Scene>;
 
 class Scene : public Screen
 {
-    sf::Font    _debugFont;
 
 public:
     Scene(ResourceManager& res, sf::RenderTarget& target);
 
-    sf::Font& debugFont() { return _debugFont; }
 };
 
 } // namespace tt
