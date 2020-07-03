@@ -5,6 +5,7 @@
 #include <fmt/core.h>
 
 #include "../TTUtils.h"
+#include "../Vehicle.h"
 
 #include "Opening.h"
 
@@ -18,13 +19,16 @@ constexpr auto STEPSIZE = 16u;
 
 constexpr auto PLAYER_START_X = 1616.0f;
 constexpr auto PLAYER_START_Y = 2875.0f;
+
+constexpr auto TILESIZE_X = 10u;
+constexpr auto TILESIZE_Y = 10u;
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
-    : Scene(resmgr, target),
-      _statusBar(resmgr, target),
-      _debugWindow(resmgr, target)
+    : Scene{ resmgr, target },
+      _statusBar{ resmgr, target },
+      _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>("tucson", _resources);
+    _background = std::make_shared<Background>("tucson", _resources, sf::Vector2u { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
 
@@ -41,7 +45,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _player->setOrigin(0.0f, 0.0f);
     _player->setPosition(PLAYER_START_X, PLAYER_START_Y);
     _player->setAnimeCallback([this]() { this->animeCallback(); });
-
     addUpdateable(_player);
 
     // the order in which we add everything to the draw'able
@@ -125,7 +128,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
             }
             break;
 
-            case sf::Keyboard::Home:
+            case sf::Keyboard::Num0:
             {
                 _debugWindow.setVisible(!_debugWindow.visible());
             }
@@ -203,9 +206,16 @@ std::uint16_t Opening::timestep()
         _player->setState(AnimatedSprite::STILL);
     }
 
+    auto [cx, cy] = _player->getGlobalCenter();
     auto [tilex, tiley] = getPlayerTile();
-    auto posText = fmt::format("LOC:({},{})\n", tilex, tiley);
+    auto posText = fmt::format("XY:({},{}) LOC:({},{})\n", cx, cy, tilex, tiley);
     _debugWindow.setText(posText);
+
+    if (_globalClock.getElapsedTime().asSeconds() > 2)
+    {
+        spawnNPC();
+        _testSpawned = true;
+    }
 
     Scene::timestep();
     return 0;
@@ -214,7 +224,7 @@ std::uint16_t Opening::timestep()
 sf::Vector2f Opening::getPlayerTile() const
 {
     auto pc = _player->getGlobalCenter();
-    return tt::getTileXY(_player->getPosition(), { 10, 10 });
+    return tt::getTileXY(_player->getPosition(), { TILESIZE_X, TILESIZE_Y });
 }
 
 void Opening::draw()
@@ -325,6 +335,21 @@ void Opening::animeCallback()
         sf::Vector2f tile{ getPlayerTile() };
         _statusBar.setZoneText(_background->zoneName(tile));
     }
+}
+
+void Opening::spawnNPC()
+{
+    if (_testSpawned) return;
+
+    auto temptext = *(_resources.load<sf::Texture>("textures/car1.png"));
+    auto npc = std::make_shared<Vehicle>(temptext, sf::Vector2i{ 77, 41 }, _background);
+    // npc->setBackground(_background);
+    
+    auto [x,y] = _player->getGlobalCenter();
+    // npc->setPosition(x, y + 20.0f);
+    // _player->setAnimeCallback([this]() { this->animeCallback(); });
+    addUpdateable(npc);
+    addDrawable(npc);
 }
 
 } // namespace tt

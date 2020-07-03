@@ -113,12 +113,17 @@ private:
 
     void adjustView();
     void animeCallback();
+    void spawnNPC();
 
     StatusBar                           _statusBar;
     DebugWindow                         _debugWindow;
 
     BackgroundSharedPtr                 _background;
     PlayerPtr                           _player;
+
+    sf::Clock                           _globalClock;
+
+    bool                                _testSpawned = false;
 };
 
 } // namespace tt

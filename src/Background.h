@@ -32,7 +32,21 @@ sf::Vector2f getTileXY(const V& position, const sf::Vector2u& tileSize)
 template<typename Int>
 sf::Vector2f getTileXY(Int posx, Int posy, const sf::Vector2u& tileSize)
 {
-    return getTileXY({ posx, posy }, tileSize);
+    return getTileXY(sf::Vector2<Int>{ posx, posy }, tileSize);
+}
+
+template<typename V>
+sf::Vector2f getGlobalXY(const V& tilepos, const sf::Vector2u& tileSize)
+{
+    auto x = static_cast<float>(tilepos.x * tileSize.x);
+    auto y = static_cast<float>(tilepos.y * tileSize.y);
+    return { x, y };
+}
+
+template<typename Int>
+sf::Vector2f getGlobalXY(Int posx, Int posy, const sf::Vector2u& tileSize)
+{
+    return getGlobalXY(sf::Vector2<Int>{ posx, posy }, tileSize);
 }
 
 class Background;
@@ -45,7 +59,7 @@ class Background : public sf::Sprite
 public:
     using Zone = std::tuple<std::string, sf::FloatRect>;
 
-    Background(std::string_view name, ResourceManager& resmgr);
+    Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2u& tilesize);
 
     sf::FloatRect getWorldRect() const;
 
@@ -53,6 +67,9 @@ public:
     float getRightBoundary() const;
     float getTopBoundary() const { return 0; }
     float getBottomBoundary() const;
+
+    void setTileSize(const sf::Vector2u& val) { _tilesize = val; }
+    sf::Vector2u tilesize() const { return _tilesize; }
 
     // TODO: there are some interesting optimizations that
     // could be done here, which might be interesting to do
@@ -63,6 +80,9 @@ protected:
 
     std::unique_ptr<sf::Texture>    _texture;
     std::vector<Zone>               _zones;
+
+private:
+    sf::Vector2u    _tilesize;
 
 };
 
