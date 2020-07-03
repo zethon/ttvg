@@ -10,6 +10,7 @@ set(SOURCE_FILES
     ResourceManager.cpp
     Screen.cpp
     TTUtils.cpp
+    Vehicle.cpp
 
     Scenes/Opening.cpp
     Scenes/Scene.cpp
@@ -26,6 +27,7 @@ set(HEADER_FILES
     ResourceManager.h
     Screen.h
     TTUtils.h
+    Vehicle.h
     
     Scenes/Opening.h
     Scenes/Scene.h

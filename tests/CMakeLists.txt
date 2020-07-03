@@ -6,6 +6,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 set(PROJECT_FILES
     ../src/Background.cpp
     ../src/Background.h
+
+    ../src/TTUtils.cpp
+    ../src/TTUtils.h
 )
 
 add_executable(test_misc
