@@ -13,14 +13,14 @@ Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundShared
       _background { bg },
       _tilesize { _background->tilesize() }
 {
-    _path.points().emplace_back(51,263);
-    _path.points().emplace_back(156,263);
-    _path.points().emplace_back(156,335);
-    _path.points().emplace_back(51,335);
+    _path.points().emplace_back(47,266);
+    _path.points().emplace_back(153,266);
+    _path.points().emplace_back(153,338);
+    _path.points().emplace_back(47,338);
 
     _texture.setSmooth(true);
-    setSource(0, 2);
-    setScale(1.86f, 1.86f);
+    setSource(0, 1);
+    setScale(1.80f, 1.80f);
     setState(AnimatedSprite::State::ANIMATED);
 
     _lastPathPoint = _path.step();
@@ -30,7 +30,7 @@ Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundShared
 
 std::uint16_t Vehicle::timestep()
 {
-    if (_movementClock.getElapsedTime().asMilliseconds() > 50)
+    if (_movementClock.getElapsedTime().asMilliseconds() > 75)
     {
         move();
     }
@@ -62,10 +62,26 @@ void Vehicle::move()
     if (diff.x != 0)
     {
         currentTile.x += diff.x / std::abs(static_cast<float>(diff.x));
+        if (diff.x < 0)
+        {
+            setSource(0, 1);
+        }
+        else
+        {
+            setSource(0, 2);
+        }
     }
     else if (diff.y != 0)
     {
         currentTile.y += diff.y / std::abs(static_cast<float>(diff.y));
+        if (diff.y < 0)
+        {
+            setSource(0, 3);
+        }
+        else
+        {
+            setSource(0, 0);
+        }
     }
     
 
