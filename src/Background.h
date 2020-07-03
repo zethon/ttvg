@@ -1,10 +1,23 @@
 #pragma once
 #include <cmath>
+#include <set>
 
 #include <SFML/Graphics.hpp>
 
 namespace tt
 {
+
+struct zone_compare
+{
+
+bool operator()(const sf::FloatRect& lhs, const sf::FloatRect& rhs) const
+{
+    return lhs.left < rhs.left;
+}
+
+};
+
+using ZoneSet = std::set<sf::FloatRect, zone_compare>;
 
 class ResourceManager;
 
