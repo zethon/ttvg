@@ -1,5 +1,5 @@
 #pragma once
-#include <boost/circular_buffer.hpp>
+#include <vector>
 
 #include <SFML/Graphics.hpp>
 
@@ -16,31 +16,46 @@ using VehiclePtr = std::shared_ptr<Vehicle>;
 
 class Path
 {
-    boost::circular_buffer<sf::Vector2u>    _points;
-    float                                   _speed;
+    std::vector<sf::Vector2u>   _points;
+    float                       _speed;
+    std::size_t                 _idx = 0;
 
 public:
-    void push_back(const sf::Vector2u& v)
+    std::vector<sf::Vector2u>& points()
     {
-        _points.push_back(v);
+        return _points;
     }
 
-    void push_back(std::uint32_t x, std::uint32_t y)
+    [[maybe_unused]] sf::Vector2u step()
     {
-        _points.push_back(sf::Vector2u{x, y});
+        if (_idx >= _points.size()) _idx = 0;
+        return _points.at(_idx++);
+    }
+
+    sf::Vector2u next() const
+    {
+        auto nextidx = _idx;
+        if (nextidx >= _points.size()) nextidx = 0;
+        return _points.at(nextidx);
     }
 };
 
 class Vehicle : public AnimatedSprite
 {
-    Path    _path;
-    
+    sf::Clock           _movementClock;
     BackgroundSharedPtr _background;
+
+    Path                _path;
+    sf::Vector2u        _lastPathPoint;
+    const sf::Vector2u  _tilesize;
 
 public:
     Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundSharedPtr bg);
 
     std::uint16_t timestep() override;
+
+private:
+    void move();
 
 };
 
