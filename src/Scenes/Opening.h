@@ -16,6 +16,7 @@ class StatusBar : public Scene
 
     std::shared_ptr<sf::RectangleShape> _background;
     std::shared_ptr<sf::Text>           _zoneText;
+    std::shared_ptr<sf::Text>           _balanceText;
 
 public: 
     StatusBar(ResourceManager& resmgr, sf::RenderTarget& target)
@@ -32,11 +33,27 @@ public:
         _zoneText->setFillColor(sf::Color::White);
         _zoneText->setPosition(10.f, 2.5f);
         addDrawable(_zoneText);
+
+        _balanceText = std::make_shared<sf::Text>("Cash: $40.00", _statusFont);
+        _balanceText->setFillColor(sf::Color::White);
+        _balanceText->setPosition(10.f, 2.5f);
+        addDrawable(_balanceText);
     }
 
     void setZoneText(const std::string& zone)
     {
         _zoneText->setString(zone);
+        auto rect = _zoneText->getGlobalBounds();
+
+        if (zone.size() > 0)
+        {
+            _zoneText->setPosition(_window.getSize().x - (rect.width + 10.f), 2.f);
+        }
+    }
+
+    void setBalanceText(const std::string& text)
+    {
+        _balanceText->setString(text);
     }
 };
 
