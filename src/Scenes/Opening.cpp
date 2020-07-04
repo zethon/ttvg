@@ -59,7 +59,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     // the order in which we add everything to the draw'able
     // vector is important, so we do it all at the end of
     // the function
-    addDrawable(_background);
+    // addDrawable(_background);
 
     sf::Vector2f tile{ getPlayerTile() };
     _statusBar.setZoneText(_background->zoneName(tile));
@@ -223,6 +223,31 @@ std::uint16_t Opening::timestep()
         _testSpawned = true;
     }
 
+    static sf::Clock test;
+    auto vi = _vehicles.begin();
+    while (vi != _vehicles.end())
+    {
+        auto& ptr = *vi;
+        if (test.getElapsedTime().asSeconds() <= 10)
+        {
+            ptr->timestep();
+            vi++;
+        }
+        else
+        {
+            auto oi = std::find(_objects.begin(), _objects.end(), ptr);
+            if (oi != _objects.end())
+            {
+                // let `Screen::draw()` remove the object from the 
+                // container
+                oi->reset();
+            }
+
+            // remove it from our vehicle list
+            vi = _vehicles.erase(vi);
+        }
+    }
+
     Scene::timestep();
     return 0;
 }
@@ -237,7 +262,6 @@ void Opening::draw()
 {
     adjustView();
     Scene::draw();
-
 
     // the player should always be the last thing on the 
     // game board to be drawn
@@ -359,7 +383,8 @@ void Opening::spawnNPC()
     auto [x,y] = _player->getGlobalCenter();
     // npc->setPosition(x, y + 20.0f);
     // _player->setAnimeCallback([this]() { this->animeCallback(); });
-    addUpdateable(npc);
+    // addUpdateable(npc);
+    _vehicles.push_back(npc);
     addDrawable(npc);
 }
 

@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../Vehicle.h"
 #include "../Background.h"
 #include "../Player.h"
 
@@ -128,10 +129,11 @@ private:
     PlayerPtr                           _player;
 
     sf::Clock                           _globalClock;
-
     nl::json                            _json;
 
     bool                                _testSpawned = false;
+    VehicleFactory                      _vehicleFactory;
+    std::vector<VehiclePtr>             _vehicles;
 };
 
 } // namespace tt
