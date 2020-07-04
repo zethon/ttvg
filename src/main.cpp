@@ -38,11 +38,13 @@ int main(int argc, char *argv[])
         resourceFolder = vm["resources"].as<std::string>();
     }
 
-    auto win = std::make_shared<sf::RenderWindow>(
-            sf::VideoMode(window_width, window_height),
-            window_title,
-            sf::Style::Titlebar | sf::Style::Close
-        );
+    auto win = std::make_shared<sf::RenderWindow>( 
+        sf::VideoMode(window_width, window_height),
+        window_title, 
+        sf::Style::Titlebar | sf::Style::Close
+    );
+
+    win->setFramerateLimit(60);
 
     // leading spaces can cause problems on macOS
     boost::algorithm::trim(resourceFolder);

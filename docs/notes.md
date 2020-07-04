@@ -45,4 +45,4 @@ I've started using the program here (https://github.com/colinvella/tIDE) to make
 
 * `VehicleFactory` should generate random vehicles on random paths at random intervals for random durations.
 
-* Vehicles should destroy themselves when their time is up.
+* <s>Vehicles should destroy themselves</s>

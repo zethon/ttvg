@@ -228,7 +228,8 @@ std::uint16_t Opening::timestep()
     while (vi != _vehicles.end())
     {
         auto& ptr = *vi;
-        if (ptr->timestep() == Vehicle::DELETE)
+        auto result = ptr->timestep();
+        if (result == Vehicle::DELETE)
         {
             auto oi = std::find(_objects.begin(), _objects.end(), ptr);
             if (oi != _objects.end())
@@ -240,11 +241,19 @@ std::uint16_t Opening::timestep()
 
             // remove it from our vehicle list
             vi = _vehicles.erase(vi);
+            continue;
         }
-        else
+
+        if (ptr->isBlocked(_player->getGlobalCenter()))
         {
-            vi++;
+            ptr->setVehicleState(Vehicle::STOPPED);
         }
+        else if (ptr->vehicleState() == Vehicle::STOPPED)
+        {
+            ptr->setVehicleState(Vehicle::MOVING);
+        }
+
+        vi++;
     }
 
     Scene::timestep();
@@ -254,7 +263,7 @@ std::uint16_t Opening::timestep()
 sf::Vector2f Opening::getPlayerTile() const
 {
     auto pc = _player->getGlobalCenter();
-    return tt::getTileXY(_player->getPosition(), { TILESIZE_X, TILESIZE_Y });
+    return tt::getTileFromGlobal(_player->getPosition(), { TILESIZE_X, TILESIZE_Y });
 }
 
 void Opening::draw()

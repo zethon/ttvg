@@ -22,7 +22,7 @@ using ZoneSet = std::set<sf::FloatRect, zone_compare>;
 class ResourceManager;
 
 template<typename V>
-sf::Vector2f getTileXY(const V& position, const sf::Vector2i& tileSize)
+sf::Vector2f getTileFromGlobal(const V& position, const sf::Vector2i& tileSize)
 {
     auto x = static_cast<float>(std::floor(position.x / tileSize.x));
     auto y = static_cast<float>(std::floor(position.y / tileSize.y));
@@ -30,13 +30,13 @@ sf::Vector2f getTileXY(const V& position, const sf::Vector2i& tileSize)
 }
 
 template<typename Int>
-sf::Vector2f getTileXY(Int posx, Int posy, const sf::Vector2i& tileSize)
+sf::Vector2f getTileFromGlobal(Int posx, Int posy, const sf::Vector2i& tileSize)
 {
-    return getTileXY(sf::Vector2<Int>{ posx, posy }, tileSize);
+    return getTileFromGlobal(sf::Vector2<Int>{ posx, posy }, tileSize);
 }
 
 template<typename V>
-sf::Vector2f getGlobalXY(const V& tilepos, const sf::Vector2i& tileSize)
+sf::Vector2f getGlobalFromTile(const V& tilepos, const sf::Vector2i& tileSize)
 {
     auto x = static_cast<float>(tilepos.x * tileSize.x);
     auto y = static_cast<float>(tilepos.y * tileSize.y);
@@ -44,9 +44,9 @@ sf::Vector2f getGlobalXY(const V& tilepos, const sf::Vector2i& tileSize)
 }
 
 template<typename Int>
-sf::Vector2f getGlobalXY(Int posx, Int posy, const sf::Vector2i& tileSize)
+sf::Vector2f getGlobalFromTile(Int posx, Int posy, const sf::Vector2i& tileSize)
 {
-    return getGlobalXY(sf::Vector2<Int>{ posx, posy }, tileSize);
+    return getGlobalFromTile(sf::Vector2<Int>{ posx, posy }, tileSize);
 }
 
 class Background;
