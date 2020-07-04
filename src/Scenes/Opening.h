@@ -1,11 +1,15 @@
 #pragma once
 
+#include <nlohmann/json.hpp>
+
 #include <SFML/Graphics.hpp>
 
 #include "../Background.h"
 #include "../Player.h"
 
 #include "Scene.h"
+
+namespace nl = nlohmann;
 
 namespace tt
 {
@@ -124,6 +128,8 @@ private:
     PlayerPtr                           _player;
 
     sf::Clock                           _globalClock;
+
+    nl::json                            _json;
 
     bool                                _testSpawned = false;
 };

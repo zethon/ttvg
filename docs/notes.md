@@ -36,3 +36,7 @@ My MBP will not load the .wav files saying it's a "unsupported format. I wasn't 
 ## 2020-06-27
 
 I've started using the program here (https://github.com/colinvella/tIDE) to make words. It's a .NET map editor (Windows only) but is easy to use and not complidated.
+
+## 2020-07-03
+
+**TODO** - There needs to be some base class among drawable objects other than the SFML `Drawable` interface. Something needs to hold a reference to `ResourceManager` (why didn't I make this a singleton!?)

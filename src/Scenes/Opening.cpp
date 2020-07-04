@@ -2,6 +2,7 @@
 
 #include <boost/range/adaptor/indexed.hpp>
 
+#include <nlohmann/json.hpp>
 #include <fmt/core.h>
 
 #include "../TTUtils.h"
@@ -28,6 +29,14 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
       _statusBar{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
+    {
+        const std::string jsonfile =
+            resmgr.getFilename("maps/tucson.json");
+
+        std::ifstream file(jsonfile.c_str());
+        file >> _json;
+    }
+
     _background = std::make_shared<Background>("tucson", _resources, sf::Vector2i { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
@@ -228,6 +237,7 @@ void Opening::draw()
 {
     adjustView();
     Scene::draw();
+
 
     // the player should always be the last thing on the 
     // game board to be drawn

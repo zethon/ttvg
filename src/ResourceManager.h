@@ -4,6 +4,8 @@
 
 #include <boost/filesystem.hpp>
 
+#include <nlohmann/json_fwd.hpp>
+
 #include <SFML/Graphics/Font.hpp>
 
 namespace tt

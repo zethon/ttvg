@@ -34,4 +34,9 @@ private:
 
 };
 
+class VehicleFactory
+{
+
+};
+
 } // namespace tt

@@ -33,8 +33,20 @@ void Screen::draw()
 {
     if (!_visible) return;
     
-    std::for_each(_objects.begin(), _objects.end(),
-        [&](DrawablePtr o) { _window.draw(*o); });
+    auto i = _objects.begin();
+    while (i != _objects.end())
+    {
+        auto ptr = *i;
+        if (ptr)
+        {
+            _window.draw(*ptr);
+            i++;
+        }
+        else
+        {
+            i = _objects.erase(i);
+        }
+    }
 }
 
 std::uint16_t Screen::poll(const sf::Event&)
