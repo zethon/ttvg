@@ -59,7 +59,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     // the order in which we add everything to the draw'able
     // vector is important, so we do it all at the end of
     // the function
-    // addDrawable(_background);
+    addDrawable(_background);
 
     sf::Vector2f tile{ getPlayerTile() };
     _statusBar.setZoneText(_background->zoneName(tile));
@@ -228,12 +228,7 @@ std::uint16_t Opening::timestep()
     while (vi != _vehicles.end())
     {
         auto& ptr = *vi;
-        if (test.getElapsedTime().asSeconds() <= 10)
-        {
-            ptr->timestep();
-            vi++;
-        }
-        else
+        if (ptr->timestep() == Vehicle::DELETE)
         {
             auto oi = std::find(_objects.begin(), _objects.end(), ptr);
             if (oi != _objects.end())
@@ -245,6 +240,10 @@ std::uint16_t Opening::timestep()
 
             // remove it from our vehicle list
             vi = _vehicles.erase(vi);
+        }
+        else
+        {
+            vi++;
         }
     }
 

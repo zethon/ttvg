@@ -37,7 +37,13 @@ std::uint16_t Vehicle::timestep()
     }
 
     AnimatedSprite::timestep();
-    return 0;
+
+    if (_lifeClock.getElapsedTime().asSeconds() >= 10)
+    {
+        return TimeStep::DELETE;
+
+    }
+    return TimeStep::NOOP;
 }
 
 void Vehicle::move()

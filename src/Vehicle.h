@@ -18,6 +18,8 @@ using VehiclePtr = std::shared_ptr<Vehicle>;
 class Vehicle : public AnimatedSprite
 {
     sf::Clock           _movementClock;
+    sf::Clock           _lifeClock;
+    
     BackgroundSharedPtr _background;
 
     Path                _path;
@@ -25,6 +27,12 @@ class Vehicle : public AnimatedSprite
     const sf::Vector2i  _tilesize;
 
 public:
+    enum TimeStep
+    {
+        NOOP = 0,
+        DELETE = 1
+    };
+
     Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundSharedPtr bg);
 
     std::uint16_t timestep() override;
