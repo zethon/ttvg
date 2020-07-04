@@ -40,3 +40,9 @@ I've started using the program here (https://github.com/colinvella/tIDE) to make
 ## 2020-07-03
 
 **TODO** - There needs to be some base class among drawable objects other than the SFML `Drawable` interface. Something needs to hold a reference to `ResourceManager` (why didn't I make this a singleton!?)
+
+## 2020-07-04
+
+* `VehicleFactory` should generate random vehicles on random paths at random intervals for random durations.
+
+* Vehicles should destroy themselves when their time is up.
