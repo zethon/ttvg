@@ -6,6 +6,8 @@ set(SOURCE_FILES
     GameScreen.cpp
     IntroScreen.cpp
     main.cpp
+    NPC.cpp
+    Path.cpp
     Player.cpp
     ResourceManager.cpp
     Screen.cpp
@@ -23,6 +25,8 @@ set(HEADER_FILES
     ExitScreen.h
     GameScreen.h
     IntroScreen.h
+    NPC.h
+    Path.h
     Player.h
     ResourceManager.h
     Screen.h

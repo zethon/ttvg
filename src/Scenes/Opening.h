@@ -68,6 +68,8 @@ public:
     DebugWindow(ResourceManager& resmgr, sf::RenderTarget& target)
         : Scene(resmgr, target)
     {
+        setVisible(false);
+
         if (auto temp = _resources.load<sf::Font>("fonts/mono_bold.ttf");
                 !temp.has_value())
         {

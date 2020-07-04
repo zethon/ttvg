@@ -20,15 +20,15 @@ constexpr auto STEPSIZE = 16u;
 constexpr auto PLAYER_START_X = 1616.0f;
 constexpr auto PLAYER_START_Y = 2875.0f;
 
-constexpr auto TILESIZE_X = 10u;
-constexpr auto TILESIZE_Y = 10u;
+constexpr auto TILESIZE_X = 10;
+constexpr auto TILESIZE_Y = 10;
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene{ resmgr, target },
       _statusBar{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>("tucson", _resources, sf::Vector2u { TILESIZE_X, TILESIZE_Y });
+    _background = std::make_shared<Background>("tucson", _resources, sf::Vector2i { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
 
@@ -51,12 +51,9 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     // vector is important, so we do it all at the end of
     // the function
     addDrawable(_background);
-    addDrawable(_player);
 
     sf::Vector2f tile{ getPlayerTile() };
     _statusBar.setZoneText(_background->zoneName(tile));
-
-    _debugWindow.setVisible(false);
 }
 
 std::uint16_t Opening::poll(const sf::Event& e)
@@ -231,6 +228,10 @@ void Opening::draw()
 {
     adjustView();
     Scene::draw();
+
+    // the player should always be the last thing on the 
+    // game board to be drawn
+    _window.draw(*_player);
     
     _window.setView(_window.getDefaultView());
     _statusBar.draw();

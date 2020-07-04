@@ -12,7 +12,7 @@
 namespace tt
 {
 
-Background::Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2u& tilesize)
+Background::Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2i& tilesize)
     : _tilesize { tilesize }
 {
     using namespace nlohmann;

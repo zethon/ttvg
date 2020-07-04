@@ -22,7 +22,7 @@ using ZoneSet = std::set<sf::FloatRect, zone_compare>;
 class ResourceManager;
 
 template<typename V>
-sf::Vector2f getTileXY(const V& position, const sf::Vector2u& tileSize)
+sf::Vector2f getTileXY(const V& position, const sf::Vector2i& tileSize)
 {
     auto x = static_cast<float>(std::floor(position.x / tileSize.x));
     auto y = static_cast<float>(std::floor(position.y / tileSize.y));
@@ -30,13 +30,13 @@ sf::Vector2f getTileXY(const V& position, const sf::Vector2u& tileSize)
 }
 
 template<typename Int>
-sf::Vector2f getTileXY(Int posx, Int posy, const sf::Vector2u& tileSize)
+sf::Vector2f getTileXY(Int posx, Int posy, const sf::Vector2i& tileSize)
 {
     return getTileXY(sf::Vector2<Int>{ posx, posy }, tileSize);
 }
 
 template<typename V>
-sf::Vector2f getGlobalXY(const V& tilepos, const sf::Vector2u& tileSize)
+sf::Vector2f getGlobalXY(const V& tilepos, const sf::Vector2i& tileSize)
 {
     auto x = static_cast<float>(tilepos.x * tileSize.x);
     auto y = static_cast<float>(tilepos.y * tileSize.y);
@@ -44,7 +44,7 @@ sf::Vector2f getGlobalXY(const V& tilepos, const sf::Vector2u& tileSize)
 }
 
 template<typename Int>
-sf::Vector2f getGlobalXY(Int posx, Int posy, const sf::Vector2u& tileSize)
+sf::Vector2f getGlobalXY(Int posx, Int posy, const sf::Vector2i& tileSize)
 {
     return getGlobalXY(sf::Vector2<Int>{ posx, posy }, tileSize);
 }
@@ -59,7 +59,7 @@ class Background : public sf::Sprite
 public:
     using Zone = std::tuple<std::string, sf::FloatRect>;
 
-    Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2u& tilesize);
+    Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2i& tilesize);
 
     sf::FloatRect getWorldRect() const;
 
@@ -68,8 +68,8 @@ public:
     float getTopBoundary() const { return 0; }
     float getBottomBoundary() const;
 
-    void setTileSize(const sf::Vector2u& val) { _tilesize = val; }
-    sf::Vector2u tilesize() const { return _tilesize; }
+    void setTileSize(const sf::Vector2i& val) { _tilesize = val; }
+    sf::Vector2i tilesize() const { return _tilesize; }
 
     // TODO: there are some interesting optimizations that
     // could be done here, which might be interesting to do
@@ -82,7 +82,7 @@ protected:
     std::vector<Zone>               _zones;
 
 private:
-    sf::Vector2u    _tilesize;
+    sf::Vector2i    _tilesize;
 
 };
 
