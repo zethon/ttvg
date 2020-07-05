@@ -21,34 +21,6 @@ using ZoneSet = std::set<sf::FloatRect, zone_compare>;
 
 class ResourceManager;
 
-template<typename V>
-sf::Vector2f getTileFromGlobal(const V& position, const sf::Vector2i& tileSize)
-{
-    auto x = static_cast<float>(std::floor(position.x / tileSize.x));
-    auto y = static_cast<float>(std::floor(position.y / tileSize.y));
-    return { x, y };
-}
-
-template<typename Int>
-sf::Vector2f getTileFromGlobal(Int posx, Int posy, const sf::Vector2i& tileSize)
-{
-    return getTileFromGlobal(sf::Vector2<Int>{ posx, posy }, tileSize);
-}
-
-template<typename V>
-sf::Vector2f getGlobalFromTile(const V& tilepos, const sf::Vector2i& tileSize)
-{
-    auto x = static_cast<float>(tilepos.x * tileSize.x);
-    auto y = static_cast<float>(tilepos.y * tileSize.y);
-    return { x, y };
-}
-
-template<typename Int>
-sf::Vector2f getGlobalFromTile(Int posx, Int posy, const sf::Vector2i& tileSize)
-{
-    return getGlobalFromTile(sf::Vector2<Int>{ posx, posy }, tileSize);
-}
-
 class Background;
 using BackgroundPtr = std::unique_ptr<Background>;
 using BackgroundSharedPtr = std::shared_ptr<Background>;

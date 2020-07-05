@@ -266,9 +266,6 @@ std::uint16_t Opening::timestep()
     std::stringstream ss1;
     ss1 << _player->getGlobalBounds();
 
-//    auto posText = fmt::format("XY:({},{}) LOC:({},{}) CAR:{}\n", 
-//        cx, cy, tilex, tiley, cartext);
-
     auto posText = fmt::format("P({}) C({})", ss1.str(), ss.str());
 
     _debugWindow.setText(posText);
