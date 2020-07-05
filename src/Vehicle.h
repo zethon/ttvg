@@ -42,7 +42,7 @@ public:
     Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundSharedPtr bg);
 
     std::uint16_t timestep() override;
-    bool isBlocked(const sf::Vector2f& test);
+    bool isBlocked(const sf::FloatRect& point);
 
     State vehicleState() const { return _state; }
     void setVehicleState(State val) { _state = val; }
@@ -68,5 +68,8 @@ class VehicleFactory
 {
 
 };
+
+bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
+    Vehicle::Direction direction, float minDistance);
 
 } // namespace tt

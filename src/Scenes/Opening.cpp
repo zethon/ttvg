@@ -212,11 +212,6 @@ std::uint16_t Opening::timestep()
         _player->setState(AnimatedSprite::STILL);
     }
 
-    auto [cx, cy] = _player->getGlobalCenter();
-    auto [tilex, tiley] = getPlayerTile();
-    auto posText = fmt::format("XY:({},{}) LOC:({},{})\n", cx, cy, tilex, tiley);
-    _debugWindow.setText(posText);
-
     if (_globalClock.getElapsedTime().asSeconds() > 2)
     {
         spawnNPC();
@@ -244,7 +239,7 @@ std::uint16_t Opening::timestep()
             continue;
         }
 
-        if (ptr->isBlocked(_player->getGlobalCenter()))
+        if (ptr->isBlocked(_player->getGlobalBounds()))
         {
             ptr->setVehicleState(Vehicle::STOPPED);
         }
@@ -257,6 +252,27 @@ std::uint16_t Opening::timestep()
     }
 
     Scene::timestep();
+
+    auto[cx, cy] = _player->getGlobalCenter();
+    auto[tilex, tiley] = getPlayerTile();
+
+    std::stringstream ss;
+    if (_vehicles.size() > 0)
+    {
+        auto carbounds = _vehicles.front()->getGlobalBounds();
+        ss << carbounds;
+    }
+
+    std::stringstream ss1;
+    ss1 << _player->getGlobalBounds();
+
+//    auto posText = fmt::format("XY:({},{}) LOC:({},{}) CAR:{}\n", 
+//        cx, cy, tilex, tiley, cartext);
+
+    auto posText = fmt::format("P({}) C({})", ss.str(), ss1.str());
+
+    _debugWindow.setText(posText);
+
     return 0;
 }
 

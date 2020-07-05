@@ -14,10 +14,10 @@ template<typename T>
 std::ostream& operator<<(std::ostream& out, const sf::Rect<T> item)
 {
     auto [left, top, width, height] = item;
-    out << "{ left=" << left
-        << " top=" << top
-        << " width=" << width
-        << " height=" << height
+    out << "{ x=" << left
+        << " y=" << top
+        << " w=" << width
+        << " h=" << height
         << "}";
 
     return out;

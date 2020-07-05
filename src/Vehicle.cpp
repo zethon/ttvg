@@ -8,6 +8,77 @@
 namespace tt
 {
 
+bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
+    Vehicle::Direction direction, float minDistance)
+{
+    //const auto minDistance = 12.5f;
+    const auto minPerpDistance = 50.0f;
+    // auto globalPosition = sf::Vector2f { getGlobalBounds().left, getGlobalBounds().top };
+    // auto currentTile = sf::Vector2i { getTileFromGlobal(globalPosition, _tilesize) };
+
+    const auto[left, top, width, height] = object;
+    //auto center = sf::Vector2f { left + (width / 2), top + (height / 2) };
+
+
+    switch (direction)
+    {
+        default:
+        return false;
+
+        case Vehicle::Direction::UP:
+        {
+            //float ydiff = currentPos.y - test.y;
+            //return std::abs(xdiff) < minPerpDistance
+            //    && ydiff >= 0.0f 
+            //    && std::abs(ydiff) + (height /2 ) < minDistance;
+        }
+        break;
+
+        case Vehicle::Direction::DOWN:
+        {
+            //float ydiff = currentPos.y - test.y;
+            //return std::abs(xdiff) < minPerpDistance
+            //    && ydiff <= 0.0f 
+            //    && std::abs(ydiff) + (height / 2) < minDistance;
+        }
+        break;
+
+        case Vehicle::Direction::LEFT:
+        {
+            //float xdiff = currentPos.x - test.x;
+            //return std::abs(ydiff) < minPerpDistance
+            //    && xdiff >= 0.0f 
+            //    && std::abs(xdiff) + (width /2)< minDistance;
+        }
+        break;
+
+        case Vehicle::Direction::RIGHT:
+        {
+            const auto xdiff = (left + width) - other.left;
+
+            const auto objectBottom = object.top + object.height;
+            const auto otherBottom = other.top + other.height;
+
+            bool yContains = false;
+            if (other.height > height)
+            {
+                yContains = (other.top <= object.top && object.top <= otherBottom)
+                    || (other.top <= objectBottom && objectBottom <= otherBottom);
+            }
+            else
+            {
+                yContains = (object.top <= other.top && other.top <= objectBottom)
+                    || (object.top <= otherBottom && otherBottom <= objectBottom);
+            }
+
+            return (std::abs(xdiff) <= minDistance) && yContains;
+        }
+        break;
+    }
+
+    return false;
+}
+
 Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundSharedPtr bg)
     : AnimatedSprite(texture, size),
       _background { bg },
@@ -34,73 +105,24 @@ std::uint16_t Vehicle::timestep()
     AnimatedSprite::timestep();
     
     if (_state == State::MOVING
-        && _movementClock.getElapsedTime().asMilliseconds() > 65)
+        && _movementClock.getElapsedTime().asMilliseconds() > 100)
     {
         move();
         _movementClock.restart();
     }
 
-    if (_lifeClock.getElapsedTime().asSeconds() >= 100)
+    if (_lifeClock.getElapsedTime().asSeconds() >= 1000)
     {
-        return TimeStep::DELETE;
+        //return TimeStep::DELETE;
     }
 
     return TimeStep::NOOP;
 }
 
-bool Vehicle::isBlocked(const sf::Vector2f& test)
+bool Vehicle::isBlocked(const sf::FloatRect& test)
 {
-    const auto minDistance = 100.0f;
-    const auto minPerpDistance = 100.0f;
-    // auto globalPosition = sf::Vector2f { getGlobalBounds().left, getGlobalBounds().top };
-    // auto currentTile = sf::Vector2i { getTileFromGlobal(globalPosition, _tilesize) };
-    auto currentPos = sf::Vector2f { getGlobalBounds().left, getGlobalBounds().top };
-
-    float xdiff = currentPos.x - test.x;
-    float ydiff = currentPos.y - test.y;
-
-    switch (_direction)
-    {
-        default:
-        return false;
-
-        case UP:
-        {
-            float ydiff = currentPos.y - test.y;
-            return std::abs(xdiff) < minPerpDistance
-                && ydiff >= 0.0f 
-                && std::abs(ydiff) < minDistance;
-        }
-        break;
-
-        case DOWN:
-        {
-            float ydiff = currentPos.y - test.y;
-            return std::abs(xdiff) < minPerpDistance
-                && ydiff <= 0.0f 
-                && std::abs(ydiff) < minDistance;
-        }
-        break;
-
-        case LEFT:
-        {
-            float xdiff = currentPos.x - test.x;
-            return std::abs(ydiff) < minPerpDistance
-                && xdiff >= 0.0f 
-                && std::abs(xdiff) < minDistance;
-        }
-        break;
-
-        case RIGHT:
-        {
-            float xdiff = currentPos.x - test.x;
-            return std::abs(ydiff) < minPerpDistance
-                && xdiff <= 0.0f 
-                && std::abs(xdiff) < minDistance;
-        }
-        break;
-    }
-    return false;
+    const auto minDistance = 12.5f;
+    return isPathBlocked(getGlobalBounds(), test, _direction, minDistance);
 }
 
 void Vehicle::move()
@@ -111,8 +133,8 @@ void Vehicle::move()
     auto currentTile = sf::Vector2i { getTileFromGlobal(globalPosition, _tilesize) };
     auto nextTile = _path.next();
 
-    float xdiff = std::pow(currentTile.x - nextTile.x, 2.f);
-    float ydiff = std::pow(currentTile.y - nextTile.y, 2.f);
+    float xdiff = static_cast<float>(std::pow(currentTile.x - nextTile.x, 2.f));
+    float ydiff = static_cast<float>(std::pow(currentTile.y - nextTile.y, 2.f));
     float distance = std::sqrt(xdiff + ydiff);
     if (distance < 3.0f)
     {
@@ -129,12 +151,12 @@ void Vehicle::move()
         }
         else if (diff.x < 0)
         {
-            currentTile.x -= speed;
+            currentTile.x -= static_cast<std::int32_t>(speed);
             _direction = LEFT;
         }
         else
         {
-            currentTile.x += speed;
+            currentTile.x += static_cast<std::int32_t>(speed);
             _direction = RIGHT;
         }
     }
@@ -147,12 +169,12 @@ void Vehicle::move()
         }
         else if (diff.y < 0)
         {
-            currentTile.y -= speed;
+            currentTile.y -= static_cast<std::int32_t>(speed);
             _direction = UP;
         }
         else
         {
-            currentTile.y += speed;
+            currentTile.y += static_cast<std::int32_t>(speed);
             _direction = DOWN;
         }
     }

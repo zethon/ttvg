@@ -6,6 +6,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../src/Vehicle.h"
 #include "../src/TTUtils.h"
 
 using namespace std::string_literals;
@@ -50,6 +51,61 @@ BOOST_DATA_TEST_CASE(testFloatRectParse, data::make(floatRectParseData), origina
     BOOST_TEST_REQUIRE(result);
     BOOST_REQUIRE(start == stop);
     BOOST_TEST(rect == expected);
+}
+
+const std::tuple<sf::FloatRect, sf::FloatRect, tt::Vehicle::Direction, float, bool> vehicleBlocks[]
+{
+    // rects the same size
+    {
+        sf::FloatRect{ 0, 0, 10, 10},
+        sf::FloatRect{ 20, 0, 10, 10},
+        tt::Vehicle::RIGHT,
+        10.0f,
+        true
+    },
+    {
+        sf::FloatRect{ 0, 0, 10, 10},
+        sf::FloatRect{ 20, 5, 10, 10},
+        tt::Vehicle::RIGHT,
+        10.0f,
+        true
+    },
+    {
+        sf::FloatRect{ 0, 5, 10, 10},
+        sf::FloatRect{ 20, 0, 10, 10},
+        tt::Vehicle::RIGHT,
+        10.0f,
+        true
+    },
+
+    // `object` is taller
+    {
+        sf::FloatRect{ 0, 0, 10, 20},
+        sf::FloatRect{ 20, 5, 15, 15},
+        tt::Vehicle::RIGHT,
+        10.0f,
+        true
+    },
+    {
+        sf::FloatRect{ 0, 2, 10, 18},
+        sf::FloatRect{ 20, 0, 15, 5},
+        tt::Vehicle::RIGHT,
+        10.0f,
+        true
+    },
+    {
+        sf::FloatRect{ 0, 0, 10, 8},
+        sf::FloatRect{ 20, 8, 15, 4},
+        tt::Vehicle::RIGHT,
+        10.0f,
+        true
+    },
+};
+
+// --run_test=tt/vehicleBlockedTest
+BOOST_DATA_TEST_CASE(vehicleBlockedTest, data::make(vehicleBlocks), object, other, direction, distance, blocked)
+{
+    BOOST_TEST(tt::isPathBlocked(object, other, direction, distance) == blocked);
 }
 
 BOOST_AUTO_TEST_SUITE_END() // tt
