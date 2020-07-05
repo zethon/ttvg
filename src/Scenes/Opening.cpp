@@ -269,7 +269,7 @@ std::uint16_t Opening::timestep()
 //    auto posText = fmt::format("XY:({},{}) LOC:({},{}) CAR:{}\n", 
 //        cx, cy, tilex, tiley, cartext);
 
-    auto posText = fmt::format("P({}) C({})", ss.str(), ss1.str());
+    auto posText = fmt::format("P({}) C({})", ss1.str(), ss.str());
 
     _debugWindow.setText(posText);
 
