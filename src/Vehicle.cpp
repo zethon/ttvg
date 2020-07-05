@@ -11,15 +11,6 @@ namespace tt
 bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
     Vehicle::Direction direction, float minDistance)
 {
-    //const auto minDistance = 12.5f;
-    const auto minPerpDistance = 50.0f;
-    // auto globalPosition = sf::Vector2f { getGlobalBounds().left, getGlobalBounds().top };
-    // auto currentTile = sf::Vector2i { getTileFromGlobal(globalPosition, _tilesize) };
-
-    const auto[left, top, width, height] = object;
-    //auto center = sf::Vector2f { left + (width / 2), top + (height / 2) };
-
-
     switch (direction)
     {
         default:
@@ -27,51 +18,33 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
 
         case Vehicle::Direction::UP:
         {
-            //float ydiff = currentPos.y - test.y;
-            //return std::abs(xdiff) < minPerpDistance
-            //    && ydiff >= 0.0f 
-            //    && std::abs(ydiff) + (height /2 ) < minDistance;
+            auto temprect = object;
+            temprect.top -= minDistance;
+            return temprect.intersects(other);
         }
         break;
 
         case Vehicle::Direction::DOWN:
         {
-            //float ydiff = currentPos.y - test.y;
-            //return std::abs(xdiff) < minPerpDistance
-            //    && ydiff <= 0.0f 
-            //    && std::abs(ydiff) + (height / 2) < minDistance;
+            auto temprect = object;
+            temprect.top += minDistance;
+            return temprect.intersects(other);
         }
         break;
 
         case Vehicle::Direction::LEFT:
         {
-            //float xdiff = currentPos.x - test.x;
-            //return std::abs(ydiff) < minPerpDistance
-            //    && xdiff >= 0.0f 
-            //    && std::abs(xdiff) + (width /2)< minDistance;
+            auto temprect = object;
+            temprect.left -= minDistance;
+            return temprect.intersects(other);
         }
         break;
 
         case Vehicle::Direction::RIGHT:
         {
-            const auto xdiff = (left + width) - other.left;
-
-            const auto objectBottom = object.top + object.height;
-            const auto otherBottom = other.top + other.height;
-
-            bool yContains = false;
-            if (other.height > height)
-            {
-                yContains = (other.top <= object.top && object.top <= otherBottom)
-                    || (other.top <= objectBottom && objectBottom <= otherBottom);
-            }
-            else
-            {
-                yContains = (object.top <= other.top && other.top <= objectBottom)
-                    || (object.top <= otherBottom && otherBottom <= objectBottom);
-            }
-
-            return (std::abs(xdiff) <= minDistance) && yContains;
+            auto temprect = object;
+            temprect.left += minDistance;
+            return temprect.intersects(other);
         }
         break;
     }
@@ -121,7 +94,7 @@ std::uint16_t Vehicle::timestep()
 
 bool Vehicle::isBlocked(const sf::FloatRect& test)
 {
-    const auto minDistance = 12.5f;
+    const auto minDistance = 6.f;
     return isPathBlocked(getGlobalBounds(), test, _direction, minDistance);
 }
 

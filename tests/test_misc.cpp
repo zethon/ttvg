@@ -60,21 +60,21 @@ const std::tuple<sf::FloatRect, sf::FloatRect, tt::Vehicle::Direction, float, bo
         sf::FloatRect{ 0, 0, 10, 10},
         sf::FloatRect{ 20, 0, 10, 10},
         tt::Vehicle::RIGHT,
-        10.0f,
+        15.0f,
         true
     },
     {
         sf::FloatRect{ 0, 0, 10, 10},
         sf::FloatRect{ 20, 5, 10, 10},
         tt::Vehicle::RIGHT,
-        10.0f,
+        15.0f,
         true
     },
     {
         sf::FloatRect{ 0, 5, 10, 10},
         sf::FloatRect{ 20, 0, 10, 10},
         tt::Vehicle::RIGHT,
-        10.0f,
+        15.0f,
         true
     },
 
@@ -83,21 +83,21 @@ const std::tuple<sf::FloatRect, sf::FloatRect, tt::Vehicle::Direction, float, bo
         sf::FloatRect{ 0, 0, 10, 20},
         sf::FloatRect{ 20, 5, 15, 15},
         tt::Vehicle::RIGHT,
-        10.0f,
+        15.0f,
         true
     },
     {
         sf::FloatRect{ 0, 2, 10, 18},
         sf::FloatRect{ 20, 0, 15, 5},
         tt::Vehicle::RIGHT,
-        10.0f,
+        15.0f,
         true
     },
     {
-        sf::FloatRect{ 0, 0, 10, 8},
+        sf::FloatRect{ 0, 0, 10, 10},
         sf::FloatRect{ 20, 8, 15, 4},
         tt::Vehicle::RIGHT,
-        10.0f,
+        15.0f,
         true
     },
 };
