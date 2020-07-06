@@ -58,10 +58,10 @@ Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundShared
       _background { bg },
       _tilesize { _background->tilesize() }
 {
-    _path.points().emplace_back(47,266);
-    _path.points().emplace_back(153,266);
-    _path.points().emplace_back(153,338);
-    _path.points().emplace_back(47,338);
+    _path.points().emplace_back(0,386);
+    _path.points().emplace_back(464,386);
+    _path.points().emplace_back(464,23);
+    _path.points().emplace_back(530,23);
 
     _texture.setSmooth(true);
     setSource(0, 1);
