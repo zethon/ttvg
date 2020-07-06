@@ -23,21 +23,17 @@ constexpr auto PLAYER_START_Y = 2875.0f;
 
 constexpr auto TILESIZE_X = 10;
 constexpr auto TILESIZE_Y = 10;
+
+constexpr auto MAPNAME = "tucson";
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene{ resmgr, target },
+      _missionText { resmgr, target },
       _statusBar{ resmgr, target },
-      _debugWindow{ resmgr, target }
+      _debugWindow{ resmgr, target },
+      _vehicleFactory { resmgr, MAPNAME }
 {
-    {
-        const std::string jsonfile =
-            resmgr.getFilename("maps/tucson.json");
-
-        std::ifstream file(jsonfile.c_str());
-        file >> _json;
-    }
-
-    _background = std::make_shared<Background>("tucson", _resources, sf::Vector2i { TILESIZE_X, TILESIZE_Y });
+    _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2i { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
 
@@ -63,6 +59,8 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
 
     sf::Vector2f tile{ getPlayerTile() };
     _statusBar.setZoneText(_background->zoneName(tile));
+
+    _missionText.setText("Find the magic vagina");
 }
 
 std::uint16_t Opening::poll(const sf::Event& e)
@@ -253,21 +251,13 @@ std::uint16_t Opening::timestep()
 
     Scene::timestep();
 
-    auto[cx, cy] = _player->getGlobalCenter();
-    auto[tilex, tiley] = getPlayerTile();
-
     std::stringstream ss;
-    if (_vehicles.size() > 0)
-    {
-        auto carbounds = _vehicles.front()->getGlobalBounds();
-        ss << carbounds;
-    }
+    ss << _player->getGlobalCenter();
 
     std::stringstream ss1;
-    ss1 << _player->getGlobalBounds();
+    ss1 << getPlayerTile();
 
-    auto posText = fmt::format("P({}) C({})", ss1.str(), ss.str());
-
+    auto posText = fmt::format("G({}) T({})", ss.str(), ss1.str());
     _debugWindow.setText(posText);
 
     return 0;
@@ -291,6 +281,7 @@ void Opening::draw()
     _window.setView(_window.getDefaultView());
     _statusBar.draw();
     _debugWindow.draw();
+    _missionText.draw();
 }
 
 void Opening::adjustView()

@@ -64,11 +64,6 @@ private:
 
 };
 
-class VehicleFactory
-{
-
-};
-
 bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
     Vehicle::Direction direction, float minDistance);
 

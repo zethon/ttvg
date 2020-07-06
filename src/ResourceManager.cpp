@@ -5,7 +5,8 @@ namespace tt
 
 ResourceManager::ResourceManager(const boost::filesystem::path& path)
     : _resourceFolder{ path }
-{}
+{
+}
 
 std::string ResourceManager::getFilename(const std::string& name)
 {

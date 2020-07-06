@@ -13,6 +13,7 @@ set(SOURCE_FILES
     Screen.cpp
     TTUtils.cpp
     Vehicle.cpp
+    VehicleFactory.cpp
 
     Scenes/Opening.cpp
     Scenes/Scene.cpp
@@ -32,6 +33,7 @@ set(HEADER_FILES
     Screen.h
     TTUtils.h
     Vehicle.h
+    VehicleFactory.h
     
     Scenes/Opening.h
     Scenes/Scene.h

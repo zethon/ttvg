@@ -4,6 +4,7 @@
 #include "TTUtils.h"
 #include "Background.h"
 #include "Vehicle.h"
+#include "VehicleFactory.h"
 
 namespace tt
 {

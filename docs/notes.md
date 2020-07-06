@@ -44,5 +44,9 @@ I've started using the program here (https://github.com/colinvella/tIDE) to make
 ## 2020-07-04
 
 * `VehicleFactory` should generate random vehicles on random paths at random intervals for random durations.
+ 
+ ## 2020-0705
 
-* <s>Vehicles should destroy themselves</s>
+ * `ResourceManager` should have type-specific version of some loaders (i.e. `loadFont()`) that then caches the resources.
+
+ 
