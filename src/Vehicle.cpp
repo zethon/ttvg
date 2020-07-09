@@ -65,7 +65,7 @@ Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundShared
 
     _texture.setSmooth(true);
     setSource(0, 0);
-    setScale(1.80f, 1.80f);
+    setScale(1.50f, 1.50f);
     setState(AnimatedSprite::State::ANIMATED);
     _direction = RIGHT;
 
