@@ -21,8 +21,8 @@ constexpr auto STEPSIZE = 16u;
 constexpr auto PLAYER_START_X = 1616.0f;
 constexpr auto PLAYER_START_Y = 2875.0f;
 
-constexpr auto TILESIZE_X = 10;
-constexpr auto TILESIZE_Y = 10;
+constexpr auto TILESIZE_X = 16;
+constexpr auto TILESIZE_Y = 16;
 
 constexpr auto MAPNAME = "tucson";
     
@@ -257,16 +257,20 @@ std::uint16_t Opening::timestep()
     std::stringstream ss1;
     ss1 << getPlayerTile();
 
-    auto posText = fmt::format("G({}) T({})", ss.str(), ss1.str());
+    std::stringstream ss2;
+    std::stringstream ss3;
+    if (_vehicles.size() > 0)
+    {
+        auto v = _vehicles.front();
+        ss2 << v->getPosition();
+
+        ss3 << _background->getTileFromGlobal(v->getPosition());
+    }
+
+    auto posText = fmt::format("G({}) T({}) V({},{})", ss.str(), ss1.str(), ss2.str(), ss3.str());
     _debugWindow.setText(posText);
 
     return 0;
-}
-
-sf::Vector2f Opening::getPlayerTile() const
-{
-    auto pc = _player->getGlobalCenter();
-    return tt::getTileFromGlobal(_player->getPosition(), { TILESIZE_X, TILESIZE_Y });
 }
 
 void Opening::draw()

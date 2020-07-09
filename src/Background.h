@@ -4,6 +4,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "TTUtils.h"
+
 namespace tt
 {
 
@@ -39,6 +41,24 @@ public:
     float getRightBoundary() const;
     float getTopBoundary() const { return 0; }
     float getBottomBoundary() const;
+
+    template <typename T>
+    sf::Vector2<T> getTileFromGlobal(const sf::Vector2<T>& global)
+    {
+        sf::Vector2<T> temp;
+        temp.x = global.x / getScale().x;
+        temp.y = global.y / getScale().y;
+        return tt::getTileFromGlobal(temp, _tilesize);
+    }
+
+    template<typename T>
+    sf::Vector2<T> getGlobalFromTile(const sf::Vector2<T>& tile)
+    {
+        sf::Vector2<T> temp;
+        temp.x = tile.x * getScale().x;
+        temp.y = tile.y * getScale().y;
+        return tt::getGlobalFromTile(temp, _tilesize);
+    }
 
     void setTileSize(const sf::Vector2i& val) { _tilesize = val; }
     sf::Vector2i tilesize() const { return _tilesize; }

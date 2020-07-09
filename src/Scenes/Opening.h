@@ -158,7 +158,11 @@ public:
     std::uint16_t timestep() override;
     void draw() override;
 
-    sf::Vector2f getPlayerTile() const;
+    sf::Vector2f getPlayerTile() const
+    {
+        auto playerxy = _player->getGlobalCenter();
+        return _background->getTileFromGlobal(playerxy);
+    }
 
 private:
 

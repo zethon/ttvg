@@ -5,7 +5,6 @@
 #include <fmt/core.h>
 #include <nlohmann/json.hpp>
 
-#include "TTUtils.h"
 #include "ResourceManager.h"
 #include "Background.h"
 
@@ -71,7 +70,7 @@ std::string Background::zoneName(const sf::Vector2f& v)
 {
     for (const auto& [name, rect] : _zones)
     {
-        if (rect.contains(v))
+        if (RectContains(rect, v))
         {
             return name;
         }

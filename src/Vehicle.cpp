@@ -58,19 +58,19 @@ Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundShared
       _background { bg },
       _tilesize { _background->tilesize() }
 {
-    _path.points().emplace_back(0,386);
-    _path.points().emplace_back(464,386);
-    _path.points().emplace_back(464,23);
-    _path.points().emplace_back(530,23);
+    _path.points().emplace_back(93,109);
+    _path.points().emplace_back(130,109);
+    _path.points().emplace_back(130,73);
+    _path.points().emplace_back(93,73);
 
     _texture.setSmooth(true);
-    setSource(0, 1);
+    setSource(0, 0);
     setScale(1.80f, 1.80f);
     setState(AnimatedSprite::State::ANIMATED);
     _direction = RIGHT;
 
     _lastPathPoint = _path.step();
-    auto globalPos = getGlobalFromTile(_lastPathPoint, _tilesize);
+    auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ _lastPathPoint });
     setPosition(globalPos);
 }
 
@@ -101,16 +101,25 @@ bool Vehicle::isBlocked(const sf::FloatRect& test)
 
 void Vehicle::move()
 {
-    const auto speed = 5.9f;
+    const auto speed = 1.5f;
 
     auto globalPosition = sf::Vector2f { getGlobalBounds().left, getGlobalBounds().top };
-    auto currentTile = sf::Vector2i { getTileFromGlobal(globalPosition, _tilesize) };
+    if (_direction == LEFT || _direction == RIGHT)
+    {
+        globalPosition.y += getGlobalBounds().height / 2;
+    }
+    else
+    {
+        globalPosition.x += getGlobalBounds().width / 2;
+    }
+    auto currentTile = sf::Vector2i { _background->getTileFromGlobal(globalPosition) };
+
     auto nextTile = _path.next();
 
     float xdiff = static_cast<float>(std::pow(currentTile.x - nextTile.x, 2.f));
     float ydiff = static_cast<float>(std::pow(currentTile.y - nextTile.y, 2.f));
     float distance = std::sqrt(xdiff + ydiff);
-    if (distance < 3.0f)
+    if (distance <= 1.0f)
     {
         _path.step();
         nextTile = _path.next();
@@ -153,6 +162,7 @@ void Vehicle::move()
         }
     }
 
+    auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ currentTile });
     switch (_direction)
     {
         default:
@@ -160,22 +170,28 @@ void Vehicle::move()
 
         case UP:
             setSource(0, 3);
+            globalPos.x -= getGlobalBounds().width / 2;
         break;
 
         case DOWN:
             setSource(0, 0);
+            globalPos.x -= getGlobalBounds().width / 2;
         break;
 
         case LEFT:
             setSource(0, 1);
+            globalPos.y -= getGlobalBounds().height / 2;
         break;
         
         case RIGHT:
             setSource(0, 2);
+            globalPos.y -= getGlobalBounds().height / 2;
         break;
     }
     
-    auto globalPos = getGlobalFromTile(currentTile, _tilesize);
+    
+    // globalPos.x -= getGlobalBounds().width / 2;
+    // globalPos.y -= getGlobalBounds().height / 2;
     setPosition(globalPos);
 }
 

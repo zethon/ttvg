@@ -10,6 +10,8 @@
 namespace tt
 {
 
+std::string defaultResourceFolder();
+
 template<typename T>
 std::ostream& operator<<(std::ostream& out, const sf::Rect<T> item)
 {
@@ -78,6 +80,26 @@ const auto FloatRectParser
             })
         ];
 
-std::string defaultResourceFolder();
+template<typename Rect, typename T>
+bool RectContains(Rect rect, T x, T y)
+{
+    // Rectangles with negative dimensions are allowed, so we must handle them correctly
+
+    // Compute the real min and max of the rectangle on both axes
+    auto minX = std::min(rect.left, static_cast<T>(rect.left + rect.width));
+    T maxX = std::max(rect.left, static_cast<T>(rect.left + rect.width));
+    T minY = std::min(rect.top, static_cast<T>(rect.top + rect.height));
+    T maxY = std::max(rect.top, static_cast<T>(rect.top + rect.height));
+
+    return (x >= minX) && (x <= maxX) && (y >= minY) && (y <= maxY);
+}
+
+template <typename T>
+bool RectContains(const sf::Rect<T>& rect, const sf::Vector2<T>& point)
+{
+    return RectContains(rect, point.x, point.y);
+}
+
+
     
 } // namespace tt
