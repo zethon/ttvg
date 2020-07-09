@@ -20,7 +20,7 @@ std::ostream& operator<<(std::ostream& out, const sf::Rect<T> item)
         << " y=" << top
         << " w=" << width
         << " h=" << height
-        << "}";
+        << " }";
 
     return out;
 }
@@ -31,7 +31,7 @@ std::ostream& operator<<(std::ostream& out, const sf::Vector2<T> item)
     auto [x,y] = item;
     out << "{ x=" << x
         << " y=" << y
-        << "}";
+        << " }";
 
     return out;
 }

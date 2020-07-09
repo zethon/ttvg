@@ -101,7 +101,7 @@ bool Vehicle::isBlocked(const sf::FloatRect& test)
 
 void Vehicle::move()
 {
-    const auto speed = 1.5f;
+    const auto speed = 1.0f;
 
     auto globalPosition = sf::Vector2f { getGlobalBounds().left, getGlobalBounds().top };
     if (_direction == LEFT || _direction == RIGHT)
@@ -121,8 +121,15 @@ void Vehicle::move()
     float distance = std::sqrt(xdiff + ydiff);
     if (distance <= 1.0f)
     {
-        _path.step();
-        nextTile = _path.next();
+        if (currentTile == nextTile)
+        {
+            _path.step();
+            nextTile = _path.next();
+        }
+        else
+        {
+            currentTile = nextTile;
+        }
     }
 
     auto diff = nextTile - currentTile;
