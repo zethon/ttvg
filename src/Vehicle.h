@@ -9,14 +9,6 @@
 namespace tt
 {
 
-enum Direction
-{
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-};
-
 class Background;
 using BackgroundSharedPtr = std::shared_ptr<Background>;
 
