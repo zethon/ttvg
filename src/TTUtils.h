@@ -80,6 +80,8 @@ const auto FloatRectParser
             })
         ];
 
+// custom version of `contains` that will return true if the testing
+// point lies on the rectangles border
 template<typename Rect, typename T>
 bool RectContains(Rect rect, T x, T y)
 {
