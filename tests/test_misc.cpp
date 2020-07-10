@@ -8,6 +8,7 @@
 
 #include "../src/Vehicle.h"
 #include "../src/TTUtils.h"
+#include "../src/Intersection.h"
 
 using namespace std::string_literals;
 
@@ -106,6 +107,18 @@ const std::tuple<sf::FloatRect, sf::FloatRect, tt::Vehicle::Direction, float, bo
 BOOST_DATA_TEST_CASE(vehicleBlockedTest, data::make(vehicleBlocks), object, other, direction, distance, blocked)
 {
     BOOST_TEST(tt::isPathBlocked(object, other, direction, distance) == blocked);
+}
+
+// --run_test=tt/intersectionTest
+BOOST_AUTO_TEST_CASE(intersectionTest)
+{
+    sf::Vector2i pt1 { 2,2 };
+    auto iv = tt::generateIntersections(pt1, tt::IntersectionType::L0, false);
+    BOOST_TEST_REQUIRE(iv.size() == 1);
+    auto i = iv[0];
+    BOOST_TEST((i.point == pt1));
+    BOOST_TEST(i.decisionPoint == false);
+    BOOST_TEST(i.directions == std::bitset<4>{"1001"});
 }
 
 BOOST_AUTO_TEST_SUITE_END() // tt

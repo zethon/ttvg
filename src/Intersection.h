@@ -7,6 +7,25 @@
 
 using namespace std::string_literals;
 
+// Types of L and T intersections
+//
+//  *            ***         
+//  *      LO     *     TO   
+// ****           *          
+                          
+//  ***            *         
+//  *      L90   ***    T90  
+//  *              *         
+                          
+//  ***           *          
+//    *    L180   *     T180 
+//    *          ***         
+                          
+//    *          *           
+//    *    L270  ***    T270 
+//  ***          *           
+                          
+
 namespace tt
 {
 
@@ -89,6 +108,23 @@ Intersections generateIntersections(const sf::Vector2i& origin, IntersectionType
 
             return retval;
         }
+
+        // case IntersectionType::T90:
+        // {
+        //     auto retval = generateIntersections(origin, IntersectionType::L180);
+
+        //     auto temp = origin;
+        //     temp.x++;
+        //     retval.push_back(generateIntersections(temp, IntersectionType::L270).front());
+
+        //     temp.y++;
+        //     retval.push_back(generateIntersections(temp, IntersectionType::L180, true).front());
+
+        //     temp.x--;
+        //     retval.push_back(generateIntersections(temp, IntersectionType::L270, true).front());
+
+        //     return retval;
+        // }
     }
 
     return {};
