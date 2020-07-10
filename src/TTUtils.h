@@ -2,6 +2,8 @@
 
 #include <string>
 #include <ostream>
+#include <random>
+#include <iterator>
 
 #include <boost/spirit/home/x3.hpp>
 
@@ -102,6 +104,17 @@ bool RectContains(const sf::Rect<T>& rect, const sf::Vector2<T>& point)
     return RectContains(rect, point.x, point.y);
 }
 
+template<typename T>
+auto select_randomly(const T& container)
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+
+    std::uniform_int_distribution<> dis(0ul, static_cast<int>(std::size(container) - 1));
+    auto start = container.begin();
+    std::advance(start, dis(gen));
+    return start;
+}
 
     
 } // namespace tt

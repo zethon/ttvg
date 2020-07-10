@@ -4,6 +4,7 @@ set(SOURCE_FILES
     Engine.cpp
     ExitScreen.cpp
     GameScreen.cpp
+    Intersection.cpp
     IntroScreen.cpp
     main.cpp
     NPC.cpp
@@ -25,6 +26,7 @@ set(HEADER_FILES
     Engine.h
     ExitScreen.h
     GameScreen.h
+    Intersection.h
     IntroScreen.h
     NPC.h
     Path.h
