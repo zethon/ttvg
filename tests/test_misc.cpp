@@ -3,6 +3,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
+#include <boost/range/adaptor/indexed.hpp>
 
 #include <SFML/Graphics.hpp>
 
@@ -16,17 +17,51 @@ namespace data = boost::unit_test::data;
 
 namespace std
 {
-    std::ostream& operator<<(std::ostream& out, const sf::FloatRect& item)
-    {
-        auto [left, top, width, height] = item;
-        out << "{ left=" << left
-            << " top=" << top
-            << " width=" << width
-            << " height=" << height
-            << "}";
 
-        return out;
+std::ostream& operator<<(std::ostream& out, const sf::FloatRect& item)
+{
+    auto [left, top, width, height] = item;
+    out << "{ left=" << left
+        << " top=" << top
+        << " width=" << width
+        << " height=" << height
+        << "}";
+
+    return out;
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& out, const sf::Vector2<T> item)
+{
+    auto[x, y] = item;
+    out << "{ x=" << x
+        << " y=" << y
+        << " }";
+
+    return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const tt::Intersection& item)
+{
+    auto[point, directions, decisionPoint] = item;
+    out << "{ point=" << point
+        << " turnType=" << item.turn
+        << " decisionPoint=" << decisionPoint
+        << "}";
+
+    return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const tt::Intersections& item)
+{
+    for (const auto& i : item)
+    {
+        out << i << ' ';
     }
+
+    return out;
+}
+
 }
 
 BOOST_AUTO_TEST_SUITE(tt)
@@ -109,16 +144,61 @@ BOOST_DATA_TEST_CASE(vehicleBlockedTest, data::make(vehicleBlocks), object, othe
     BOOST_TEST(tt::isPathBlocked(object, other, direction, distance) == blocked);
 }
 
-// --run_test=tt/intersectionTest
-BOOST_AUTO_TEST_CASE(intersectionTest)
+const std::tuple<sf::Vector2i, tt::IntersectionType, tt::Intersections> intersectionTestData[] = 
 {
-    sf::Vector2i pt1 { 2,2 };
-    auto iv = tt::generateIntersections(pt1, tt::IntersectionType::L0, false);
-    BOOST_TEST_REQUIRE(iv.size() == 1);
-    auto i = iv[0];
-    BOOST_TEST((i.point == pt1));
-    BOOST_TEST(i.decisionPoint == false);
-    BOOST_TEST(i.directions == std::bitset<4>{"1001"});
+    { 
+        sf::Vector2i{ 2,2 }, 
+        tt::IntersectionType::L0,
+        { 
+            { sf::Vector2i{3,2}, tt::Direction::UP, false },
+            { sf::Vector2i{2,3}, tt::Direction::RIGHT, false },
+        }
+    },
+    {
+        sf::Vector2i{ 2,2 },
+        tt::IntersectionType::T0,
+        {
+            { sf::Vector2i{2,2}, tt::Direction::DOWN, true },
+            { sf::Vector2i{3,2}, tt::Direction::LEFT, false },
+            { sf::Vector2i{2,3}, tt::Direction::DOWN, true },
+            { sf::Vector2i{3,3}, tt::Direction::RIGHT, true },
+        }
+    }
+};
+
+
+bool intersection_sorter(const tt::Intersection& lhs, const tt::Intersection& rhs) 
+{
+    if (lhs.point.x != rhs.point.x)
+    {
+        return lhs.point.x < rhs.point.x;
+    }
+    
+    return lhs.point.y < rhs.point.y;
+}
+
+// --run_test=tt/intersectionTest
+BOOST_DATA_TEST_CASE(intersectionTest, data::make(intersectionTestData), source, type, expectedv)
+{
+    auto iv = tt::makeIntersection(source, type);
+    BOOST_TEST_REQUIRE(iv.size() == expectedv.size());
+
+    std::sort(iv.begin(), iv.end(), &intersection_sorter);
+
+    // I guess the test's variable is const?
+    Intersections expected = expectedv;
+    std::sort(expected.begin(), expected.end(), &intersection_sorter);
+
+    BOOST_TEST(iv.size() == expected.size());
+    for (const auto& item : (iv | boost::adaptors::indexed()))
+    {
+        const auto& i = item.value();
+        const auto& t = expected.at(item.index());
+
+        BOOST_TEST(i.point == t.point);
+        BOOST_TEST(i.decisionPoint == t.decisionPoint);
+        BOOST_TEST(i.turn == t.turn);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END() // tt

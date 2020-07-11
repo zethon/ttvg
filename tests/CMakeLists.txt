@@ -10,8 +10,8 @@ set(PROJECT_FILES
     ../src/Background.cpp
     ../src/Background.h
 
-    # ../src/Intersection.cpp
-    # ../src/Intersection.h
+    ../src/Intersection.cpp
+    ../src/Intersection.h
 
     ../src/ResourceManager.cpp
     ../src/ResourceManager.h
