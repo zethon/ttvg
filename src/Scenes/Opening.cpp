@@ -57,6 +57,20 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     // the function
     addDrawable(_background);
 
+    // initialize the traffic system
+    auto [x, y, widthf, heightf] = _background->getWorldTileRect();
+    sf::Vector2i size{ static_cast<int>(widthf), static_cast<int>(heightf) };
+    _pathFactory = std::make_unique<PathFactory>(size);
+    _pathLines = std::make_unique<PathLines>(*_background);
+
+    Path path;
+    path.points().push_back(sf::Vector2i{ -1,3 });
+    path.points().push_back(sf::Vector2i{ 7,3 });
+    path.points().push_back(sf::Vector2i{ 7,11 });
+    path.points().push_back(sf::Vector2i{ 11,11 });
+    path.points().push_back(sf::Vector2i{ -1,11 });
+    _pathLines->setPath(path);
+
     sf::Vector2f tile{ getPlayerTile() };
     _statusBar.setZoneText(_background->zoneName(tile));
 
@@ -277,6 +291,8 @@ void Opening::draw()
 {
     adjustView();
     Scene::draw();
+
+    _pathLines->draw(_window);
 
     // the player should always be the last thing on the 
     // game board to be drawn

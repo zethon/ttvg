@@ -202,8 +202,8 @@ BOOST_DATA_TEST_CASE(intersectionTest, data::make(intersectionTestData), source,
     }
 }
 
-// --run_test=tt/pathMakingTest
-BOOST_AUTO_TEST_CASE(pathMakingTest)
+// --run_test=tt/path_forcedDoubleLaneTest
+BOOST_AUTO_TEST_CASE(path_ForcedSingleLaneTest)
 {
     Intersections edges =
     {
@@ -226,7 +226,48 @@ BOOST_AUTO_TEST_CASE(pathMakingTest)
     fact.setIntersections(inter);
 
     auto path = fact.makeRandomPath();
+    
+    std::vector<sf::Vector2i> expected = 
+    {
+        {-1,2}, {2,2}, {2,8}, {6,8},{6,-1}
+    };
+
+    BOOST_TEST(path.points() == expected);
 }
+
+// --run_test=tt/path_forcedDoubleLaneTest
+BOOST_AUTO_TEST_CASE(path_forcedDoubleLaneTest)
+{
+    Intersections edges =
+    {
+        { { -1, 3 }, Direction::RIGHT, false },
+    };
+
+    Intersections inter;
+
+    auto temp = tt::makeIntersection({ 2, 1 }, tt::IntersectionType::L180, tt::Lane::DOUBLE, tt::Lane::DOUBLE);
+    inter.insert(inter.end(), temp.begin(), temp.end());
+
+    temp = tt::makeIntersection({ 2, 7 }, tt::IntersectionType::L0, tt::Lane::DOUBLE, tt::Lane::DOUBLE);
+    inter.insert(inter.end(), temp.begin(), temp.end());
+
+    temp = tt::makeIntersection({ 5, 7 }, tt::IntersectionType::L270, tt::Lane::DOUBLE, tt::Lane::DOUBLE);
+    inter.insert(inter.end(), temp.begin(), temp.end());
+
+    tt::PathFactory fact{ sf::Vector2i{10, 10} };
+    fact.setEdges(edges);
+    fact.setIntersections(inter);
+
+    auto path = fact.makeRandomPath();
+
+    std::vector<sf::Vector2i> expected =
+    {
+        {-1,3}, {2,3}, {2,9}, {7,9},{7,-1}
+    };
+
+    BOOST_TEST(path.points() == expected);
+}
+
 
 // --run_test=tt/pathMakingTXTest
 BOOST_AUTO_TEST_CASE(pathMakingTXTest)

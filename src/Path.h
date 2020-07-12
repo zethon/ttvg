@@ -18,6 +18,11 @@ public:
         return _points;
     }
 
+    const std::vector<sf::Vector2i>& points() const
+    {
+        return _points;
+    }
+
     [[maybe_unused]] sf::Vector2i step()
     {
         if (_idx >= _points.size()) _idx = 0;

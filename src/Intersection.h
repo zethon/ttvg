@@ -59,8 +59,18 @@ struct Intersection
     bool            decisionPoint = false;
 };
 
+enum Lane
+{
+    SINGLE,
+    DOUBLE
+};
+
 using Intersections = std::vector<Intersection>;
 
-Intersections makeIntersection(const sf::Vector2i& origin, IntersectionType type);
+Intersections makeIntersection(
+    const sf::Vector2i& origin, 
+    IntersectionType type, 
+    Lane h = Lane::SINGLE, 
+    Lane v = Lane::SINGLE);
 
 } // namespace tt

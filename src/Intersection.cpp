@@ -3,8 +3,14 @@
 namespace tt
 {
 
-Intersections makeIntersection(const sf::Vector2i & origin, IntersectionType type)
+Intersections makeIntersection(
+    const sf::Vector2i& origin, IntersectionType type, Lane horz, Lane vert)
 {
+    // note the inversion of horizontal and vertical, this
+    // is necessary
+    const auto hModifier = (vert == Lane::SINGLE ? 1 : 2);
+    const auto vModifier = (horz == Lane::SINGLE ? 1 : 2);
+
     switch (type)
     {
         default:
@@ -14,8 +20,8 @@ Intersections makeIntersection(const sf::Vector2i & origin, IntersectionType typ
         {
             return
             { 
-                { { origin.x + 1, origin.y }, Direction::UP, false },
-                { { origin.x, origin.y + 1}, Direction::RIGHT, false }
+                { { origin.x + hModifier, origin.y }, Direction::UP, false },
+                { { origin.x, origin.y + vModifier}, Direction::RIGHT, false }
             };
         }
         break;
@@ -25,7 +31,7 @@ Intersections makeIntersection(const sf::Vector2i & origin, IntersectionType typ
             return
             {
                 { origin, Direction::DOWN, false },
-                { { origin.x + 1, origin.y + 1}, Direction::RIGHT, false }
+                { { origin.x + hModifier, origin.y + vModifier}, Direction::RIGHT, false }
             };
         }
         break;
@@ -34,8 +40,8 @@ Intersections makeIntersection(const sf::Vector2i & origin, IntersectionType typ
         {
             return
             {
-                { { origin.x + 1, origin.y }, Direction::LEFT, false },
-                { { origin.x, origin.y + 1}, Direction::DOWN, false }
+                { { origin.x + hModifier, origin.y }, Direction::LEFT, false },
+                { { origin.x, origin.y + vModifier}, Direction::DOWN, false }
             };
         }
         break;
@@ -45,7 +51,7 @@ Intersections makeIntersection(const sf::Vector2i & origin, IntersectionType typ
             return
             {
                 { origin, Direction::LEFT, false },
-                { { origin.x + 1, origin.y + 1}, Direction::UP, false }
+                { { origin.x + hModifier, origin.y + vModifier}, Direction::UP, false }
             };
         }
         break;
@@ -55,9 +61,9 @@ Intersections makeIntersection(const sf::Vector2i & origin, IntersectionType typ
             return
             {
                 { origin, Direction::DOWN, true },
-                { { origin.x + 1, origin.y}, Direction::LEFT, false },
-                { { origin.x, origin.y + 1}, Direction::DOWN, true },
-                { { origin.x + 1, origin.y + 1}, Direction::RIGHT, true },
+                { { origin.x + hModifier, origin.y}, Direction::LEFT, false },
+                { { origin.x, origin.y + vModifier}, Direction::DOWN, true },
+                { { origin.x + hModifier, origin.y + vModifier}, Direction::RIGHT, true },
             };
         }
 
@@ -66,9 +72,9 @@ Intersections makeIntersection(const sf::Vector2i & origin, IntersectionType typ
             return
             {
                 { origin, Direction::LEFT, true },
-                { { origin.x + 1, origin.y}, Direction::LEFT, true },
-                { { origin.x, origin.y + 1}, Direction::DOWN, true },
-                { { origin.x + 1, origin.y + 1}, Direction::UP, false },
+                { { origin.x + hModifier, origin.y}, Direction::LEFT, true },
+                { { origin.x, origin.y + vModifier}, Direction::DOWN, true },
+                { { origin.x + hModifier, origin.y + vModifier}, Direction::UP, false },
             };
         }
 
@@ -77,9 +83,9 @@ Intersections makeIntersection(const sf::Vector2i & origin, IntersectionType typ
             return
             {
                 { origin, Direction::LEFT, true },
-                { { origin.x + 1, origin.y}, Direction::UP, true },
-                { { origin.x, origin.y + 1}, Direction::RIGHT, false },
-                { { origin.x + 1, origin.y + 1}, Direction::UP, true },
+                { { origin.x + hModifier, origin.y}, Direction::UP, true },
+                { { origin.x, origin.y + vModifier}, Direction::RIGHT, false },
+                { { origin.x + hModifier, origin.y + vModifier}, Direction::UP, true },
             };
         }
 
@@ -88,9 +94,9 @@ Intersections makeIntersection(const sf::Vector2i & origin, IntersectionType typ
             return
             {
                 { origin, Direction::DOWN, false },
-                { { origin.x + 1, origin.y }, Direction::UP, true },
-                { { origin.x, origin.y + 1 }, Direction::RIGHT, true },
-                { { origin.x + 1, origin.y + 1}, Direction::RIGHT, true },
+                { { origin.x + hModifier, origin.y }, Direction::UP, true },
+                { { origin.x, origin.y + vModifier }, Direction::RIGHT, true },
+                { { origin.x + hModifier, origin.y + vModifier}, Direction::RIGHT, true },
             };
         }
 
@@ -99,9 +105,9 @@ Intersections makeIntersection(const sf::Vector2i & origin, IntersectionType typ
             return
             {
                 { origin, Direction::DOWN | Direction::LEFT, true },
-                { { origin.x + 1, origin.y }, Direction::UP | Direction::LEFT, true },
-                { { origin.x, origin.y + 1}, Direction::DOWN | Direction::RIGHT, true },
-                { { origin.x + 1, origin.y + 1}, Direction::UP | Direction::RIGHT, true },
+                { { origin.x + hModifier, origin.y }, Direction::UP | Direction::LEFT, true },
+                { { origin.x, origin.y + vModifier}, Direction::DOWN | Direction::RIGHT, true },
+                { { origin.x + hModifier, origin.y + vModifier}, Direction::UP | Direction::RIGHT, true },
             };
         }
     }

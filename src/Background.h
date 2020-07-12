@@ -36,6 +36,7 @@ public:
     Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2i& tilesize);
 
     sf::FloatRect getWorldRect() const;
+    sf::FloatRect getWorldTileRect() const;
 
     float getLeftBoundary() const { return 0; }
     float getRightBoundary() const;
@@ -43,7 +44,7 @@ public:
     float getBottomBoundary() const;
 
     template <typename T>
-    sf::Vector2<T> getTileFromGlobal(const sf::Vector2<T>& global)
+    sf::Vector2<T> getTileFromGlobal(const sf::Vector2<T>& global) const
     {
         sf::Vector2<T> temp;
         temp.x = global.x / getScale().x;
@@ -52,7 +53,7 @@ public:
     }
 
     template<typename T>
-    sf::Vector2<T> getGlobalFromTile(const sf::Vector2<T>& tile)
+    sf::Vector2<T> getGlobalFromTile(const sf::Vector2<T>& tile) const
     {
         sf::Vector2<T> temp;
         temp.x = tile.x * getScale().x;

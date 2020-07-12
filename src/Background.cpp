@@ -56,6 +56,13 @@ sf::FloatRect Background::getWorldRect() const
     return { 0, 0, getRightBoundary(), getBottomBoundary() };
 }
 
+sf::FloatRect Background::getWorldTileRect() const
+{
+    sf::Vector2f bound{ getRightBoundary(), getBottomBoundary() };
+    auto [width, height] = getTileFromGlobal(bound);
+    return { 0, 0, width, height };
+}
+
 float Background::getRightBoundary() const
 {
     return getTextureRect().width * this->getScale().x;

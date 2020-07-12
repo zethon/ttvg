@@ -148,6 +148,70 @@ public:
 
 };
 
+class PathLines
+{
+    std::vector<sf::RectangleShape> _shapes;
+    Background&                     _background;
+
+public: 
+    PathLines(Background& bg)
+        : _background{ bg }
+    {
+        //sf::RectangleShape shape;
+        //shape.setPosition(100.f, 8.f);
+        //shape.setSize(sf::Vector2f(-100.f, 8.f));
+        //shape.setFillColor(sf::Color::Yellow);
+        //_shapes.push_back(shape);
+    }
+    
+    void setPath(const Path& path)
+    {
+        _shapes.clear();
+        const auto& points = path.points();
+        if (points.size() == 0) return;
+
+        auto prev = points.front();
+        for (const auto& pt : path.points())
+        {
+            if (prev == pt) continue;
+
+            auto gPrev = _background.getGlobalFromTile(prev);
+            auto gPt = _background.getGlobalFromTile(pt);
+
+            float width = 0.f;
+            float height = 0.f;
+
+            if (prev.y == pt.y)
+            {
+                width = static_cast<float>(gPt.x - gPrev.x);
+                height = 8.0f;
+            }
+            else
+            {
+                width = 8.0f;
+                height = static_cast<float>(gPt.y - gPrev.y);
+            }
+
+            sf::RectangleShape shape;
+            shape.setPosition(static_cast<float>(gPrev.x), static_cast<float>(gPrev.y));
+            shape.setSize(sf::Vector2f{ width, height });
+            shape.setFillColor(sf::Color::Red);
+
+            _shapes.push_back(shape);
+            prev = pt;
+        }
+    }
+
+    void draw(sf::RenderTarget& window)
+    {
+        for (const auto& s : _shapes)
+        {
+            window.draw(s);
+        }
+    }
+
+};
+
 class Opening : public Scene
 {
 
@@ -181,6 +245,8 @@ private:
     nl::json                            _json;
 
     bool                                _testSpawned = false;
+    std::unique_ptr<PathLines>          _pathLines;
+    std::unique_ptr<PathFactory>        _pathFactory;
     VehicleFactory                      _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;
 };
