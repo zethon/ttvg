@@ -45,7 +45,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     auto temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
     _player = std::make_shared<Player>(temptext, sf::Vector2i{ 64, 64 });
     _player->texture().setSmooth(true);
-    _player->setSource(0, 2);
+    _player->setSource(0, 10);
     _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
     _player->setOrigin(0.0f, 0.0f);
     _player->setPosition(PLAYER_START_X, PLAYER_START_Y);

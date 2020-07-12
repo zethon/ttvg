@@ -21,6 +21,9 @@ set(PROJECT_FILES
 
     ../src/Vehicle.cpp
     ../src/Vehicle.h
+
+    ../src/VehicleFactory.cpp
+    ../src/VehicleFactory.h
 )
 
 add_executable(test_misc

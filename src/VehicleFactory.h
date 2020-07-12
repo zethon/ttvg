@@ -5,6 +5,7 @@
 
 #include "Path.h"
 #include "ResourceManager.h"
+#include "Intersection.h"
 
 namespace nl = nlohmann;
 
@@ -16,9 +17,19 @@ using VehiclePtr = std::shared_ptr<Vehicle>;
 
 class PathFactory
 {
+    Intersections   _edges;
+    Intersections   _turns;
+    sf::Vector2i    _size;
 
 public:
+    PathFactory(const sf::Vector2i& size)
+        : _size{ size }
+    {}
+
+    void setEdges(const Intersections& edges) { _edges = edges; }
+    void setIntersections(const Intersections& points) { _turns = points; }
     
+    Path makeRandomPath() const;
 
 };
 

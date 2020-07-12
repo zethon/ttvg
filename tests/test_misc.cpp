@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../src/Vehicle.h"
+#include "../src/VehicleFactory.h"
 #include "../src/TTUtils.h"
 #include "../src/Intersection.h"
 
@@ -199,6 +200,95 @@ BOOST_DATA_TEST_CASE(intersectionTest, data::make(intersectionTestData), source,
         BOOST_TEST(i.decisionPoint == t.decisionPoint);
         BOOST_TEST(i.turn == t.turn);
     }
+}
+
+// --run_test=tt/pathMakingTest
+BOOST_AUTO_TEST_CASE(pathMakingTest)
+{
+    Intersections edges =
+    {
+        { { -1, 2 }, Direction::RIGHT, false },
+    };
+
+    Intersections inter;
+
+    auto temp = tt::makeIntersection({ 2, 1 }, tt::IntersectionType::L180);
+    inter.insert(inter.end(), temp.begin(), temp.end());
+
+    temp = tt::makeIntersection({ 2, 7 }, tt::IntersectionType::L0);
+    inter.insert(inter.end(), temp.begin(), temp.end());
+
+    temp = tt::makeIntersection({ 5, 7 }, tt::IntersectionType::L270);
+    inter.insert(inter.end(), temp.begin(), temp.end());
+
+    tt::PathFactory fact{ sf::Vector2i{10, 10} };
+    fact.setEdges(edges);
+    fact.setIntersections(inter);
+
+    auto path = fact.makeRandomPath();
+}
+
+// --run_test=tt/pathMakingTXTest
+BOOST_AUTO_TEST_CASE(pathMakingTXTest)
+{
+    Intersections edges =
+    {
+        { { -1, 3 }, Direction::RIGHT, false },
+    };
+
+    Intersections inter;
+
+    auto temp = tt::makeIntersection({ 2, 2 }, tt::IntersectionType::T90);
+    inter.insert(inter.end(), temp.begin(), temp.end());
+
+    tt::PathFactory fact{ sf::Vector2i{10, 10} };
+    fact.setEdges(edges);
+    fact.setIntersections(inter);
+
+    auto path = fact.makeRandomPath();
+}
+
+BOOST_AUTO_TEST_CASE(pathMakingSingleTXTest)
+{
+    Intersections edges =
+    {
+        { { -1, 4 }, Direction::RIGHT, false }
+    };
+
+    Intersections inter;
+
+    auto temp = tt::makeIntersection({ 3, 3 }, tt::IntersectionType::CROSS);
+    inter.insert(inter.end(), temp.begin(), temp.end());
+
+    tt::PathFactory fact{ sf::Vector2i{7, 7} };
+    fact.setEdges(edges);
+    fact.setIntersections(inter);
+
+    auto path = fact.makeRandomPath();
+}
+
+// --run_test=tt/pathMakingDoubleTXTest
+BOOST_AUTO_TEST_CASE(pathMakingDoubleTXTest)
+{
+    Intersections edges =
+    {
+        { { -1, 4 }, Direction::RIGHT, false },
+        { { -1, 8 }, Direction::RIGHT, false },
+    };
+
+    Intersections inter;
+
+    auto temp = tt::makeIntersection({ 3, 3 }, tt::IntersectionType::CROSS);
+    inter.insert(inter.end(), temp.begin(), temp.end());
+
+    temp = tt::makeIntersection({ 3, 7 }, tt::IntersectionType::CROSS);
+    inter.insert(inter.end(), temp.begin(), temp.end());
+
+    tt::PathFactory fact{ sf::Vector2i{11, 11} };
+    fact.setEdges(edges);
+    fact.setIntersections(inter);
+
+    auto path = fact.makeRandomPath();
 }
 
 BOOST_AUTO_TEST_SUITE_END() // tt
