@@ -65,7 +65,6 @@ Path PathFactory::makeRandomPath() const
     while (currentPoint.x >= 0 && currentPoint.x < _size.x
         && currentPoint.y >= 0 && currentPoint.y < _size.y)
     {
- 
         auto temp = std::find_if(_turns.begin(), _turns.end(), 
             [&currentPoint](const Intersection& inter)
             {
@@ -82,7 +81,16 @@ Path PathFactory::makeRandomPath() const
                 std::uniform_int_distribution<> dis(0, 1);
                 if (dis(gen) > 0)
                 {
-                    currentDirection = static_cast<Direction>(temp->turn);
+                    if (temp->turn != Direction::UP || temp->turn != Direction::DOWN
+                        || temp->turn != Direction::LEFT || temp->turn != Direction::RIGHT)
+                    {
+                        currentDirection = static_cast<Direction>(temp->turn ^ currentDirection);
+                    }
+                    else
+                    {
+                        currentDirection = static_cast<Direction>(temp->turn);
+                    }
+
                     retval.points().push_back(currentPoint);
                     canDecide = false;
                 }
