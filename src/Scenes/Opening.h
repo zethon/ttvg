@@ -180,20 +180,21 @@ public:
 
             float width = 0.f;
             float height = 0.f;
+            sf::Vector2f topleft{ static_cast<float>(gPrev.x), static_cast<float>(gPrev.y) };
 
             if (prev.y == pt.y)
             {
                 width = static_cast<float>(gPt.x - gPrev.x);
-                height = 8.0f;
+                height = 16.0f;
             }
             else
             {
-                width = 8.0f;
                 height = static_cast<float>(gPt.y - gPrev.y);
+                width = 16.0f;
             }
 
             sf::RectangleShape shape;
-            shape.setPosition(static_cast<float>(gPrev.x), static_cast<float>(gPrev.y));
+            shape.setPosition(topleft);
             shape.setSize(sf::Vector2f{ width, height });
             shape.setFillColor(sf::Color::Red);
 

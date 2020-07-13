@@ -65,10 +65,14 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
 
     Path path;
     path.points().push_back(sf::Vector2i{ -1,3 });
-    path.points().push_back(sf::Vector2i{ 7,3 });
-    path.points().push_back(sf::Vector2i{ 7,11 });
-    path.points().push_back(sf::Vector2i{ 11,11 });
-    path.points().push_back(sf::Vector2i{ -1,11 });
+    path.points().push_back(sf::Vector2i{ 11,3 });
+    path.points().push_back(sf::Vector2i{ 11,8 });
+    path.points().push_back(sf::Vector2i{ 44,8 });
+    path.points().push_back(sf::Vector2i{ 44,39 });
+    path.points().push_back(sf::Vector2i{ 14,39 });
+    path.points().push_back(sf::Vector2i{ 14,58 });
+    path.points().push_back(sf::Vector2i{ -1,58 });
+
     _pathLines->setPath(path);
 
     sf::Vector2f tile{ getPlayerTile() };

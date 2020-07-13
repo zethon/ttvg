@@ -56,9 +56,9 @@ public:
     sf::Vector2<T> getGlobalFromTile(const sf::Vector2<T>& tile) const
     {
         sf::Vector2<T> temp;
-        temp.x = tile.x * getScale().x;
-        temp.y = tile.y * getScale().y;
-        return tt::getGlobalFromTile(temp, _tilesize);
+        temp.x = static_cast<T>(tile.x * getScale().x);
+        temp.y = static_cast<T>(tile.y * getScale().y);
+        return sf::Vector2<T>{tt::getGlobalFromTile(temp, _tilesize)};
     }
 
     void setTileSize(const sf::Vector2i& val) { _tilesize = val; }
