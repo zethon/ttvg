@@ -57,10 +57,22 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     // the function
     addDrawable(_background);
 
+    initTraffic();
+
+    sf::Vector2f tile{ getPlayerTile() };
+    _statusBar.setZoneText(_background->zoneName(tile));
+
+    _missionText.setText("Find the magic vagina");
+}
+
+void Opening::initTraffic()
+{
     // initialize the traffic system
-    auto [x, y, widthf, heightf] = _background->getWorldTileRect();
+    auto[x, y, widthf, heightf] = _background->getWorldTileRect();
     sf::Vector2i size{ static_cast<int>(widthf), static_cast<int>(heightf) };
     _pathFactory = std::make_unique<PathFactory>(size);
+
+
     _pathLines = std::make_unique<PathLines>(*_background);
 
     Path path;
@@ -74,11 +86,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     path.points().push_back(sf::Vector2i{ -1,58 });
 
     _pathLines->setPath(path);
-
-    sf::Vector2f tile{ getPlayerTile() };
-    _statusBar.setZoneText(_background->zoneName(tile));
-
-    _missionText.setText("Find the magic vagina");
 }
 
 std::uint16_t Opening::poll(const sf::Event& e)

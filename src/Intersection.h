@@ -139,4 +139,49 @@ struct IntersectionParser
     }
 };
 
+struct EdgeParser
+{
+    struct Direction_ : x3::symbols<Direction>
+    {
+        Direction_()
+        {
+            add
+                ("up", Direction::UP)
+                ("down", Direction::DOWN)
+                ("left", Direction::LEFT)
+                ("right", Direction::RIGHT)
+            ;
+        }
+    };
+
+    using Edge
+        = std::tuple<sf::Vector2f, tt::Direction>;
+
+    template<typename It>
+    std::optional<Edge> parse(It begin, It end)
+    {
+        static Direction_ directionType;
+        static auto parser
+            = x3::rule<class EdgeParser_, Edge>{}
+            = x3::rule<class EdgeParser_, Edge>{}
+            = (x3::float_ >> ',' >> x3::float_ >> ',' >> directionType)
+            [(
+                [](auto& ctx)
+                {
+                    auto& attr = x3::_attr(ctx);
+                    using boost::fusion::at_c;
+
+                    sf::Vector2f pt{ static_cast<float>(at_c<0>(attr)), static_cast<float>(at_c<1>(attr)) };
+                    x3::_val(ctx)
+                        = Edge{ pt, at_c<2>(attr) };
+                }
+        )];
+
+        Edge helper;
+        bool result = phrase_parse(begin, end, parser, x3::ascii::space, helper);
+        if (!result) return {};
+        return helper;
+    }
+};
+
 } // namespace tt

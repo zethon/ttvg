@@ -219,6 +219,8 @@ class Opening : public Scene
 public:
     Opening(ResourceManager& resmgr, sf::RenderTarget& target);
 
+    void initTraffic();
+
     std::uint16_t poll(const sf::Event& e) override;
     std::uint16_t timestep() override;
     void draw() override;

@@ -68,6 +68,11 @@
                 "scale": "1.5,1.5"
             }
         ],
+        "edges":
+        [
+            "-1,3,right",
+            "-1,8,right"
+        ],
         "intersections":
         [
             "11,2,L180,false,false",

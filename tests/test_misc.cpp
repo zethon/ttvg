@@ -63,6 +63,12 @@ std::ostream& operator<<(std::ostream& out, const tt::Intersections& item)
     return out;
 }
 
+std::ostream& operator<<(std::ostream& out, const tt::EdgeParser::Edge& item)
+{
+    out << '{' << std::get<0>(item) << ',' << static_cast<std::uint32_t>(std::get<1>(item)) << '}';
+    return out;
+}
+
 }
 
 BOOST_AUTO_TEST_SUITE(tt)
@@ -130,7 +136,25 @@ BOOST_DATA_TEST_CASE(parse_IntersectionTest, data::make(parseIntersectionTestDat
     }
 }
 
+const std::tuple<std::string, tt::EdgeParser::Edge> parseEdgeTestData[] =
+{
+    {
+        "2,2,right",
+        tt::EdgeParser::Edge{ sf::Vector2i{2,2}, tt::Direction::RIGHT }
+    }
+};
 
+// --run_test=tt/parse_edgeTest
+BOOST_DATA_TEST_CASE(parse_edgeTest, data::make(parseEdgeTestData), original, edge)
+{
+    tt::EdgeParser parser;
+    auto result = parser.parse(original.begin(), original.end());
+    BOOST_TEST(result.has_value());
+
+    auto pedge = *result;
+    BOOST_TEST(std::get<0>(pedge) == std::get<0>(edge));
+    BOOST_TEST(std::get<1>(pedge) == std::get<1>(edge));
+}
 
 
 
