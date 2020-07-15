@@ -72,19 +72,35 @@ void Opening::initTraffic()
     sf::Vector2i size{ static_cast<int>(widthf), static_cast<int>(heightf) };
     _pathFactory = std::make_unique<PathFactory>(size);
 
+    EdgeParser eparser;
+    std::vector<Intersection> edges;
+    const auto& config = _background->json();
+    for (const auto& item : config["vehicles"]["edges"].items())
+    {
+        std::string value{ item.value().get<std::string>() };
+        auto edge = eparser.parse(value.begin(), value.end());
+        if (edge.has_value()) edges.push_back(*edge);
+    }
+    _pathFactory->setEdges(edges);
+
+    IntersectionParser iparser;
+    std::vector<Intersection> intersections;
+    for (const auto& item : config["vehicles"]["intersections"].items())
+    {
+        std::string value{ item.value().get<std::string>() };
+        auto result = iparser.parse(value.begin(), value.end());
+        if (result.has_value())
+        {
+            auto[origin, type, hzdbl, vtdbl] = *result;
+            auto tempv = tt::makeIntersection(sf::Vector2i{ origin }, type, hzdbl, vtdbl);
+            intersections.insert(intersections.end(), tempv.begin(), tempv.end());
+        }
+    }
+    _pathFactory->setIntersections(intersections);
 
     _pathLines = std::make_unique<PathLines>(*_background);
 
-    Path path;
-    path.points().push_back(sf::Vector2i{ -1,3 });
-    path.points().push_back(sf::Vector2i{ 11,3 });
-    path.points().push_back(sf::Vector2i{ 11,8 });
-    path.points().push_back(sf::Vector2i{ 44,8 });
-    path.points().push_back(sf::Vector2i{ 44,39 });
-    path.points().push_back(sf::Vector2i{ 14,39 });
-    path.points().push_back(sf::Vector2i{ 14,58 });
-    path.points().push_back(sf::Vector2i{ -1,58 });
-
+    Path path = _pathFactory->makeRandomPath();
     _pathLines->setPath(path);
 }
 
@@ -160,6 +176,13 @@ std::uint16_t Opening::poll(const sf::Event& e)
             case sf::Keyboard::Num0:
             {
                 _debugWindow.setVisible(!_debugWindow.visible());
+            }
+            break;
+
+            case sf::Keyboard::Space:
+            {
+                auto p = _pathFactory->makeRandomPath();
+                _pathLines->setPath(p);
             }
             break;
 

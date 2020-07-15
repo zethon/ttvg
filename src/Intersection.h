@@ -155,10 +155,10 @@ struct EdgeParser
     };
 
     using Edge
-        = std::tuple<sf::Vector2f, tt::Direction>;
+        = std::tuple<sf::Vector2f, std::uint32_t>;
 
     template<typename It>
-    std::optional<Edge> parse(It begin, It end)
+    std::optional<Intersection> parse(It begin, It end)
     {
         static Direction_ directionType;
         static auto parser
@@ -173,14 +173,15 @@ struct EdgeParser
 
                     sf::Vector2f pt{ static_cast<float>(at_c<0>(attr)), static_cast<float>(at_c<1>(attr)) };
                     x3::_val(ctx)
-                        = Edge{ pt, at_c<2>(attr) };
+                        = Edge{ pt, static_cast<std::uint32_t>(at_c<2>(attr)) };
                 }
-        )];
+            )];
 
         Edge helper;
         bool result = phrase_parse(begin, end, parser, x3::ascii::space, helper);
         if (!result) return {};
-        return helper;
+
+        return Intersection{ sf::Vector2i{std::get<0>(helper)}, std::get<1>(helper) };
     }
 };
 

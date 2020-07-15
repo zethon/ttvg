@@ -8,14 +8,14 @@
 #include "ResourceManager.h"
 #include "Background.h"
 
+namespace nl = nlohmann;
+
 namespace tt
 {
 
 Background::Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2i& tilesize)
     : _tilesize { tilesize }
 {
-    using namespace nlohmann;
-
     const std::string texturename = fmt::format("maps/{}.png", name);
     _texture = resmgr.loadUniquePtr<sf::Texture>(texturename);
     setTexture(*_texture);
@@ -24,13 +24,13 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
         resmgr.getFilename(fmt::format("maps/{}.json", name));
 
     std::ifstream file(jsonfile.c_str());
-    json j;
-    file >> j;
+    _json = std::make_unique<nl::json>();
+    file >> *_json;
     file.close();
 
-    if (!j.at("zones").is_array()) return;
+    if (!_json->at("zones").is_array()) return;
 
-    for (const auto& item : j["zones"].items())
+    for (const auto& item : (*_json)["zones"].items())
     {
         for (const auto& c: item.value()["rects"].items())
         {
@@ -46,7 +46,6 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
             {
                 _zones.emplace_back(item.value()["name"].get<std::string>(), rect);
             }
-            
         }
     }
 }

@@ -75,10 +75,10 @@
         ],
         "intersections":
         [
-            "11,2,L180,false,false",
-            "11,7,CROSS,false,false",
-            "11,39,T180,true,false",
-            "14,39,T0,true,false"
+            "11,2,L180,single,single",
+            "11,7,CROSS,single,single",
+            "11,39,T180,double,single",
+            "14,39,T0,double,single"
         ]
     }
 }

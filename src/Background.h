@@ -2,6 +2,8 @@
 #include <cmath>
 #include <set>
 
+#include <nlohmann/json_fwd.hpp>
+
 #include <SFML/Graphics.hpp>
 
 #include "TTUtils.h"
@@ -26,6 +28,8 @@ class ResourceManager;
 class Background;
 using BackgroundPtr = std::unique_ptr<Background>;
 using BackgroundSharedPtr = std::shared_ptr<Background>;
+
+namespace nl = nlohmann;
 
 class Background : public sf::Sprite
 {
@@ -64,6 +68,9 @@ public:
     void setTileSize(const sf::Vector2i& val) { _tilesize = val; }
     sf::Vector2i tilesize() const { return _tilesize; }
 
+    nl::json& json() { return *_json; }
+    const nl::json& json() const { return const_cast<const nl::json&>(json()); }
+
     // TODO: there are some interesting optimizations that
     // could be done here, which might be interesting to do
     // but there are other things I want to do right now
@@ -75,7 +82,8 @@ protected:
     std::vector<Zone>               _zones;
 
 private:
-    sf::Vector2i    _tilesize;
+    sf::Vector2i                _tilesize;
+    std::unique_ptr<nl::json>   _json;
 
 };
 
