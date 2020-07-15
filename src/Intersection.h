@@ -115,11 +115,9 @@ struct IntersectionParser
     template<typename It>
     std::optional<IntersectionHelper> parse(It begin, It end)
     {
-        static IntersectionType_ intersectionType;
-        static Lane_ laneType;
         static auto parser
             = x3::rule<class IntersectionParser_, IntersectionHelper>{}
-            = (x3::float_ >> ',' >> x3::float_ >> ',' >> intersectionType >> ',' >> laneType >> ',' >> laneType)
+            = (x3::float_ >> ',' >> x3::float_ >> ',' >> intersectionType_ >> ',' >> laneType_ >> ',' >> laneType_)
             [(
                 [](auto& ctx)
                 {
@@ -137,6 +135,10 @@ struct IntersectionParser
         if (!result) return {};
         return helper;
     }
+
+private:
+    IntersectionType_ intersectionType_;
+    Lane_ laneType_;
 };
 
 struct EdgeParser
@@ -160,10 +162,9 @@ struct EdgeParser
     template<typename It>
     std::optional<Intersection> parse(It begin, It end)
     {
-        static Direction_ directionType;
         static auto parser
             = x3::rule<class EdgeParser_, Edge>{}
-            = (x3::float_ >> ',' >> x3::float_ >> ',' >> directionType)
+            = (x3::float_ >> ',' >> x3::float_ >> ',' >> directionType_)
             [(
                 [](auto& ctx)
                 {
@@ -182,6 +183,10 @@ struct EdgeParser
 
         return Intersection{ sf::Vector2i{std::get<0>(helper)}, std::get<1>(helper) };
     }
+
+private:
+    Direction_                          directionType_;
+    x3::rule<class EdgeParser_, Edge>   parser_;
 };
 
 } // namespace tt
