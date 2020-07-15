@@ -71,14 +71,74 @@
         "edges":
         [
             "-1,3,right",
-            "-1,8,right"
+            "-1,8,right",
+            "-1,41,right",
+            "-1,59,right",
+            "-1,75,right",
+            "-1,143,right",
+
+            "44,-1,down",
+            "93,-1,down",
+            "129,-1,down",
+            
+            "10,151,up",
+            "46,151,up",
+            "101,151,up",
+            "122,151,up",
+
+            "151,7,left",
+            "151,24,left",
+            "151,39,left",
+            "151,73,left",
+            "151,95,left",
+            "151,107,left",
+            "151,129,left"
         ],
         "intersections":
         [
+            "9,124,T270,single,single",
+            "9,142,CROSS,single,single",
+
             "11,2,L180,single,single",
             "11,7,CROSS,single,single",
             "11,39,T180,double,single",
-            "14,39,T0,double,single"
+
+            "14,39,T0,double,single",
+            "14,58,CROSS,single,single",
+            "14,73,CROSS,double,single",
+            "14,95,L0,single,single",
+
+            "44,24,T270,single,double",
+            "44,39,CROSS,double,double",
+            "44,58,CROSS,single,double",
+            "44,73,CROSS,double,double",
+            "44,95,CROSS,single,double",
+            "44,122,T270,single,double",
+            "44,24,T270,single,double",
+            "44,124,T90,single,double",
+            "44,142,CROSS,single,double",
+
+            "93,7,CROSS,single,single",
+            "93,24,CROSS,single,single",
+            "93,39,CROSS,double,single",
+            "93,58,CROSS,single,single",
+            "93,95,T90,single,single",
+            "93,123,T90,single,single",
+            "93,142,CROSS,single,single",
+
+            "121,145,L270,single,single",
+
+            "129,7,CROSS,single,single",
+            "129,24,CROSS,single,single",
+            "129,39,CROSS,double,single",
+            "129,58,T90,single,single",
+            "129,73,CROSS,single,single",
+            "129,95,T270,single,single",
+            "129,107,CROSS,double,single",
+            "129,129,L0,single,single",
+
+            "44,7,CROSS,single,double"
+
         ]
     }
 }

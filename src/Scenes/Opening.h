@@ -1,5 +1,7 @@
 #pragma once
 
+#include <boost/range/adaptor/indexed.hpp>
+
 #include <nlohmann/json.hpp>
 
 #include <SFML/Graphics.hpp>
@@ -196,10 +198,15 @@ public:
             sf::RectangleShape shape;
             shape.setPosition(topleft);
             shape.setSize(sf::Vector2f{ width, height });
-            shape.setFillColor(sf::Color::Red);
 
             _shapes.push_back(shape);
             prev = pt;
+        }
+
+        for (auto& s : (_shapes | boost::adaptors::indexed()))
+        {
+            auto c = static_cast<sf::Uint8>((s.index() + 1) * (255 /_shapes.size()));
+            s.value().setFillColor(sf::Color{ 0,c,c });
         }
     }
 
