@@ -77,9 +77,9 @@ void Opening::initTraffic()
     const auto& config = _background->json();
     for (const auto& item : config["vehicles"]["edges"].items())
     {
-        std::string value{ item.value().get<std::string>() };
-        auto edge = eparser.parse(value.begin(), value.end());
-        if (edge.has_value()) edges.push_back(*edge);
+        // std::string value{ item.value().get<std::string>() };
+        // auto edge = eparser.parse(value.begin(), value.end());
+        // if (edge.has_value()) edges.push_back(*edge);
     }
     _pathFactory->setEdges(edges);
 

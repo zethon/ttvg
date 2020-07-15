@@ -107,6 +107,16 @@ const std::tuple<std::string, std::vector<tt::Intersection>> parseIntersectionTe
     }
 };
 
+bool intersection_sorter(const tt::Intersection& lhs, const tt::Intersection& rhs)
+{
+    if (lhs.point.x != rhs.point.x)
+    {
+        return lhs.point.x < rhs.point.x;
+    }
+
+    return lhs.point.y < rhs.point.y;
+}
+
 // --run_test=tt/parse_IntersectionTest
 BOOST_DATA_TEST_CASE(parse_IntersectionTest, data::make(parseIntersectionTestData), original, expectedv)
 {
@@ -148,7 +158,10 @@ const std::tuple<std::string, tt::Intersection> parseEdgeTestData[] =
 BOOST_DATA_TEST_CASE(parse_edgeTest, data::make(parseEdgeTestData), original, expected)
 {
     tt::EdgeParser parser;
-    auto result = parser.parse(original.begin(), original.end());
+
+    auto start = std::begin(original);
+    const auto stop = std::end(original);
+    auto result = parser.parse(start, stop);
     BOOST_TEST(result.has_value());
 
     auto intersection = *result;
@@ -156,10 +169,6 @@ BOOST_DATA_TEST_CASE(parse_edgeTest, data::make(parseEdgeTestData), original, ex
     BOOST_TEST(intersection.turn == expected.turn);
     BOOST_TEST(intersection.decisionPoint == expected.decisionPoint);
 }
-
-
-
-
 
 const std::tuple<sf::Vector2i, tt::IntersectionType, tt::Intersections> intersectionTestData[] =
 {
@@ -182,16 +191,6 @@ const std::tuple<sf::Vector2i, tt::IntersectionType, tt::Intersections> intersec
         }
     }
 };
-
-bool intersection_sorter(const tt::Intersection& lhs, const tt::Intersection& rhs)
-{
-    if (lhs.point.x != rhs.point.x)
-    {
-        return lhs.point.x < rhs.point.x;
-    }
-
-    return lhs.point.y < rhs.point.y;
-}
 
 // --run_test=tt/intersectionTest
 BOOST_DATA_TEST_CASE(intersectionTest, data::make(intersectionTestData), source, type, expectedv)
@@ -216,11 +215,6 @@ BOOST_DATA_TEST_CASE(intersectionTest, data::make(intersectionTestData), source,
         BOOST_TEST(i.turn == t.turn);
     }
 }
-
-
-
-
-
 
 const std::tuple<sf::FloatRect, sf::FloatRect, tt::Vehicle::Direction, float, bool> vehicleBlocks[]
 {
@@ -276,7 +270,6 @@ BOOST_DATA_TEST_CASE(vehicleBlockedTest, data::make(vehicleBlocks), object, othe
 {
     BOOST_TEST(tt::isPathBlocked(object, other, direction, distance) == blocked);
 }
-
 
 // --run_test=tt/path_forcedDoubleLaneTest
 BOOST_AUTO_TEST_CASE(path_ForcedSingleLaneTest)

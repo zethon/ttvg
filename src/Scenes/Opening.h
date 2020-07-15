@@ -203,7 +203,7 @@ public:
             prev = pt;
         }
 
-        for (auto& s : (_shapes | boost::adaptors::indexed()))
+        for (const auto& s : (_shapes | boost::adaptors::indexed()))
         {
             auto c = static_cast<sf::Uint8>((s.index() + 1) * (255 /_shapes.size()));
             s.value().setFillColor(sf::Color{ 0,c,c });

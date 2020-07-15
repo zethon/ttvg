@@ -12,9 +12,9 @@ using namespace std::string_literals;
 
 // Types of L and T intersections
 //
-//  *            ***         
-//  *      LO     *     TO   
-// ****           *          
+// *             ***         
+// *      LO      *     TO   
+// ***            *          
                           
 //  ***            *         
 //  *      L90   ***    T90  
@@ -162,7 +162,6 @@ struct EdgeParser
     {
         static Direction_ directionType;
         static auto parser
-            = x3::rule<class EdgeParser_, Edge>{}
             = x3::rule<class EdgeParser_, Edge>{}
             = (x3::float_ >> ',' >> x3::float_ >> ',' >> directionType)
             [(
