@@ -11,8 +11,12 @@ class Path
     std::vector<sf::Vector2i>   _points;
     float                       _speed;
     std::size_t                 _idx = 0;
+    bool                        _repeating = true;
 
 public:
+
+    bool repeating() const { return _repeating; }
+
     std::vector<sf::Vector2i>& points()
     {
         return _points;
@@ -25,7 +29,12 @@ public:
 
     [[maybe_unused]] sf::Vector2i step()
     {
-        if (_idx >= _points.size()) _idx = 0;
+        if (_idx >= _points.size())
+        { 
+            if (!_repeating) return _points.back();
+            _idx = 0;
+        }
+
         return _points.at(_idx++);
     }
 

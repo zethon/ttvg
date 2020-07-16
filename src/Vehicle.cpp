@@ -80,8 +80,6 @@ std::uint16_t Vehicle::timestep()
         _movementClock.restart();
     }
 
-
-
     return TimeStep::NOOP;
 }
 

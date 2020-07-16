@@ -46,6 +46,7 @@ public:
     VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg);
 
     void setPathFactory(PathFactoryPtr pf) { _pathFactory = pf; }
+    PathFactoryPtr pathFactory() { return _pathFactory; }
 
     VehiclePtr createVehicle();
 };

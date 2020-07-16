@@ -71,18 +71,18 @@ void Opening::initTraffic()
 
     auto[x, y, widthf, heightf] = _background->getWorldTileRect();
     sf::Vector2i size{ static_cast<int>(widthf), static_cast<int>(heightf) };
-   _pathFactory = std::make_shared<PathFactory>(size);
+   auto pathFactory = std::make_shared<PathFactory>(size);
 
     EdgeParser eparser;
     std::vector<TurningPoint> edges;
     const auto& config = _background->json();
     for (const auto& item : config["vehicles"]["edges"].items())
     {
-        // std::string value{ item.value().get<std::string>() };
-        // auto edge = eparser.parse(value.begin(), value.end());
-        // if (edge.has_value()) edges.push_back(*edge);
+        std::string value{ item.value().get<std::string>() };
+        auto edge = eparser.parse(value.begin(), value.end());
+        if (edge.has_value()) edges.push_back(*edge);
     }
-    _pathFactory->setEdges(edges);
+    pathFactory->setEdges(edges);
 
     IntersectionParser iparser;
     std::vector<TurningPoint> intersections;
@@ -97,15 +97,15 @@ void Opening::initTraffic()
             intersections.insert(intersections.end(), tempv.begin(), tempv.end());
         }
     }
-    _pathFactory->setIntersections(intersections);
-    _vehicleFactory->setPathFactory(_pathFactory);
+    pathFactory->setIntersections(intersections);
+    _vehicleFactory->setPathFactory(pathFactory);
 
     // TODO: `PathLines` is really a debugging class that needs a `PathFactory`
     // Ideally the `_pathLines` member would be removed, as would the 
     // `_pathFactory` member and instead if would be constructed inside the
     // `VehicleFactory` class
     _pathLines = std::make_unique<PathLines>(*_background);
-    Path path = _pathFactory->makeRandomPath();
+    Path path = pathFactory->makeRandomPath();
     _pathLines->setPath(path);
 }
 
@@ -186,7 +186,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Space:
             {
-                auto p = _pathFactory->makeRandomPath();
+                auto p = _vehicleFactory->pathFactory()->makeRandomPath();
                 _pathLines->setPath(p);
             }
             break;
@@ -305,21 +305,9 @@ std::uint16_t Opening::timestep()
 
     std::stringstream ss;
     ss << _player->getGlobalCenter();
-
     std::stringstream ss1;
     ss1 << getPlayerTile();
-
-    std::stringstream ss2;
-    std::stringstream ss3;
-    if (_vehicles.size() > 0)
-    {
-        auto v = _vehicles.front();
-        ss2 << v->getPosition();
-
-        ss3 << _background->getTileFromGlobal(v->getPosition());
-    }
-
-    auto posText = fmt::format("G({}) T({}) V({},{})", ss.str(), ss1.str(), ss2.str(), ss3.str());
+    auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
     _debugWindow.setText(posText);
 
     return 0;
