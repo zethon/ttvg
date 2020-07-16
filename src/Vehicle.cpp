@@ -57,24 +57,20 @@ Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundShared
       _background { bg },
       _tilesize { _background->tilesize() }
 {
-    _path.points().emplace_back(93,109);
-    _path.points().emplace_back(130,109);
-    _path.points().emplace_back(130,73);
-    _path.points().emplace_back(93,73);
-
     _texture.setSmooth(true);
     setSource(0, 0);
     setScale(1.50f, 1.50f);
     setState(AnimatedSprite::State::ANIMATED);
-    _direction = RIGHT;
-
-    _lastPathPoint = _path.step();
-    auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ _lastPathPoint });
-    setPosition(globalPos);
+    
+    //_direction = RIGHT;
+    //_lastPathPoint = _path.step();
+    //auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ _lastPathPoint });
+    //setPosition(globalPos);
 }
 
 std::uint16_t Vehicle::timestep()
 {
+    auto retval = TimeStep::NOOP;
     AnimatedSprite::timestep();
     
     if (_state == State::MOVING
@@ -84,10 +80,7 @@ std::uint16_t Vehicle::timestep()
         _movementClock.restart();
     }
 
-    if (_lifeClock.getElapsedTime().asSeconds() >= 1000)
-    {
-        //return TimeStep::DELETE;
-    }
+
 
     return TimeStep::NOOP;
 }
@@ -96,6 +89,49 @@ bool Vehicle::isBlocked(const sf::FloatRect& test)
 {
     const auto minDistance = 6.f;
     return isPathBlocked(getGlobalBounds(), test, _direction, minDistance);
+}
+
+void Vehicle::setPath(const Path & path)
+{
+    // yuck, but I don't gaf right now
+    if (path.points().size() < 2) assert(0);
+
+    // VECTOR COPY IN THE GAME LOOP!!!
+    _path = path;
+
+    auto& start = path.points().at(0);
+    auto& next = path.points().at(1);
+
+    if (auto diff = (next - start); diff.x != 0)
+    {
+        if (diff.x > 0)
+        {
+            _direction = Direction::RIGHT;
+        }
+        else
+        {
+            _direction = Direction::LEFT;
+        }
+    }
+    else if (diff.y != 0)
+    {
+        if (diff.y > 0)
+        {
+            _direction = Direction::DOWN;
+        }
+        else
+        {
+            _direction = Direction::UP;
+        }
+    }
+    else
+    {
+        assert(0); // LOL!
+    }
+
+    _lastPathPoint = path.points().at(1);
+    auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ path.points().at(0) });
+    setPosition(globalPos);
 }
 
 void Vehicle::move()

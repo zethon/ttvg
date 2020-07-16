@@ -13,6 +13,10 @@ VehicleFactory::VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg)
     : _background{ bg },
       _resources { resmgr }
 {
+    //auto[x, y, widthf, heightf] = _background->getWorldTileRect();
+    //sf::Vector2i size{ static_cast<int>(widthf), static_cast<int>(heightf) };
+    //_pathFactory = std::make_unique<PathFactory>(size);
+
     std::string jsonfile =
         _resources.getFilename(fmt::format("maps/{}.json", _background->mapname()));
 
@@ -28,8 +32,15 @@ VehicleFactory::VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg)
 
 VehiclePtr VehicleFactory::createVehicle()
 {
+    assert(_pathFactory);
+
     auto temptext = *(_resources.load<sf::Texture>("textures/car1.png"));
     auto vehicle = std::make_shared<Vehicle>(temptext, sf::Vector2i{ 77, 41 }, _background);
+
+    auto path = _pathFactory->makeRandomPath();
+    
+    vehicle->setPath(path);
+
     return vehicle;
 }
 

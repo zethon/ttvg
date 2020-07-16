@@ -15,6 +15,9 @@ namespace tt
 class Vehicle;
 using VehiclePtr = std::shared_ptr<Vehicle>;
 
+class PathFactory;
+using PathFactoryPtr = std::shared_ptr<PathFactory>;
+
 class PathFactory
 {
     TurningPoints   _edges;
@@ -34,13 +37,15 @@ public:
 
 class VehicleFactory
 {
-    BackgroundSharedPtr _background;
-    ResourceManager&    _resources;
-    nl::json            _json;
+    BackgroundSharedPtr             _background;
+    ResourceManager&                _resources;
+    std::shared_ptr<PathFactory>    _pathFactory;
+    nl::json                        _json;
 
 public:
     VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg);
 
+    void setPathFactory(PathFactoryPtr pf) { _pathFactory = pf; }
 
     VehiclePtr createVehicle();
 };

@@ -39,6 +39,8 @@ public:
     State vehicleState() const { return _state; }
     void setVehicleState(State val) { _state = val; }
 
+    void setPath(const Path& path);
+
 private:
     void move();
 
@@ -49,10 +51,13 @@ private:
 
     Path                _path;
     sf::Vector2i        _lastPathPoint;
+    
     const sf::Vector2i  _tilesize;
 
     Direction           _direction = DOWN;
     State               _state = MOVING;
+
+    bool                _finishedPath = false;
 
 };
 

@@ -81,18 +81,18 @@
             "93,-1,down",
             "129,-1,down",
             
-            "10,151,up",
-            "46,151,up",
-            "101,151,up",
-            "122,151,up",
+            "10,150,up",
+            "46,150,up",
+            "101,150,up",
+            "122,150,up",
 
-            "151,7,left",
-            "151,24,left",
-            "151,39,left",
-            "151,73,left",
-            "151,95,left",
-            "151,107,left",
-            "151,129,left"
+            "150,7,left",
+            "150,24,left",
+            "150,39,left",
+            "150,73,left",
+            "150,95,left",
+            "150,107,left",
+            "150,129,left"
         ],
         "intersections":
         [
@@ -126,7 +126,7 @@
             "93,123,T90,single,single",
             "93,142,CROSS,single,single",
 
-            "121,142,L270,single,single",
+            "121,142,L180,single,single",
 
             "129,7,CROSS,single,single",
             "129,24,CROSS,single,single",

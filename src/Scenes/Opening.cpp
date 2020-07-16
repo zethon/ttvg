@@ -36,8 +36,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
 
-    _vehicleFactory = std::make_unique<VehicleFactory>(resmgr, _background);
-
     // auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
     sf::View view(sf::FloatRect(0.f, 0.f,
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
@@ -69,9 +67,11 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
 void Opening::initTraffic()
 {
     // initialize the traffic system
+    _vehicleFactory = std::make_unique<VehicleFactory>(_resources, _background);
+
     auto[x, y, widthf, heightf] = _background->getWorldTileRect();
     sf::Vector2i size{ static_cast<int>(widthf), static_cast<int>(heightf) };
-    _pathFactory = std::make_unique<PathFactory>(size);
+   _pathFactory = std::make_shared<PathFactory>(size);
 
     EdgeParser eparser;
     std::vector<TurningPoint> edges;
@@ -98,9 +98,13 @@ void Opening::initTraffic()
         }
     }
     _pathFactory->setIntersections(intersections);
+    _vehicleFactory->setPathFactory(_pathFactory);
 
+    // TODO: `PathLines` is really a debugging class that needs a `PathFactory`
+    // Ideally the `_pathLines` member would be removed, as would the 
+    // `_pathFactory` member and instead if would be constructed inside the
+    // `VehicleFactory` class
     _pathLines = std::make_unique<PathLines>(*_background);
-
     Path path = _pathFactory->makeRandomPath();
     _pathLines->setPath(path);
 }
