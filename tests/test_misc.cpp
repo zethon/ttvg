@@ -107,7 +107,7 @@ const std::tuple<std::string, std::vector<tt::TurningPoint>> parseIntersectionTe
     }
 };
 
-bool intersection_sorter(const tt::Intersection& lhs, const tt::Intersection& rhs)
+bool intersection_sorter(const tt::TurningPoint& lhs, const tt::TurningPoint& rhs)
 {
     if (lhs.point.x != rhs.point.x)
     {
@@ -192,7 +192,6 @@ const std::tuple<sf::Vector2i, tt::IntersectionType, tt::TurningPoints> intersec
     }
 };
 
-bool intersection_sorter(const tt::Intersection& lhs, const tt::Intersection& rhs)
 // --run_test=tt/intersectionTest
 BOOST_DATA_TEST_CASE(intersectionTest, data::make(intersectionTestData), source, type, expectedv)
 {
