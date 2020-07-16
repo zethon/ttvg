@@ -263,43 +263,7 @@ std::uint16_t Opening::timestep()
         _player->setState(AnimatedSprite::STILL);
     }
 
-    if (_globalClock.getElapsedTime().asSeconds() > 2)
-    {
-        spawnNPC();
-    }
-
-    static sf::Clock test;
-    auto vi = _vehicles.begin();
-    while (vi != _vehicles.end())
-    {
-        auto& ptr = *vi;
-        auto result = ptr->timestep();
-        if (result == Vehicle::DELETE)
-        {
-            auto oi = std::find(_objects.begin(), _objects.end(), ptr);
-            if (oi != _objects.end())
-            {
-                // let `Screen::draw()` remove the object from the 
-                // container
-                oi->reset();
-            }
-
-            // remove it from our vehicle list
-            vi = _vehicles.erase(vi);
-            continue;
-        }
-
-        if (ptr->isBlocked(_player->getGlobalBounds()))
-        {
-            ptr->setVehicleState(Vehicle::STOPPED);
-        }
-        else if (ptr->vehicleState() == Vehicle::STOPPED)
-        {
-            ptr->setVehicleState(Vehicle::MOVING);
-        }
-
-        vi++;
-    }
+    timestepTraffic();
 
     Scene::timestep();
 
@@ -313,17 +277,59 @@ std::uint16_t Opening::timestep()
     return 0;
 }
 
+void Opening::timestepTraffic()
+{
+    auto runSeconds = static_cast<std::uint32_t>(_globalClock.getElapsedTime().asSeconds());
+    if (_vehicles.size() < 500 && (runSeconds % 1) == 0)
+    {
+        auto vehicle = _vehicleFactory->createVehicle();
+        _vehicles.push_back(vehicle);
+    }
+
+    static sf::Clock test;
+    auto vi = _vehicles.begin();
+    const auto playerBounds = _player->getGlobalBounds();
+    while (vi != _vehicles.end())
+    {
+        auto& ptr = *vi;
+        auto result = ptr->timestep();
+        if (result == Vehicle::DELETE)
+        {
+            // remove it from our vehicle list
+            vi = _vehicles.erase(vi);
+            continue;
+        }
+        else if (ptr->isBlocked(playerBounds))
+        {
+            ptr->setVehicleState(Vehicle::STOPPED);
+        }
+        else if (ptr->vehicleState() == Vehicle::STOPPED)
+        {
+            ptr->setVehicleState(Vehicle::MOVING);
+        }
+
+        vi++;
+    }
+}
+
 void Opening::draw()
 {
+    // always adjust the view before drawing
     adjustView();
+
+    // now to the base class drawing
     Scene::draw();
+
+    // draw the vehicles
+    std::for_each(_vehicles.begin(), _vehicles.end(),
+        [this](VehiclePtr v) { _window.draw(*v); });
 
     _pathLines->draw(_window);
 
     // the player should always be the last thing on the 
     // game board to be drawn
     _window.draw(*_player);
-    
+  
     _window.setView(_window.getDefaultView());
     _statusBar.draw();
     _debugWindow.draw();
@@ -428,17 +434,6 @@ void Opening::animeCallback()
         sf::Vector2f tile{ getPlayerTile() };
         _statusBar.setZoneText(_background->zoneName(tile));
     }
-}
-
-void Opening::spawnNPC()
-{
-    if (_testSpawned) return;
-
-    auto vehicle = _vehicleFactory->createVehicle();
-    _vehicles.push_back(vehicle);
-    addDrawable(vehicle);
-
-    _testSpawned = true;
 }
 
 } // namespace tt

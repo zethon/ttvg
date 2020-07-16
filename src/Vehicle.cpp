@@ -73,6 +73,11 @@ std::uint16_t Vehicle::timestep()
     auto retval = TimeStep::NOOP;
     AnimatedSprite::timestep();
     
+    if (_path.finished())
+    {
+        return TimeStep::DELETE;
+    }
+
     if (_state == State::MOVING
         && _movementClock.getElapsedTime().asMilliseconds() > 100)
     {

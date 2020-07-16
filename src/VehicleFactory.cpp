@@ -38,6 +38,7 @@ VehiclePtr VehicleFactory::createVehicle()
     auto vehicle = std::make_shared<Vehicle>(temptext, sf::Vector2i{ 77, 41 }, _background);
 
     auto path = _pathFactory->makeRandomPath();
+    path.setRepeating(false);
     
     vehicle->setPath(path);
 
@@ -102,8 +103,8 @@ Path PathFactory::makeRandomPath() const
                 std::uniform_int_distribution<> dis(0, 1);
                 if (dis(gen) > 0)
                 {
-                    if (temp->turn != Direction::UP || temp->turn != Direction::DOWN
-                        || temp->turn != Direction::LEFT || temp->turn != Direction::RIGHT)
+                    if (temp->turn != Direction::UP && temp->turn != Direction::DOWN
+                        && temp->turn != Direction::LEFT && temp->turn != Direction::RIGHT)
                     {
                         currentDirection = static_cast<Direction>(temp->turn ^ currentDirection);
                     }

@@ -226,8 +226,6 @@ class Opening : public Scene
 public:
     Opening(ResourceManager& resmgr, sf::RenderTarget& target);
 
-    void initTraffic();
-
     std::uint16_t poll(const sf::Event& e) override;
     std::uint16_t timestep() override;
     void draw() override;
@@ -240,9 +238,11 @@ public:
 
 private:
 
+    void initTraffic();
+    void timestepTraffic();
+
     void adjustView();
     void animeCallback();
-    void spawnNPC();
 
     MissionText                         _missionText;
     StatusBar                           _statusBar;
@@ -254,7 +254,6 @@ private:
     sf::Clock                           _globalClock;
     nl::json                            _json;
 
-    bool                                _testSpawned = false;
     std::unique_ptr<PathLines>          _pathLines;
     std::unique_ptr<VehicleFactory>     _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;

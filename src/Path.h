@@ -12,10 +12,14 @@ class Path
     float                       _speed;
     std::size_t                 _idx = 0;
     bool                        _repeating = true;
+    bool                        _finished = false;
 
 public:
 
     bool repeating() const { return _repeating; }
+    void setRepeating(bool v) { _repeating = v; }
+
+    bool finished() const { return _finished; }
 
     std::vector<sf::Vector2i>& points()
     {
@@ -31,7 +35,12 @@ public:
     {
         if (_idx >= _points.size())
         { 
-            if (!_repeating) return _points.back();
+            if (!_repeating)
+            {
+                _finished = true;
+                return _points.back();
+            }
+
             _idx = 0;
         }
 
