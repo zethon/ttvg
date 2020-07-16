@@ -14,7 +14,8 @@ namespace tt
 {
 
 Background::Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2i& tilesize)
-    : _tilesize { tilesize }
+    : _tilesize { tilesize },
+      _mapname{ name }
 {
     const std::string texturename = fmt::format("maps/{}.png", name);
     _texture = resmgr.loadUniquePtr<sf::Texture>(texturename);

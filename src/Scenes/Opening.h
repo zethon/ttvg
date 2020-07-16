@@ -257,7 +257,7 @@ private:
     bool                                _testSpawned = false;
     std::unique_ptr<PathLines>          _pathLines;
     std::unique_ptr<PathFactory>        _pathFactory;
-    VehicleFactory                      _vehicleFactory;
+    std::unique_ptr<VehicleFactory>     _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;
 };
 

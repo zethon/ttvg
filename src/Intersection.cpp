@@ -3,7 +3,7 @@
 namespace tt
 {
 
-Intersections makeIntersection(
+TurningPoints makeIntersection(
     const sf::Vector2i& origin, IntersectionType type, Lane horz, Lane vert)
 {
     // note the inversion of horizontal and vertical, this

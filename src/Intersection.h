@@ -55,7 +55,7 @@ enum IntersectionType
     CROSS
 };
 
-struct Intersection
+struct TurningPoint
 {
     sf::Vector2i    point;
     std::uint32_t   turn;
@@ -68,9 +68,9 @@ enum Lane
     DOUBLE
 };
 
-using Intersections = std::vector<Intersection>;
+using TurningPoints = std::vector<TurningPoint>;
 
-Intersections makeIntersection(
+TurningPoints makeIntersection(
     const sf::Vector2i& origin, 
     IntersectionType type, 
     Lane h = Lane::SINGLE, 
@@ -160,7 +160,7 @@ struct EdgeParser
         = std::tuple<sf::Vector2f, std::uint32_t>;
 
     template<typename It>
-    std::optional<Intersection> parse(It begin, It end)
+    std::optional<TurningPoint> parse(It begin, It end)
     {
         static auto parser
             = x3::rule<class EdgeParser_, Edge>{}
@@ -181,7 +181,7 @@ struct EdgeParser
         bool result = phrase_parse(begin, end, parser, x3::ascii::space, helper);
         if (!result) return {};
 
-        return Intersection{ sf::Vector2i{std::get<0>(helper)}, std::get<1>(helper) };
+        return TurningPoint{ sf::Vector2i{std::get<0>(helper)}, std::get<1>(helper) };
     }
 
 private:

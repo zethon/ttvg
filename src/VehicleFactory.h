@@ -17,8 +17,8 @@ using VehiclePtr = std::shared_ptr<Vehicle>;
 
 class PathFactory
 {
-    Intersections   _edges;
-    Intersections   _turns;
+    TurningPoints   _edges;
+    TurningPoints   _turns;
     sf::Vector2i    _size;
 
 public:
@@ -26,20 +26,20 @@ public:
         : _size{ size }
     {}
 
-    void setEdges(const Intersections& edges) { _edges = edges; }
-    void setIntersections(const Intersections& points) { _turns = points; }
+    void setEdges(const TurningPoints& edges) { _edges = edges; }
+    void setIntersections(const TurningPoints& points) { _turns = points; }
     
     Path makeRandomPath() const;
-
 };
 
 class VehicleFactory
 {
+    BackgroundSharedPtr _background;
     ResourceManager&    _resources;
     nl::json            _json;
 
 public:
-    VehicleFactory(ResourceManager& resmgr, const std::string& mapname);
+    VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg);
 
 
     VehiclePtr createVehicle();

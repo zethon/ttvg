@@ -2,16 +2,19 @@
 
 #include <fmt/core.h>
 
+#include "Background.h"
+#include "Vehicle.h"
 #include "VehicleFactory.h"
 
 namespace tt
 {
 
-VehicleFactory::VehicleFactory(ResourceManager& resmgr, const std::string& mapname)
-    : _resources { resmgr }
+VehicleFactory::VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg)
+    : _background{ bg },
+      _resources { resmgr }
 {
     std::string jsonfile =
-        _resources.getFilename(fmt::format("maps/{}.json", mapname));
+        _resources.getFilename(fmt::format("maps/{}.json", _background->mapname()));
 
     if (!boost::filesystem::exists(jsonfile))
     {
@@ -25,7 +28,9 @@ VehicleFactory::VehicleFactory(ResourceManager& resmgr, const std::string& mapna
 
 VehiclePtr VehicleFactory::createVehicle()
 {
-    return VehiclePtr();
+    auto temptext = *(_resources.load<sf::Texture>("textures/car1.png"));
+    auto vehicle = std::make_shared<Vehicle>(temptext, sf::Vector2i{ 77, 41 }, _background);
+    return vehicle;
 }
 
 sf::Vector2i stepDirection(const sf::Vector2i& point, Direction direction)
@@ -66,7 +71,7 @@ Path PathFactory::makeRandomPath() const
         && currentPoint.y >= 0 && currentPoint.y < _size.y)
     {
         auto temp = std::find_if(_turns.begin(), _turns.end(), 
-            [&currentPoint](const Intersection& inter)
+            [&currentPoint](const TurningPoint& inter)
             {
                 return currentPoint == inter.point;
             });

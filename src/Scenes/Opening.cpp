@@ -30,12 +30,13 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene{ resmgr, target },
       _missionText { resmgr, target },
       _statusBar{ resmgr, target },
-      _debugWindow{ resmgr, target },
-      _vehicleFactory { resmgr, MAPNAME }
+      _debugWindow{ resmgr, target }
 {
     _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2i { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
+
+    _vehicleFactory = std::make_unique<VehicleFactory>(resmgr, _background);
 
     // auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
     sf::View view(sf::FloatRect(0.f, 0.f,
@@ -73,7 +74,7 @@ void Opening::initTraffic()
     _pathFactory = std::make_unique<PathFactory>(size);
 
     EdgeParser eparser;
-    std::vector<Intersection> edges;
+    std::vector<TurningPoint> edges;
     const auto& config = _background->json();
     for (const auto& item : config["vehicles"]["edges"].items())
     {
@@ -84,7 +85,7 @@ void Opening::initTraffic()
     _pathFactory->setEdges(edges);
 
     IntersectionParser iparser;
-    std::vector<Intersection> intersections;
+    std::vector<TurningPoint> intersections;
     for (const auto& item : config["vehicles"]["intersections"].items())
     {
         std::string value{ item.value().get<std::string>() };
@@ -261,7 +262,6 @@ std::uint16_t Opening::timestep()
     if (_globalClock.getElapsedTime().asSeconds() > 2)
     {
         spawnNPC();
-        _testSpawned = true;
     }
 
     static sf::Clock test;
@@ -442,16 +442,11 @@ void Opening::spawnNPC()
 {
     if (_testSpawned) return;
 
-    auto temptext = *(_resources.load<sf::Texture>("textures/car1.png"));
-    auto npc = std::make_shared<Vehicle>(temptext, sf::Vector2i{ 77, 41 }, _background);
-    // npc->setBackground(_background);
-    
-    auto [x,y] = _player->getGlobalCenter();
-    // npc->setPosition(x, y + 20.0f);
-    // _player->setAnimeCallback([this]() { this->animeCallback(); });
-    // addUpdateable(npc);
-    _vehicles.push_back(npc);
-    addDrawable(npc);
+    auto vehicle = _vehicleFactory->createVehicle();
+    _vehicles.push_back(vehicle);
+    addDrawable(vehicle);
+
+    _testSpawned = true;
 }
 
 } // namespace tt

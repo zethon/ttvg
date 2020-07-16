@@ -71,6 +71,8 @@ public:
     nl::json& json() { return *_json; }
     const nl::json& json() const { return const_cast<const nl::json&>(json()); }
 
+    std::string mapname() const { return _mapname; }
+
     // TODO: there are some interesting optimizations that
     // could be done here, which might be interesting to do
     // but there are other things I want to do right now
@@ -84,7 +86,7 @@ protected:
 private:
     sf::Vector2i                _tilesize;
     std::unique_ptr<nl::json>   _json;
-
+    std::string                 _mapname;
 };
 
 } // namespace tt

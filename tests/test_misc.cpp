@@ -42,7 +42,7 @@ std::ostream& operator<<(std::ostream& out, const sf::Vector2<T> item)
     return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const tt::Intersection& item)
+std::ostream& operator<<(std::ostream& out, const tt::TurningPoint& item)
 {
     auto[point, directions, decisionPoint] = item;
     out << "{ point=" << point
@@ -53,7 +53,7 @@ std::ostream& operator<<(std::ostream& out, const tt::Intersection& item)
     return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const tt::Intersections& item)
+std::ostream& operator<<(std::ostream& out, const tt::TurningPoints& item)
 {
     for (const auto& i : item)
     {
@@ -96,7 +96,7 @@ BOOST_DATA_TEST_CASE(testFloatRectParse, data::make(floatRectParseData), origina
     BOOST_TEST(rect == expected);
 }
 
-const std::tuple<std::string, std::vector<tt::Intersection>> parseIntersectionTestData[] =
+const std::tuple<std::string, std::vector<tt::TurningPoint>> parseIntersectionTestData[] =
 {
     {
         "2,2,L0,single,single",
@@ -131,7 +131,7 @@ BOOST_DATA_TEST_CASE(parse_IntersectionTest, data::make(parseIntersectionTestDat
     std::sort(iv.begin(), iv.end(), &intersection_sorter);
 
     // I guess the test's variable is const?
-    Intersections expected = expectedv;
+    TurningPoints expected = expectedv;
     std::sort(expected.begin(), expected.end(), &intersection_sorter);
 
     BOOST_TEST(iv.size() == expected.size());
@@ -146,11 +146,11 @@ BOOST_DATA_TEST_CASE(parse_IntersectionTest, data::make(parseIntersectionTestDat
     }
 }
 
-const std::tuple<std::string, tt::Intersection> parseEdgeTestData[] =
+const std::tuple<std::string, tt::TurningPoint> parseEdgeTestData[] =
 {
     {
         "2,2,right",
-        tt::Intersection{ sf::Vector2i{2,2}, tt::Direction::RIGHT }
+        tt::TurningPoint{ sf::Vector2i{2,2}, tt::Direction::RIGHT }
     }
 };
 
@@ -170,7 +170,7 @@ BOOST_DATA_TEST_CASE(parse_edgeTest, data::make(parseEdgeTestData), original, ex
     BOOST_TEST(intersection.decisionPoint == expected.decisionPoint);
 }
 
-const std::tuple<sf::Vector2i, tt::IntersectionType, tt::Intersections> intersectionTestData[] =
+const std::tuple<sf::Vector2i, tt::IntersectionType, tt::TurningPoints> intersectionTestData[] =
 {
     {
         sf::Vector2i{ 2,2 },
@@ -192,6 +192,7 @@ const std::tuple<sf::Vector2i, tt::IntersectionType, tt::Intersections> intersec
     }
 };
 
+bool intersection_sorter(const tt::Intersection& lhs, const tt::Intersection& rhs)
 // --run_test=tt/intersectionTest
 BOOST_DATA_TEST_CASE(intersectionTest, data::make(intersectionTestData), source, type, expectedv)
 {
@@ -201,7 +202,7 @@ BOOST_DATA_TEST_CASE(intersectionTest, data::make(intersectionTestData), source,
     std::sort(iv.begin(), iv.end(), &intersection_sorter);
 
     // I guess the test's variable is const?
-    Intersections expected = expectedv;
+    TurningPoints expected = expectedv;
     std::sort(expected.begin(), expected.end(), &intersection_sorter);
 
     BOOST_TEST(iv.size() == expected.size());
@@ -274,12 +275,12 @@ BOOST_DATA_TEST_CASE(vehicleBlockedTest, data::make(vehicleBlocks), object, othe
 // --run_test=tt/path_forcedDoubleLaneTest
 BOOST_AUTO_TEST_CASE(path_ForcedSingleLaneTest)
 {
-    Intersections edges =
+    TurningPoints edges =
     {
         { { -1, 2 }, Direction::RIGHT, false },
     };
 
-    Intersections inter;
+    TurningPoints inter;
 
     auto temp = tt::makeIntersection({ 2, 1 }, tt::IntersectionType::L180);
     inter.insert(inter.end(), temp.begin(), temp.end());
@@ -307,12 +308,12 @@ BOOST_AUTO_TEST_CASE(path_ForcedSingleLaneTest)
 // --run_test=tt/path_forcedDoubleLaneTest
 BOOST_AUTO_TEST_CASE(path_forcedDoubleLaneTest)
 {
-    Intersections edges =
+    TurningPoints edges =
     {
         { { -1, 3 }, Direction::RIGHT, false },
     };
 
-    Intersections inter;
+    TurningPoints inter;
 
     auto temp = tt::makeIntersection({ 2, 1 }, tt::IntersectionType::L180, tt::Lane::DOUBLE, tt::Lane::DOUBLE);
     inter.insert(inter.end(), temp.begin(), temp.end());
@@ -340,12 +341,12 @@ BOOST_AUTO_TEST_CASE(path_forcedDoubleLaneTest)
 // --run_test=tt/pathMakingTXTest
 BOOST_AUTO_TEST_CASE(pathMakingTXTest)
 {
-    Intersections edges =
+    TurningPoints edges =
     {
         { { -1, 3 }, Direction::RIGHT, false },
     };
 
-    Intersections inter;
+    TurningPoints inter;
 
     auto temp = tt::makeIntersection({ 2, 2 }, tt::IntersectionType::T90);
     inter.insert(inter.end(), temp.begin(), temp.end());
@@ -359,12 +360,12 @@ BOOST_AUTO_TEST_CASE(pathMakingTXTest)
 
 BOOST_AUTO_TEST_CASE(pathMakingSingleTXTest)
 {
-    Intersections edges =
+    TurningPoints edges =
     {
         { { -1, 4 }, Direction::RIGHT, false }
     };
 
-    Intersections inter;
+    TurningPoints inter;
 
     auto temp = tt::makeIntersection({ 3, 3 }, tt::IntersectionType::CROSS);
     inter.insert(inter.end(), temp.begin(), temp.end());
@@ -379,13 +380,13 @@ BOOST_AUTO_TEST_CASE(pathMakingSingleTXTest)
 // --run_test=tt/pathMakingDoubleTXTest
 BOOST_AUTO_TEST_CASE(pathMakingDoubleTXTest)
 {
-    Intersections edges =
+    TurningPoints edges =
     {
         { { -1, 4 }, Direction::RIGHT, false },
         { { -1, 8 }, Direction::RIGHT, false },
     };
 
-    Intersections inter;
+    TurningPoints inter;
 
     auto temp = tt::makeIntersection({ 3, 3 }, tt::IntersectionType::CROSS);
     inter.insert(inter.end(), temp.begin(), temp.end());
