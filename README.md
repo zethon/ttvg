@@ -85,7 +85,7 @@ Once the game has been built and you try to run it, then you might notice that i
 tooter -r c:\source\ttvg\resources
 ```
 
-## Liensing
+## Licensing
 
 Unless otherwise noted, this code is licensed under the MIT license.
 
