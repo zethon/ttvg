@@ -314,13 +314,13 @@ BOOST_AUTO_TEST_CASE(path_forcedDoubleLaneTest)
 
     TurningPoints inter;
 
-    auto temp = tt::makeIntersection({ 2, 1 }, tt::IntersectionType::L180, tt::Lane::DOUBLE, tt::Lane::DOUBLE);
+    auto temp = tt::makeIntersection({ 2, 1 }, tt::IntersectionType::L180, tt::LaneSize::DOUBLE, tt::LaneSize::DOUBLE);
     inter.insert(inter.end(), temp.begin(), temp.end());
 
-    temp = tt::makeIntersection({ 2, 7 }, tt::IntersectionType::L0, tt::Lane::DOUBLE, tt::Lane::DOUBLE);
+    temp = tt::makeIntersection({ 2, 7 }, tt::IntersectionType::L0, tt::LaneSize::DOUBLE, tt::LaneSize::DOUBLE);
     inter.insert(inter.end(), temp.begin(), temp.end());
 
-    temp = tt::makeIntersection({ 5, 7 }, tt::IntersectionType::L270, tt::Lane::DOUBLE, tt::Lane::DOUBLE);
+    temp = tt::makeIntersection({ 5, 7 }, tt::IntersectionType::L270, tt::LaneSize::DOUBLE, tt::LaneSize::DOUBLE);
     inter.insert(inter.end(), temp.begin(), temp.end());
 
     tt::PathFactory fact{ sf::Vector2i{10, 10} };

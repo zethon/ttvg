@@ -4,12 +4,12 @@ namespace tt
 {
 
 TurningPoints makeIntersection(
-    const sf::Vector2i& origin, IntersectionType type, Lane horz, Lane vert)
+    const sf::Vector2i& origin, IntersectionType type, LaneSize horz, LaneSize vert)
 {
     // note the inversion of horizontal and vertical, this
     // is necessary
-    const auto hModifier = (vert == Lane::SINGLE ? 1 : 2);
-    const auto vModifier = (horz == Lane::SINGLE ? 1 : 2);
+    const auto hModifier = (vert == LaneSize::SINGLE ? 1 : 2);
+    const auto vModifier = (horz == LaneSize::SINGLE ? 1 : 2);
 
     switch (type)
     {

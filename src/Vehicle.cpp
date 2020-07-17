@@ -59,13 +59,8 @@ Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundShared
 {
     _texture.setSmooth(true);
     setSource(0, 0);
-    setScale(1.50f, 1.50f);
+    setScale(1.4f, 1.4f);
     setState(AnimatedSprite::State::ANIMATED);
-    
-    //_direction = RIGHT;
-    //_lastPathPoint = _path.step();
-    //auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ _lastPathPoint });
-    //setPosition(globalPos);
 }
 
 std::uint16_t Vehicle::timestep()

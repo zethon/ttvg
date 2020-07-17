@@ -32,8 +32,6 @@ using namespace std::string_literals;
 namespace tt
 {
 
-constexpr auto MAX_PATH_POINTS = 50;
-
 enum Direction
 {
     UP      = 0x01,
@@ -55,6 +53,12 @@ enum IntersectionType
     CROSS
 };
 
+enum LaneSize
+{
+    SINGLE,
+    DOUBLE
+};
+
 struct TurningPoint
 {
     sf::Vector2i    point;
@@ -62,19 +66,13 @@ struct TurningPoint
     bool            decisionPoint = false;
 };
 
-enum Lane
-{
-    SINGLE,
-    DOUBLE
-};
-
 using TurningPoints = std::vector<TurningPoint>;
 
 TurningPoints makeIntersection(
     const sf::Vector2i& origin, 
     IntersectionType type, 
-    Lane h = Lane::SINGLE, 
-    Lane v = Lane::SINGLE);
+    LaneSize h = LaneSize::SINGLE, 
+    LaneSize v = LaneSize::SINGLE);
 
 namespace x3 = boost::spirit::x3;
 
@@ -98,19 +96,19 @@ struct IntersectionParser
         }
     };
 
-    struct Lane_ : x3::symbols<Lane>
+    struct Lane_ : x3::symbols<LaneSize>
     {
         Lane_()
         {
             add
-                ("single", Lane::SINGLE)
-                ("double", Lane::DOUBLE)
+                ("single", LaneSize::SINGLE)
+                ("double", LaneSize::DOUBLE)
                 ;
         }
     };
 
     using IntersectionHelper
-        = std::tuple<sf::Vector2f, tt::IntersectionType, Lane, Lane>;
+        = std::tuple<sf::Vector2f, tt::IntersectionType, LaneSize, LaneSize>;
 
     template<typename It>
     std::optional<IntersectionHelper> parse(It begin, It end)
