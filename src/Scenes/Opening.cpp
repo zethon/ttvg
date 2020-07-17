@@ -73,7 +73,7 @@ void Opening::initTraffic()
     sf::Vector2i size{ static_cast<int>(widthf), static_cast<int>(heightf) };
    auto pathFactory = std::make_shared<PathFactory>(size);
 
-    EdgeParser eparser;
+    TurningPointParser eparser;
     std::vector<TurningPoint> edges;
     const auto& config = _background->json();
     for (const auto& item : config["vehicles"]["edges"].items())

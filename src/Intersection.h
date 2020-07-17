@@ -139,7 +139,7 @@ private:
     Lane_ laneType_;
 };
 
-struct EdgeParser
+struct TurningPointParser
 {
     struct Direction_ : x3::symbols<Direction>
     {
@@ -155,14 +155,14 @@ struct EdgeParser
     };
 
     using Edge
-        = std::tuple<sf::Vector2f, std::uint32_t>;
+        = std::tuple<sf::Vector2f, std::uint32_t, bool>;
 
     template<typename It>
     std::optional<TurningPoint> parse(It begin, It end)
     {
         static auto parser
             = x3::rule<class EdgeParser_, Edge>{}
-            = (x3::float_ >> ',' >> x3::float_ >> ',' >> directionType_)
+            = (x3::float_ >> ',' >> x3::float_ >> ',' >> directionType_ >> -(',' >> x3::bool_))
             [(
                 [](auto& ctx)
                 {
@@ -171,7 +171,9 @@ struct EdgeParser
 
                     sf::Vector2f pt{ static_cast<float>(at_c<0>(attr)), static_cast<float>(at_c<1>(attr)) };
                     x3::_val(ctx)
-                        = Edge{ pt, static_cast<std::uint32_t>(at_c<2>(attr)) };
+                        = Edge{ pt, 
+                            static_cast<std::uint32_t>(at_c<2>(attr)),  
+                            at_c<3>(attr) ? *(at_c<3>(attr)) : false };
                 }
             )];
 
@@ -179,7 +181,8 @@ struct EdgeParser
         bool result = phrase_parse(begin, end, parser, x3::ascii::space, helper);
         if (!result) return {};
 
-        return TurningPoint{ sf::Vector2i{std::get<0>(helper)}, std::get<1>(helper) };
+        auto[origin, direction, dp] = helper;
+        return TurningPoint{ sf::Vector2i{origin}, direction, dp };
     }
 
 private:

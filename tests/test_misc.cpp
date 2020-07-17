@@ -63,7 +63,7 @@ std::ostream& operator<<(std::ostream& out, const tt::TurningPoints& item)
     return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const tt::EdgeParser::Edge& item)
+std::ostream& operator<<(std::ostream& out, const tt::TurningPointParser::Edge& item)
 {
     out << '{' << std::get<0>(item) << ',' << static_cast<std::uint32_t>(std::get<1>(item)) << '}';
     return out;
@@ -146,18 +146,22 @@ BOOST_DATA_TEST_CASE(parse_IntersectionTest, data::make(parseIntersectionTestDat
     }
 }
 
-const std::tuple<std::string, tt::TurningPoint> parseEdgeTestData[] =
+const std::tuple<std::string, tt::TurningPoint> parseTurningPointTestData[] =
 {
     {
         "2,2,right",
-        tt::TurningPoint{ sf::Vector2i{2,2}, tt::Direction::RIGHT }
+        tt::TurningPoint{ sf::Vector2i{2,2}, tt::Direction::RIGHT, false }
+    },
+    {
+        "2,2,right,true",
+        tt::TurningPoint{ sf::Vector2i{2,2}, tt::Direction::RIGHT, true }
     }
 };
 
-// --run_test=tt/parse_edgeTest
-BOOST_DATA_TEST_CASE(parse_edgeTest, data::make(parseEdgeTestData), original, expected)
+// --run_test=tt/parse_turningPointTest
+BOOST_DATA_TEST_CASE(parse_turningPointTest, data::make(parseTurningPointTestData), original, expected)
 {
-    tt::EdgeParser parser;
+    tt::TurningPointParser parser;
 
     auto start = std::begin(original);
     const auto stop = std::end(original);
