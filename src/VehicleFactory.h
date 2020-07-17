@@ -31,6 +31,10 @@ public:
 
     void setEdges(const TurningPoints& edges) { _edges = edges; }
     void setIntersections(const TurningPoints& points) { _turns = points; }
+    void addTurn(const TurningPoint& tp)
+    {
+        _turns.push_back(tp);
+    }
     
     Path makeRandomPath() const;
 };

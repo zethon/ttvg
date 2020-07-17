@@ -98,6 +98,17 @@ void Opening::initTraffic()
         }
     }
     pathFactory->setIntersections(intersections);
+
+    edges.clear();
+    for (const auto& item : config["vehicles"]["turningpoints"].items())
+    {
+        std::string value{ item.value().get<std::string>() };
+        auto tp = eparser.parse(value.begin(), value.end());
+        if (tp.has_value())
+        {
+            pathFactory->addTurn(*tp);
+        }
+    }
     _vehicleFactory->setPathFactory(pathFactory);
 
     // TODO: `PathLines` is really a debugging class that needs a `PathFactory`

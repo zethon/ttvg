@@ -145,8 +145,10 @@ void Vehicle::move()
     {
         globalPosition.x += getGlobalBounds().width / 2;
     }
+
     auto currentTile = sf::Vector2i { _background->getTileFromGlobal(globalPosition) };
 
+    auto currentPathTile = _path.current();
     auto nextTile = _path.next();
 
     float xdiff = static_cast<float>(std::pow(currentTile.x - nextTile.x, 2.f));
@@ -166,6 +168,8 @@ void Vehicle::move()
     }
 
     auto diff = nextTile - currentTile;
+
+    assert(!(diff.x != 0 && diff.y != 0));
     if (diff.x != 0)
     {
         if (std::abs(diff.x) < speed)

@@ -138,7 +138,18 @@
             "129,129,L0,single,single",
 
             "44,7,CROSS,single,double"
+        ],
+        "turningpoints":
+        [
+            "10,110,right,false",
+            "9,109,right,false",
+            "9,110,down,true",
+            "10,109,down,true",
 
+            "44,107,down,true",
+            "46,106,up,true",
+            "46,109,up,true",
+            "44,110,down,true"
         ]
     }
 }

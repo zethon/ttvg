@@ -4,6 +4,7 @@
 #include <ostream>
 #include <random>
 #include <iterator>
+#include <cmath>
 
 #include <boost/spirit/home/x3.hpp>
 
