@@ -10,15 +10,10 @@ Right now there is no installer, so the game has be built manually. An installer
 
 All platforms require: 
 
-* [CMake 3.10+](https://cmake.org/download/)
-* [conan 1.21+](https://conan.io/)
-
-
-You must add a conan remote in order to download the [TMXLite Library](https://github.com/fallahn/tmxlite):
-
-```
-conan remote add zethon https://api.bintray.com/conan/zethon/arcc
-```
+* [Git](https://git-scm.com/downloads)
+* [Git Large File Storage](https://git-lfs.github.com/)
+* [CMake](https://cmake.org/download/)
+* [conan](https://conan.io/)
 
 ### Windows
 
