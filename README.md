@@ -4,7 +4,7 @@ This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for mult
 
 ## How to Install
 
-Right now there is no installer, so the game has be built manually. An installer for both Windows and Mac will be created as the game matures and nears a releaseable state.
+Currently there is no installer, so the game must be built manually. An installer for both Windows and Mac will be created as the game matures and nears a releaseable state.
 
 ## How to Build
 
@@ -79,11 +79,13 @@ I have not tried to build this on Linux but there's no reason it shouldn't work 
 
 ## How to Play
 
-Once the game has been built and you try to run it, then you might notice that it crashes. This is because you must tell the game where to find all of the assets (i.e. images, sound files, etc). You can specify where the resources are with the `--resources` or `-r` option on the command line
+Once the game has been built and you try to run it, then you might notice that it crashes. This is because you must tell the game where to find all of the assets (i.e. images, sound files, etc) Eventually installers will install the resource files to appropriate locations where the executable will be able to find them automatically. For now you must manually tell the game where the resources are with the `--resources` or `-r` command line parameter. For example:
 
 ```
 tooter -r c:\source\ttvg\resources
 ```
+
+The path specificied should be the `resources` path in this repo on your local system.
 
 ## Licensing
 
