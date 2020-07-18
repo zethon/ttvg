@@ -65,13 +65,7 @@ Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundShared
 
 std::uint16_t Vehicle::timestep()
 {
-    auto retval = TimeStep::NOOP;
     AnimatedSprite::timestep();
-    
-    if (_path.finished())
-    {
-        return TimeStep::DELETE;
-    }
 
     if (_state == State::MOVING
         && _movementClock.getElapsedTime().asMilliseconds() > 100)
@@ -80,7 +74,110 @@ std::uint16_t Vehicle::timestep()
         _movementClock.restart();
     }
 
+    if (_path.finished())
+    {
+        return TimeStep::DELETE;
+    }
+
     return TimeStep::NOOP;
+}
+
+void Vehicle::move()
+{
+    const auto speed = 1.0f;
+
+    auto globalPosition = sf::Vector2f{ getGlobalBounds().left, getGlobalBounds().top };
+    auto currentTile = sf::Vector2i{ _background->getTileFromGlobal(globalPosition) };
+
+    auto currentPathTile = _path.current();
+    auto nextTile = _path.next();
+
+    float xdiff = static_cast<float>(std::pow(currentTile.x - nextTile.x, 2.f));
+    float ydiff = static_cast<float>(std::pow(currentTile.y - nextTile.y, 2.f));
+    float distance = std::sqrt(xdiff + ydiff);
+    if (distance <= 1.0f)
+    {
+        if (currentTile == nextTile)
+        {
+            _path.step();
+            nextTile = _path.next();
+        }
+        else
+        {
+            currentTile = nextTile;
+        }
+    }
+
+    auto diff = nextTile - currentTile;
+
+    //assert(!(diff.x != 0 && diff.y != 0));
+    if (diff.x != 0)
+    {
+        if (std::abs(diff.x) < speed)
+        {
+            currentTile.x += diff.x;
+        }
+        else if (diff.x < 0)
+        {
+            currentTile.x -= static_cast<std::int32_t>(speed);
+            _direction = LEFT;
+        }
+        else
+        {
+            currentTile.x += static_cast<std::int32_t>(speed);
+            _direction = RIGHT;
+        }
+    }
+
+    if (diff.y != 0)
+    {
+        if (std::abs(diff.y) < speed)
+        {
+            currentTile.y += diff.y;
+        }
+        else if (diff.y < 0)
+        {
+            currentTile.y -= static_cast<std::int32_t>(speed);
+            _direction = UP;
+        }
+        else
+        {
+            currentTile.y += static_cast<std::int32_t>(speed);
+            _direction = DOWN;
+        }
+    }
+
+    auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ currentTile });
+    switch (_direction)
+    {
+    default:
+        break;
+
+    case UP:
+        setSource(0, 3);
+        //globalPos.x -= getGlobalBounds().width / 2;
+        break;
+
+    case DOWN:
+        setSource(0, 0);
+        //globalPos.x -= getGlobalBounds().width / 2;
+        break;
+
+    case LEFT:
+        setSource(0, 1);
+        //globalPos.y -= getGlobalBounds().height / 2;
+        break;
+
+    case RIGHT:
+        setSource(0, 2);
+        //globalPos.y -= getGlobalBounds().height / 2;
+        break;
+    }
+
+
+    // globalPos.x -= getGlobalBounds().width / 2;
+    // globalPos.y -= getGlobalBounds().height / 2;
+    setPosition(globalPos);
 }
 
 bool Vehicle::isBlocked(const sf::FloatRect& test)
@@ -129,113 +226,6 @@ void Vehicle::setPath(const Path & path)
 
     _lastPathPoint = path.points().at(1);
     auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ path.points().at(0) });
-    setPosition(globalPos);
-}
-
-void Vehicle::move()
-{
-    const auto speed = 1.0f;
-
-    auto globalPosition = sf::Vector2f { getGlobalBounds().left, getGlobalBounds().top };
-    if (_direction == LEFT || _direction == RIGHT)
-    {
-        globalPosition.y += getGlobalBounds().height / 2;
-    }
-    else
-    {
-        globalPosition.x += getGlobalBounds().width / 2;
-    }
-
-    auto currentTile = sf::Vector2i { _background->getTileFromGlobal(globalPosition) };
-
-    auto currentPathTile = _path.current();
-    auto nextTile = _path.next();
-
-    float xdiff = static_cast<float>(std::pow(currentTile.x - nextTile.x, 2.f));
-    float ydiff = static_cast<float>(std::pow(currentTile.y - nextTile.y, 2.f));
-    float distance = std::sqrt(xdiff + ydiff);
-    if (distance <= 1.0f)
-    {
-        if (currentTile == nextTile)
-        {
-            _path.step();
-            nextTile = _path.next();
-        }
-        else
-        {
-            currentTile = nextTile;
-        }
-    }
-
-    auto diff = nextTile - currentTile;
-
-    assert(!(diff.x != 0 && diff.y != 0));
-    if (diff.x != 0)
-    {
-        if (std::abs(diff.x) < speed)
-        {
-            currentTile.x += diff.x;
-        }
-        else if (diff.x < 0)
-        {
-            currentTile.x -= static_cast<std::int32_t>(speed);
-            _direction = LEFT;
-        }
-        else
-        {
-            currentTile.x += static_cast<std::int32_t>(speed);
-            _direction = RIGHT;
-        }
-    }
-    
-    if (diff.y != 0)
-    {
-        if (std::abs(diff.y) < speed)
-        {
-            currentTile.y += diff.y;
-        }
-        else if (diff.y < 0)
-        {
-            currentTile.y -= static_cast<std::int32_t>(speed);
-            _direction = UP;
-        }
-        else
-        {
-            currentTile.y += static_cast<std::int32_t>(speed);
-            _direction = DOWN;
-        }
-    }
-
-    auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ currentTile });
-    switch (_direction)
-    {
-        default:
-        break;
-
-        case UP:
-            setSource(0, 3);
-            globalPos.x -= getGlobalBounds().width / 2;
-        break;
-
-        case DOWN:
-            setSource(0, 0);
-            globalPos.x -= getGlobalBounds().width / 2;
-        break;
-
-        case LEFT:
-            setSource(0, 1);
-            globalPos.y -= getGlobalBounds().height / 2;
-        break;
-        
-        case RIGHT:
-            setSource(0, 2);
-            globalPos.y -= getGlobalBounds().height / 2;
-        break;
-    }
-    
-    
-    // globalPos.x -= getGlobalBounds().width / 2;
-    // globalPos.y -= getGlobalBounds().height / 2;
     setPosition(globalPos);
 }
 

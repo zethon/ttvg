@@ -71,7 +71,7 @@ sf::Vector2i stepDirection(const sf::Vector2i& point, Direction direction)
 Path PathFactory::makeRandomPath() const
 {
     assert(_edges.size() > 0);
-    assert(_turns.size() > 0);
+    //assert(_turns.size() > 0);
     assert(_size.x > 0);
     assert(_size.y > 0);
     

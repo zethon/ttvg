@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "TTUtils.h"
+#include "Tiles.hpp"
 
 namespace tt
 {
@@ -47,13 +48,11 @@ public:
     float getTopBoundary() const { return 0; }
     float getBottomBoundary() const;
 
-    template <typename T>
-    sf::Vector2<T> getTileFromGlobal(const sf::Vector2<T>& global) const
+    tt::Tile getTileFromGlobal(const sf::Vector2f& global) const
     {
-        sf::Vector2<T> temp;
-        temp.x = global.x / getScale().x;
-        temp.y = global.y / getScale().y;
-        return tt::getTileFromGlobal(temp, _tilesize);
+        // TODO: Get rid of this temp, use all floats!
+        sf::Vector2f temp{ _tilesize }; 
+        return tt::getTileFromGlobal(global, temp, getScale());
     }
 
     template<typename T>

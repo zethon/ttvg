@@ -33,6 +33,7 @@ set(HEADER_FILES
     Player.h
     ResourceManager.h
     Screen.h
+    Tiles.hpp
     TTUtils.h
     Vehicle.h
     VehicleFactory.h

@@ -25,6 +25,9 @@ constexpr auto TILESIZE_X = 16;
 constexpr auto TILESIZE_Y = 16;
 
 constexpr auto MAPNAME = "tucson";
+
+constexpr auto MAX_VEHICLES = 500u;
+constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     : Scene{ resmgr, target },
@@ -291,7 +294,8 @@ std::uint16_t Opening::timestep()
 void Opening::timestepTraffic()
 {
     auto runSeconds = static_cast<std::uint32_t>(_globalClock.getElapsedTime().asSeconds());
-    if (_vehicles.size() < 500 && (runSeconds % 1) == 0)
+    if (_vehicles.size() < MAX_VEHICLES 
+        && (runSeconds % VEHICLE_SPAWN_RATE) == 0)
     {
         auto vehicle = _vehicleFactory->createVehicle();
         _vehicles.push_back(vehicle);
