@@ -8,7 +8,7 @@ if [ "$1" == "clean" ]; then
     exit 0
 fi
 
-if [ ! -f "build" ]; then
+if [ ! -d "build" ]; then
     mkdir build
 fi
 
