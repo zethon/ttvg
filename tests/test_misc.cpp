@@ -404,4 +404,14 @@ BOOST_AUTO_TEST_CASE(pathMakingDoubleTXTest)
     auto path = fact.makeRandomPath();
 }
 
+BOOST_AUTO_TEST_CASE(getDirectionTest)
+{
+    sf::Vector2f startf{ 0.0f, 0.0f };
+    sf::Vector2f stopf{ 1.0f, 1.0f };
+
+    auto direction = tt::getDirection(startf, stopf);
+    BOOST_TEST(direction & Direction::RIGHT);
+    BOOST_TEST(direction & Direction::DOWN);
+}
+
 BOOST_AUTO_TEST_SUITE_END() // tt

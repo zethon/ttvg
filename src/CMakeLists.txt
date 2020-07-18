@@ -7,8 +7,6 @@ set(SOURCE_FILES
     Intersection.cpp
     IntroScreen.cpp
     main.cpp
-    NPC.cpp
-    Path.cpp
     Player.cpp
     ResourceManager.cpp
     Screen.cpp
@@ -28,8 +26,7 @@ set(HEADER_FILES
     GameScreen.h
     Intersection.h
     IntroScreen.h
-    NPC.h
-    Path.h
+    Path.hpp
     Player.h
     ResourceManager.h
     Screen.h

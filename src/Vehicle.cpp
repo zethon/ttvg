@@ -186,10 +186,9 @@ bool Vehicle::isBlocked(const sf::FloatRect& test)
     return isPathBlocked(getGlobalBounds(), test, _direction, minDistance);
 }
 
-void Vehicle::setPath(const Path & path)
+void Vehicle::setPath(const Path& path)
 {
-    // yuck, but I don't gaf right now
-    if (path.points().size() < 2) assert(0);
+    assert(path.points().size() > 1);
 
     // VECTOR COPY IN THE GAME LOOP!!!
     _path = path;
