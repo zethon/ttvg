@@ -75,7 +75,7 @@ cmake --build .
 
 ### Linux
 
-I have not tried to build this on Linux but there's no reason it shouldn't work on any distribution that [SFML](http://sfml-dev.org/) supports.
+I have not tried to build this on Linux but there's no reason it shouldn't work on any distribution that [SFML](http://sfml-dev.org/) supports. The build process should be nearly identical to that on Mac (see above).
 
 ## How to Play
 
