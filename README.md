@@ -75,7 +75,45 @@ cmake --build .
 
 ### Linux
 
-I have not tried to build this on Linux but there's no reason it shouldn't work on any distribution that [SFML](http://sfml-dev.org/) supports. The build process should be nearly identical to that on Mac (see above).
+Install Dependencies (Ubuntu 19.10)
+
+```
+sudo apt install cmake
+sudo apt install libgl1-mesa-dev
+sudo apt install libudev-dev
+sudo apt install libfreetype6-dev
+sudo apt install libxcb-render-util0-dev
+sudo apt install libxcb-xkb-dev
+sudo apt install libxcb-icccm4-dev
+sudo apt install libxcb-image0-dev
+sudo apt install libxcb-keysyms1-dev
+sudo apt install libxcb-xinerama0-dev
+```
+
+Run Build
+
+```
+./build.sh
+```
+
+Run Game
+```
+./run.sh
+```
+
+#### Notes
+
+If you encounter the following error from conan:
+
+```
+ERROR: Failed requirement 'sfml/2.5.1@bincrafters/stable' from 'conanfile.py'
+ERROR: Unable to find 'sfml/2.5.1@bincrafters/stable' in remotes
+```
+
+Run:
+```
+conan remote add SFML https://api.bintray.com/conan/bincrafters/public-conan
+```
 
 ## How to Play
 
