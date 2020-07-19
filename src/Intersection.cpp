@@ -24,7 +24,6 @@ TurningPoints makeIntersection(
                 { { origin.x, origin.y + vModifier}, Direction::RIGHT, false }
             };
         }
-        break;
 
         case IntersectionType::L90:
         {
@@ -34,7 +33,6 @@ TurningPoints makeIntersection(
                 { { origin.x + hModifier, origin.y + vModifier}, Direction::RIGHT, false }
             };
         }
-        break;
 
         case IntersectionType::L180:
         {
@@ -44,7 +42,6 @@ TurningPoints makeIntersection(
                 { { origin.x, origin.y + vModifier}, Direction::DOWN, false }
             };
         }
-        break;
 
         case IntersectionType::L270:
         {
@@ -54,7 +51,6 @@ TurningPoints makeIntersection(
                 { { origin.x + hModifier, origin.y + vModifier}, Direction::UP, false }
             };
         }
-        break;
 
         case IntersectionType::T0:
         {

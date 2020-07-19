@@ -27,7 +27,7 @@ VehicleFactory::VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg)
     }
 
     std::ifstream file(jsonfile.c_str());
-    file >> _json;
+    if (file.is_open()) file >> _json;
 }
 
 VehiclePtr VehicleFactory::createVehicle()
