@@ -15,6 +15,13 @@ All platforms require:
 * [CMake](https://cmake.org/download/)
 * [conan](https://conan.io/)
 
+The Conan Bincrafters remote must be in your conan remote cache:
+
+```
+conan remote add SFML https://api.bintray.com/conan/bincrafters/public-conan
+```
+
+
 ### Windows
 
 I have been using [Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/) as my toolchain, even tough I've actually been using Visual 2019 as my editor/IDE. I've yet to figure out how to get conan to play nicely with Visual Studio 2019, but since VS2019 can load and use VS2017 solution files without a problem, this method works fine.
@@ -75,7 +82,31 @@ cmake --build .
 
 ### Linux
 
-I have not tried to build this on Linux but there's no reason it shouldn't work on any distribution that [SFML](http://sfml-dev.org/) supports. The build process should be nearly identical to that on Mac (see above).
+Install Dependencies (Ubuntu 19.10)
+
+```
+sudo apt install cmake
+sudo apt install libgl1-mesa-dev
+sudo apt install libudev-dev
+sudo apt install libfreetype6-dev
+sudo apt install libxcb-render-util0-dev
+sudo apt install libxcb-xkb-dev
+sudo apt install libxcb-icccm4-dev
+sudo apt install libxcb-image0-dev
+sudo apt install libxcb-keysyms1-dev
+sudo apt install libxcb-xinerama0-dev
+```
+
+Run Build
+
+```
+tools/linux/build.sh
+```
+
+Run Game
+```
+tools/linux/run.sh
+```
 
 ## How to Play
 
