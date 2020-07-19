@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ostream>
+#include <limits>
 
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
@@ -412,6 +413,34 @@ BOOST_AUTO_TEST_CASE(getDirectionTest)
     auto direction = tt::getDirection(startf, stopf);
     BOOST_TEST(direction & Direction::RIGHT);
     BOOST_TEST(direction & Direction::DOWN);
+
+    direction = tt::getDirection(stopf, startf);
+    BOOST_TEST(direction & Direction::LEFT);
+    BOOST_TEST(direction & Direction::UP);
+
+    direction = tt::getDirection(sf::Vector2i{ -1, -1 }, sf::Vector2i{ 1,1 });
+    BOOST_TEST(direction & Direction::RIGHT);
+    BOOST_TEST(direction & Direction::DOWN);
+
+    direction = tt::getDirection(sf::Vector2i{ 0, 10 }, sf::Vector2i{ 0, 100 });
+    BOOST_TEST(direction & Direction::DOWN);
+    BOOST_TEST(direction ^ Direction::UP);
+    BOOST_TEST(direction ^ Direction::LEFT);
+    BOOST_TEST(direction ^ Direction::RIGHT);
+}
+
+BOOST_AUTO_TEST_CASE(oneBitSetTest)
+{
+    BOOST_TEST(tt::exactly_one_bit_set(1) == true);
+    BOOST_TEST(tt::exactly_one_bit_set(2) == true);
+    BOOST_TEST(tt::exactly_one_bit_set(16) == true);
+
+    BOOST_TEST(tt::exactly_one_bit_set(0) == false);
+    BOOST_TEST(tt::exactly_one_bit_set(22) == false);
+    BOOST_TEST(tt::exactly_one_bit_set(std::numeric_limits<int>::max()) == false);
+
+    auto direction = tt::getDirection(sf::Vector2i{ -1,11 }, sf::Vector2i{ 10,11 });
+    BOOST_TEST(tt::exactly_one_bit_set(direction) == true);
 }
 
 BOOST_AUTO_TEST_SUITE_END() // tt

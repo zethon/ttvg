@@ -117,5 +117,12 @@ auto select_randomly(const T& container)
     return start;
 }
 
+template <typename T,
+    typename = typename std::enable_if<(std::is_integral<T>::value )>::type>
+inline bool exactly_one_bit_set(T n)
+{
+    return n && !(n & (n - 1));
+}
+
     
 } // namespace tt
