@@ -93,12 +93,12 @@ sudo apt install libxcb-xinerama0-dev
 Run Build
 
 ```
-./build.sh
+tools/linux/build.sh
 ```
 
 Run Game
 ```
-./run.sh
+tools/linux/run.sh
 ```
 
 #### Notes
