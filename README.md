@@ -15,6 +15,13 @@ All platforms require:
 * [CMake](https://cmake.org/download/)
 * [conan](https://conan.io/)
 
+The Conan Bincrafters remote must be in your conan remote cache:
+
+```
+conan remote add SFML https://api.bintray.com/conan/bincrafters/public-conan
+```
+
+
 ### Windows
 
 I have been using [Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/) as my toolchain, even tough I've actually been using Visual 2019 as my editor/IDE. I've yet to figure out how to get conan to play nicely with Visual Studio 2019, but since VS2019 can load and use VS2017 solution files without a problem, this method works fine.
@@ -99,20 +106,6 @@ tools/linux/build.sh
 Run Game
 ```
 tools/linux/run.sh
-```
-
-#### Notes
-
-If you encounter the following error from conan:
-
-```
-ERROR: Failed requirement 'sfml/2.5.1@bincrafters/stable' from 'conanfile.py'
-ERROR: Unable to find 'sfml/2.5.1@bincrafters/stable' in remotes
-```
-
-Run:
-```
-conan remote add SFML https://api.bintray.com/conan/bincrafters/public-conan
 ```
 
 ## How to Play
