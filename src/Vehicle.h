@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Path.h"
+#include "Path.hpp"
 #include "AnimatedSprite.h"
 
 namespace tt

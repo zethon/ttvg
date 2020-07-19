@@ -3,7 +3,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Path.h"
+#include "Path.hpp"
 #include "ResourceManager.h"
 #include "Intersection.h"
 
