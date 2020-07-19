@@ -119,7 +119,7 @@ void Opening::initTraffic()
     // `_pathFactory` member and instead if would be constructed inside the
     // `VehicleFactory` class
     _pathLines = std::make_unique<PathLines>(*_background);
-    Path path = pathFactory->makeRandomPath();
+    Path path = pathFactory->makeRiboPath();
     _pathLines->setPath(path);
 }
 
@@ -200,7 +200,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Space:
             {
-                auto p = _vehicleFactory->pathFactory()->makeRandomPath();
+                auto p = _vehicleFactory->pathFactory()->makeRiboPath();
                 _pathLines->setPath(p);
             }
             break;

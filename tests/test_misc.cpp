@@ -299,7 +299,7 @@ BOOST_AUTO_TEST_CASE(path_ForcedSingleLaneTest)
     fact.setEdges(edges);
     fact.setIntersections(inter);
 
-    auto path = fact.makeRandomPath();
+    auto path = fact.makeRiboPath();
     
     std::vector<sf::Vector2i> expected = 
     {
@@ -332,7 +332,7 @@ BOOST_AUTO_TEST_CASE(path_forcedDoubleLaneTest)
     fact.setEdges(edges);
     fact.setIntersections(inter);
 
-    auto path = fact.makeRandomPath();
+    auto path = fact.makeRiboPath();
 
     std::vector<sf::Vector2i> expected =
     {
@@ -359,7 +359,7 @@ BOOST_AUTO_TEST_CASE(pathMakingTXTest)
     fact.setEdges(edges);
     fact.setIntersections(inter);
 
-    auto path = fact.makeRandomPath();
+    auto path = fact.makeRiboPath();
 }
 
 BOOST_AUTO_TEST_CASE(pathMakingSingleTXTest)
@@ -378,7 +378,7 @@ BOOST_AUTO_TEST_CASE(pathMakingSingleTXTest)
     fact.setEdges(edges);
     fact.setIntersections(inter);
 
-    auto path = fact.makeRandomPath();
+    auto path = fact.makeRiboPath();
 }
 
 // --run_test=tt/pathMakingDoubleTXTest
@@ -402,7 +402,7 @@ BOOST_AUTO_TEST_CASE(pathMakingDoubleTXTest)
     fact.setEdges(edges);
     fact.setIntersections(inter);
 
-    auto path = fact.makeRandomPath();
+    auto path = fact.makeRiboPath();
 }
 
 BOOST_AUTO_TEST_CASE(getDirectionTest)

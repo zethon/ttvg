@@ -37,7 +37,7 @@ VehiclePtr VehicleFactory::createVehicle()
     auto temptext = *(_resources.load<sf::Texture>("textures/car1.png"));
     auto vehicle = std::make_shared<Vehicle>(temptext, sf::Vector2i{ 77, 41 }, _background);
 
-    auto path = _pathFactory->makeRandomPath();
+    auto path = _pathFactory->makeRiboPath();
     path.setRepeating(false);
     
     vehicle->setPath(path);
@@ -68,17 +68,14 @@ sf::Vector2i stepDirection(const sf::Vector2i& point, Direction direction)
     return point;
 }
 
-Path PathFactory::makeRandomPath() const
+void PathFactory::makeRiboPath(Path& path) const
 {
     assert(_edges.size() > 0);
-    //assert(_turns.size() > 0);
     assert(_size.x > 0);
     assert(_size.y > 0);
     
-    Path retval;
-
     auto start = tt::select_randomly(_edges);
-    retval.points().push_back(start->point);
+    path.points().emplace_back(start->point);
 
     bool canDecide = true;
     auto currentDirection = static_cast<Direction>(start->turn);
@@ -113,14 +110,14 @@ Path PathFactory::makeRandomPath() const
                         currentDirection = static_cast<Direction>(temp->turn);
                     }
 
-                    retval.points().push_back(currentPoint);
+                    path.points().emplace_back(currentPoint);
                     canDecide = false;
                 }
             }
             else
             {
                 currentDirection = static_cast<Direction>(temp->turn);
-                retval.points().push_back(currentPoint);
+                path.points().emplace_back(currentPoint);
                 canDecide = false;
             }
         }
@@ -132,8 +129,14 @@ Path PathFactory::makeRandomPath() const
         currentPoint = stepDirection(currentPoint, currentDirection);
     }
 
-    retval.points().push_back(currentPoint);
+    path.points().emplace_back(currentPoint);
+}
 
+// slower version, may be useful in initialization or unit tests
+Path PathFactory::makeRiboPath() const
+{
+    Path retval;
+    makeRiboPath(retval);
     return retval;
 }
 

@@ -36,7 +36,8 @@ public:
         _turns.push_back(tp);
     }
     
-    Path makeRandomPath() const;
+    Path makeRiboPath() const;
+    void makeRiboPath(Path& path) const;
 };
 
 class VehicleFactory
