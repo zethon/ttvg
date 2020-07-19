@@ -1,5 +1,18 @@
 project(tests)
 
+function(add_test testname FILES)
+    add_executable(test_${testname}
+        main.cpp
+        test_${testname}.cpp
+        ${FILES}
+    )
+
+    target_link_libraries(test_${testname}
+        PUBLIC
+            ${CONAN_LIBS}
+    )
+endfunction(add_test)
+
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -26,13 +39,5 @@ set(PROJECT_FILES
     ../src/VehicleFactory.h
 )
 
-add_executable(test_misc
-    main.cpp
-    test_misc.cpp
-    ${PROJECT_FILES}
-)
-
-target_link_libraries(test_misc
-    PUBLIC
-        ${CONAN_LIBS}
-)
+add_test("misc" ${PROJECT_FILES})
+add_test("background" ${PROJECT_FILES})
