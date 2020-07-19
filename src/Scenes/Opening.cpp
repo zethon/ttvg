@@ -204,62 +204,6 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 _pathLines->setPath(p);
             }
             break;
-
-            case sf::Keyboard::A: // LEFT
-            {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-                if ((x - (view.getSize().x / 2)) > 0)
-                {
-                    x -= 20;
-                    view.setCenter(x, y);
-                    _window.setView(view);
-                }
-            }
-            break;
-
-            case sf::Keyboard::D: // RIGHT
-            {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-                if (((x+20) + (view.getSize().x / 2))
-                    < _background->getRightBoundary())
-                {
-                    x += 20;
-                    view.setCenter(x, y);
-                    _window.setView(view);
-                }
-            }
-            break;
-
-            case sf::Keyboard::W: // UP
-            {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-                if ((y - (view.getSize().y / 2)) > 20)
-                {
-                    y -= 20;
-                    view.setCenter(x, y);
-                    _window.setView(view);
-                }
-            }
-            break;
-
-            case sf::Keyboard::S: // DOWN
-            {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-
-                if ((y + (view.getSize().y / 2)) 
-                    < _background->getBottomBoundary())
-                {
-                    y += 20;
-                    view.setCenter(x, y);
-                    _window.setView(view);
-                }
-            }
-            break;
-
         }
     }
 
@@ -390,20 +334,19 @@ void Opening::animeCallback()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
         auto xx = _player->getGlobalLeft();
-        const auto boundaryLeft = _background->getLeftBoundary();
         auto [x, y] = _player->getPosition();
-        assert(xx >= boundaryLeft);
-        if (xx == boundaryLeft) return;
+        assert(xx >= 0);
+        if (xx == 0) return;
 
         xx -= stepSize;
-        if (xx < boundaryLeft) xx = boundaryLeft;
+        if (xx < 0) xx = 0;
 
         _player->setGlobalLeft(xx);
         moved = true;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
-        const auto boundaryRight = _background->getRightBoundary();
+        const auto boundaryRight = _background->getGlobalBounds().width;
 
         auto x = _player->getGlobalRight();
         assert(x <= boundaryRight);
@@ -417,19 +360,18 @@ void Opening::animeCallback()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        const auto boundaryTop = _background->getTopBoundary();
         auto y = _player->getGlobalTop();
-        assert(y >= boundaryTop);
-        if (y == boundaryTop) return;
+        assert(y >= 0);
+        if (y == 0) return;
 
         y -= stepSize;
-        if (y < boundaryTop) y = boundaryTop;
+        if (y < 0) y = 0;
         _player->setGlobalTop(y);
         moved = true;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        const auto boundaryBottom = _background->getBottomBoundary();
+        const auto boundaryBottom = _background->getGlobalBounds().height;
 
         auto y = _player->getGlobalBottom();
         assert(y <= boundaryBottom);

@@ -39,5 +39,5 @@ set(PROJECT_FILES
     ../src/VehicleFactory.h
 )
 
-add_test("misc" ${PROJECT_FILES})
-add_test("background" ${PROJECT_FILES})
+add_test("misc" "${PROJECT_FILES}")
+add_test("background" "${PROJECT_FILES}")

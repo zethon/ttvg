@@ -3,7 +3,6 @@
 #include <boost/filesystem.hpp>
 
 #include <fmt/core.h>
-#include <nlohmann/json.hpp>
 
 #include "ResourceManager.h"
 #include "Background.h"
@@ -17,25 +16,34 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
     : _tilesize { tilesize },
       _mapname{ name }
 {
-    const std::string texturename = fmt::format("maps/{}.png", name);
+    const std::string texturename = fmt::format("maps/{}.png", _mapname);
     _texture = resmgr.loadUniquePtr<sf::Texture>(texturename);
-    setTexture(*_texture);
+    if (_texture) setTexture(*_texture);
 
     const std::string jsonfile = 
-        resmgr.getFilename(fmt::format("maps/{}.json", name));
+        resmgr.getFilename(fmt::format("maps/{}.json", _mapname));
 
     std::ifstream file(jsonfile.c_str());
-    _json = std::make_unique<nl::json>();
-    file >> *_json;
-    file.close();
+    if (file.is_open())
+    {
+        _json = std::make_unique<nl::json>();
+        file >> *_json;
+        file.close();
+    }
 
+    initZones();
+}
+
+void Background::initZones()
+{
+    if (!_json) return;
     if (!_json->at("zones").is_array()) return;
 
     for (const auto& item : (*_json)["zones"].items())
     {
-        for (const auto& c: item.value()["rects"].items())
+        for (const auto& c : item.value()["rects"].items())
         {
-            std::string temp { c.value().get<std::string>() };
+            std::string temp{ c.value().get<std::string>() };
             auto start = temp.begin();
             auto stop = temp.end();
 
@@ -51,26 +59,11 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
     }
 }
 
-sf::FloatRect Background::getWorldRect() const
-{
-    return { 0, 0, getRightBoundary(), getBottomBoundary() };
-}
-
 sf::FloatRect Background::getWorldTileRect() const
 {
-    sf::Vector2f bound{ getRightBoundary(), getBottomBoundary() };
+    sf::Vector2f bound{ getGlobalBounds().width, getGlobalBounds().height };
     auto [width, height] = getTileFromGlobal(bound);
     return { 0, 0, width, height };
-}
-
-float Background::getRightBoundary() const
-{
-    return getTextureRect().width * this->getScale().x;
-}
-
-float Background::getBottomBoundary() const
-{
-    return getTextureRect().height * this->getScale().y;;
 }
 
 std::string Background::zoneName(const sf::Vector2f& v)

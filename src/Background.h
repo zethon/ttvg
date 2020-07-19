@@ -1,13 +1,16 @@
 #pragma once
 #include <cmath>
 #include <set>
+#include <memory>
 
-#include <nlohmann/json_fwd.hpp>
+#include <nlohmann/json.hpp>
 
 #include <SFML/Graphics.hpp>
 
 #include "TTUtils.h"
 #include "Tiles.hpp"
+
+namespace nl = nlohmann;
 
 namespace tt
 {
@@ -30,8 +33,6 @@ class Background;
 using BackgroundPtr = std::unique_ptr<Background>;
 using BackgroundSharedPtr = std::shared_ptr<Background>;
 
-namespace nl = nlohmann;
-
 class Background : public sf::Sprite
 {
 
@@ -40,19 +41,11 @@ public:
 
     Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2i& tilesize);
 
-    sf::FloatRect getWorldRect() const;
     sf::FloatRect getWorldTileRect() const;
-
-    float getLeftBoundary() const { return 0; }
-    float getRightBoundary() const;
-    float getTopBoundary() const { return 0; }
-    float getBottomBoundary() const;
 
     tt::Tile getTileFromGlobal(const sf::Vector2f& global) const
     {
-        // TODO: Get rid of this temp, use all floats!
-        sf::Vector2f temp{ _tilesize }; 
-        return tt::getTileFromGlobal(global, temp, getScale());
+        return tt::getTileFromGlobal(global, tilesize(), getScale());
     }
 
     template<typename T>
@@ -61,11 +54,17 @@ public:
         sf::Vector2<T> temp;
         temp.x = static_cast<T>(tile.x * getScale().x);
         temp.y = static_cast<T>(tile.y * getScale().y);
-        return sf::Vector2<T>{tt::getGlobalFromTile(temp, _tilesize)};
+
+        // TODO: GET RID OF THIS CAST
+        return sf::Vector2<T>{tt::getGlobalFromTile(temp, sf::Vector2i{ _tilesize })};
     }
 
-    void setTileSize(const sf::Vector2i& val) { _tilesize = val; }
-    sf::Vector2i tilesize() const { return _tilesize; }
+    void setTileSize(const sf::Vector2i& val) 
+    { 
+        // TODO: GET RID OF THIS
+        _tilesize = sf::Vector2f{ val }; 
+    }
+    sf::Vector2f tilesize() const { return _tilesize; }
 
     nl::json& json() { return *_json; }
     const nl::json& json() const { return const_cast<const nl::json&>(json()); }
@@ -83,7 +82,9 @@ protected:
     std::vector<Zone>               _zones;
 
 private:
-    sf::Vector2i                _tilesize;
+    void initZones();
+
+    sf::Vector2f                _tilesize;
     std::unique_ptr<nl::json>   _json;
     std::string                 _mapname;
 };

@@ -5,6 +5,7 @@
 
 #include "Path.hpp"
 #include "AnimatedSprite.h"
+#include "Intersection.h"
 
 namespace tt
 {
@@ -40,6 +41,7 @@ public:
     void setVehicleState(State val) { _state = val; }
 
     void setPath(const Path& path);
+    const Path path() const { }
 
 private:
     void move();
@@ -50,8 +52,6 @@ private:
     BackgroundSharedPtr _background;
 
     Path                _path;
-    sf::Vector2i        _lastPathPoint;
-    
     const sf::Vector2i  _tilesize;
 
     Direction           _direction = DOWN;
@@ -63,5 +63,29 @@ private:
 
 bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
     Vehicle::Direction direction, float minDistance);
+
+template<typename V>
+sf::Vector2<V> stepDirection(const sf::Vector2<V>& point, Direction direction, V speed)
+{
+    switch (direction)
+    {
+    default:
+        break;
+
+    case Direction::UP:
+        return { point.x, point.y - speed };
+
+    case Direction::DOWN:
+        return { point.x, point.y + speed };
+
+    case Direction::LEFT:
+        return { point.x - speed, point.y };
+
+    case Direction::RIGHT:
+        return { point.x + speed, point.y };
+    }
+
+    return point;
+}
 
 } // namespace tt
