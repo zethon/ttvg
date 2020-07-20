@@ -16,7 +16,7 @@ addons:
 before_script:
 - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 - mkdir build && cd build
-- conan install .. -s compiler="Visual Studio"
+- conan install .. -s compiler="Visual Studio" -s compiler.version=15
 
 script:
 - cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON ${CMAKE_FLAGS}
@@ -53,6 +53,7 @@ matrix:
     env:
       - CONFIG=Debug
       # - CONAN_FLAGS="-s compiler='Visual Studio' -s compiler.version=15 -s arch=x8
+      # - CONAN_SETTINGS_FLAG="-g cmake -s compiler=\"Visual Studio\" -s compiler.version=15 -s arch=x86_64 -s build_type=Debug -b missing"
       - CONAN_SETTINGS_FLAG="-s compiler=\"'Visual Studio\""
       - CMAKE_FLAGS="\"-GVisual Studio 15 2017 Win64\" -DCMAKE_GENERATOR_PLATFORM=x64"
 
