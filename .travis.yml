@@ -54,7 +54,7 @@ matrix:
     env:
       - CONFIG=Debug
       # - CONAN_FLAGS="-s compiler='Visual Studio' -s compiler.version=15 -s arch=x8
-      - CONAN_SETTINGS_FLAG="-g cmake -s build_type=Release -s compiler.libcxx=libstdc++11 -b missing"
+      - CONAN_SETTINGS_FLAG="-g cmake -s compiler=\"Visual Studio\" -s compiler.version=15 -s arch=x86_64 -s build_type=Debug -b missing"
       - CMAKE_FLAGS="-G \"Visual Studio 15 2017 Win64\" -DCMAKE_GENERATOR_PLATFORM=x64"
 
   # - name: "Windows Visual studio 15 2017 Release"
