@@ -2,12 +2,23 @@ anguage: cpp
 
 addons:
   homebrew:
-    update: true
+    update: false
     packages:
       - conan
+  apt_packages:
+    - conan
+
+before_install:
+- |-
+    case $TRAVIS_OS_NAME in
+      windows)
+        choco install conan
+        ;;
+    esac
 
 before_script:
 - mkdir build && cd build
+- conan --version
 - conan remote add sfml https://api.bintray.com/conan/bincrafters/public-conan
 - conan install .. -s build_type=${CONFIG} --build missing
 - cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON
@@ -21,13 +32,39 @@ matrix:
 
   - name: "macOS Xcode 10 Debug"
     os: osx
+    compiler: clang
     osx_image: xcode10
     env:
       - CONFIG=Debug
 
   - name: "macOS Xcode 10 Release"
     os: osx
+    compiler: clang
     osx_image: xcode10
+    env:
+      - CONFIG=Release
+
+  - name: "Windows Visual studio 15 2017 Debug"
+    os: windows
+    env:
+      - CONFIG=Debug
+
+  - name: "Windows Visual studio 15 2017 Release"
+    os: windows
+    env:
+      - CONFIG=Release
+
+  - name: "Linux gcc Debug"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    env:
+      - CONFIG=Debug
+
+  - name: "Linux gcc Release"
+    os: linux
+    dist: bionic
+    compiler: gcc
     env:
       - CONFIG=Release
 
