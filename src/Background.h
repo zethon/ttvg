@@ -25,7 +25,7 @@ inline sf::Vector2f getGlobalFromTile(const sf::Vector2f& tilepos, const sf::Vec
 template<typename Int>
 inline sf::Vector2f getGlobalFromTile(Int posx, Int posy, const sf::Vector2f& tileSize)
 {
-    return getGlobalFromTile(sf::Vector2f<Int>{ posx, posy }, tileSize);
+    return getGlobalFromTile(sf::Vector2f{ posx, posy }, tileSize);
 }
 
 struct zone_compare

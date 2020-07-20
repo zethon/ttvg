@@ -41,7 +41,8 @@ public:
     void setVehicleState(State val) { _state = val; }
 
     void setPath(const Path& path);
-    const Path path() const { }
+    const Path& path() const { return _path; }
+    Path& path() { return const_cast<Path&>((static_cast<const Vehicle&>(*this)).path()); }
 
 private:
     void move();
