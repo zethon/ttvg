@@ -1,12 +1,5 @@
 anguage: cpp
 
-addons:
-  # homebrew:
-  #   packages:
-  #     - conan
-  apt_packages:
-    - conan
-
 before_script:
 - mkdir build && cd build
 - conan --version
@@ -21,23 +14,23 @@ script:
 matrix:
   include:
 
-  - name: "macOS Xcode 10 Debug"
-    os: osx
-    compiler: clang
-    osx_image: xcode10
-    install:
-      - pip install conan
-    env:
-      - CONFIG=Debug
+  # - name: "macOS Xcode 10 Debug"
+  #   os: osx
+  #   compiler: clang
+  #   osx_image: xcode10
+  #   install:
+  #     - pip install conan
+  #   env:
+  #     - CONFIG=Debug
 
-  - name: "macOS Xcode 10 Release"
-    os: osx
-    compiler: clang
-    osx_image: xcode10
-    install:
-      - pip install conan
-    env:
-      - CONFIG=Release
+  # - name: "macOS Xcode 10 Release"
+  #   os: osx
+  #   compiler: clang
+  #   osx_image: xcode10
+  #   install:
+  #     - pip install conan
+  #   env:
+  #     - CONFIG=Release
 
   # - name: "Windows Visual studio 15 2017 Debug"
   #   os: windows
@@ -57,19 +50,23 @@ matrix:
   #   env:
   #     - CONFIG=Release
 
-  # - name: "Linux gcc Debug"
-  #   os: linux
-  #   dist: bionic
-  #   compiler: gcc
-  #   env:
-  #     - CONFIG=Debug
+  - name: "Linux gcc Debug"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Debug
 
-  # - name: "Linux gcc Release"
-  #   os: linux
-  #   dist: bionic
-  #   compiler: gcc
-  #   env:
-  #     - CONFIG=Release
+  - name: "Linux gcc Release"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Release
 
 notifications:
   email: false
