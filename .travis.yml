@@ -45,41 +45,41 @@ matrix:
   #   env:
   #     - CONFIG=Release
 
-  # - name: "Windows Visual studio 15 2017 Debug"
-  #   os: windows
-  #   install:
-  #     - choco install -y python '"/InstallDir:C:\\tools\\python3"'
-  #     - choco install -y pip
-  #     - pip install conan conan_package_tools
-  #   env:
-  #     - CONFIG=Debug
-
-  # - name: "Windows Visual studio 15 2017 Release"
-  #   os: windows
-  #   install:
-  #     - choco install -y python '"/InstallDir:C:\\tools\\python3"'
-  #     - choco install -y pip
-  #     - pip install conan conan_package_tools
-  #   env:
-  #     - CONFIG=Release
-
-  - name: "Linux gcc Debug"
-    os: linux
-    dist: bionic
-    compiler: gcc
+  - name: "Windows Visual studio 15 2017 Debug"
+    os: windows
     install:
-      - pip install conan
+      - choco install -y python '"/InstallDir:C:\\tools\\python3"'
+      - choco install -y pip
+      - pip install conan conan_package_tools
     env:
       - CONFIG=Debug
 
-  - name: "Linux gcc Release"
-    os: linux
-    dist: bionic
-    compiler: gcc
+  - name: "Windows Visual studio 15 2017 Release"
+    os: windows
     install:
-      - pip install conan
+      - choco install -y python '"/InstallDir:C:\\tools\\python3"'
+      - choco install -y pip
+      - pip install conan conan_package_tools
     env:
       - CONFIG=Release
+
+  # - name: "Linux gcc Debug"
+  #   os: linux
+  #   dist: bionic
+  #   compiler: gcc
+  #   install:
+  #     - pip install conan
+  #   env:
+  #     - CONFIG=Debug
+
+  # - name: "Linux gcc Release"
+  #   os: linux
+  #   dist: bionic
+  #   compiler: gcc
+  #   install:
+  #     - pip install conan
+  #   env:
+  #     - CONFIG=Release
 
 notifications:
   email: false
