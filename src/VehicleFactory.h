@@ -12,40 +12,11 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-class Vehicle;
-using VehiclePtr = std::shared_ptr<Vehicle>;
-
 class PathFactory;
 using PathFactoryPtr = std::shared_ptr<PathFactory>;
 
-class PathFactory
-{
-
-public:
-    PathFactory(const sf::Vector2i& size)
-        : _size{ size }
-    {}
-
-    void setEdges(const TurningPoints& edges) { _edges = edges; }
-    void setIntersections(const TurningPoints& points) { _turns = points; }
-    void addTurn(const TurningPoint& tp)
-    {
-        _turns.push_back(tp);
-    }
-    
-    Path makeRiboPath() const;
-    void makeRiboPath(Path& path) const;
-
-private:
-
-    ////////////////////////////////////////////////////////////
-    // Member data
-    ////////////////////////////////////////////////////////////
-    TurningPoints   _edges; //!< Starting points that are slightly off the map
-    TurningPoints   _turns; //!< Turns generated from configured intersections
-    sf::Vector2i    _size;  //!< X and Y tilesize of the map
-
-};
+class Vehicle;
+using VehiclePtr = std::shared_ptr<Vehicle>;
 
 class VehicleFactory
 {

@@ -17,26 +17,30 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(PROJECT_FILES
+    ../src/AnimatedSprite.h    
     ../src/AnimatedSprite.cpp
-    ../src/AnimatedSprite.h
+    
 
-    ../src/Background.cpp
     ../src/Background.h
-
-    ../src/Intersection.cpp
+    ../src/Background.cpp
+    
     ../src/Intersection.h
+    ../src/Intersection.cpp
+    
+    ../src/PathFactory.h
+    ../src/PathFactory.cpp
 
-    ../src/ResourceManager.cpp
     ../src/ResourceManager.h
+    ../src/ResourceManager.cpp
 
-    ../src/TTUtils.cpp
     ../src/TTUtils.h
+    ../src/TTUtils.cpp
 
-    ../src/Vehicle.cpp
     ../src/Vehicle.h
-
-    ../src/VehicleFactory.cpp
+    ../src/Vehicle.cpp
+    
     ../src/VehicleFactory.h
+    ../src/VehicleFactory.cpp
 )
 
 add_test("misc" "${PROJECT_FILES}")

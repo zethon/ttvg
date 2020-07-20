@@ -7,6 +7,7 @@ set(SOURCE_FILES
     Intersection.cpp
     IntroScreen.cpp
     main.cpp
+    PathFactory.cpp
     Player.cpp
     ResourceManager.cpp
     Screen.cpp
@@ -27,6 +28,7 @@ set(HEADER_FILES
     Intersection.h
     IntroScreen.h
     Path.hpp
+    PathFactory.h
     Player.h
     ResourceManager.h
     Screen.h

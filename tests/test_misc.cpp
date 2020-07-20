@@ -12,6 +12,7 @@
 #include "../src/VehicleFactory.h"
 #include "../src/TTUtils.h"
 #include "../src/Intersection.h"
+#include "../src/PathFactory.h"
 
 using namespace std::string_literals;
 
@@ -297,7 +298,7 @@ BOOST_AUTO_TEST_CASE(path_ForcedSingleLaneTest)
 
     tt::PathFactory fact{ sf::Vector2i{10, 10} };
     fact.setEdges(edges);
-    fact.setIntersections(inter);
+    fact.setTurningPoints(inter);
 
     auto path = fact.makeRiboPath();
     
@@ -330,7 +331,7 @@ BOOST_AUTO_TEST_CASE(path_forcedDoubleLaneTest)
 
     tt::PathFactory fact{ sf::Vector2i{10, 10} };
     fact.setEdges(edges);
-    fact.setIntersections(inter);
+    fact.setTurningPoints(inter);
 
     auto path = fact.makeRiboPath();
 
@@ -357,7 +358,7 @@ BOOST_AUTO_TEST_CASE(pathMakingTXTest)
 
     tt::PathFactory fact{ sf::Vector2i{10, 10} };
     fact.setEdges(edges);
-    fact.setIntersections(inter);
+    fact.setTurningPoints(inter);
 
     auto path = fact.makeRiboPath();
 }
@@ -376,7 +377,7 @@ BOOST_AUTO_TEST_CASE(pathMakingSingleTXTest)
 
     tt::PathFactory fact{ sf::Vector2i{7, 7} };
     fact.setEdges(edges);
-    fact.setIntersections(inter);
+    fact.setTurningPoints(inter);
 
     auto path = fact.makeRiboPath();
 }
@@ -400,7 +401,7 @@ BOOST_AUTO_TEST_CASE(pathMakingDoubleTXTest)
 
     tt::PathFactory fact{ sf::Vector2i{11, 11} };
     fact.setEdges(edges);
-    fact.setIntersections(inter);
+    fact.setTurningPoints(inter);
 
     auto path = fact.makeRiboPath();
 }

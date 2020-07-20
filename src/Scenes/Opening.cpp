@@ -7,6 +7,7 @@
 
 #include "../TTUtils.h"
 #include "../Vehicle.h"
+#include "../PathFactory.h"
 
 #include "Opening.h"
 
@@ -74,7 +75,7 @@ void Opening::initTraffic()
     auto[x, y, widthf, heightf] = _background->getWorldTileRect();
     assert(widthf > 0);
     assert(heightf > 0);
-    
+
     sf::Vector2i size{ static_cast<int>(widthf), static_cast<int>(heightf) };
    auto pathFactory = std::make_shared<PathFactory>(size);
 
@@ -102,7 +103,7 @@ void Opening::initTraffic()
             intersections.insert(intersections.end(), tempv.begin(), tempv.end());
         }
     }
-    pathFactory->setIntersections(intersections);
+    pathFactory->setTurningPoints(intersections);
 
     edges.clear();
     for (const auto& item : config["vehicles"]["turningpoints"].items())
