@@ -48,18 +48,16 @@ matrix:
   - name: "Windows Visual studio 15 2017 Debug"
     os: windows
     install:
-      - choco install -y python '"/InstallDir:C:\tools\python3"'
-      - choco install -y pip
-      - pip install conan conan_package_tools
+      - choco install conan
+      - export PATH="/c/Program Files/Conan/conan:$PATH"
     env:
       - CONFIG=Debug
 
   - name: "Windows Visual studio 15 2017 Release"
     os: windows
     install:
-      - choco install -y python '"/InstallDir:C:\tools\python3"'
-      - choco install -y pip
-      - pip install conan conan_package_tools
+      - choco install conan
+      - export PATH="/c/Program Files/Conan/conan:$PATH"
     env:
       - CONFIG=Release
 
