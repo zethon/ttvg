@@ -14,75 +14,70 @@ addons:
     - libxcb-xinerama0-dev
 
 before_script:
-- conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 - mkdir build && cd build
-- conan install .. -s compiler="Visual Studio" -s compiler.version=15
+- conan --version
+- conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+- conan install .. -s build_type=${CONFIG} --build missing
+- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON
 
 script:
-- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON ${CMAKE_FLAGS}
 - cmake --build .
 - ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
 
 matrix:
   include:
 
-  # - name: "macOS Xcode 10 Debug"
-  #   os: osx
-  #   compiler: clang
-  #   osx_image: xcode10
-  #   install:
-  #     - pip install conan
-  #   env:
-  #     - CONFIG=Debug
-
-  # - name: "macOS Xcode 10 Release"
-  #   os: osx
-  #   compiler: clang
-  #   osx_image: xcode10
-  #   install:
-  #     - pip install conan
-  #   env:
-  #     - CONFIG=Release
-
-  - name: "Windows Visual studio 15 2017 Debug"
-    os: windows
+  - name: "macOS Xcode 10 Debug"
+    os: osx
+    compiler: clang
+    osx_image: xcode10
     install:
-      - choco install conan
-      - export PATH="/c/Program Files/Conan/conan:$PATH"
-      # - conan profile new default --detect
+      - pip install conan
     env:
       - CONFIG=Debug
-      # - CONAN_FLAGS="-s compiler='Visual Studio' -s compiler.version=15 -s arch=x8
-      # - CONAN_SETTINGS_FLAG="-g cmake -s compiler=\"Visual Studio\" -s compiler.version=15 -s arch=x86_64 -s build_type=Debug -b missing"
-      - CONAN_SETTINGS_FLAG="-s compiler=\"'Visual Studio\""
-      - CMAKE_FLAGS="\"-GVisual Studio 15 2017 Win64\" -DCMAKE_GENERATOR_PLATFORM=x64"
+
+  - name: "macOS Xcode 10 Release"
+    os: osx
+    compiler: clang
+    osx_image: xcode10
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Release
+
+  - name: "Linux gcc Debug"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Debug
+
+  - name: "Linux gcc Release"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Release
+
+  # - name: "Windows Visual studio 15 2017 Debug"
+  #   os: windows
+  #   install:
+  #     - choco install -y python '"/InstallDir:C:\\tools\\python3"'
+  #     - choco install -y pip
+  #     - pip install conan conan_package_tools
+  #   env:
+  #     - CONFIG=Debug
 
   # - name: "Windows Visual studio 15 2017 Release"
   #   os: windows
   #   install:
-  #     - choco install conan
-  #     - export PATH="/c/Program Files/Conan/conan:$PATH"
-  #     - conan profile new default --detect
-  #   env:
-  #     - CONFIG=Release
-  #     - CONAN_FLAGS="-s compiler='Visual Studio' -s compiler.version=15 -s arch=x86_64"
-  #     - CMAKE_FLAGS="-G \"Visual Studio 15 2017 Win64\" -DCMAKE_GENERATOR_PLATFORM=x64"
-
-  # - name: "Linux gcc Debug"
-  #   os: linux
-  #   dist: bionic
-  #   compiler: gcc
-  #   install:
-  #     - pip install conan
-  #   env:
-  #     - CONFIG=Debug
-
-  # - name: "Linux gcc Release"
-  #   os: linux
-  #   dist: bionic
-  #   compiler: gcc
-  #   install:
-  #     - pip install conan
+  #     - choco install -y python '"/InstallDir:C:\\tools\\python3"'
+  #     - choco install -y pip
+  #     - pip install conan conan_package_tools
   #   env:
   #     - CONFIG=Release
 
