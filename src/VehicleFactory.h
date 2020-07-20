@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-#include <nlohmann/json.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 #include "Path.hpp"
 #include "ResourceManager.h"
