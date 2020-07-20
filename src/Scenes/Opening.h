@@ -177,8 +177,9 @@ public:
         {
             if (prev == pt) continue;
 
-            auto gPrev = _background.getGlobalFromTile(prev);
-            auto gPt = _background.getGlobalFromTile(pt);
+            // TODO: GET RID OF THESE TEMPS
+            auto gPrev = _background.getGlobalFromTile(sf::Vector2f{ prev });
+            auto gPt = _background.getGlobalFromTile(sf::Vector2f{ pt });
 
             float width = 0.f;
             float height = 0.f;

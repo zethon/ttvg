@@ -21,8 +21,8 @@ constexpr auto STEPSIZE = 16u;
 constexpr auto PLAYER_START_X = 1616.0f;
 constexpr auto PLAYER_START_Y = 2875.0f;
 
-constexpr auto TILESIZE_X = 16;
-constexpr auto TILESIZE_Y = 16;
+constexpr auto TILESIZE_X = 16.0f;
+constexpr auto TILESIZE_Y = 16.0f;
 
 constexpr auto MAPNAME = "tucson";
 
@@ -35,11 +35,10 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
       _statusBar{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2i { TILESIZE_X, TILESIZE_Y });
+    _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
 
-    // auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
     sf::View view(sf::FloatRect(0.f, 0.f,
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);

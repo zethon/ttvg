@@ -15,6 +15,19 @@ namespace nl = nlohmann;
 namespace tt
 {
 
+inline sf::Vector2f getGlobalFromTile(const sf::Vector2f& tilepos, const sf::Vector2f& tileSize)
+{
+    auto x = static_cast<float>(tilepos.x * tileSize.x);
+    auto y = static_cast<float>(tilepos.y * tileSize.y);
+    return { x, y };
+}
+
+template<typename Int>
+inline sf::Vector2f getGlobalFromTile(Int posx, Int posy, const sf::Vector2f& tileSize)
+{
+    return getGlobalFromTile(sf::Vector2f<Int>{ posx, posy }, tileSize);
+}
+
 struct zone_compare
 {
 
@@ -39,7 +52,7 @@ class Background : public sf::Sprite
 public:
     using Zone = std::tuple<std::string, sf::FloatRect>;
 
-    Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2i& tilesize);
+    Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2f& tilesize);
 
     sf::FloatRect getWorldTileRect() const;
 
@@ -48,22 +61,14 @@ public:
         return tt::getTileFromGlobal(global, tilesize(), getScale());
     }
 
-    template<typename T>
-    sf::Vector2<T> getGlobalFromTile(const sf::Vector2<T>& tile) const
+    sf::Vector2f getGlobalFromTile(const tt::Tile& tile) const
     {
-        sf::Vector2<T> temp;
-        temp.x = static_cast<T>(tile.x * getScale().x);
-        temp.y = static_cast<T>(tile.y * getScale().y);
-
-        // TODO: GET RID OF THIS CAST
-        return sf::Vector2<T>{tt::getGlobalFromTile(temp, sf::Vector2i{ _tilesize })};
+        sf::Vector2f temp;
+        temp.x = static_cast<float>(tile.x * getScale().x);
+        temp.y = static_cast<float>(tile.y * getScale().y);
+        return sf::Vector2f{tt::getGlobalFromTile(temp, _tilesize )};
     }
 
-    void setTileSize(const sf::Vector2i& val) 
-    { 
-        // TODO: GET RID OF THIS
-        _tilesize = sf::Vector2f{ val }; 
-    }
     sf::Vector2f tilesize() const { return _tilesize; }
 
     nl::json& json() { return *_json; }
