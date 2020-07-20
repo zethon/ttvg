@@ -16,7 +16,7 @@ addons:
 before_script:
 - mkdir build && cd build
 - conan --version
-- conan remote add sfml https://api.bintray.com/conan/bincrafters/public-conan
+- conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 
 script:
 - env
@@ -51,7 +51,7 @@ matrix:
     install:
       - choco install conan
       - export PATH="/c/Program Files/Conan/conan:$PATH"
-      - conan profile new default --detect
+      # - conan profile new default --detect
     env:
       - CONFIG=Debug
       # - CONAN_FLAGS="-s compiler='Visual Studio' -s compiler.version=15 -s arch=x8
