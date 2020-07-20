@@ -17,10 +17,11 @@ before_script:
 - mkdir build && cd build
 - conan --version
 - conan remote add sfml https://api.bintray.com/conan/bincrafters/public-conan
-- conan install .. ${CONAN_SETTINGS_FLAG}
-- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON ${CMAKE_FLAGS}
 
 script:
+- env
+- conan install .. ${CONAN_SETTINGS_FLAG}
+- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON ${CMAKE_FLAGS}
 - cmake --build .
 - ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
 
