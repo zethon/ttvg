@@ -5,6 +5,7 @@ addons:
     - libgl1-mesa-dev
     - xorg-dev
     - libxcb-render-util0-dev
+    - libxcb-xkb-dev
 
 before_script:
 - mkdir build && cd build
