@@ -72,6 +72,9 @@ void Opening::initTraffic()
     _vehicleFactory = std::make_unique<VehicleFactory>(_resources, _background);
 
     auto[x, y, widthf, heightf] = _background->getWorldTileRect();
+    assert(widthf > 0);
+    assert(heightf > 0);
+    
     sf::Vector2i size{ static_cast<int>(widthf), static_cast<int>(heightf) };
    auto pathFactory = std::make_shared<PathFactory>(size);
 

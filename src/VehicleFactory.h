@@ -20,9 +20,6 @@ using PathFactoryPtr = std::shared_ptr<PathFactory>;
 
 class PathFactory
 {
-    TurningPoints   _edges;
-    TurningPoints   _turns;
-    sf::Vector2i    _size;
 
 public:
     PathFactory(const sf::Vector2i& size)
@@ -38,6 +35,16 @@ public:
     
     Path makeRiboPath() const;
     void makeRiboPath(Path& path) const;
+
+private:
+
+    ////////////////////////////////////////////////////////////
+    // Member data
+    ////////////////////////////////////////////////////////////
+    TurningPoints   _edges; //!< Starting points that are slightly off the map
+    TurningPoints   _turns; //!< Turns generated from configured intersections
+    sf::Vector2i    _size;  //!< X and Y tilesize of the map
+
 };
 
 class VehicleFactory

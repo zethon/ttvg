@@ -45,7 +45,7 @@ std::ostream& operator<<(std::ostream& out, const TilePairs& item)
 }
 
 BOOST_AUTO_TEST_SUITE(tt)
-BOOST_AUTO_TEST_SUITE(background)
+BOOST_AUTO_TEST_SUITE(bg)
 
 // 0 - texture size
 // 1 - tile size
@@ -53,6 +53,17 @@ BOOST_AUTO_TEST_SUITE(background)
 // 3 - array of tile and global coords to test
 std::tuple<sf::Vector2u, sf::Vector2f, sf::Vector2f, TilePairs> rectTestData[] = 
 {
+    {
+        { 100, 100 },
+        { 2.0f, 2.0f },
+        { 1.0f, 1.0f},
+        {
+            { { 0.0f, 0.0f}, { 0.0f, 0.0f } },
+            { { 1.0f, 0.0f}, { 2.0f, 0.0f } },
+            { { 0.0f, 1.0f}, { 0.0f, 2.0f } },
+            { { 1.0f, 1.0f}, { 2.0f, 2.0f } },
+        }   
+    },
     {
         { 1000, 1000 },
         { 20.0f, 20.0f },
@@ -66,7 +77,8 @@ std::tuple<sf::Vector2u, sf::Vector2f, sf::Vector2f, TilePairs> rectTestData[] =
     }
 };
 
-BOOST_DATA_TEST_CASE(rectTest, data::make(rectTestData), textSize, tileSize, bgScale, testdata)
+// --run_test=tt/bg/testRect
+BOOST_DATA_TEST_CASE(testRect, data::make(rectTestData), textSize, tileSize, bgScale, testdata)
 {
     sf::Texture texture;
     texture.create(textSize.x, textSize.y);
