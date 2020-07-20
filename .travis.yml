@@ -52,6 +52,7 @@ matrix:
       - export PATH="/c/Program Files/Conan/conan:$PATH"
       - conan profile new default --detect
     env:
+      - CC=CL.exe CXX=CL.exe
       - CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
       - CONFIG=Debug
 
@@ -62,6 +63,7 @@ matrix:
       - export PATH="/c/Program Files/Conan/conan:$PATH"
       - conan profile new default --detect
     env:
+      - CC=CL.exe CXX=CL.exe
       - CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
       - CONFIG=Release
 
