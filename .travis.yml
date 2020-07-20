@@ -1,16 +1,10 @@
 anguage: cpp
 
 addons:
-  apt_packages:
-    - cmake
-    - libxrandr-dev
-    - libudev-dev
-    - libopenal-dev
-    - libflac-dev
-    - libvorbis-dev
-    - g++
-    - clang
-    - libgl1-mesa-dev
+  homebrew:
+    update: true
+    packages:
+      - conan
 
 before_script:
 - mkdir build && cd build
