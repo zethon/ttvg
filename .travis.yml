@@ -26,7 +26,7 @@ matrix:
     compiler: clang
     osx_image: xcode10
     install:
-      - brew install conan
+      - pip install conan
     env:
       - CONFIG=Debug
 
@@ -34,8 +34,8 @@ matrix:
     os: osx
     compiler: clang
     osx_image: xcode10
-    instal::
-      - brew install conan
+    install:
+      - pip install conan
     env:
       - CONFIG=Release
 
