@@ -1,0 +1,42 @@
+anguage: cpp
+
+addons:
+  apt_packages:
+    - cmake
+    - libxrandr-dev
+    - libudev-dev
+    - libopenal-dev
+    - libflac-dev
+    - libvorbis-dev
+    - g++
+    - clang
+    - libgl1-mesa-dev
+
+before_script:
+- mkdir build && cd build
+- conan remote add sfml https://api.bintray.com/conan/bincrafters/public-conan
+- conan install .. -s build_type=${CONFIG} --build missing
+- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON
+
+script:
+- cmake --build .
+- ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
+
+matrix:
+  include:
+
+  - name: "macOS Xcode 10 Debug"
+    os: osx
+    osx_image: xcode10
+    env:
+      - CONFIG=Debug
+
+  - name: "macOS Xcode 10 Release"
+    os: osx
+    osx_image: xcode10
+    env:
+      - CONFIG=Release
+
+notifications:
+  email: false
+
