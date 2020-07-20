@@ -19,7 +19,7 @@ before_script:
 - mkdir build && cd build
 - conan --version
 - conan remote add sfml https://api.bintray.com/conan/bincrafters/public-conan
-- conan install .. -s build_type=${CONFIG} --build missing ${CONAN_FLAGS}
+- conan install .. -s build_type=${CONFIG} ${CONAN_FLAGS} --build missing
 - cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON ${CMAKE_FLAGS}
 
 script:
