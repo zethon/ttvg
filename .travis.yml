@@ -1,9 +1,9 @@
 anguage: cpp
 
 addons:
-  homebrew:
-    packages:
-      - conan
+  # homebrew:
+  #   packages:
+  #     - conan
   apt_packages:
     - conan
 
@@ -25,6 +25,8 @@ matrix:
     os: osx
     compiler: clang
     osx_image: xcode10
+    install:
+      - brew install conan
     env:
       - CONFIG=Debug
 
@@ -32,6 +34,8 @@ matrix:
     os: osx
     compiler: clang
     osx_image: xcode10
+    instal::
+      - brew install conan
     env:
       - CONFIG=Release
 
