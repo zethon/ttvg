@@ -7,6 +7,11 @@ addons:
     - libxcb-render-util0-dev
     - libxcb-xkb-dev
     - libxcb-icccm4-dev
+    - libudev-dev
+    - libfreetype6-dev
+    - libxcb-image0-dev
+    - libxcb-keysyms1-dev
+    - libxcb-xinerama0-dev
 
 before_script:
 - mkdir build && cd build
