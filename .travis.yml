@@ -8,14 +8,6 @@ addons:
   apt_packages:
     - conan
 
-before_install:
-- |-
-    case $TRAVIS_OS_NAME in
-      windows)
-        choco install conan
-        ;;
-    esac
-
 before_script:
 - mkdir build && cd build
 - conan --version
@@ -44,29 +36,37 @@ matrix:
     env:
       - CONFIG=Release
 
-  - name: "Windows Visual studio 15 2017 Debug"
-    os: windows
-    env:
-      - CONFIG=Debug
+  # - name: "Windows Visual studio 15 2017 Debug"
+  #   os: windows
+  #   install:
+  #     - choco install -y python '"/InstallDir:C:\\tools\\python3"'
+  #     - choco install -y pip
+  #     - pip install conan conan_package_tools
+  #   env:
+  #     - CONFIG=Debug
 
-  - name: "Windows Visual studio 15 2017 Release"
-    os: windows
-    env:
-      - CONFIG=Release
+  # - name: "Windows Visual studio 15 2017 Release"
+  #   os: windows
+  #   install:
+  #     - choco install -y python '"/InstallDir:C:\\tools\\python3"'
+  #     - choco install -y pip
+  #     - pip install conan conan_package_tools
+  #   env:
+  #     - CONFIG=Release
 
-  - name: "Linux gcc Debug"
-    os: linux
-    dist: bionic
-    compiler: gcc
-    env:
-      - CONFIG=Debug
+  # - name: "Linux gcc Debug"
+  #   os: linux
+  #   dist: bionic
+  #   compiler: gcc
+  #   env:
+  #     - CONFIG=Debug
 
-  - name: "Linux gcc Release"
-    os: linux
-    dist: bionic
-    compiler: gcc
-    env:
-      - CONFIG=Release
+  # - name: "Linux gcc Release"
+  #   os: linux
+  #   dist: bionic
+  #   compiler: gcc
+  #   env:
+  #     - CONFIG=Release
 
 notifications:
   email: false
