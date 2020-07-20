@@ -13,13 +13,11 @@ addons:
     - libxcb-keysyms1-dev
     - libxcb-xinerama0-dev
 
-before_script:
-- mkdir build && cd build
-- conan --version
+install:
 - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 
 script:
-- env
+- mkdir build && cd build
 - conan install .. ${CONAN_SETTINGS_FLAG}
 - cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON ${CMAKE_FLAGS}
 - cmake --build .
