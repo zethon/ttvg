@@ -18,7 +18,7 @@ install:
 
 script:
 - mkdir build && cd build
-- conan install .. ${CONAN_SETTINGS_FLAG}
+- conan install .. $CONAN_SETTINGS_FLAG
 - cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON ${CMAKE_FLAGS}
 - cmake --build .
 - ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
