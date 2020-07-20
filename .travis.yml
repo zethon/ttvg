@@ -2,7 +2,6 @@ anguage: cpp
 
 addons:
   homebrew:
-    update: false
     packages:
       - conan
   apt_packages:
