@@ -13,7 +13,7 @@ addons:
     - libxcb-keysyms1-dev
     - libxcb-xinerama0-dev
 
-install:
+before_script:
 - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 - mkdir build && cd build
 - conan install .. -s compiler="Visual Studio"
