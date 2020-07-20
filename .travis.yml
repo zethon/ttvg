@@ -14,11 +14,13 @@ addons:
     - libxcb-xinerama0-dev
 
 before_script:
+- if [[ "${COMPILER_CXX}" != "" ]]; then export CXX=${COMPILER_CXX}; fi
+- if [[ "${COMPILER_CC}" != "" ]]; then export CC=${COMPILER_CC}; fi
 - mkdir build && cd build
 - conan --version
 - conan remote add sfml https://api.bintray.com/conan/bincrafters/public-conan
-- conan install .. -s build_type=${CONFIG} --build missing
-- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON
+- conan install .. -s build_type=${CONFIG} --build missing ${CONAN_FLAGS}
+- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON ${CMAKE_FLAGS}
 
 script:
 - cmake --build .
@@ -52,9 +54,9 @@ matrix:
       - export PATH="/c/Program Files/Conan/conan:$PATH"
       - conan profile new default --detect
     env:
-      - CC=CL.exe CXX=CL.exe
-      - CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
       - CONFIG=Debug
+      - CONAN_FLAGS="-s compiler=\"Visual Studio\" -s compiler.version=15 -s arch=x86_64"
+      - CMAKE_FLAGS="-G \"Visual Studio 15 2017 Win64\" -DCMAKE_GENERATOR_PLATFORM=x64"
 
   - name: "Windows Visual studio 15 2017 Release"
     os: windows
@@ -63,9 +65,9 @@ matrix:
       - export PATH="/c/Program Files/Conan/conan:$PATH"
       - conan profile new default --detect
     env:
-      - CC=CL.exe CXX=CL.exe
-      - CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
       - CONFIG=Release
+      - CONAN_FLAGS="-s compiler=\"Visual Studio\" -s compiler.version=15 -s arch=x86_64"
+      - CMAKE_FLAGS="-G \"Visual Studio 15 2017 Win64\" -DCMAKE_GENERATOR_PLATFORM=x64"
 
   # - name: "Linux gcc Debug"
   #   os: linux
