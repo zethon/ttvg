@@ -27,50 +27,48 @@ script:
 matrix:
   include:
 
-  - name: "macOS Xcode 10 Debug"
-    os: osx
-    compiler: clang
-    osx_image: xcode10
-    install:
-      - pip install conan
-    env:
-      - CONFIG=Debug
-
-  - name: "macOS Xcode 10 Release"
-    os: osx
-    compiler: clang
-    osx_image: xcode10
-    install:
-      - pip install conan
-    env:
-      - CONFIG=Release
-
-  - name: "Linux gcc Debug"
-    os: linux
-    dist: bionic
-    compiler: gcc
-    install:
-      - pip install conan
-    env:
-      - CONFIG=Debug
-
-  - name: "Linux gcc Release"
-    os: linux
-    dist: bionic
-    compiler: gcc
-    install:
-      - pip install conan
-    env:
-      - CONFIG=Release
-
-  # - name: "Windows Visual studio 15 2017 Debug"
-  #   os: windows
+  # - name: "macOS Xcode 10 Debug"
+  #   os: osx
+  #   compiler: clang
+  #   osx_image: xcode10
   #   install:
-  #     - choco install -y python '"/InstallDir:C:\\tools\\python3"'
-  #     - choco install -y pip
-  #     - pip install conan conan_package_tools
+  #     - pip install conan
   #   env:
   #     - CONFIG=Debug
+
+  # - name: "macOS Xcode 10 Release"
+  #   os: osx
+  #   compiler: clang
+  #   osx_image: xcode10
+  #   install:
+  #     - pip install conan
+  #   env:
+  #     - CONFIG=Release
+
+  # - name: "Linux gcc Debug"
+  #   os: linux
+  #   dist: bionic
+  #   compiler: gcc
+  #   install:
+  #     - pip install conan
+  #   env:
+  #     - CONFIG=Debug
+
+  # - name: "Linux gcc Release"
+  #   os: linux
+  #   dist: bionic
+  #   compiler: gcc
+  #   install:
+  #     - pip install conan
+  #   env:
+  #     - CONFIG=Release
+
+  - name: "Windows Visual studio 15 2017 Debug"
+    os: windows
+    install:
+      - choco install conan
+    env:
+      - CONFIG=Debug
 
   # - name: "Windows Visual studio 15 2017 Release"
   #   os: windows
