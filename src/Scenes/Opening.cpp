@@ -7,6 +7,7 @@
 
 #include "../TTUtils.h"
 #include "../Vehicle.h"
+#include "../PathFactory.h"
 
 #include "Opening.h"
 
@@ -21,8 +22,8 @@ constexpr auto STEPSIZE = 16u;
 constexpr auto PLAYER_START_X = 1616.0f;
 constexpr auto PLAYER_START_Y = 2875.0f;
 
-constexpr auto TILESIZE_X = 16;
-constexpr auto TILESIZE_Y = 16;
+constexpr auto TILESIZE_X = 16.0f;
+constexpr auto TILESIZE_Y = 16.0f;
 
 constexpr auto MAPNAME = "tucson";
 
@@ -35,11 +36,10 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
       _statusBar{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2i { TILESIZE_X, TILESIZE_Y });
+    _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
 
-    // auto top = (_background->texture().getSize().y * 0.7f) - _window.getSize().y;
     sf::View view(sf::FloatRect(0.f, 0.f,
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
@@ -73,6 +73,9 @@ void Opening::initTraffic()
     _vehicleFactory = std::make_unique<VehicleFactory>(_resources, _background);
 
     auto[x, y, widthf, heightf] = _background->getWorldTileRect();
+    assert(widthf > 0);
+    assert(heightf > 0);
+
     sf::Vector2i size{ static_cast<int>(widthf), static_cast<int>(heightf) };
    auto pathFactory = std::make_shared<PathFactory>(size);
 
@@ -100,7 +103,7 @@ void Opening::initTraffic()
             intersections.insert(intersections.end(), tempv.begin(), tempv.end());
         }
     }
-    pathFactory->setIntersections(intersections);
+    pathFactory->setTurningPoints(intersections);
 
     edges.clear();
     for (const auto& item : config["vehicles"]["turningpoints"].items())
@@ -119,7 +122,7 @@ void Opening::initTraffic()
     // `_pathFactory` member and instead if would be constructed inside the
     // `VehicleFactory` class
     _pathLines = std::make_unique<PathLines>(*_background);
-    Path path = pathFactory->makeRandomPath();
+    Path path = pathFactory->makeRiboPath();
     _pathLines->setPath(path);
 }
 
@@ -200,66 +203,10 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Space:
             {
-                auto p = _vehicleFactory->pathFactory()->makeRandomPath();
+                auto p = _vehicleFactory->pathFactory()->makeRiboPath();
                 _pathLines->setPath(p);
             }
             break;
-
-            case sf::Keyboard::A: // LEFT
-            {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-                if ((x - (view.getSize().x / 2)) > 0)
-                {
-                    x -= 20;
-                    view.setCenter(x, y);
-                    _window.setView(view);
-                }
-            }
-            break;
-
-            case sf::Keyboard::D: // RIGHT
-            {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-                if (((x+20) + (view.getSize().x / 2))
-                    < _background->getRightBoundary())
-                {
-                    x += 20;
-                    view.setCenter(x, y);
-                    _window.setView(view);
-                }
-            }
-            break;
-
-            case sf::Keyboard::W: // UP
-            {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-                if ((y - (view.getSize().y / 2)) > 20)
-                {
-                    y -= 20;
-                    view.setCenter(x, y);
-                    _window.setView(view);
-                }
-            }
-            break;
-
-            case sf::Keyboard::S: // DOWN
-            {
-                sf::View view = _window.getView();
-                auto [x,y] = view.getCenter();
-
-                if ((y + (view.getSize().y / 2)) 
-                    < _background->getBottomBoundary())
-                {
-                    y += 20;
-                    view.setCenter(x, y);
-                    _window.setView(view);
-                }
-            }
-            break;
-
         }
     }
 
@@ -390,20 +337,19 @@ void Opening::animeCallback()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
         auto xx = _player->getGlobalLeft();
-        const auto boundaryLeft = _background->getLeftBoundary();
         auto [x, y] = _player->getPosition();
-        assert(xx >= boundaryLeft);
-        if (xx == boundaryLeft) return;
+        assert(xx >= 0);
+        if (xx == 0) return;
 
         xx -= stepSize;
-        if (xx < boundaryLeft) xx = boundaryLeft;
+        if (xx < 0) xx = 0;
 
         _player->setGlobalLeft(xx);
         moved = true;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
-        const auto boundaryRight = _background->getRightBoundary();
+        const auto boundaryRight = _background->getGlobalBounds().width;
 
         auto x = _player->getGlobalRight();
         assert(x <= boundaryRight);
@@ -417,19 +363,18 @@ void Opening::animeCallback()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        const auto boundaryTop = _background->getTopBoundary();
         auto y = _player->getGlobalTop();
-        assert(y >= boundaryTop);
-        if (y == boundaryTop) return;
+        assert(y >= 0);
+        if (y == 0) return;
 
         y -= stepSize;
-        if (y < boundaryTop) y = boundaryTop;
+        if (y < 0) y = 0;
         _player->setGlobalTop(y);
         moved = true;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        const auto boundaryBottom = _background->getBottomBoundary();
+        const auto boundaryBottom = _background->getGlobalBounds().height;
 
         auto y = _player->getGlobalBottom();
         assert(y <= boundaryBottom);

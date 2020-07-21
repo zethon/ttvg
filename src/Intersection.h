@@ -85,7 +85,7 @@ auto getDirection(const V& start, const V& stop)
     {
         retval |= Direction::RIGHT;
     }
-    else
+    else if (diffx < 0)
     {
         retval |= Direction::LEFT;
     }
@@ -94,7 +94,7 @@ auto getDirection(const V& start, const V& stop)
     {
         retval |= Direction::DOWN;
     }
-    else
+    else if (diffy < 0)
     {
         retval |= Direction::UP;
     }
