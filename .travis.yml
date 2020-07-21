@@ -66,14 +66,20 @@ matrix:
   - name: "Windows Visual studio 15 2017 Debug"
     os: windows
     compiler: msvc
-    install:
-      - choco install conan
-      - export PATH="/c/Program Files/Conan/conan:$PATH"
-      # - conan profile new default --detect
-      # - conan profile remove settings.compiler.libcxx default
-      # - conan profile update settings.compiler="Visual Studio" default
-      # - conan profile update settings.compiler.version=15 default 
-      # - conan profile show default
+    before_install:
+      # python and conan installation
+      - choco install python3 --params "/InstallDir:C:\\Python"
+      - choco install -y visualstudio2019community visualstudio2019-workload-nativedesktop
+  #        - choco install -y visualstudio2019buildtools
+      - export PATH="/c/Python:/c/Python/Scripts:/c/Users/travis/AppData/Roaming/Python/Python38/Scripts:$PATH"
+      - pip3 install --user --upgrade conan
+      - conan user
+      - conan profile new default --detect
+      - conan profile remove settings.compiler.libcxx default
+      - conan profile update settings.compiler="Visual Studio" default
+      - conan profile update settings.compiler.version=15 default # Visual Studio 2017
+  #        - conan profile update settings.compiler.cppstd=20 default
+      - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     env:
       - CONFIG=Debug
 
