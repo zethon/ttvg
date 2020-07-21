@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <nlohmann/json.hpp>
 
+#include "AnimatedSprite.h"
+
 namespace nl = nlohmann;
 
 namespace tt
@@ -17,13 +19,13 @@ namespace tt
                         const sf::Vector2i& size,
                         nl::json json);
 
-            std::string getDesctription();
+            std::string getDescription();
 
         private:
    
-            nl::json    _json
+            nl::json    _json;
 
-};
+    };
 
 
 } // namespace tt

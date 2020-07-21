@@ -28,12 +28,17 @@ namespace tt
         std::string textureFile =
             _resources.getFilename(fmt::format("items/{}.png", name));
 
-    	if( !boost::filesystem::exists(jsonFile) ||
-            !boost::filesystem::exists(textureFile) )
+    	if( !boost::filesystem::exists(jsonFile) )
     	{
-        	auto error = fmt::format("file '{}' not found", jsonfile);
+        	auto error = fmt::format("file '{}' not found", jsonFile);
         	throw std::runtime_error(error);
     	}
+
+    	if( !boost::filesystem::exists(textureFile) )
+        {
+        	auto error = fmt::format("file '{}' not found", textureFile);
+        	throw std::runtime_error(error);
+        }
 
         auto texture    = *(_resources.load<sf::Texture>(textureFile));
 

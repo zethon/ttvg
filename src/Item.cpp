@@ -4,14 +4,14 @@ namespace tt
 {
 
     Item::Item( sf::Texture texture,
-                const sf::Vector2i& size
+                const sf::Vector2i& size,
                 nl::json json)
         : AnimatedSprite(texture, size),
-            _json {
+            _json { json }
     {
 
     }
 
-    std::string Item::getDesctription() { return _json["description"]; }
+    std::string Item::getDescription() { return _json["description"]; }
 
 }
