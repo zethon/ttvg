@@ -310,8 +310,17 @@ void Opening::draw()
     //
     // Draw items
     //
-    std::for_each(_items.begin(), _items.end(),
-        [this](ItemPtr item) { _window.draw(*item); });
+    _missionText.setText("Find the magic vagina");
+    std::for_each(  _items.begin(), 
+                    _items.end(),
+                    [this](ItemPtr item) { 
+                        _window.draw(*item); 
+                        if(item->getGlobalBounds().intersects(
+                                                _player->getGlobalBounds())) {
+                            _missionText.setText(item->getDescription());
+                        }
+                    }
+    );
 
     // the player should always be the last thing on the 
     // game board to be drawn
