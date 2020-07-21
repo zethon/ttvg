@@ -65,9 +65,9 @@ matrix:
 
   - name: "Windows Visual studio 15 2017 Debug"
     os: windows
-    compiler: msvc
+    # compiler: msvc
     before_install:
-      - C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat x86
+      - "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x86
       # python and conan installation
       - choco install python3 --params "/InstallDir:C:\\Python"
       # - choco install -y visualstudio2019community visualstudio2019-workload-nativedesktop
