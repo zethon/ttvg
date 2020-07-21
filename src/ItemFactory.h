@@ -19,7 +19,8 @@ namespace tt
 
             ItemFactory(ResourceManager& resMgr);
     
-            ItemPtr createItem(const std::string& name);
+            ItemPtr createItem( const std::string&  name,
+                                const sf::Vector2f& position );
 
     };
 

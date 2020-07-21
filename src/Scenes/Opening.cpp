@@ -61,6 +61,25 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
 
     initTraffic();
 
+    //
+    // Create items
+    //
+    _itemFactory = std::make_unique<ItemFactory>(_resources);
+
+    //
+    // This should probably come from a .json associated with map data.
+    //
+    ItemPtr sax = _itemFactory->createItem(
+                                    "sax", 
+                                    sf::Vector2f { 1516.0f, 2875.0f } );
+
+    ItemPtr menorah = _itemFactory->createItem(
+                                    "menorah", 
+                                    sf::Vector2f { 1416.0f, 2725.0f } );
+    _items.push_back(sax);
+    _items.push_back(menorah);
+
+
     sf::Vector2f tile{ getPlayerTile() };
     _statusBar.setZoneText(_background->zoneName(tile));
 
@@ -287,6 +306,12 @@ void Opening::draw()
         [this](VehiclePtr v) { _window.draw(*v); });
 
     _pathLines->draw(_window);
+
+    //
+    // Draw items
+    //
+    std::for_each(_items.begin(), _items.end(),
+        [this](ItemPtr item) { _window.draw(*item); });
 
     // the player should always be the last thing on the 
     // game board to be drawn

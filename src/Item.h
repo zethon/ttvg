@@ -11,6 +11,7 @@ namespace tt
 {
 
     class Item : public AnimatedSprite
+    // class Item : public sf::Image
     {
 
         public:

@@ -1,3 +1,4 @@
 build/
 *.pk
 *.tiled-session
+core
