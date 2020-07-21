@@ -65,14 +65,15 @@ matrix:
 
   - name: "Windows Visual studio 15 2017 Debug"
     os: windows
+    compiler: msvc
     install:
       - choco install conan
       - export PATH="/c/Program Files/Conan/conan:$PATH"
-      - conan profile new default --detect
-      - conan profile remove settings.compiler.libcxx default
-      - conan profile update settings.compiler="Visual Studio" default
-      - conan profile update settings.compiler.version=15 default 
-      - conan profile show default
+      # - conan profile new default --detect
+      # - conan profile remove settings.compiler.libcxx default
+      # - conan profile update settings.compiler="Visual Studio" default
+      # - conan profile update settings.compiler.version=15 default 
+      # - conan profile show default
     env:
       - CONFIG=Debug
 
