@@ -80,19 +80,19 @@ std::tuple<sf::Vector2u, sf::Vector2f, sf::Vector2f, TilePairs> rectTestData[] =
 // --run_test=tt/bg/testRect
 BOOST_DATA_TEST_CASE(testRect, data::make(rectTestData), textSize, tileSize, bgScale, testdata)
 {
-    // sf::Texture texture;
-    // texture.create(textSize.x, textSize.y);
+    sf::Texture texture;
+    texture.create(textSize.x, textSize.y);
 
-    // tt::ResourceManager mgr{ boost::filesystem::path{} };
-    // tt::Background bg{ "test", mgr, tileSize };
-    // bg.setTexture(texture, true);
-    // bg.setScale(bgScale);
+    tt::ResourceManager mgr{ boost::filesystem::path{} };
+    tt::Background bg{ "test", mgr, tileSize };
+    bg.setTexture(texture, true);
+    bg.setScale(bgScale);
 
-    // for (const auto&[tile, global] : testdata)
-    // {
-    //     const auto calc = bg.getGlobalFromTile(tile);
-    //     BOOST_TEST(calc.x == global.x, tools::tolerance(float(0.01))); 
-    // }
+    for (const auto&[tile, global] : testdata)
+    {
+        const auto calc = bg.getGlobalFromTile(tile);
+        BOOST_TEST(calc.x == global.x, tools::tolerance(float(0.01))); 
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END() // background
