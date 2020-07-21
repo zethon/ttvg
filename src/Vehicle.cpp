@@ -4,6 +4,7 @@
 #include "TTUtils.h"
 #include "Background.h"
 #include "Vehicle.h"
+#include "Intersection.h"
 
 namespace tt
 {
@@ -84,100 +85,103 @@ std::uint16_t Vehicle::timestep()
 
 void Vehicle::move()
 {
-    const auto speed = 1.0f;
+    auto[xpos, ypos, h, w] = getGlobalBounds();
+    auto currentTile = _background->getTileFromGlobal(sf::Vector2f{ xpos, ypos });
 
-    auto globalPosition = sf::Vector2f{ getGlobalBounds().left, getGlobalBounds().top };
-    auto currentTile = sf::Vector2i{ _background->getTileFromGlobal(globalPosition) };
+    //const auto speed = 1.0f;
 
-    auto currentPathTile = _path.current();
-    auto nextTile = _path.next();
+    //auto globalPosition = sf::Vector2f{ getGlobalBounds().left, getGlobalBounds().top };
+    //auto currentTile = sf::Vector2i{ _background->getTileFromGlobal(globalPosition) };
 
-    float xdiff = static_cast<float>(std::pow(currentTile.x - nextTile.x, 2.f));
-    float ydiff = static_cast<float>(std::pow(currentTile.y - nextTile.y, 2.f));
-    float distance = std::sqrt(xdiff + ydiff);
-    if (distance <= 1.0f)
-    {
-        if (currentTile == nextTile)
-        {
-            _path.step();
-            nextTile = _path.next();
-        }
-        else
-        {
-            currentTile = nextTile;
-        }
-    }
+    //auto currentPathTile = _path.current();
+    //auto nextTile = _path.next();
 
-    auto diff = nextTile - currentTile;
+    //float xdiff = static_cast<float>(std::pow(currentTile.x - nextTile.x, 2.f));
+    //float ydiff = static_cast<float>(std::pow(currentTile.y - nextTile.y, 2.f));
+    //float distance = std::sqrt(xdiff + ydiff);
+    //if (distance <= 1.0f)
+    //{
+    //    if (currentTile == nextTile)
+    //    {
+    //        _path.step();
+    //        nextTile = _path.next();
+    //    }
+    //    else
+    //    {
+    //        currentTile = nextTile;
+    //    }
+    //}
 
-    //assert(!(diff.x != 0 && diff.y != 0));
-    if (diff.x != 0)
-    {
-        if (std::abs(diff.x) < speed)
-        {
-            currentTile.x += diff.x;
-        }
-        else if (diff.x < 0)
-        {
-            currentTile.x -= static_cast<std::int32_t>(speed);
-            _direction = LEFT;
-        }
-        else
-        {
-            currentTile.x += static_cast<std::int32_t>(speed);
-            _direction = RIGHT;
-        }
-    }
+    //auto diff = nextTile - currentTile;
 
-    if (diff.y != 0)
-    {
-        if (std::abs(diff.y) < speed)
-        {
-            currentTile.y += diff.y;
-        }
-        else if (diff.y < 0)
-        {
-            currentTile.y -= static_cast<std::int32_t>(speed);
-            _direction = UP;
-        }
-        else
-        {
-            currentTile.y += static_cast<std::int32_t>(speed);
-            _direction = DOWN;
-        }
-    }
+    ////assert(!(diff.x != 0 && diff.y != 0));
+    //if (diff.x != 0)
+    //{
+    //    if (std::abs(diff.x) < speed)
+    //    {
+    //        currentTile.x += diff.x;
+    //    }
+    //    else if (diff.x < 0)
+    //    {
+    //        currentTile.x -= static_cast<std::int32_t>(speed);
+    //        _direction = LEFT;
+    //    }
+    //    else
+    //    {
+    //        currentTile.x += static_cast<std::int32_t>(speed);
+    //        _direction = RIGHT;
+    //    }
+    //}
 
-    auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ currentTile });
-    switch (_direction)
-    {
-    default:
-        break;
+    //if (diff.y != 0)
+    //{
+    //    if (std::abs(diff.y) < speed)
+    //    {
+    //        currentTile.y += diff.y;
+    //    }
+    //    else if (diff.y < 0)
+    //    {
+    //        currentTile.y -= static_cast<std::int32_t>(speed);
+    //        _direction = UP;
+    //    }
+    //    else
+    //    {
+    //        currentTile.y += static_cast<std::int32_t>(speed);
+    //        _direction = DOWN;
+    //    }
+    //}
 
-    case UP:
-        setSource(0, 3);
-        //globalPos.x -= getGlobalBounds().width / 2;
-        break;
+    //auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ currentTile });
+    //switch (_direction)
+    //{
+    //default:
+    //    break;
 
-    case DOWN:
-        setSource(0, 0);
-        //globalPos.x -= getGlobalBounds().width / 2;
-        break;
+    //case UP:
+    //    setSource(0, 3);
+    //    //globalPos.x -= getGlobalBounds().width / 2;
+    //    break;
 
-    case LEFT:
-        setSource(0, 1);
-        //globalPos.y -= getGlobalBounds().height / 2;
-        break;
+    //case DOWN:
+    //    setSource(0, 0);
+    //    //globalPos.x -= getGlobalBounds().width / 2;
+    //    break;
 
-    case RIGHT:
-        setSource(0, 2);
-        //globalPos.y -= getGlobalBounds().height / 2;
-        break;
-    }
+    //case LEFT:
+    //    setSource(0, 1);
+    //    //globalPos.y -= getGlobalBounds().height / 2;
+    //    break;
+
+    //case RIGHT:
+    //    setSource(0, 2);
+    //    //globalPos.y -= getGlobalBounds().height / 2;
+    //    break;
+    //}
 
 
-    // globalPos.x -= getGlobalBounds().width / 2;
-    // globalPos.y -= getGlobalBounds().height / 2;
-    setPosition(globalPos);
+    //// globalPos.x -= getGlobalBounds().width / 2;
+    //// globalPos.y -= getGlobalBounds().height / 2;
+    //setPosition(globalPos);
 }
 
 bool Vehicle::isBlocked(const sf::FloatRect& test)
@@ -186,10 +190,9 @@ bool Vehicle::isBlocked(const sf::FloatRect& test)
     return isPathBlocked(getGlobalBounds(), test, _direction, minDistance);
 }
 
-void Vehicle::setPath(const Path & path)
+void Vehicle::setPath(const Path& path)
 {
-    // yuck, but I don't gaf right now
-    if (path.points().size() < 2) assert(0);
+    assert(path.points().size() > 1);
 
     // VECTOR COPY IN THE GAME LOOP!!!
     _path = path;
@@ -197,34 +200,10 @@ void Vehicle::setPath(const Path & path)
     auto& start = path.points().at(0);
     auto& next = path.points().at(1);
 
-    if (auto diff = (next - start); diff.x != 0)
-    {
-        if (diff.x > 0)
-        {
-            _direction = Direction::RIGHT;
-        }
-        else
-        {
-            _direction = Direction::LEFT;
-        }
-    }
-    else if (diff.y != 0)
-    {
-        if (diff.y > 0)
-        {
-            _direction = Direction::DOWN;
-        }
-        else
-        {
-            _direction = Direction::UP;
-        }
-    }
-    else
-    {
-        assert(0); // LOL!
-    }
+    auto direction = tt::getDirection(start, next);
+    assert(tt::exactly_one_bit_set(direction));
+    _direction = static_cast<Direction>(direction);
 
-    _lastPathPoint = path.points().at(1);
     auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ path.points().at(0) });
     setPosition(globalPos);
 }

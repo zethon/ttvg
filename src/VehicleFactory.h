@@ -3,7 +3,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Path.h"
+#include "Path.hpp"
 #include "ResourceManager.h"
 #include "Intersection.h"
 
@@ -12,32 +12,11 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-class Vehicle;
-using VehiclePtr = std::shared_ptr<Vehicle>;
-
 class PathFactory;
 using PathFactoryPtr = std::shared_ptr<PathFactory>;
 
-class PathFactory
-{
-    TurningPoints   _edges;
-    TurningPoints   _turns;
-    sf::Vector2i    _size;
-
-public:
-    PathFactory(const sf::Vector2i& size)
-        : _size{ size }
-    {}
-
-    void setEdges(const TurningPoints& edges) { _edges = edges; }
-    void setIntersections(const TurningPoints& points) { _turns = points; }
-    void addTurn(const TurningPoint& tp)
-    {
-        _turns.push_back(tp);
-    }
-    
-    Path makeRandomPath() const;
-};
+class Vehicle;
+using VehiclePtr = std::shared_ptr<Vehicle>;
 
 class VehicleFactory
 {

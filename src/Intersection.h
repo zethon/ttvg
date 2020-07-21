@@ -34,6 +34,7 @@ namespace tt
 
 enum Direction
 {
+    NONE    = 0x00,
     UP      = 0x01,
     DOWN    = 0x02,
     LEFT    = 0x04,
@@ -73,6 +74,33 @@ TurningPoints makeIntersection(
     IntersectionType type, 
     LaneSize h = LaneSize::SINGLE, 
     LaneSize v = LaneSize::SINGLE);
+
+template<typename V>
+auto getDirection(const V& start, const V& stop)
+{
+    std::uint32_t retval{ Direction::NONE };
+
+    auto[diffx, diffy] = stop - start;
+    if (diffx > 0)
+    {
+        retval |= Direction::RIGHT;
+    }
+    else if (diffx < 0)
+    {
+        retval |= Direction::LEFT;
+    }
+
+    if (diffy > 0)
+    {
+        retval |= Direction::DOWN;
+    }
+    else if (diffy < 0)
+    {
+        retval |= Direction::UP;
+    }
+
+    return retval;
+}
 
 namespace x3 = boost::spirit::x3;
 

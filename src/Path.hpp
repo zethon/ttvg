@@ -14,11 +14,15 @@ public:
     bool repeating() const { return _repeating; }
     void setRepeating(bool v) { _repeating = v; }
 
-    bool finished() const { return _finished; }
+    bool finished() const 
+    { 
+        if (_repeating) return true;
+        return (_points.size() - 1) == _idx;
+    }
 
     VectorList& points()
     {
-        return _points;
+        return const_cast<VectorList&>((static_cast<const Path&>(*this)).points());
     }
 
     const VectorList& points() const
@@ -28,11 +32,10 @@ public:
 
     [[maybe_unused]] sf::Vector2i step()
     {
-        if (_idx >= _points.size())
+        if ((_idx + 1) == _points.size())
         { 
             if (!_repeating)
             {
-                _finished = true;
                 return _points.back();
             }
 
@@ -40,13 +43,16 @@ public:
             _cycles++;
         }
 
-        return _points.at(_idx++);
+        return _points.at(_idx);
     }
 
     sf::Vector2i next() const
     {
-        auto nextidx = _idx;
-        if (nextidx >= _points.size()) nextidx = 0;
+        auto nextidx = _idx + 1;
+        if (_points.size() == nextidx)
+        {
+            nextidx = 0;
+        }
         return _points.at(nextidx);
     }
 
@@ -62,7 +68,6 @@ private:
     std::size_t     _idx = 0;
     std::size_t     _cycles = 0;
     bool            _repeating = true;
-    bool            _finished = false;
 };
 
 } // namespace tt

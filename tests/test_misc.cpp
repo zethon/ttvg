@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ostream>
+#include <limits>
 
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
@@ -11,6 +12,7 @@
 #include "../src/VehicleFactory.h"
 #include "../src/TTUtils.h"
 #include "../src/Intersection.h"
+#include "../src/PathFactory.h"
 
 using namespace std::string_literals;
 
@@ -296,9 +298,9 @@ BOOST_AUTO_TEST_CASE(path_ForcedSingleLaneTest)
 
     tt::PathFactory fact{ sf::Vector2i{10, 10} };
     fact.setEdges(edges);
-    fact.setIntersections(inter);
+    fact.setTurningPoints(inter);
 
-    auto path = fact.makeRandomPath();
+    auto path = fact.makeRiboPath();
     
     std::vector<sf::Vector2i> expected = 
     {
@@ -329,9 +331,9 @@ BOOST_AUTO_TEST_CASE(path_forcedDoubleLaneTest)
 
     tt::PathFactory fact{ sf::Vector2i{10, 10} };
     fact.setEdges(edges);
-    fact.setIntersections(inter);
+    fact.setTurningPoints(inter);
 
-    auto path = fact.makeRandomPath();
+    auto path = fact.makeRiboPath();
 
     std::vector<sf::Vector2i> expected =
     {
@@ -356,9 +358,9 @@ BOOST_AUTO_TEST_CASE(pathMakingTXTest)
 
     tt::PathFactory fact{ sf::Vector2i{10, 10} };
     fact.setEdges(edges);
-    fact.setIntersections(inter);
+    fact.setTurningPoints(inter);
 
-    auto path = fact.makeRandomPath();
+    auto path = fact.makeRiboPath();
 }
 
 BOOST_AUTO_TEST_CASE(pathMakingSingleTXTest)
@@ -375,9 +377,9 @@ BOOST_AUTO_TEST_CASE(pathMakingSingleTXTest)
 
     tt::PathFactory fact{ sf::Vector2i{7, 7} };
     fact.setEdges(edges);
-    fact.setIntersections(inter);
+    fact.setTurningPoints(inter);
 
-    auto path = fact.makeRandomPath();
+    auto path = fact.makeRiboPath();
 }
 
 // --run_test=tt/pathMakingDoubleTXTest
@@ -399,9 +401,47 @@ BOOST_AUTO_TEST_CASE(pathMakingDoubleTXTest)
 
     tt::PathFactory fact{ sf::Vector2i{11, 11} };
     fact.setEdges(edges);
-    fact.setIntersections(inter);
+    fact.setTurningPoints(inter);
 
-    auto path = fact.makeRandomPath();
+    auto path = fact.makeRiboPath();
+}
+
+BOOST_AUTO_TEST_CASE(getDirectionTest)
+{
+    sf::Vector2f startf{ 0.0f, 0.0f };
+    sf::Vector2f stopf{ 1.0f, 1.0f };
+
+    auto direction = tt::getDirection(startf, stopf);
+    BOOST_TEST(direction & Direction::RIGHT);
+    BOOST_TEST(direction & Direction::DOWN);
+
+    direction = tt::getDirection(stopf, startf);
+    BOOST_TEST(direction & Direction::LEFT);
+    BOOST_TEST(direction & Direction::UP);
+
+    direction = tt::getDirection(sf::Vector2i{ -1, -1 }, sf::Vector2i{ 1,1 });
+    BOOST_TEST(direction & Direction::RIGHT);
+    BOOST_TEST(direction & Direction::DOWN);
+
+    direction = tt::getDirection(sf::Vector2i{ 0, 10 }, sf::Vector2i{ 0, 100 });
+    BOOST_TEST(direction & Direction::DOWN);
+    BOOST_TEST(direction ^ Direction::UP);
+    BOOST_TEST(direction ^ Direction::LEFT);
+    BOOST_TEST(direction ^ Direction::RIGHT);
+}
+
+BOOST_AUTO_TEST_CASE(oneBitSetTest)
+{
+    BOOST_TEST(tt::exactly_one_bit_set(1) == true);
+    BOOST_TEST(tt::exactly_one_bit_set(2) == true);
+    BOOST_TEST(tt::exactly_one_bit_set(16) == true);
+
+    BOOST_TEST(tt::exactly_one_bit_set(0) == false);
+    BOOST_TEST(tt::exactly_one_bit_set(22) == false);
+    BOOST_TEST(tt::exactly_one_bit_set(std::numeric_limits<int>::max()) == false);
+
+    auto direction = tt::getDirection(sf::Vector2i{ -1,11 }, sf::Vector2i{ 10,11 });
+    BOOST_TEST(tt::exactly_one_bit_set(direction) == true);
 }
 
 BOOST_AUTO_TEST_SUITE_END() // tt
