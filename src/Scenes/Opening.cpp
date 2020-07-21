@@ -277,7 +277,7 @@ std::uint16_t Opening::timestep()
         _player->setState(AnimatedSprite::STILL);
     }
 
-    timestepTraffic();
+    // timestepTraffic();
 
     Scene::timestep();
 
