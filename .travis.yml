@@ -67,6 +67,7 @@ matrix:
     os: windows
     install:
       - choco install conan
+      - export PATH="/c/Program Files/Conan/conan:$PATH"
     env:
       - CONFIG=Debug
 
