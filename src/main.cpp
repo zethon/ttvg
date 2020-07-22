@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <cassert>
 #include <optional>
 
@@ -26,6 +27,7 @@ int main(int argc, char *argv[])
         ("version,v", "print version string")
         ("resources,r", po::value<std::string>(), "path of resource folder")
         ("screen,s", po::value<std::uint16_t>(), "start screen id")
+        ("window-size", po::value<std::string>(), "window size")
         ;
 
     po::variables_map vm;
@@ -38,8 +40,23 @@ int main(int argc, char *argv[])
         resourceFolder = vm["resources"].as<std::string>();
     }
 
+    std::size_t width   = window_width;
+    std::size_t height  = window_height;
+    if (vm.count("window-size") > 0)
+    {
+        std::string windowsize = vm["window-size"].as<std::string>();
+
+#ifdef _MSC_VER
+        sscanf_s(windowsize.c_str(),"%zix%zi", &width, &height);
+#else
+        sscanf(windowsize.c_str(),"%zix%zi", &width, &height);
+#endif
+
+    }
+
     auto win = std::make_shared<sf::RenderWindow>( 
-        sf::VideoMode(window_width, window_height),
+        sf::VideoMode(  static_cast<unsigned int>(width), 
+                        static_cast<unsigned int>(height) ),
         window_title, 
         sf::Style::Titlebar | sf::Style::Close
     );

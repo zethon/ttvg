@@ -44,7 +44,7 @@ void createMenu(TextList& menuItems,
 void updateMenu(std::uint16_t selection, TextList& menuItems)
 {
     std::for_each(menuItems.begin(), menuItems.end(),
-        [](TextPtr item) { item->setFillColor(sf::Color::White); });
+        [](TextPtr item) { item->setFillColor(sf::Color(64, 64, 64)); });
 
     if (selection < menuItems.size())
     {

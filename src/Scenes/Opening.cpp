@@ -61,6 +61,41 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
 
     initTraffic();
 
+    //
+    // Create items
+    //
+    _itemFactory = std::make_unique<ItemFactory>(_resources);
+
+    //
+    // This should probably come from a .json associated with map data.
+    //
+
+    ItemPtr sax = _itemFactory->createItem(
+                                    "sax", 
+                                    sf::Vector2f { 1516.0f, 2875.0f } );
+    _items.push_back(sax);
+
+    ItemPtr menorah = _itemFactory->createItem(
+                                    "menorah", 
+                                    sf::Vector2f { 1416.0f, 2725.0f } );
+    _items.push_back(menorah);
+
+    ItemPtr bag1 = _itemFactory->createItem(
+                                    "bag-of-weed", 
+                                    sf::Vector2f { 1216.0f, 3005.0f } );
+    _items.push_back(bag1);
+
+    ItemPtr bag2 = _itemFactory->createItem(
+                                    "bag-of-tobacco", 
+                                    sf::Vector2f { 1206.0f, 3105.0f } );
+    _items.push_back(bag2);
+
+    ItemPtr bag3 = _itemFactory->createItem(
+                                    "bag-of-crack", 
+                                    sf::Vector2f { 1716.0f, 2975.0f } );
+    _items.push_back(bag3);
+
+
     sf::Vector2f tile{ getPlayerTile() };
     _statusBar.setZoneText(_background->zoneName(tile));
 
@@ -226,6 +261,20 @@ std::uint16_t Opening::timestep()
 
     timestepTraffic();
 
+    //
+    // Check item bounds
+    //
+    _missionText.setText("Find the magic vagina");
+    std::for_each(  _items.begin(), 
+                    _items.end(),
+                    [this](ItemPtr item) { 
+                        if(item->getGlobalBounds().intersects(
+                                                _player->getGlobalBounds())) {
+                            _missionText.setText(item->getDescription());
+                        }
+                    }
+    );
+
     Scene::timestep();
 
     std::stringstream ss;
@@ -287,6 +336,16 @@ void Opening::draw()
         [this](VehiclePtr v) { _window.draw(*v); });
 
     _pathLines->draw(_window);
+
+    //
+    // Draw items
+    //
+    std::for_each(  _items.begin(), 
+                    _items.end(),
+                    [this](ItemPtr item) { 
+                        _window.draw(*item); 
+                    }
+    );
 
     // the player should always be the last thing on the 
     // game board to be drawn
