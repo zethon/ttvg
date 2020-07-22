@@ -32,8 +32,7 @@ matrix:
     before_install:
       - choco install conan
       - export PATH="/c/Program Files/Conan/conan:$PATH"
-    install:
-      # - conan profile new default --detect
+      - conan profile new default --detect
       # - conan profile remove settings.compiler.libcxx default
       - conan profile update settings.compiler="Visual Studio" default
       - conan profile update settings.compiler.version=15 default 
