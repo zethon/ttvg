@@ -15,8 +15,8 @@
 namespace po = boost::program_options;
 
 constexpr char window_title[] = "Lord of the Dumpsters: A Tommy Tooter Game";
-constexpr std::size_t window_width =    950;
-constexpr std::size_t window_height =   700;
+constexpr std::size_t window_width = 1280;
+constexpr std::size_t window_height = 720;
 
 int main(int argc, char *argv[])
 {
@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
         ("version,v", "print version string")
         ("resources,r", po::value<std::string>(), "path of resource folder")
         ("screen,s", po::value<std::uint16_t>(), "start screen id")
+        ("window-size", po::value<std::string>(), "window size")
         ;
 
     po::variables_map vm;
@@ -38,8 +39,16 @@ int main(int argc, char *argv[])
         resourceFolder = vm["resources"].as<std::string>();
     }
 
+    std::size_t width   = window_width;
+    std::size_t height  = window_height;
+    if (vm.count("window-size") > 0)
+    {
+        std::string windowsize = vm["window-size"].as<std::string>();
+        std::sscanf(windowsize.c_str(),"%lix%li", &width, &height);
+    }
+
     auto win = std::make_shared<sf::RenderWindow>( 
-        sf::VideoMode(window_width, window_height),
+        sf::VideoMode(width, height),
         window_title, 
         sf::Style::Titlebar | sf::Style::Close
     );
