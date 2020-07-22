@@ -1,5 +1,6 @@
 #include <boost/filesystem.hpp>
 
+#include <nlohmann/json.hpp>
 #include <fmt/core.h>
 
 #include "Background.h"

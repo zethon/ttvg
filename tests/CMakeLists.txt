@@ -1,6 +1,7 @@
 project(tests)
 
-function(add_test testname FILES)
+function(create_test testname FILES)
+
     add_executable(test_${testname}
         main.cpp
         test_${testname}.cpp
@@ -11,7 +12,12 @@ function(add_test testname FILES)
         PUBLIC
             ${CONAN_LIBS}
     )
-endfunction(add_test)
+
+    add_test(NAME test_${testname}
+        COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test_${testname}
+    )
+
+endfunction(create_test)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
@@ -43,5 +49,5 @@ set(PROJECT_FILES
     ../src/VehicleFactory.cpp
 )
 
-add_test("misc" "${PROJECT_FILES}")
-add_test("background" "${PROJECT_FILES}")
+create_test("misc" "${PROJECT_FILES}")
+create_test("background" "${PROJECT_FILES}")
