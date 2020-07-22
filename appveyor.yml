@@ -3,7 +3,7 @@ image:
 
 environment:
   matrix:
-    # - CONFIG: Release
+    - CONFIG: Release
     - CONFIG: Debug
 
 install:
