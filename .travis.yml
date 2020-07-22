@@ -27,45 +27,46 @@ script:
 matrix:
   include:
 
-  - name: "macOS Xcode 10 Debug"
-    os: osx
-    compiler: clang
-    osx_image: xcode10
-    install:
-      - pip install conan
-    env:
-      - CONFIG=Debug
+  # - name: "macOS Xcode 10 Debug"
+  #   os: osx
+  #   compiler: clang
+  #   osx_image: xcode10
+  #   install:
+  #     - pip install conan
+  #   env:
+  #     - CONFIG=Debug
 
-  - name: "macOS Xcode 10 Release"
-    os: osx
-    compiler: clang
-    osx_image: xcode10
-    install:
-      - pip install conan
-    env:
-      - CONFIG=Release
+  # - name: "macOS Xcode 10 Release"
+  #   os: osx
+  #   compiler: clang
+  #   osx_image: xcode10
+  #   install:
+  #     - pip install conan
+  #   env:
+  #     - CONFIG=Release
 
   - name: "Linux gcc Debug"
     os: linux
     dist: bionic
     compiler: gcc
     before_install:
+      - echo $DISPLAY
       - "export DISPLAY=:99.0"
     install:
       - pip install conan
     env:
       - CONFIG=Debug
 
-  - name: "Linux gcc Release"
-    os: linux
-    dist: bionic
-    compiler: gcc
-    before_install:
-      - "export DISPLAY=:99.0"
-    install:
-      - pip install conan
-    env:
-      - CONFIG=Release
+  # - name: "Linux gcc Release"
+  #   os: linux
+  #   dist: bionic
+  #   compiler: gcc
+  #   before_install:
+  #     - "export DISPLAY=:99.0"
+  #   install:
+  #     - pip install conan
+  #   env:
+  #     - CONFIG=Release
 
 notifications:
   email: false
