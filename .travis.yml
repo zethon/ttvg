@@ -22,29 +22,28 @@ before_script:
 
 script:
 - cmake --build .
-- echo $DISPLAY
 - ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
 
 matrix:
   include:
 
-  # - name: "macOS Xcode 10 Debug"
-  #   os: osx
-  #   compiler: clang
-  #   osx_image: xcode10
-  #   install:
-  #     - pip install conan
-  #   env:
-  #     - CONFIG=Debug
+  - name: "macOS Xcode 10 Debug"
+    os: osx
+    compiler: clang
+    osx_image: xcode10
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Debug
 
-  # - name: "macOS Xcode 10 Release"
-  #   os: osx
-  #   compiler: clang
-  #   osx_image: xcode10
-  #   install:
-  #     - pip install conan
-  #   env:
-  #     - CONFIG=Release
+  - name: "macOS Xcode 10 Release"
+    os: osx
+    compiler: clang
+    osx_image: xcode10
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Release
 
   - name: "Linux gcc Debug"
     os: linux
@@ -58,16 +57,17 @@ matrix:
     env:
       - CONFIG=Debug
 
-  # - name: "Linux gcc Release"
-  #   os: linux
-  #   dist: bionic
-  #   compiler: gcc
-  #   before_install:
-  #     - "export DISPLAY=:99.0"
-  #   install:
-  #     - pip install conan
-  #   env:
-  #     - CONFIG=Release
+  - name: "Linux gcc Release"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    services: xvfb
+    before_install:
+      - "export DISPLAY=:99.0"
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Release
 
 notifications:
   email: false
