@@ -259,7 +259,21 @@ std::uint16_t Opening::timestep()
         _player->setState(AnimatedSprite::STILL);
     }
 
-    // timestepTraffic();
+    timestepTraffic();
+
+    //
+    // Check item bounds
+    //
+    _missionText.setText("Find the magic vagina");
+    std::for_each(  _items.begin(), 
+                    _items.end(),
+                    [this](ItemPtr item) { 
+                        if(item->getGlobalBounds().intersects(
+                                                _player->getGlobalBounds())) {
+                            _missionText.setText(item->getDescription());
+                        }
+                    }
+    );
 
     Scene::timestep();
 
@@ -326,15 +340,10 @@ void Opening::draw()
     //
     // Draw items
     //
-    _missionText.setText("Find the magic vagina");
     std::for_each(  _items.begin(), 
                     _items.end(),
                     [this](ItemPtr item) { 
                         _window.draw(*item); 
-                        if(item->getGlobalBounds().intersects(
-                                                _player->getGlobalBounds())) {
-                            _missionText.setText(item->getDescription());
-                        }
                     }
     );
 
