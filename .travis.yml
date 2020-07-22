@@ -22,6 +22,7 @@ before_script:
 
 script:
 - cmake --build .
+- echo $DISPLAY
 - ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
 
 matrix:
@@ -50,7 +51,6 @@ matrix:
     dist: bionic
     compiler: gcc
     before_install:
-      - echo $DISPLAY
       - "export DISPLAY=:99.0"
     install:
       - pip install conan
