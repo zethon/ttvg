@@ -3,7 +3,7 @@ image:
 
 environment:
   matrix:
-    - CONFIG: Release
+    # - CONFIG: Release
     - CONFIG: Debug
 
 install:
@@ -15,8 +15,8 @@ install:
 build_script:
   - mkdir build
   - cd build
-  - conan install .. --build missing
-  - cmake .. "-GVisual Studio 15 2017 Win64" -DUNIT_TEST=ON
+  - conan install .. -s build_type=%CONFIG% --build missing
+  - cmake .. "-GVisual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=%CONFIG% -DUNIT_TEST=ON
   - cmake --build . --config "%CONFIG%" -- /maxcpucount:4
 
 test_script:
