@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <cassert>
 #include <optional>
 
@@ -44,7 +45,13 @@ int main(int argc, char *argv[])
     if (vm.count("window-size") > 0)
     {
         std::string windowsize = vm["window-size"].as<std::string>();
-        std::sscanf(windowsize.c_str(),"%lix%li", &width, &height);
+
+#ifdef _MSC_VER
+        sscanf_s(windowsize.c_str(),"%zix%zi", &width, &height);
+#else
+        sscanf(windowsize.c_str(),"%zix%zi", &width, &height);
+#endif
+
     }
 
     auto win = std::make_shared<sf::RenderWindow>( 
