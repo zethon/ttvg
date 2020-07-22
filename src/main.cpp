@@ -55,7 +55,8 @@ int main(int argc, char *argv[])
     }
 
     auto win = std::make_shared<sf::RenderWindow>( 
-        sf::VideoMode(width, height),
+        sf::VideoMode(  static_cast<unsigned int>(width), 
+                        static_cast<unsigned int>(height) ),
         window_title, 
         sf::Style::Titlebar | sf::Style::Close
     );
