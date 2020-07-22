@@ -1,0 +1,25 @@
+version: 0.7.7-{build}-{branch}
+
+image: 
+ - Visual Studio 2017
+
+environment:
+  matrix:
+    - CONFIG: Release
+    - CONFIG: Debug
+
+install:
+  - echo "Downloading conan..."
+  - set PATH=%PATH%;%PYTHON%/Scripts/
+  - pip.exe install conan
+  - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+
+build_script:
+  - mkdir build
+  - cd build
+  - conan install .. --build missing
+  - cmake .. "-GVisual Studio 15 2017 Win64" -UNIT_TEST=ON
+  - cmake --build . --config "%CONFIG%" -- /maxcpucount:4
+
+test_script:
+  - ctest -VV -C "%CONFIG%" --output-on-failure

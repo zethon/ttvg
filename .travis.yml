@@ -27,61 +27,47 @@ script:
 matrix:
   include:
 
-  - name: "Windows Visual studio 15 2017 Debug"
-    os: windows
-    before_install:
-      - "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
-      - choco install conan
-      - export PATH="/c/Program Files/Conan/conan:$PATH"
-      - conan profile new default --detect
-      - conan profile remove settings.compiler.libcxx default
-      - conan profile update settings.compiler="Visual Studio" default
-      - conan profile update settings.compiler.version=15 default 
-      - conan profile show default
+  - name: "macOS Xcode 10 Debug"
+    os: osx
+    compiler: clang
+    osx_image: xcode10
+    install:
+      - pip install conan
     env:
       - CONFIG=Debug
 
-  # - name: "macOS Xcode 10 Debug"
-  #   os: osx
-  #   compiler: clang
-  #   osx_image: xcode10
-  #   install:
-  #     - pip install conan
-  #   env:
-  #     - CONFIG=Debug
+  - name: "macOS Xcode 10 Release"
+    os: osx
+    compiler: clang
+    osx_image: xcode10
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Release
 
-  # - name: "macOS Xcode 10 Release"
-  #   os: osx
-  #   compiler: clang
-  #   osx_image: xcode10
-  #   install:
-  #     - pip install conan
-  #   env:
-  #     - CONFIG=Release
+  - name: "Linux gcc Debug"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    services: xvfb
+    before_install:
+      - "export DISPLAY=:99.0"
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Debug
 
-  # - name: "Linux gcc Debug"
-  #   os: linux
-  #   dist: bionic
-  #   compiler: gcc
-  #   services: xvfb
-  #   before_install:
-  #     - "export DISPLAY=:99.0"
-  #   install:
-  #     - pip install conan
-  #   env:
-  #     - CONFIG=Debug
-
-  # - name: "Linux gcc Release"
-  #   os: linux
-  #   dist: bionic
-  #   compiler: gcc
-  #   services: xvfb
-  #   before_install:
-  #     - "export DISPLAY=:99.0"
-  #   install:
-  #     - pip install conan
-  #   env:
-  #     - CONFIG=Release
+  - name: "Linux gcc Release"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    services: xvfb
+    before_install:
+      - "export DISPLAY=:99.0"
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Release
 
 notifications:
   email: false
