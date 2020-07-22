@@ -38,7 +38,9 @@ namespace tt
         std::ifstream   file(jsonFile.c_str());
         nl::json        json;
 
-        file >> json;
+        if(file.is_open()) {
+            file >> json;
+        }
 
         //
         // Debug
