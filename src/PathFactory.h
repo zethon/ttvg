@@ -105,9 +105,9 @@ private:
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    TurningPoints   _edges; //!< Starting points that are slightly off the map
-    TurningPoints   _turns; //!< Turns generated from configured intersections
-    sf::Vector2i    _size;  //!< X and Y tilesize of the map
+    TurningPoints   _edges; // Starting points that are slightly off the map
+    TurningPoints   _turns; // Turns generated from configured intersections
+    sf::Vector2i    _size;  // X and Y tilesize of the map
 
 };
 

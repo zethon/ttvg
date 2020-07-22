@@ -243,7 +243,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
             case sf::Keyboard::Left:
             {
                 if (_player->state() == AnimatedSprite::ANIMATED
-                    && _player->direction() == AnimatedSprite::LEFT)
+                    && _player->direction() == Direction::LEFT)
                 {
                     return 0;
                 }
@@ -251,14 +251,14 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 _player->setSource(0, 9);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedSprite::ANIMATED);
-                _player->setDirection(AnimatedSprite::LEFT);
+                _player->setDirection(Direction::LEFT);
             }
             break;
 
             case sf::Keyboard::Right:
             {
                 if (_player->state() == AnimatedSprite::ANIMATED
-                    && _player->direction() == AnimatedSprite::RIGHT)
+                    && _player->direction() == Direction::RIGHT)
                 {
                     return 0;
                 }
@@ -266,13 +266,13 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 _player->setSource(0, 11);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedSprite::ANIMATED);
-                _player->setDirection(AnimatedSprite::RIGHT);
+                _player->setDirection(Direction::RIGHT);
             }
             break;
 
             case sf::Keyboard::Up:
             {
-                if ((_player->state() == AnimatedSprite::ANIMATED && _player->direction() == AnimatedSprite::UP)
+                if ((_player->state() == AnimatedSprite::ANIMATED && _player->direction() == Direction::UP)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
                     return 0;
@@ -281,13 +281,13 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 _player->setSource(0, 8);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedSprite::ANIMATED);
-                _player->setDirection(AnimatedSprite::UP);
+                _player->setDirection(Direction::UP);
             }
             break;
 
             case sf::Keyboard::Down:
             {
-                if ((_player->state() == AnimatedSprite::ANIMATED && _player->direction() == AnimatedSprite::DOWN)
+                if ((_player->state() == AnimatedSprite::ANIMATED && _player->direction() == Direction::DOWN)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
                     return 0;
@@ -296,7 +296,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 _player->setSource(0, 10);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedSprite::ANIMATED);
-                _player->setDirection(AnimatedSprite::DOWN);
+                _player->setDirection(Direction::DOWN);
             }
             break;
 

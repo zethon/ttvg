@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "GameTypes.h"
 #include "Path.hpp"
 #include "AnimatedSprite.h"
 #include "Intersection.h"
@@ -53,9 +54,9 @@ private:
     BackgroundSharedPtr _background;
 
     Path                _path;
-    const sf::Vector2i  _tilesize;
+    float               _speed = 2.0f;  // Pixels per timestep
 
-    Direction           _direction = DOWN;
+    Direction           _direction = DOWN;  // Current direction of the object
     State               _state = MOVING;
 
     bool                _finishedPath = false;
@@ -63,10 +64,10 @@ private:
 };
 
 bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
-    Vehicle::Direction direction, float minDistance);
+    Direction direction, float minDistance);
 
 template<typename V>
-sf::Vector2<V> stepDirection(const sf::Vector2<V>& point, Direction direction, V speed)
+inline sf::Vector2<V> vehicleStepDirection(const sf::Vector2<V>& point, Direction direction, V speed)
 {
     switch (direction)
     {

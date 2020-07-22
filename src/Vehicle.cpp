@@ -10,14 +10,14 @@ namespace tt
 {
 
 bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
-    Vehicle::Direction direction, float minDistance)
+    Direction direction, float minDistance)
 {
     switch (direction)
     {
         default:
         return false;
 
-        case Vehicle::Direction::UP:
+        case Direction::UP:
         {
             auto temprect = object;
             temprect.top -= minDistance;
@@ -25,7 +25,7 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
         }
         break;
 
-        case Vehicle::Direction::DOWN:
+        case Direction::DOWN:
         {
             auto temprect = object;
             temprect.top += minDistance;
@@ -33,7 +33,7 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
         }
         break;
 
-        case Vehicle::Direction::LEFT:
+        case Direction::LEFT:
         {
             auto temprect = object;
             temprect.left -= minDistance;
@@ -41,7 +41,7 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
         }
         break;
 
-        case Vehicle::Direction::RIGHT:
+        case Direction::RIGHT:
         {
             auto temprect = object;
             temprect.left += minDistance;
@@ -55,8 +55,7 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
 
 Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundSharedPtr bg)
     : AnimatedSprite(texture, size),
-      _background { bg },
-      _tilesize { _background->tilesize() }
+      _background { bg }
 {
     _texture.setSmooth(true);
     setSource(0, 0);
@@ -87,6 +86,8 @@ void Vehicle::move()
 {
     auto[xpos, ypos, h, w] = getGlobalBounds();
     auto currentTile = _background->getTileFromGlobal(sf::Vector2f{ xpos, ypos });
+
+    auto x = vehicleStepDirection(sf::Vector2f{ xpos, ypos }, _direction, _speed);
 
     //const auto speed = 1.0f;
 

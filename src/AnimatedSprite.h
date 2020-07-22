@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "GameTypes.h"
 #include "IUpdateable.h"
 
 namespace tt
@@ -23,14 +24,6 @@ public:
     {
         STILL,
         ANIMATED
-    };
-
-    enum Direction
-    {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT
     };
 
     AnimatedSprite(sf::Texture texture, const sf::Vector2i& size);
