@@ -13,7 +13,7 @@ All platforms require:
 * [Git](https://git-scm.com/downloads)
 * [Git Large File Storage](https://git-lfs.github.com/)
 * [CMake](https://cmake.org/download/)
-* [conan](https://conan.io/)
+* [conan 1.27+](https://conan.io/)
 
 The Conan Bincrafters remote must be in your conan remote cache:
 
