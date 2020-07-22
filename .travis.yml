@@ -49,6 +49,8 @@ matrix:
     os: linux
     dist: bionic
     compiler: gcc
+    before_install:
+      - "export DISPLAY=:99.0"
     install:
       - pip install conan
     env:
@@ -58,6 +60,8 @@ matrix:
     os: linux
     dist: bionic
     compiler: gcc
+    before_install:
+      - "export DISPLAY=:99.0"
     install:
       - pip install conan
     env:
