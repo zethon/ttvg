@@ -50,6 +50,7 @@ matrix:
     os: linux
     dist: bionic
     compiler: gcc
+    services: xvfb
     before_install:
       - "export DISPLAY=:99.0"
     install:
