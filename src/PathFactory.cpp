@@ -6,6 +6,10 @@ namespace tt
 namespace
 {
 
+///
+/// \brief  Free function that advances the passed in vector
+///         by a single unit.
+///
 sf::Vector2i pathStep(const sf::Vector2i& point, Direction direction)
 {
     switch (direction)
@@ -53,6 +57,7 @@ void PathFactory::makeRiboPath(Path& path) const
     while (currentPoint.x >= 0 && currentPoint.x < _size.x
         && currentPoint.y >= 0 && currentPoint.y < _size.y)
     {
+        // TODO: should this search be done if we cannot make a decision?
         auto temp = std::find_if(_turns.begin(), _turns.end(), 
             [&currentPoint](const TurningPoint& inter)
             {
