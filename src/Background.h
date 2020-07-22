@@ -61,6 +61,18 @@ public:
         return tt::getTileFromGlobal(global, tilesize(), getScale());
     }
 
+    sf::Vector2f getGlobalCenterFromTile(const sf::Vector2f& tile) const
+    {
+        auto[tilex, tiley] = tilesize();
+        auto[scalex, scaley] = getScale();
+
+        auto pos = getGlobalFromTile(tile);
+        pos.x += (tilex * scalex) / 2;
+        pos.y += (tiley * scaley) / 2;
+
+        return pos;
+    }
+
     sf::Vector2f getGlobalFromTile(const tt::Tile& tile) const
     {
         sf::Vector2f temp;

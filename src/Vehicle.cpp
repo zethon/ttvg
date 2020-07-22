@@ -205,7 +205,7 @@ void Vehicle::setPath(const Path& path)
     assert(tt::exactly_one_bit_set(direction));
     _direction = static_cast<Direction>(direction);
 
-    auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ path.points().at(0) });
+    auto globalPos = _background->getGlobalCenterFromTile(path.points().at(0));
     setPosition(globalPos);
 }
 

@@ -302,7 +302,7 @@ BOOST_AUTO_TEST_CASE(path_ForcedSingleLaneTest)
 
     auto path = fact.makeRiboPath();
     
-    std::vector<sf::Vector2i> expected = 
+    std::vector<sf::Vector2f> expected = 
     {
         {-1,2}, {2,2}, {2,8}, {6,8},{6,-1}
     };
@@ -335,7 +335,7 @@ BOOST_AUTO_TEST_CASE(path_forcedDoubleLaneTest)
 
     auto path = fact.makeRiboPath();
 
-    std::vector<sf::Vector2i> expected =
+    std::vector<sf::Vector2f> expected =
     {
         {-1,3}, {2,3}, {2,9}, {7,9},{7,-1}
     };

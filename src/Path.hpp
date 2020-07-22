@@ -9,7 +9,7 @@ namespace tt
 class Path
 {
 public:
-    using VectorList = std::vector<sf::Vector2i>;
+    using VectorList = std::vector<sf::Vector2f>;
 
     bool repeating() const { return _repeating; }
     void setRepeating(bool v) { _repeating = v; }
@@ -30,7 +30,7 @@ public:
         return _points;
     }
 
-    [[maybe_unused]] sf::Vector2i step()
+    [[maybe_unused]] sf::Vector2f step()
     {
         if ((_idx + 1) == _points.size())
         { 
@@ -46,7 +46,7 @@ public:
         return _points.at(_idx);
     }
 
-    sf::Vector2i next() const
+    sf::Vector2f next() const
     {
         auto nextidx = _idx + 1;
         if (_points.size() == nextidx)
