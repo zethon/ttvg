@@ -3,11 +3,10 @@
 
 namespace tt
 {
-
-    Item::Item( const std::string&  id,
-                const sf::Texture&  texture,
-                const sf::Vector2i& size,
-                nl::json            json )
+    Item::Item(	const std::string&  id,
+               	sf::Texture         texture,
+               	const sf::Vector2i& size,
+               	const nl::json&     json )
         : AnimatedSprite(texture, size),
             _json   { json },
             _id     { id }

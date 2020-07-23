@@ -16,9 +16,9 @@ namespace tt
         public:
 
             Item(       const std::string&  id,
-                        const sf::Texture&  texture,
+                        sf::Texture         texture,
                         const sf::Vector2i& size,
-                        nl::json            json );
+                        const nl::json&     json );
 
             std::string getID();
             std::string getName();
