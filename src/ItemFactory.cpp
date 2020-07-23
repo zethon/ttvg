@@ -46,7 +46,8 @@ namespace tt
         std::ifstream   file(jsonFile.c_str());
         nl::json        json;
 
-        if(file.is_open()) {
+        if(file.is_open()) 
+        {
             file >> json;
         }
 
@@ -66,14 +67,17 @@ namespace tt
             !json["image-attr"]["width"].is_null()      &&
             !json["image-attr"]["height"].is_null()     &&
             !json["image-attr"]["scale-x"].is_null()    &&
-            !json["image-attr"]["scale-y"].is_null()        ) {
+            !json["image-attr"]["scale-y"].is_null()        ) 
+        {
 
             width   = json["image-attr"]["width"];
             height  = json["image-attr"]["height"];
             scaleX  = json["image-attr"]["scale-x"];
             scaleY  = json["image-attr"]["scale-y"];
 
-        } else {
+        } 
+        else 
+        {
             
             //
             // By default, scale to tile size.

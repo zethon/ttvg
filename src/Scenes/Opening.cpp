@@ -194,13 +194,14 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 // If yes, remove it from the map's _items and add it to the 
                 // player's inventory.
                 //
-                for(auto it = _items.begin(); it != _items.end(); it++) {
-
+                for(auto it = _items.begin(); it != _items.end(); it++)
+                {
                     ItemPtr item = *it;
 
                     if( item->getGlobalBounds().intersects(
                                                 _player->getGlobalBounds()) &&
-                        item->isObtainable() ) {
+                        item->isObtainable() )
+                    {
 
                         _player->addItem(item->getID());
                         _missionText.setText("Picked up " + item->getName());
@@ -220,7 +221,8 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 std::map<std::string, int> inv = _player->getInventory();
                 std::vector<std::string> keys;
 
-                for(auto it = inv.begin(); it != inv.end(); it++) {
+                for(auto it = inv.begin(); it != inv.end(); it++)
+                {
                     keys.push_back(it->first);
                 } 
                
@@ -230,7 +232,8 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 //
                 std::sort(keys.begin(), keys.end());
 
-                for(auto it = keys.begin(); it != keys.end(); it++) {
+                for(auto it = keys.begin(); it != keys.end(); it++)
+                {
                     std::string key = *it;
                     std::cout << key << ": " << inv[key] << std::endl;
                 }
@@ -527,7 +530,8 @@ void Opening::animeCallback()
 // if the player moves. This allows the user to see  the result message 
 // of any last action they may have performed. 
 //
-void Opening::updateMessage() {
+void Opening::updateMessage()
+{
     _missionText.setText("Find the magic vagina");
 }
 

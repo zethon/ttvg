@@ -15,11 +15,13 @@ namespace tt
 
     }
 
-    std::string Item::getID() { 
+    std::string Item::getID() 
+    { 
         return _id;
     }
 
-    std::string Item::getName() { 
+    std::string Item::getName() 
+    { 
 
         //
         // Why is it that the json object can be treated as a top level
@@ -31,11 +33,13 @@ namespace tt
         return (std::string)(_json[0].at("name"));
     }
 
-    std::string Item::getDescription() { 
+    std::string Item::getDescription() 
+    { 
         return (std::string)(_json[0].at("description"));
     }
 
-    bool Item::isObtainable() { 
+    bool Item::isObtainable() 
+    { 
         if(_json[0]["obtainable"].is_null()) {
             return false;
         }
