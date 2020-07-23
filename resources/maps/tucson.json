@@ -83,7 +83,7 @@
             
             "10,150,up",
             "46,150,up",
-            "101,150,up",
+            "94,150,up",
             "122,150,up",
 
             "150,7,left",
@@ -123,7 +123,7 @@
             "93,39,CROSS,double,single",
             "93,58,CROSS,single,single",
             "93,95,T90,single,single",
-            "93,123,T90,single,single",
+            "93,122,T90,single,single",
             "93,142,CROSS,single,single",
 
             "121,142,L180,single,single",
@@ -149,7 +149,21 @@
             "44,107,down,true",
             "46,106,up,true",
             "46,109,up,true",
-            "44,110,down,true"
+            "44,110,down,true",
+            "44,122,down,false",
+            "46,122,up,true",
+
+            "93,75,down,false",
+            "93,74,right,true",
+            "94,73,up,true",
+            "93,72,down,true",
+
+            "93,110,down,true",
+            "94,110,up,false",
+            "94,109,right,true",
+            "94,107,up,true",
+            "93,107,left,true",
+            "93,109,right,true"
         ]
     }
 }

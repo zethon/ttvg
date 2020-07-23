@@ -365,7 +365,7 @@ void Opening::timestepTraffic()
 {
     auto runSeconds = static_cast<std::uint32_t>(_globalClock.getElapsedTime().asSeconds());
     if (_vehicles.size() < MAX_VEHICLES 
-        && (runSeconds % VEHICLE_SPAWN_RATE) == 0)
+        && ((runSeconds % VEHICLE_SPAWN_RATE) == 0) && runSeconds != 0)
     {
         auto vehicle = _vehicleFactory->createVehicle();
         _vehicles.push_back(vehicle);

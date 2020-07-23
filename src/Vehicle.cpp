@@ -97,34 +97,12 @@ void Vehicle::move()
     }
     else
     {
-        auto globalPos = _background->getGlobalCenterFromTile(currentTile);
+        auto globalPos = _background->getGlobalFromTile(currentTile);
         setPosition(globalPos);
         _path.step();
 
         auto newdirection = tt::getDirection(currentTile, _path.next());
-        assert(newdirection == 0 || exactly_one_bit_set(newdirection));
-        _direction = static_cast<Direction>(newdirection);  
-
-        switch (_direction)
-        {
-            case NONE:
-            case DOWN:
-            default:
-                setSource(0, 0);
-            break;
-
-            case UP:
-                setSource(0, 3);
-            break;
-
-            case LEFT:
-                setSource(0, 1);
-            break;
-
-            case RIGHT:
-                setSource(0, 2);
-            break;
-        }
+        setDirection(newdirection);
     }
 }
 
@@ -145,11 +123,37 @@ void Vehicle::setPath(const Path& path)
     auto& next = _path.points().at(1);
 
     auto direction = tt::getDirection(start, next);
-    assert(tt::exactly_one_bit_set(direction));
-    _direction = static_cast<Direction>(direction);
+    setDirection(direction);
 
-    auto globalPos = _background->getGlobalCenterFromTile(_path.points().at(0));
+    auto globalPos = _background->getGlobalFromTile(_path.points().at(0));
     setPosition(globalPos);
+}
+
+void Vehicle::setDirection(std::uint32_t dir)
+{
+    assert(dir == 0 || exactly_one_bit_set(dir));
+    _direction = static_cast<Direction>(dir);
+
+    switch (_direction)
+    {
+        case NONE:
+        case DOWN:
+        default:
+            setSource(0, 0);
+        break;
+
+        case UP:
+            setSource(0, 3);
+        break;
+
+        case LEFT:
+            setSource(0, 1);
+        break;
+
+        case RIGHT:
+            setSource(0, 2);
+        break;
+    }
 }
 
 } // namespace tt
