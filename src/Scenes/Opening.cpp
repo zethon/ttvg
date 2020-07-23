@@ -270,7 +270,9 @@ std::uint16_t Opening::timestep()
                     [this](ItemPtr item) { 
                         if(item->getGlobalBounds().intersects(
                                                 _player->getGlobalBounds())) {
-                            _missionText.setText(item->getDescription());
+                            _missionText.setText(
+                                item->getName() + ": " + 
+                                item->getDescription() );
                         }
                     }
     );

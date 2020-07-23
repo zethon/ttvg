@@ -1,8 +1,5 @@
 {
-    "description":  "Bag of Weed",
-    "attributes":   { },
-    "image-attr":   {   "width":    669,
-                        "height":   649,
-                        "scale-x":  0.05,
-                        "scale-y":  0.05     }
+    "name":         "Bag of Weed",
+    "description":  "This is good for your mental health.",
+    "attributes":   { }
 }

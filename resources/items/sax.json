@@ -1,8 +1,5 @@
 {
+    "name":         "Saxophone",
     "description":  "You lost this fine horn on the bus once.",
-    "attributes":   { },
-    "image-attr":   {   "width":    318,
-                        "height":   450,
-                        "scale-x":  0.15,
-                        "scale-y":  0.15    }
+    "attributes":   { }
 }

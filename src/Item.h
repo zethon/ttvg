@@ -15,14 +15,18 @@ namespace tt
 
         public:
 
-            Item(       sf::Texture texture, 
+            Item(       std::string id,
+                        sf::Texture texture, 
                         const sf::Vector2i& size,
                         nl::json json);
 
+            std::string getID();
+            std::string getName();
             std::string getDescription();
 
         private:
-   
+
+            std::string _id;
             nl::json    _json;
 
     };

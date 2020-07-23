@@ -8,11 +8,20 @@
 namespace tt
 {
 
+    //
+    // Default item size.
+    // Might want this to be the same as a "tile size" on the map.
+    //
+    constexpr auto DEFAULT_ITEM_WIDTH   = 32.0f;
+    constexpr auto DEFAULT_ITEM_HEIGHT  = 32.0f;
+
+
     ItemFactory::ItemFactory(ResourceManager& resMgr)
         : _resources { resMgr }
     {
 
     }
+
 
     /**
      *
@@ -43,20 +52,46 @@ namespace tt
         }
 
         //
-        // Debug
+        // Variables used for size and scale.
         //
-        // std::cout << 
-        //  "Item desc: " + (std::string)(json.at("description")) << std::endl;
+        int     width;
+        int     height;
+        float   scaleX;
+        float   scaleY;
 
-        int width       = json["image-attr"]["width"];
-        int height      = json["image-attr"]["height"];
-        float scaleX    = json["image-attr"]["scale-x"];
-        float scaleY    = json["image-attr"]["scale-y"];
+        //
+        // Optionally allow for item author to specify
+        // size and scale.
+        //
+        if( !json["image-attr"].is_null()               &&
+            !json["image-attr"]["width"].is_null()      &&
+            !json["image-attr"]["height"].is_null()     &&
+            !json["image-attr"]["scale-x"].is_null()    &&
+            !json["image-attr"]["scale-y"].is_null()        ) {
 
-        auto item   = std::make_shared<Item>(   texture, 
+            width   = json["image-attr"]["width"];
+            height  = json["image-attr"]["height"];
+            scaleX  = json["image-attr"]["scale-x"];
+            scaleY  = json["image-attr"]["scale-y"];
+
+        } else {
+            
+            //
+            // By default, scale to tile size.
+            //
+
+            width   = texture.getSize().x;
+            height  = texture.getSize().y;
+            scaleX  = DEFAULT_ITEM_WIDTH    / width;
+            scaleY  = DEFAULT_ITEM_HEIGHT   / height;
+        }
+
+        auto item   = std::make_shared<Item>(   name,
+                                                texture, 
                                                 sf::Vector2i{ width, height },
                                                 json );
-        
+      
+
         item->setScale(scaleX, scaleY);
         item->setPosition(position);
 
