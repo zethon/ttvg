@@ -163,11 +163,39 @@ void Opening::initTraffic()
 
 std::uint16_t Opening::poll(const sf::Event& e)
 {
+
     if (e.type == sf::Event::KeyPressed)
     {
+        updateMessage();
+
         switch (e.key.code)
         {
             default:
+            break;
+
+            //
+            // Action. Perform an action. E.g. pick up an item.
+            //
+            case sf::Keyboard::A:
+            {
+                //
+                // Check if we are on an item.
+                // If yes, remove it from the map's _items and add it to the 
+                // player's inventory.
+                //
+                for(auto it = _items.begin(); it != _items.end(); it++) {
+
+                    ItemPtr item = *it;
+                    if( item->getGlobalBounds().intersects(
+                                                _player->getGlobalBounds()) &&
+                        item->isObtainable() ) {
+
+                        _missionText.setText("Picked up " + item->getName());
+                        _items.erase(it);
+                        break;
+                    }
+                }
+            }
             break;
 
             case sf::Keyboard::Left:
@@ -262,9 +290,9 @@ std::uint16_t Opening::timestep()
     timestepTraffic();
 
     //
-    // Check item bounds
+    // Check item bounds.
+    // Display item name and description if player is on item.
     //
-    _missionText.setText("Find the magic vagina");
     std::for_each(  _items.begin(), 
                     _items.end(),
                     [this](ItemPtr item) { 
@@ -455,6 +483,15 @@ void Opening::animeCallback()
         sf::Vector2f tile{ getPlayerTile() };
         _statusBar.setZoneText(_background->zoneName(tile));
     }
+}
+
+//
+// Only update message text with the generic mission message
+// if the player moves. This allows the user to see  the result message 
+// of any last action they may have performed. 
+//
+void Opening::updateMessage() {
+    _missionText.setText("Find the magic vagina");
 }
 
 } // namespace tt

@@ -1,5 +1,6 @@
 {
     "name":         "Bag of Weed",
     "description":  "This is good for your mental health.",
+    "obtainable":   true,
     "attributes":   { }
 }

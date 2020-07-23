@@ -24,6 +24,11 @@ namespace tt
             std::string getName();
             std::string getDescription();
 
+            //
+            // Check if an item can be picked up.
+            //
+            bool    isObtainable();
+
         private:
 
             std::string _id;

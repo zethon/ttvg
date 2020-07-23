@@ -1,5 +1,6 @@
 {
     "name":         "Bag of Crack",
     "description":  "This is good for your blood pressure.",
+    "obtainable":   true,
     "attributes":   { }
 }

@@ -29,8 +29,14 @@ namespace tt
 
 
     std::string Item::getDescription() { 
-
         return (std::string)(_json[0].at("description"));
+    }
+
+    bool Item::isObtainable() { 
+        if(_json[0]["obtainable"].is_null()) {
+            return false;
+        }
+        return (bool)(_json[0].at("obtainable"));
     }
 
 }
