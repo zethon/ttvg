@@ -40,8 +40,8 @@ set(HEADER_FILES
     Vehicle.h
     VehicleFactory.h
     
-    Item.cpp
-    ItemFactory.cpp
+    Item.h
+    ItemFactory.h
 
     Scenes/Opening.h
     Scenes/Scene.h
