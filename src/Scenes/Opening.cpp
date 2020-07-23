@@ -28,7 +28,7 @@ constexpr auto TILESIZE_Y = 16.0f;
 
 constexpr auto MAPNAME = "tucson";
 
-constexpr auto MAX_VEHICLES = 500u;
+constexpr auto MAX_VEHICLES = 25u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
@@ -61,7 +61,16 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     addDrawable(_background);
 
     initTraffic();
+    createItems();
 
+    sf::Vector2f tile{ getPlayerTile() };
+    _statusBar.setZoneText(_background->zoneName(tile));
+
+    _missionText.setText("Find the magic vagina");
+}
+
+void Opening::createItems()
+{
     //
     // Create items
     //
@@ -72,30 +81,29 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     //
 
     ItemPtr sax = _itemFactory->createItem(
-                                    "sax", 
-                                    sf::Vector2f { 1516.0f, 2875.0f } );
+        "sax",
+        sf::Vector2f{ 1516.0f, 2875.0f });
     _items.push_back(sax);
 
     ItemPtr menorah = _itemFactory->createItem(
-                                    "menorah", 
-                                    sf::Vector2f { 1416.0f, 2725.0f } );
+        "menorah",
+        sf::Vector2f{ 1416.0f, 2725.0f });
     _items.push_back(menorah);
 
     ItemPtr bag1 = _itemFactory->createItem(
-                                    "bag-of-weed", 
-                                    sf::Vector2f { 1216.0f, 3005.0f } );
+        "bag-of-weed",
+        sf::Vector2f{ 1216.0f, 3005.0f });
     _items.push_back(bag1);
 
     ItemPtr bag2 = _itemFactory->createItem(
-                                    "bag-of-tobacco", 
-                                    sf::Vector2f { 1206.0f, 3105.0f } );
+        "bag-of-tobacco",
+        sf::Vector2f{ 1206.0f, 3105.0f });
     _items.push_back(bag2);
 
     ItemPtr bag3 = _itemFactory->createItem(
-                                    "bag-of-crack",
-                                    sf::Vector2f { 1716.0f, 2975.0f } );
+                                    "bag-of-crack", 
+        sf::Vector2f{ 1716.0f, 2975.0f });
     _items.push_back(bag3);
-
     ItemPtr bag4 = _itemFactory->createItem(
                                     "bag-of-crack",
                                     sf::Vector2f { 1756.0f, 2975.0f } );
@@ -106,11 +114,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
                                     sf::Vector2f { 1796.0f, 2975.0f } );
     _items.push_back(bag5);
 
-
-    sf::Vector2f tile{ getPlayerTile() };
-    _statusBar.setZoneText(_background->zoneName(tile));
-
-    _missionText.setText("Find the magic vagina");
 }
 
 void Opening::initTraffic()

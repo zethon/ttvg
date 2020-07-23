@@ -7,6 +7,7 @@
 #include "Path.hpp"
 #include "AnimatedSprite.h"
 #include "Intersection.h"
+#include "Tiles.hpp"
 
 namespace tt
 {
@@ -54,7 +55,7 @@ private:
     BackgroundSharedPtr _background;
 
     Path                _path;
-    float               _speed = 2.0f;  // Pixels per timestep
+    float               _speed = 10.0f;  // Pixels per timestep
 
     Direction           _direction = DOWN;  // Current direction of the object
     State               _state = MOVING;
@@ -66,8 +67,18 @@ private:
 bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
     Direction direction, float minDistance);
 
+////////////////////////////////////////////////////////////
+/// \brief Calculate the next position in the given direction
+///
+/// \param point        Starting point
+/// \param direction    Direction of movement
+/// \param speed        Speed in pixels
+///
+/// \return The new global coordinates 
+///
+////////////////////////////////////////////////////////////
 template<typename V>
-inline sf::Vector2<V> vehicleStepDirection(const sf::Vector2<V>& point, Direction direction, V speed)
+inline sf::Vector2<V> vehicleStepDirection(const sf::Vector2<V>& point, Direction direction, V speed, const Scale& scale)
 {
     switch (direction)
     {
@@ -75,16 +86,16 @@ inline sf::Vector2<V> vehicleStepDirection(const sf::Vector2<V>& point, Directio
         break;
 
     case Direction::UP:
-        return { point.x, point.y - speed };
+        return { point.x, point.y - (speed * scale.y) };
 
     case Direction::DOWN:
-        return { point.x, point.y + speed };
+        return { point.x, point.y + (speed * scale.y) };
 
     case Direction::LEFT:
-        return { point.x - speed, point.y };
+        return { point.x - (speed * scale.x), point.y };
 
     case Direction::RIGHT:
-        return { point.x + speed, point.y };
+        return { point.x + (speed * scale.x), point.y };
     }
 
     return point;

@@ -87,102 +87,45 @@ void Vehicle::move()
     auto[xpos, ypos, h, w] = getGlobalBounds();
     auto currentTile = _background->getTileFromGlobal(sf::Vector2f{ xpos, ypos });
 
-    auto x = vehicleStepDirection(sf::Vector2f{ xpos, ypos }, _direction, _speed);
+    if (currentTile != _path.next())
+    {
+        auto x = vehicleStepDirection(
+            sf::Vector2f{ xpos, ypos }, _direction, _speed, getScale());
 
-    //const auto speed = 1.0f;
+        setPosition(x);
+        return;
+    }
+    else
+    {
+        auto globalPos = _background->getGlobalCenterFromTile(currentTile);
+        setPosition(globalPos);
+        _path.step();
 
-    //auto globalPosition = sf::Vector2f{ getGlobalBounds().left, getGlobalBounds().top };
-    //auto currentTile = sf::Vector2i{ _background->getTileFromGlobal(globalPosition) };
+        auto newdirection = tt::getDirection(currentTile, _path.next());
+        assert(newdirection == 0 || exactly_one_bit_set(newdirection));
+        _direction = static_cast<Direction>(newdirection);  
 
-    //auto currentPathTile = _path.current();
-    //auto nextTile = _path.next();
+        switch (_direction)
+        {
+            case NONE:
+            case DOWN:
+            default:
+                setSource(0, 0);
+            break;
 
-    //float xdiff = static_cast<float>(std::pow(currentTile.x - nextTile.x, 2.f));
-    //float ydiff = static_cast<float>(std::pow(currentTile.y - nextTile.y, 2.f));
-    //float distance = std::sqrt(xdiff + ydiff);
-    //if (distance <= 1.0f)
-    //{
-    //    if (currentTile == nextTile)
-    //    {
-    //        _path.step();
-    //        nextTile = _path.next();
-    //    }
-    //    else
-    //    {
-    //        currentTile = nextTile;
-    //    }
-    //}
+            case UP:
+                setSource(0, 3);
+            break;
 
-    //auto diff = nextTile - currentTile;
+            case LEFT:
+                setSource(0, 1);
+            break;
 
-    ////assert(!(diff.x != 0 && diff.y != 0));
-    //if (diff.x != 0)
-    //{
-    //    if (std::abs(diff.x) < speed)
-    //    {
-    //        currentTile.x += diff.x;
-    //    }
-    //    else if (diff.x < 0)
-    //    {
-    //        currentTile.x -= static_cast<std::int32_t>(speed);
-    //        _direction = LEFT;
-    //    }
-    //    else
-    //    {
-    //        currentTile.x += static_cast<std::int32_t>(speed);
-    //        _direction = RIGHT;
-    //    }
-    //}
-
-    //if (diff.y != 0)
-    //{
-    //    if (std::abs(diff.y) < speed)
-    //    {
-    //        currentTile.y += diff.y;
-    //    }
-    //    else if (diff.y < 0)
-    //    {
-    //        currentTile.y -= static_cast<std::int32_t>(speed);
-    //        _direction = UP;
-    //    }
-    //    else
-    //    {
-    //        currentTile.y += static_cast<std::int32_t>(speed);
-    //        _direction = DOWN;
-    //    }
-    //}
-
-    //auto globalPos = _background->getGlobalFromTile(sf::Vector2f{ currentTile });
-    //switch (_direction)
-    //{
-    //default:
-    //    break;
-
-    //case UP:
-    //    setSource(0, 3);
-    //    //globalPos.x -= getGlobalBounds().width / 2;
-    //    break;
-
-    //case DOWN:
-    //    setSource(0, 0);
-    //    //globalPos.x -= getGlobalBounds().width / 2;
-    //    break;
-
-    //case LEFT:
-    //    setSource(0, 1);
-    //    //globalPos.y -= getGlobalBounds().height / 2;
-    //    break;
-
-    //case RIGHT:
-    //    setSource(0, 2);
-    //    //globalPos.y -= getGlobalBounds().height / 2;
-    //    break;
-    //}
-
-
-    //// globalPos.x -= getGlobalBounds().width / 2;
-    //// globalPos.y -= getGlobalBounds().height / 2;
-    //setPosition(globalPos);
+            case RIGHT:
+                setSource(0, 2);
+            break;
+        }
+    }
 }
 
 bool Vehicle::isBlocked(const sf::FloatRect& test)
@@ -198,14 +141,14 @@ void Vehicle::setPath(const Path& path)
     // VECTOR COPY IN THE GAME LOOP!!!
     _path = path;
 
-    auto& start = path.points().at(0);
-    auto& next = path.points().at(1);
+    auto& start = _path.points().at(0);
+    auto& next = _path.points().at(1);
 
     auto direction = tt::getDirection(start, next);
     assert(tt::exactly_one_bit_set(direction));
     _direction = static_cast<Direction>(direction);
 
-    auto globalPos = _background->getGlobalCenterFromTile(path.points().at(0));
+    auto globalPos = _background->getGlobalCenterFromTile(_path.points().at(0));
     setPosition(globalPos);
 }
 

@@ -16,8 +16,7 @@ public:
 
     bool finished() const 
     { 
-        if (_repeating) return true;
-        return (_points.size() - 1) == _idx;
+        return _finished;
     }
 
     VectorList& points()
@@ -36,22 +35,34 @@ public:
         { 
             if (!_repeating)
             {
+                _finished = true;
                 return _points.back();
             }
 
             _idx = 0;
             _cycles++;
         }
+        else
+        {
+            _idx++;
+        }
 
         return _points.at(_idx);
     }
 
-    sf::Vector2f next() const
+    [[maybe_unused]] sf::Vector2f next() const
     {
         auto nextidx = _idx + 1;
         if (_points.size() == nextidx)
         {
-            nextidx = 0;
+            if (_repeating)
+            {
+                nextidx = 0;
+            }
+            else
+            {
+                nextidx = _points.size() - 1;
+            }
         }
         return _points.at(nextidx);
     }
@@ -64,10 +75,10 @@ public:
 private:
 
     VectorList      _points;
-    float           _speed;
     std::size_t     _idx = 0;
     std::size_t     _cycles = 0;
     bool            _repeating = true;
+    bool            _finished = false;
 };
 
 } // namespace tt
