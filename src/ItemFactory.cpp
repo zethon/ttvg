@@ -22,7 +22,6 @@ namespace tt
 
     }
 
-
     /**
      *
      * Create an Item from the specified name.
@@ -91,6 +90,7 @@ namespace tt
                                                 sf::Vector2i{ width, height },
                                                 json );
       
+
 
         item->setScale(scaleX, scaleY);
         item->setPosition(position);

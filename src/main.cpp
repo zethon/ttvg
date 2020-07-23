@@ -5,6 +5,9 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/spirit/home/x3.hpp>
+
+#include <fmt/core.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -14,6 +17,7 @@
 #include "Engine.h"
 
 namespace po = boost::program_options;
+namespace x3 = boost::spirit::x3;
 
 constexpr char window_title[] = "Lord of the Dumpsters: A Tommy Tooter Game";
 constexpr std::size_t window_width = 1280;
@@ -27,7 +31,7 @@ int main(int argc, char *argv[])
         ("version,v", "print version string")
         ("resources,r", po::value<std::string>(), "path of resource folder")
         ("screen,s", po::value<std::uint16_t>(), "start screen id")
-        ("window-size", po::value<std::string>(), "window size")
+        ("window-size,w", po::value<std::string>(), "window size")
         ;
 
     po::variables_map vm;
@@ -46,12 +50,19 @@ int main(int argc, char *argv[])
     {
         std::string windowsize = vm["window-size"].as<std::string>();
 
-#ifdef _MSC_VER
-        sscanf_s(windowsize.c_str(),"%zix%zi", &width, &height);
-#else
-        sscanf(windowsize.c_str(),"%zix%zi", &width, &height);
-#endif
+        auto w = [&](auto& ctx) { width = _attr(ctx); };
+        auto h = [&](auto& ctx) { height = _attr(ctx); };
+        bool r = x3::phrase_parse(windowsize.begin(), windowsize.end(),
+            (
+                x3::int_[w] >> 'x' >> x3::int_[h]
+            ),
+            x3::space);
 
+        if (!r)
+        {
+            std::cerr << fmt::format("invalid screen size '{}'\n", windowsize);
+            return 1;
+        }
     }
 
     auto win = std::make_shared<sf::RenderWindow>( 

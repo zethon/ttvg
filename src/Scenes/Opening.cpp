@@ -329,7 +329,6 @@ std::uint16_t Opening::timestep()
 
     //
     // Check item bounds.
-    // Display item name and description if player is on item.
     //
     std::for_each(  _items.begin(), 
                     _items.end(),
