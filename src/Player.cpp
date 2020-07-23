@@ -59,21 +59,13 @@ void Player::setGlobalBottom(float bottom)
 }
 
 
-void Player::addItem(std::string itemID)
+void Player::addItem(const std::string& itemID)
 {
-    if(_inventory.count(itemID) != 0) 
-    {
-        int quantity        = _inventory[itemID];
-        _inventory[itemID]  = quantity+1;
-    } 
-    else 
-    {
-        _inventory[itemID] = 1;
-    }
+    _inventory[itemID]++;
 }
 
 
-std::map<std::string, int> Player::getInventory()
+std::map<std::string, std::int32_t> Player::getInventory()
 {
     return _inventory;
 }

@@ -212,20 +212,21 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 }
             }
             break;
- 
+
             //
             // Inventory. Display inventory.
             //
             case sf::Keyboard::I:
             {
-                std::map<std::string, int> inv = _player->getInventory();
+                std::map<std::string, std::int32_t> inv = 
+                                                    _player->getInventory();
                 std::vector<std::string> keys;
 
                 for(auto it = inv.begin(); it != inv.end(); it++)
                 {
                     keys.push_back(it->first);
-                } 
-               
+                }
+
                 //
                 // Sort keys, so we can display these in some kind of order.
                 // Should really sort by display name rather than ID.
@@ -339,7 +340,7 @@ std::uint16_t Opening::timestep()
                         if(item->getGlobalBounds().intersects(
                                                 _player->getGlobalBounds())) {
                             _missionText.setText(
-                                item->getName() + ": " + 
+                                item->getName() + ": " +
                                 item->getDescription() );
                         }
                     }
@@ -528,7 +529,7 @@ void Opening::animeCallback()
 //
 // Only update message text with the generic mission message
 // if the player moves. This allows the user to see  the result message 
-// of any last action they may have performed. 
+// of any last action they may have performed.
 //
 void Opening::updateMessage()
 {

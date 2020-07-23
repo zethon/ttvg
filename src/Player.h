@@ -28,19 +28,19 @@ public:
     //
     // Add an item to the player's inventory.
     //
-    void addItem(std::string itemID);
+    void addItem(const std::string& itemID);
 
     //
     // Get the player's inventory.
     //
-    std::map<std::string, int> getInventory();
+    std::map<std::string, std::int32_t> getInventory();
 
 private:
 
     //
     // Inventory. Map an item ID to a quantity.
     //
-    std::map<std::string, int> _inventory;
+    std::map<std::string, std::int32_t> _inventory;
 
 };
 
