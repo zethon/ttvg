@@ -8,6 +8,10 @@
 
 #include "../Vehicle.h"
 #include "../VehicleFactory.h"
+
+#include "../Item.h"
+#include "../ItemFactory.h"
+
 #include "../Background.h"
 #include "../Player.h"
 
@@ -258,6 +262,10 @@ private:
     std::unique_ptr<PathLines>          _pathLines;
     std::unique_ptr<VehicleFactory>     _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;
+
+    std::unique_ptr<ItemFactory>        _itemFactory;
+    std::vector<ItemPtr>                _items;
+
 };
 
 } // namespace tt

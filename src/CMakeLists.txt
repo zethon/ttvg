@@ -15,6 +15,9 @@ set(SOURCE_FILES
     Vehicle.cpp
     VehicleFactory.cpp
 
+    Item.cpp
+    ItemFactory.cpp
+
     Scenes/Opening.cpp
     Scenes/Scene.cpp
 )
@@ -37,6 +40,9 @@ set(HEADER_FILES
     Vehicle.h
     VehicleFactory.h
     
+    Item.h
+    ItemFactory.h
+
     Scenes/Opening.h
     Scenes/Scene.h
 )
