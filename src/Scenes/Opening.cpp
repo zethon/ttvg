@@ -218,8 +218,8 @@ std::uint16_t Opening::poll(const sf::Event& e)
             //
             case sf::Keyboard::I:
             {
-                std::map<std::string, std::int32_t> inv =
-                                                    _player->getInventory();
+                const auto& inv = _player->getInventory();
+
                 std::vector<std::string> keys;
 
                 for(auto it = inv.begin(); it != inv.end(); it++)
@@ -236,7 +236,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 for(auto it = keys.begin(); it != keys.end(); it++)
                 {
                     std::string key = *it;
-                    std::cout << key << ": " << inv[key] << std::endl;
+                    std::cout << key << ": " << inv.at(key) << std::endl;
                 }
             }
 

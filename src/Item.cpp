@@ -14,12 +14,12 @@ namespace tt
 
     }
 
-    std::string Item::getID()
+    std::string Item::getID() const
     {
         return _id;
     }
 
-    std::string Item::getName()
+    std::string Item::getName() const
     {
 
         //
@@ -32,14 +32,14 @@ namespace tt
         return _json[0].at("name");
     }
 
-    std::string Item::getDescription()
+    std::string Item::getDescription() const
     {
         return _json[0].at("description");
     }
 
-    bool Item::isObtainable()
+    bool Item::isObtainable() const
     {
-        if(_json[0]["obtainable"].is_null())
+        if(_json[0].find("obtainable") == _json[0].end())
         {
             return false;
         }

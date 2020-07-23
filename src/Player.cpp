@@ -65,7 +65,7 @@ void Player::addItem(const std::string& itemID)
 }
 
 
-std::map<std::string, std::int32_t> Player::getInventory()
+const std::map<std::string, std::int32_t>& Player::getInventory() const
 {
     return _inventory;
 }

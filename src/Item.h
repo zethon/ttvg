@@ -20,14 +20,14 @@ namespace tt
                         const sf::Vector2i& size,
                         const nl::json&     json );
 
-            std::string getID();
-            std::string getName();
-            std::string getDescription();
+            std::string getID() const;
+            std::string getName() const;
+            std::string getDescription() const;
 
             //
             // Check if an item can be picked up.
             //
-            bool    isObtainable();
+            bool    isObtainable() const;
 
         private:
 

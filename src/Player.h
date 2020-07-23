@@ -33,7 +33,7 @@ public:
     //
     // Get the player's inventory.
     //
-    std::map<std::string, std::int32_t> getInventory();
+    const std::map<std::string, std::int32_t>& getInventory() const;
 
 private:
 
