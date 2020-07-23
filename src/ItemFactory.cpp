@@ -54,10 +54,10 @@ namespace tt
         //
         // Variables used for size and scale.
         //
-        int     width;
-        int     height;
-        float   scaleX;
-        float   scaleY;
+        int     width   = 0;
+        int     height  = 0;
+        float   scaleX  = 0.0f;
+        float   scaleY  = 0.0f;
 
         //
         // Optionally allow for item author to specify
