@@ -92,17 +92,17 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _items.push_back(bag2);
 
     ItemPtr bag3 = _itemFactory->createItem(
-                                    "bag-of-crack", 
+                                    "bag-of-crack",
                                     sf::Vector2f { 1716.0f, 2975.0f } );
     _items.push_back(bag3);
 
     ItemPtr bag4 = _itemFactory->createItem(
-                                    "bag-of-crack", 
+                                    "bag-of-crack",
                                     sf::Vector2f { 1756.0f, 2975.0f } );
     _items.push_back(bag4);
 
     ItemPtr bag5 = _itemFactory->createItem(
-                                    "bag-of-crack", 
+                                    "bag-of-crack",
                                     sf::Vector2f { 1796.0f, 2975.0f } );
     _items.push_back(bag5);
 
@@ -218,7 +218,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
             //
             case sf::Keyboard::I:
             {
-                std::map<std::string, std::int32_t> inv = 
+                std::map<std::string, std::int32_t> inv =
                                                     _player->getInventory();
                 std::vector<std::string> keys;
 
