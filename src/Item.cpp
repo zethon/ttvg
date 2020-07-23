@@ -15,13 +15,13 @@ namespace tt
 
     }
 
-    std::string Item::getID() 
-    { 
+    std::string Item::getID()
+    {
         return _id;
     }
 
-    std::string Item::getName() 
-    { 
+    std::string Item::getName()
+    {
 
         //
         // Why is it that the json object can be treated as a top level
@@ -30,20 +30,21 @@ namespace tt
         // instance, it becomes a json array at the top level, 
         // and we must use _json[0] to get the first item?
         //
-        return (std::string)(_json[0].at("name"));
+        return _json[0].at("name");
     }
 
-    std::string Item::getDescription() 
-    { 
-        return (std::string)(_json[0].at("description"));
+    std::string Item::getDescription()
+    {
+        return _json[0].at("description");
     }
 
-    bool Item::isObtainable() 
-    { 
-        if(_json[0]["obtainable"].is_null()) {
+    bool Item::isObtainable()
+    {
+        if(_json[0]["obtainable"].is_null())
+        {
             return false;
         }
-        return (bool)(_json[0].at("obtainable"));
+        return _json[0].at("obtainable");
     }
 
 }
