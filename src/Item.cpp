@@ -15,6 +15,10 @@ namespace tt
 
     }
 
+    std::string Item::getID() { 
+        return _id;
+    }
+
     std::string Item::getName() { 
 
         //
@@ -26,7 +30,6 @@ namespace tt
         //
         return (std::string)(_json[0].at("name"));
     }
-
 
     std::string Item::getDescription() { 
         return (std::string)(_json[0].at("description"));

@@ -6,6 +6,7 @@
 #include <fmt/core.h>
 
 #include "../TTUtils.h"
+#include "../Item.h"
 #include "../Vehicle.h"
 #include "../PathFactory.h"
 
@@ -94,6 +95,16 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
                                     "bag-of-crack", 
                                     sf::Vector2f { 1716.0f, 2975.0f } );
     _items.push_back(bag3);
+
+    ItemPtr bag4 = _itemFactory->createItem(
+                                    "bag-of-crack", 
+                                    sf::Vector2f { 1756.0f, 2975.0f } );
+    _items.push_back(bag4);
+
+    ItemPtr bag5 = _itemFactory->createItem(
+                                    "bag-of-crack", 
+                                    sf::Vector2f { 1796.0f, 2975.0f } );
+    _items.push_back(bag5);
 
 
     sf::Vector2f tile{ getPlayerTile() };
@@ -186,17 +197,44 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 for(auto it = _items.begin(); it != _items.end(); it++) {
 
                     ItemPtr item = *it;
+
                     if( item->getGlobalBounds().intersects(
                                                 _player->getGlobalBounds()) &&
                         item->isObtainable() ) {
 
+                        _player->addItem(item->getID());
                         _missionText.setText("Picked up " + item->getName());
                         _items.erase(it);
+
                         break;
                     }
                 }
             }
             break;
+ 
+            //
+            // Inventory. Display inventory.
+            //
+            case sf::Keyboard::I:
+            {
+                std::map<std::string, int> inv = _player->getInventory();
+                std::vector<std::string> keys;
+
+                for(auto it = inv.begin(); it != inv.end(); it++) {
+                    keys.push_back(it->first);
+                } 
+               
+                //
+                // Sort keys, so we can display these in some kind of order.
+                // Should really sort by display name rather than ID.
+                //
+                std::sort(keys.begin(), keys.end());
+
+                for(auto it = keys.begin(); it != keys.end(); it++) {
+                    std::string key = *it;
+                    std::cout << key << ": " << inv[key] << std::endl;
+                }
+            }
 
             case sf::Keyboard::Left:
             {

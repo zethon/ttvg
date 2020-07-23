@@ -24,6 +24,24 @@ public:
     void setGlobalRight(float right);
     void setGlobalTop(float top);
     void setGlobalBottom(float bottom);
+
+    //
+    // Add an item to the player's inventory.
+    //
+    void addItem(std::string itemID);
+
+    //
+    // Get the player's inventory.
+    //
+    std::map<std::string, int> getInventory();
+
+private:
+
+    //
+    // Inventory. Map an item ID to a quantity.
+    //
+    std::map<std::string, int> _inventory;
+
 };
 
 } // namespace tt
