@@ -46,8 +46,12 @@ public:
     const Path& path() const { return _path; }
     Path& path() { return const_cast<Path&>((static_cast<const Vehicle&>(*this)).path()); }
 
-private:
+    void setSpeed(float v) { _speed = v; }
+    float speed() const { return _speed; }
+
     void move();
+
+private:
     void setDirection(std::uint32_t dir);
 
     sf::Clock           _movementClock;

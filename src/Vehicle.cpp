@@ -89,10 +89,10 @@ void Vehicle::move()
 
     if (currentTile != _path.next())
     {
-        auto x = vehicleStepDirection(
-            sf::Vector2f{ xpos, ypos }, _direction, _speed, getScale());
+        auto nextpos = vehicleStepDirection(
+            sf::Vector2f{ xpos, ypos }, _direction, _speed, _background->getScale());
 
-        setPosition(x);
+        setPosition(nextpos);
         return;
     }
     else

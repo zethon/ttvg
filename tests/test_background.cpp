@@ -6,6 +6,8 @@
 #include "../src/ResourceManager.h"
 #include "../src/Background.h"
 
+#include "Test.h"
+
 namespace tools = boost::test_tools;
 namespace data = boost::unit_test::data;
 
@@ -14,17 +16,6 @@ using TilePairs = std::vector<TilePair>;
 
 namespace std
 {
-
-template<typename T>
-std::ostream& operator<<(std::ostream& out, const sf::Vector2<T> item)
-{
-    auto[x, y] = item;
-    out << "{ x=" << x
-        << " y=" << y
-        << " }";
-
-    return out;
-}
 
 std::ostream& operator<<(std::ostream& out, const TilePair& item)
 {

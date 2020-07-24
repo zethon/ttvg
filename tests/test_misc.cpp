@@ -14,35 +14,14 @@
 #include "../src/Intersection.h"
 #include "../src/PathFactory.h"
 
+#include "Test.h"
+
 using namespace std::string_literals;
 
 namespace data = boost::unit_test::data;
 
 namespace std
 {
-
-std::ostream& operator<<(std::ostream& out, const sf::FloatRect& item)
-{
-    auto [left, top, width, height] = item;
-    out << "{ left=" << left
-        << " top=" << top
-        << " width=" << width
-        << " height=" << height
-        << "}";
-
-    return out;
-}
-
-template<typename T>
-std::ostream& operator<<(std::ostream& out, const sf::Vector2<T> item)
-{
-    auto[x, y] = item;
-    out << "{ x=" << x
-        << " y=" << y
-        << " }";
-
-    return out;
-}
 
 std::ostream& operator<<(std::ostream& out, const tt::TurningPoint& item)
 {

@@ -363,14 +363,9 @@ std::uint16_t Opening::timestep()
 
 void Opening::timestepTraffic()
 {
-    auto runSeconds = static_cast<std::uint32_t>(_globalClock.getElapsedTime().asSeconds());
-    if (_vehicles.size() < MAX_VEHICLES 
-        && ((runSeconds % VEHICLE_SPAWN_RATE) == 0) && runSeconds != 0)
-    {
-        auto vehicle = _vehicleFactory->createVehicle();
-        _vehicles.push_back(vehicle);
-    }
-
+    // update existing vehicles before creating any new ones
+    // this also gives newly created vehicles a chance to be
+    // drawn at their initial position
     static sf::Clock test;
     auto vi = _vehicles.begin();
     const auto playerBounds = _player->getGlobalBounds();
@@ -394,6 +389,14 @@ void Opening::timestepTraffic()
         }
 
         vi++;
+    }
+
+    auto runSeconds = static_cast<std::uint32_t>(_globalClock.getElapsedTime().asSeconds());
+    if (_vehicles.size() < MAX_VEHICLES
+        && ((runSeconds % VEHICLE_SPAWN_RATE) == 0) && runSeconds != 0)
+    {
+        auto vehicle = _vehicleFactory->createVehicle();
+        _vehicles.push_back(vehicle);
     }
 }
 
