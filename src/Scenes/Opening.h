@@ -249,6 +249,8 @@ private:
     void adjustView();
     void animeCallback();
 
+    void updateMessage();
+
     MissionText                         _missionText;
     StatusBar                           _statusBar;
     DebugWindow                         _debugWindow;

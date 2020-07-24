@@ -6,6 +6,7 @@
 #include <fmt/core.h>
 
 #include "../TTUtils.h"
+#include "../Item.h"
 #include "../Vehicle.h"
 #include "../PathFactory.h"
 
@@ -91,9 +92,19 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _items.push_back(bag2);
 
     ItemPtr bag3 = _itemFactory->createItem(
-                                    "bag-of-crack", 
+                                    "bag-of-crack",
                                     sf::Vector2f { 1716.0f, 2975.0f } );
     _items.push_back(bag3);
+
+    ItemPtr bag4 = _itemFactory->createItem(
+                                    "bag-of-crack",
+                                    sf::Vector2f { 1756.0f, 2975.0f } );
+    _items.push_back(bag4);
+
+    ItemPtr bag5 = _itemFactory->createItem(
+                                    "bag-of-crack",
+                                    sf::Vector2f { 1796.0f, 2975.0f } );
+    _items.push_back(bag5);
 
 
     sf::Vector2f tile{ getPlayerTile() };
@@ -163,12 +174,71 @@ void Opening::initTraffic()
 
 std::uint16_t Opening::poll(const sf::Event& e)
 {
+
     if (e.type == sf::Event::KeyPressed)
     {
+        updateMessage();
+
         switch (e.key.code)
         {
             default:
             break;
+
+            //
+            // Action. Perform an action. E.g. pick up an item.
+            //
+            case sf::Keyboard::A:
+            {
+                //
+                // Check if we are on an item.
+                // If yes, remove it from the map's _items and add it to the 
+                // player's inventory.
+                //
+                for(auto it = _items.begin(); it != _items.end(); it++)
+                {
+                    ItemPtr item = *it;
+
+                    if( item->getGlobalBounds().intersects(
+                                                _player->getGlobalBounds()) &&
+                        item->isObtainable() )
+                    {
+
+                        _player->addItem(item->getID());
+                        _missionText.setText("Picked up " + item->getName());
+                        _items.erase(it);
+
+                        break;
+                    }
+                }
+            }
+            break;
+
+            //
+            // Inventory. Display inventory.
+            //
+            case sf::Keyboard::I:
+            {
+                const auto& inv = _player->getInventory();
+
+                std::vector<std::string> keys;
+
+                for(auto it = inv.begin(); it != inv.end(); it++)
+                {
+                    keys.push_back(it->first);
+                }
+
+                //
+                // Sort keys, so we can display these in some kind of order.
+                // Should really sort by display name rather than ID.
+                //
+                std::sort(keys.begin(), keys.end());
+
+                for(auto it = keys.begin(); it != keys.end(); it++)
+                {
+                    std::string key = *it;
+                    std::cout << key << ": " << inv.at(key) << std::endl;
+                }
+            }
 
             case sf::Keyboard::Left:
             {
@@ -262,15 +332,16 @@ std::uint16_t Opening::timestep()
     timestepTraffic();
 
     //
-    // Check item bounds
+    // Check item bounds.
     //
-    _missionText.setText("Find the magic vagina");
     std::for_each(  _items.begin(), 
                     _items.end(),
                     [this](ItemPtr item) { 
                         if(item->getGlobalBounds().intersects(
                                                 _player->getGlobalBounds())) {
-                            _missionText.setText(item->getDescription());
+                            _missionText.setText(
+                                item->getName() + ": " +
+                                item->getDescription() );
                         }
                     }
     );
@@ -453,6 +524,16 @@ void Opening::animeCallback()
         sf::Vector2f tile{ getPlayerTile() };
         _statusBar.setZoneText(_background->zoneName(tile));
     }
+}
+
+//
+// Only update message text with the generic mission message
+// if the player moves. This allows the user to see  the result message 
+// of any last action they may have performed.
+//
+void Opening::updateMessage()
+{
+    _missionText.setText("Find the magic vagina");
 }
 
 } // namespace tt

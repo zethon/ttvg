@@ -58,4 +58,17 @@ void Player::setGlobalBottom(float bottom)
     setPosition(bounds.left, y);
 }
 
+
+void Player::addItem(const std::string& itemID)
+{
+    _inventory[itemID]++;
+}
+
+
+const std::map<std::string, std::int32_t>& Player::getInventory() const
+{
+    return _inventory;
+}
+
+
 } // namespace tt

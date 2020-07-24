@@ -1,8 +1,6 @@
 {
-    "description":  "Bag of Crack",
-    "attributes":   { },
-    "image-attr":   {   "width":    669,
-                        "height":   649,
-                        "scale-x":  0.05,
-                        "scale-y":  0.05    }
+    "name":         "Bag of Crack",
+    "description":  "This is good for your blood pressure.",
+    "obtainable":   true,
+    "attributes":   { }
 }

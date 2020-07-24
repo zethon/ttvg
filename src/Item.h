@@ -15,14 +15,23 @@ namespace tt
 
         public:
 
-            Item(       sf::Texture texture, 
+            Item(       const std::string&  id,
+                        sf::Texture         texture,
                         const sf::Vector2i& size,
-                        nl::json json);
+                        const nl::json&     json );
 
-            std::string getDescription();
+            std::string getID() const;
+            std::string getName() const;
+            std::string getDescription() const;
+
+            //
+            // Check if an item can be picked up.
+            //
+            bool    isObtainable() const;
 
         private:
-   
+
+            std::string _id;
             nl::json    _json;
 
     };
