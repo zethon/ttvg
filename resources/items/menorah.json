@@ -1,5 +1,9 @@
 {
     "name":         "Menorah",
     "description":  "A symbol of the ancient aliens.",
-    "attributes":   { }
+    "attributes":   { },
+    "image-attr":   {   "width":    465,
+                        "height":   513,
+                        "scale-x":  0.2,
+                        "scale-y":  0.2     }
 }

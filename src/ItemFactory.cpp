@@ -52,47 +52,39 @@ namespace tt
         }
 
         //
-        // Variables used for size and scale.
+        // By default, scale item image to tile size.
         //
-        int     width   = 0;
-        int     height  = 0;
-        float   scaleX  = 0.0f;
-        float   scaleY  = 0.0f;
-
+        int     width   = texture.getSize().x;
+        int     height  = texture.getSize().y;
+        float   scaleX  = DEFAULT_ITEM_WIDTH    / width;
+        float   scaleY  = DEFAULT_ITEM_HEIGHT   / height;
+       
         //
         // Optionally allow for item author to specify
         // size and scale.
         //
-        if( !json["image-attr"].is_null()               &&
-            !json["image-attr"]["width"].is_null()      &&
-            !json["image-attr"]["height"].is_null()     &&
-            !json["image-attr"]["scale-x"].is_null()    &&
-            !json["image-attr"]["scale-y"].is_null()        ) 
+        if( json.find("image-attr") != json.end())
         {
+            nl::json children = json["image-attr"];
 
-            width   = json["image-attr"]["width"];
-            height  = json["image-attr"]["height"];
-            scaleX  = json["image-attr"]["scale-x"];
-            scaleY  = json["image-attr"]["scale-y"];
+            if( children.find("width")    != children.end()   &&
+                children.find("height")   != children.end()   &&
+                children.find("scale-x")  != children.end()   &&
+                children.find("scale-y")  != children.end()   )
+            {
 
-        }
-        else
-        {
+                width   = json["image-attr"]["width"];
+                height  = json["image-attr"]["height"];
+                scaleX  = json["image-attr"]["scale-x"];
+                scaleY  = json["image-attr"]["scale-y"];
 
-            //
-            // By default, scale to tile size.
-            //
-
-            width   = texture.getSize().x;
-            height  = texture.getSize().y;
-            scaleX  = DEFAULT_ITEM_WIDTH    / width;
-            scaleY  = DEFAULT_ITEM_HEIGHT   / height;
+            }
         }
 
-        auto item   = std::make_shared<Item>(   name,
-                                                texture, 
-                                                sf::Vector2i{ width, height },
-                                                json );
+        auto item = std::make_shared<Item>( name,
+                                            texture, 
+                                            sf::Vector2i{ width, height },
+                                            json );
 
 
 
