@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <nlohmann/json.hpp>
@@ -29,10 +30,19 @@ namespace tt
             //
             bool    isObtainable() const;
 
-        private:
+            void    setPosition(float x, float y);
+            void    setPosition(const sf::Vector2f& position);
 
-            std::string _id;
-            nl::json    _json;
+        private:
+   
+            std::string         _id;
+            nl::json            _json;
+
+            bool                isHighlighted;
+            sf::RectangleShape  _highlight;
+
+            virtual void draw(  sf::RenderTarget&   target,
+                                sf::RenderStates    states) const;
 
     };
 

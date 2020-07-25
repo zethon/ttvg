@@ -302,6 +302,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Num0:
             {
+                _debugEnabled = !_debugEnabled;
                 _debugWindow.setVisible(!_debugWindow.visible());
             }
             break;
@@ -417,6 +418,19 @@ void Opening::draw()
                         _window.draw(*item); 
                     }
     );
+
+    if(_debugEnabled)
+    {
+        _rectangle.setPosition( _player->getGlobalLeft(), 
+                                _player->getGlobalTop()     );
+
+        _rectangle.setFillColor(sf::Color::Transparent);
+        _rectangle.setOutlineThickness(2);
+        _rectangle.setOutlineColor(sf::Color(255, 255, 255));
+        // _rectangle.setSize(sf::Vector2f(50, 50));
+        _rectangle.setSize(sf::Vector2f(100, 100));
+        _window.draw(_rectangle);
+    }
 
     // the player should always be the last thing on the 
     // game board to be drawn
