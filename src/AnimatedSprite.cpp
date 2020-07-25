@@ -5,12 +5,25 @@
 namespace tt
 {
 
+constexpr auto HIGHLIGHT_WIDTH  = 32;
+constexpr auto HIGHLIGHT_HEIGHT = 32;
+
+
 AnimatedSprite::AnimatedSprite(sf::Texture texture, const sf::Vector2i& size)
     : _texture{ std::move(texture) },
       _size{ size }
 {
     setTexture(_texture);
     setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
+
+    //
+    // Initialize the highlight box.
+    //
+    _isHighlighted = false;
+    _highlight.setFillColor(sf::Color::Transparent);
+    _highlight.setOutlineThickness(2);
+    _highlight.setOutlineColor(sf::Color(255, 255, 255));
+    _highlight.setSize(sf::Vector2f(HIGHLIGHT_WIDTH, HIGHLIGHT_WIDTH));
 }
 
 void AnimatedSprite::setSource(std::uint32_t x, std::uint32_t y)
@@ -69,6 +82,38 @@ std::uint16_t AnimatedSprite::timestep()
     }
 
     return 0;
+}
+
+void AnimatedSprite::setPosition(float x, float y)
+{
+    sf::Sprite::setPosition(x, y);
+
+    //
+    // Compute position of hightlight box.
+    //
+    auto hx = getGlobalBounds().left +
+                ((getGlobalBounds().width / 2) - (HIGHLIGHT_WIDTH / 2));
+
+    auto hy = getGlobalBounds().top + 
+                ((getGlobalBounds().height) - (HIGHLIGHT_HEIGHT));
+
+    _highlight.setPosition(hx, hy);
+}
+
+void AnimatedSprite::setPosition(const sf::Vector2f& position)
+{
+    this->setPosition(position.x, position.y);
+}
+
+void AnimatedSprite::draw(  sf::RenderTarget&   target,
+                            sf::RenderStates    states) const
+{
+    target.draw(static_cast<Sprite>(*this));
+
+    if(_isHighlighted)
+    {
+        target.draw(_highlight, states);
+    }
 }
 
 } // namespace tt

@@ -48,6 +48,14 @@ public:
     Direction direction() const { return _direction; }
     void setDirection(Direction val) { _direction = val; }
 
+    sf::RectangleShape& getHighlightRect() { return _highlight; }
+
+    void    setPosition(float x, float y);
+    void    setPosition(const sf::Vector2f& position);
+
+    void    setHighlighted(bool b)  { _isHighlighted = b; }
+    bool    isHighlighted()         { return _isHighlighted; }
+
 protected:
 
     State           _state = State::STILL;
@@ -63,6 +71,15 @@ protected:
     std::uint32_t   _maxFramesPerRow = 0;
 
     AnimeCallback   _animeCallback;
+
+private:
+
+    bool                _isHighlighted;
+    sf::RectangleShape  _highlight;
+
+    virtual void draw(  sf::RenderTarget&   target,
+                        sf::RenderStates    states) const;
+
 };
 
 } // namespace tt

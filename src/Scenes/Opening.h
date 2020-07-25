@@ -252,7 +252,6 @@ private:
     void updateMessage();
 
     bool                                _debugEnabled; 
-    sf::RectangleShape                  _rectangle;
 
     MissionText                         _missionText;
     StatusBar                           _statusBar;

@@ -12,19 +12,6 @@ namespace tt
             _id     { id }
     {
 
-        //
-        // Initialize out highlight box. 
-        // Note move this up into AnimatedSprite once it works.
-        //
-        auto left   = getGlobalBounds().left;
-        auto top    = getGlobalBounds().top;
-
-        _highlight.setPosition( left, top );
-        _highlight.setFillColor(sf::Color::Transparent);
-        _highlight.setOutlineThickness(2);
-        _highlight.setOutlineColor(sf::Color(255, 255, 255));
-        _highlight.setSize(sf::Vector2f(32, 32));
-
     }
 
     std::string Item::getID() const
@@ -57,25 +44,6 @@ namespace tt
             return false;
         }
         return _json[0].at("obtainable");
-    }
-
-    void Item::setPosition(float x, float y)
-    {
-        AnimatedSprite::setPosition(x, y);
-
-        _highlight.setPosition(x, y);
-    }
-
-    void Item::setPosition(const sf::Vector2f& position)
-    {
-        this->setPosition(position.x, position.y);
-    }
-
-    void Item::draw(sf::RenderTarget&   target,
-                    sf::RenderStates    states) const
-    {
-        target.draw(static_cast<AnimatedSprite>(*this));
-        target.draw(_highlight, states);
     }
 
 }

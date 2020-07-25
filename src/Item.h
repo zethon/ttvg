@@ -30,19 +30,10 @@ namespace tt
             //
             bool    isObtainable() const;
 
-            void    setPosition(float x, float y);
-            void    setPosition(const sf::Vector2f& position);
-
         private:
    
             std::string         _id;
             nl::json            _json;
-
-            bool                isHighlighted;
-            sf::RectangleShape  _highlight;
-
-            virtual void draw(  sf::RenderTarget&   target,
-                                sf::RenderStates    states) const;
 
     };
 

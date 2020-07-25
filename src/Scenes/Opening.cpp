@@ -37,6 +37,8 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
       _statusBar{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
+    _debugEnabled = false;
+
     _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
@@ -198,8 +200,13 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 {
                     ItemPtr item = *it;
 
-                    if( item->getGlobalBounds().intersects(
-                                                _player->getGlobalBounds()) &&
+                    auto itemBounds = 
+                                item->getHighlightRect().getGlobalBounds();
+
+                    auto playerBounds = 
+                                _player->getHighlightRect().getGlobalBounds();
+
+                    if( itemBounds.intersects(playerBounds) &&
                         item->isObtainable() )
                     {
 
@@ -304,6 +311,16 @@ std::uint16_t Opening::poll(const sf::Event& e)
             {
                 _debugEnabled = !_debugEnabled;
                 _debugWindow.setVisible(!_debugWindow.visible());
+
+                //
+                // Highlight player and items.
+                //
+                _player->setHighlighted(_debugEnabled);
+                for(auto it = _items.begin(); it != _items.end(); it++)
+                {
+                    ItemPtr item = *it;
+                    item->setHighlighted(_debugEnabled);
+                }
             }
             break;
 
@@ -338,8 +355,15 @@ std::uint16_t Opening::timestep()
     std::for_each(  _items.begin(), 
                     _items.end(),
                     [this](ItemPtr item) { 
-                        if(item->getGlobalBounds().intersects(
-                                                _player->getGlobalBounds())) {
+                    
+                        auto itemBounds = 
+                                item->getHighlightRect().getGlobalBounds();
+
+                        auto playerBounds = 
+                                _player->getHighlightRect().getGlobalBounds();
+
+                        if(itemBounds.intersects(playerBounds))
+                        {
                             _missionText.setText(
                                 item->getName() + ": " +
                                 item->getDescription() );
@@ -418,19 +442,6 @@ void Opening::draw()
                         _window.draw(*item); 
                     }
     );
-
-    if(_debugEnabled)
-    {
-        _rectangle.setPosition( _player->getGlobalLeft(), 
-                                _player->getGlobalTop()     );
-
-        _rectangle.setFillColor(sf::Color::Transparent);
-        _rectangle.setOutlineThickness(2);
-        _rectangle.setOutlineColor(sf::Color(255, 255, 255));
-        // _rectangle.setSize(sf::Vector2f(50, 50));
-        _rectangle.setSize(sf::Vector2f(100, 100));
-        _window.draw(_rectangle);
-    }
 
     // the player should always be the last thing on the 
     // game board to be drawn
