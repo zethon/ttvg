@@ -88,7 +88,6 @@ Vehicle::Vehicle(const sf::Texture& texture, const sf::Vector2i & size, Backgrou
     : AnimatedSprite(texture, size),
       _bg { bg }
 {
-    _texture.setSmooth(true);
     setSource(0, 0);
     setState(AnimatedState::ANIMATED);
 }
