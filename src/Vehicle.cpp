@@ -57,28 +57,28 @@ bool shouldTurn(const sf::Vector2f pathpoint, const sf::Vector2f& current, Direc
 {
     switch (direction)
     {
-    default:
-        return false;
+        default:
+            return false;
 
-    case RIGHT:
-    {
-        return current.x >= pathpoint.x;
-    }
+        case RIGHT:
+        {
+            return current.x >= pathpoint.x;
+        }
 
-    case LEFT:
-    {
-        return current.x <= pathpoint.x;
-    }
+        case LEFT:
+        {
+            return current.x <= pathpoint.x;
+        }
 
-    case UP:
-    {
-        return current.y >= pathpoint.y;
-    }
+        case UP:
+        {
+            return current.y <= pathpoint.y;
+        }
 
-    case DOWN:
-    {
-        return current.y >= pathpoint.y;
-    }
+        case DOWN:
+        {
+            return current.y >= pathpoint.y;
+        }
     }
 
     return false;
