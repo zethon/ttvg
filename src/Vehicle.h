@@ -49,6 +49,10 @@ public:
     void setSpeed(float v) { _speed = v; }
     float speed() const { return _speed; }
 
+    Direction direction() const { return _direction; }
+
+    tt::Tile currentTile() const;
+
     void move();
 
 private:
@@ -57,10 +61,11 @@ private:
     sf::Clock           _movementClock;
     sf::Clock           _lifeClock;
 
-    BackgroundSharedPtr _background;
+    BackgroundSharedPtr         _bg;
 
-    Path                _path;
-    float               _speed = 10.0f;  // Pixels per timestep
+    Path                        _path;
+    std::vector<sf::Vector2f>   _globalPoints;
+    float                       _speed = 10.0f;  // Pixels per timestep
 
     Direction           _direction = DOWN;  // Current direction of the object
     State               _state = MOVING;

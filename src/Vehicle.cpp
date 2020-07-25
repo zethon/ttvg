@@ -55,7 +55,7 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
 
 Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundSharedPtr bg)
     : AnimatedSprite(texture, size),
-      _background { bg }
+      _bg { bg }
 {
     _texture.setSmooth(true);
     setSource(0, 0);
@@ -85,25 +85,41 @@ std::uint16_t Vehicle::timestep()
 void Vehicle::move()
 {
     auto[xpos, ypos, h, w] = getGlobalBounds();
-    auto currentTile = _background->getTileFromGlobal(sf::Vector2f{ xpos, ypos });
+    auto currentTile = _bg->getTileFromGlobal(sf::Vector2f{ xpos, ypos });
 
     if (currentTile != _path.next())
     {
         auto nextpos = vehicleStepDirection(
-            sf::Vector2f{ xpos, ypos }, _direction, _speed, _background->getScale());
+            sf::Vector2f{ xpos, ypos }, _direction, _speed, _bg->getScale());
+
+        if (const auto ntile = _bg->getTileFromGlobal(nextpos);
+            ntile == _path.next())
+        {
+            _path.step();
+            nextpos = _globalPoints.at(_path.index());
+
+            auto newdirection = tt::getDirection(ntile, _path.next());
+            setDirection(newdirection);
+        }
 
         setPosition(nextpos);
         return;
     }
     else
     {
-        auto globalPos = _background->getGlobalFromTile(currentTile);
+        auto globalPos = _bg->getGlobalFromTile(currentTile);
         setPosition(globalPos);
         _path.step();
 
         auto newdirection = tt::getDirection(currentTile, _path.next());
         setDirection(newdirection);
     }
+}
+
+tt::Tile Vehicle::currentTile() const
+{
+    auto bounds = getGlobalBounds();
+    return _bg->getTileFromGlobal(sf::Vector2f{ bounds.left, bounds.top });
 }
 
 bool Vehicle::isBlocked(const sf::FloatRect& test)
@@ -118,6 +134,11 @@ void Vehicle::setPath(const Path& path)
 
     // VECTOR COPY IN THE GAME LOOP!!!
     _path = path;
+    for (const auto& p : _path.points())
+    {
+        auto gp = _bg->getGlobalFromTile(p);
+        _globalPoints.push_back(gp);
+    }
 
     auto& start = _path.points().at(0);
     auto& next = _path.points().at(1);
@@ -125,7 +146,7 @@ void Vehicle::setPath(const Path& path)
     auto direction = tt::getDirection(start, next);
     setDirection(direction);
 
-    auto globalPos = _background->getGlobalFromTile(_path.points().at(0));
+    auto globalPos = _bg->getGlobalFromTile(_path.points().at(0));
     setPosition(globalPos);
 }
 

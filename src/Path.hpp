@@ -72,6 +72,11 @@ public:
         return _points.at(_idx);
     }
 
+    auto index() const
+    {
+        return _idx;
+    }
+
 private:
 
     VectorList      _points;
