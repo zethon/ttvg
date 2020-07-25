@@ -37,6 +37,8 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
       _statusBar{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
+    _resources.clearTextureCache();
+
     _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
@@ -45,9 +47,11 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
 
-    auto temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
-    _player = std::make_shared<Player>(temptext, sf::Vector2i{ 64, 64 });
-    _player->texture().setSmooth(true);
+    auto textptr = _resources.cacheTexture("textures/tommy.png");
+    assert(textptr);
+    textptr->setSmooth(true);
+
+    _player = std::make_shared<Player>(*textptr, sf::Vector2i{ 64, 64 });
     _player->setSource(0, 10);
     _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
     _player->setOrigin(0.0f, 0.0f);
@@ -245,7 +249,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Left:
             {
-                if (_player->state() == AnimatedSprite::ANIMATED
+                if (_player->state() == AnimatedState::ANIMATED
                     && _player->direction() == Direction::LEFT)
                 {
                     return 0;
@@ -253,14 +257,14 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
                 _player->setSource(0, 9);
                 _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedSprite::ANIMATED);
+                _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::LEFT);
             }
             break;
 
             case sf::Keyboard::Right:
             {
-                if (_player->state() == AnimatedSprite::ANIMATED
+                if (_player->state() == AnimatedState::ANIMATED
                     && _player->direction() == Direction::RIGHT)
                 {
                     return 0;
@@ -268,14 +272,14 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
                 _player->setSource(0, 11);
                 _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedSprite::ANIMATED);
+                _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::RIGHT);
             }
             break;
 
             case sf::Keyboard::Up:
             {
-                if ((_player->state() == AnimatedSprite::ANIMATED && _player->direction() == Direction::UP)
+                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
                     return 0;
@@ -283,14 +287,14 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
                 _player->setSource(0, 8);
                 _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedSprite::ANIMATED);
+                _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::UP);
             }
             break;
 
             case sf::Keyboard::Down:
             {
-                if ((_player->state() == AnimatedSprite::ANIMATED && _player->direction() == Direction::DOWN)
+                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
                     return 0;
@@ -298,7 +302,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
                 _player->setSource(0, 10);
                 _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedSprite::ANIMATED);
+                _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::DOWN);
             }
             break;
@@ -323,13 +327,13 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
 std::uint16_t Opening::timestep()
 {
-    if (_player->state() == AnimatedSprite::ANIMATED
+    if (_player->state() == AnimatedState::ANIMATED
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        _player->setState(AnimatedSprite::STILL);
+        _player->setState(AnimatedState::STILL);
     }
 
     timestepTraffic();

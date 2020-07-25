@@ -12,4 +12,10 @@ enum Direction
     RIGHT   = 0x08
 };
 
+enum AnimatedState
+{
+    STILL,
+    ANIMATED
+};
+
 } // namespace

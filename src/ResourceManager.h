@@ -28,9 +28,9 @@ public:
     ///
     /// \ see getTexture
     ///
-    /// \return True if loading was successful
+    /// \return Pointer to the object in the container, or null
     ///
-    bool cacheTexture(const std::string& name);
+    sf::Texture* cacheTexture(const std::string& name);
 
     /// \brief Returns a pointer to the texture
     ///

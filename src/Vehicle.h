@@ -34,7 +34,7 @@ public:
         STOPPED
     };
 
-    Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundSharedPtr bg);
+    Vehicle(const sf::Texture& texture, const sf::Vector2i& size, BackgroundSharedPtr bg);
 
     std::uint16_t timestep() override;
     bool isBlocked(const sf::FloatRect& point);

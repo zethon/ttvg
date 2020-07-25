@@ -12,29 +12,25 @@ namespace tt
 class AnimatedSprite;
 using AnimatedSpritePtr = std::shared_ptr<AnimatedSprite>;
 
+class AnimatedSprite;
+using AnimatedSpritePtr = std::shared_ptr<AnimatedSprite>;
+
 using AnimeCallback = std::function<void()>;
 
-class AnimatedSprite : 
+class AnimatedSprite :
     public sf::Sprite,
     public IUpdateable
 {
 
 public:
-    enum State
-    {
-        STILL,
-        ANIMATED
-    };
-
-    AnimatedSprite(sf::Texture texture, const sf::Vector2i& size);
+    AnimatedSprite(const sf::Texture& texture, const sf::Vector2i& size);
 
     void setSource(std::uint32_t x, std::uint32_t y);
-    void setState(State state);
+    void setState(AnimatedState state);
     void setMaxFramesPerRow(std::uint32_t max);
     void setAnimeCallback(AnimeCallback cb) { _animeCallback = cb; }
 
-    sf::Texture& texture();
-    AnimatedSprite::State state() const;
+    AnimatedState state() const;
 
     std::uint16_t timestep() override;
 
@@ -43,7 +39,7 @@ public:
 
 protected:
 
-    State           _state = State::STILL;
+    AnimatedState   _state = AnimatedState::STILL;
     Direction       _direction = Direction::DOWN;
     sf::Texture     _texture;
     sf::Vector2i    _size;

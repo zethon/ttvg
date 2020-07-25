@@ -84,13 +84,13 @@ bool shouldTurn(const sf::Vector2f pathpoint, const sf::Vector2f& current, Direc
     return false;
 }
 
-Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundSharedPtr bg)
+Vehicle::Vehicle(const sf::Texture& texture, const sf::Vector2i & size, BackgroundSharedPtr bg)
     : AnimatedSprite(texture, size),
       _bg { bg }
 {
     _texture.setSmooth(true);
     setSource(0, 0);
-    setState(AnimatedSprite::State::ANIMATED);
+    setState(AnimatedState::ANIMATED);
 }
 
 std::uint16_t Vehicle::timestep()

@@ -34,9 +34,6 @@ namespace tt
         std::string jsonFile =
             _resources.getFilename(fmt::format("items/{}.json", name));
 
-        std::string textureFile = fmt::format("items/{}.png", name);
-        auto texture = *(_resources.load<sf::Texture>(textureFile));
-
         if( !boost::filesystem::exists(jsonFile) )
         {
             auto error = fmt::format("file '{}' not found", jsonFile);
@@ -78,10 +75,9 @@ namespace tt
                 scaleX  = json["image-attr"]["scale-x"];
                 scaleY  = json["image-attr"]["scale-y"];
 
-            }
         }
-
-        auto item = std::make_shared<Item>( name,
+        sf::Texture* texture = _resources.cacheTexture(textureFile);
+        auto item   = std::make_shared<Item>(   name, 
                                             texture, 
                                             sf::Vector2i{ width, height },
                                             json );

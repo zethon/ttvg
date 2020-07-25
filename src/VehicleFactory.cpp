@@ -30,6 +30,8 @@ VehicleFactory::VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg)
         file >> json;
         loadVehicles(json);
     }
+
+    assert(_resources.cacheTexture("textures/car1.png"));
 }
 
 void VehicleFactory::loadVehicles(const nl::json& json)
@@ -50,8 +52,9 @@ VehiclePtr VehicleFactory::createVehicle()
     static std::mt19937 gen(rd());
     static std::uniform_real_distribution<float> dis(8.0f, 20.0f);
 
-    auto temptext = *(_resources.load<sf::Texture>("textures/car1.png"));
-    auto vehicle = std::make_shared<Vehicle>(temptext, sf::Vector2i{ 77, 41 }, _background);
+    sf::Texture* textptr = _resources.getTexture("textures/car1.png");
+    assert(textptr);
+    auto vehicle = std::make_shared<Vehicle>(*textptr, sf::Vector2i{ 77, 41 }, _background);
 
     auto path = _pathFactory->makeRiboPath();
     path.setRepeating(false);

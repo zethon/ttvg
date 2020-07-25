@@ -9,18 +9,23 @@ ResourceManager::ResourceManager(const boost::filesystem::path& path)
 }
 
 ////////////////////////////////////////////////////////////
-bool ResourceManager::cacheTexture(const std::string& name)
+sf::Texture* ResourceManager::cacheTexture(const std::string& name)
 {
-    const auto filename = getFilename(name);
+    if (auto temp = getTexture(name);
+        temp != nullptr)
+    {
+        return temp;
+    }
 
+    const auto filename = getFilename(name);
     if (sf::Texture texture;
         texture.loadFromFile(filename))
     {
-        _textcache.emplace(name, std::move(texture));
-        return true;
+        auto retval = _textcache.emplace(name, std::move(texture));
+        return &(retval.first->second);
     }
 
-    return false;
+    return nullptr;
 }
 
 ////////////////////////////////////////////////////////////
