@@ -74,7 +74,7 @@ private:
 
 };
 
-inline bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
+bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
     Direction direction, float minDistance);
 
 ////////////////////////////////////////////////////////////
