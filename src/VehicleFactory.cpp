@@ -1,4 +1,5 @@
 #include <boost/filesystem.hpp>
+#include <boost/spirit/home/x3.hpp>
 
 #include <fmt/core.h>
 
@@ -6,6 +7,8 @@
 #include "Vehicle.h"
 #include "VehicleFactory.h"
 #include "PathFactory.h"
+
+namespace x3 = boost::spirit::x3;
 
 namespace tt
 {
@@ -36,11 +39,28 @@ VehicleFactory::VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg)
 
 void VehicleFactory::loadVehicles(const nl::json& json)
 {
-    if (!json.at("zones").is_array()) return;
-
     for (const auto& item : json["vehicles"]["assets"].items())
     {
+        VehicleInfo info;
 
+        std::string temp = item.value().at("size").get<std::string>();
+        phrase_parse(temp.begin(), temp.end(), VectorFloatParser, x3::ascii::space, info.size);
+
+        temp = item.value().at("scale").get<std::string>();
+        phrase_parse(temp.begin(), temp.end(), VectorFloatParser, x3::ascii::space, info.scale);
+
+        temp = item.value().at("speed").get<std::string>();
+        phrase_parse(temp.begin(), temp.end(), VectorFloatParser, x3::ascii::space, info.speed);
+
+        const auto textname = fmt::format("textures/{}.png",
+            item.value().at("name").get<std::string>());
+
+        info.texture = _resources.cacheTexture(textname);
+
+        if (info.texture)
+        {
+            _vehicles.push_back(info);
+        }
     }
 }
 
@@ -50,19 +70,19 @@ VehiclePtr VehicleFactory::createVehicle()
 
     static std::random_device rd;
     static std::mt19937 gen(rd());
-    static std::uniform_real_distribution<float> dis(8.0f, 20.0f);
 
-    sf::Texture* textptr = _resources.getTexture("textures/car1.png");
-    assert(textptr);
-    auto vehicle = std::make_shared<Vehicle>(*textptr, sf::Vector2i{ 77, 41 }, _background);
+    auto vinfo = tt::select_randomly(_vehicles);
+    auto vehicle = std::make_shared<Vehicle>(*(vinfo->texture), sf::Vector2i{ vinfo->size }, _background);
+
+    vehicle->setScale(vinfo->scale);
+
+    std::uniform_real_distribution<float> dis(vinfo->speed.x, vinfo->speed.y);
+    vehicle->setSpeed(dis(gen));
 
     auto path = _pathFactory->makeRiboPath();
     path.setRepeating(false);
-    
     vehicle->setPath(path);
-    vehicle->setSpeed(dis(gen));
-    vehicle->setScale(1.4f, 1.4f);
-
+    
     return vehicle;
 }
 

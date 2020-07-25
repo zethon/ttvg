@@ -20,7 +20,7 @@ using VehiclePtr = std::shared_ptr<Vehicle>;
 
 struct VehicleInfo
 {
-    sf::Texture     texture;
+    sf::Texture*    texture = nullptr;
     sf::Vector2f    size;   
     sf::Vector2f    scale;
     sf::Vector2f    speed;  // the car's speed is randomly selected within this range
@@ -31,7 +31,7 @@ class VehicleFactory
     BackgroundSharedPtr             _background;
     ResourceManager&                _resources;
     std::shared_ptr<PathFactory>    _pathFactory;
-    std::vector<sf::Texture>        _textures;
+    std::vector<VehicleInfo>        _vehicles;
 
 public:
     VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg);

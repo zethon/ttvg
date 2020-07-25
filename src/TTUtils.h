@@ -55,6 +55,18 @@ const auto FloatRectParser
             })
         ];
 
+const auto VectorFloatParser
+    = x3::rule<class VectorFloatParser_, sf::Vector2f>{}
+    = (x3::float_ >> ',' >> x3::float_)
+        [([](auto& ctx)
+            {
+                auto& attr = x3::_attr(ctx);
+                using boost::fusion::at_c;
+                x3::_val(ctx)
+                    = sf::Vector2f{ at_c<0>(attr), at_c<1>(attr)};
+            })
+        ];
+
 // custom version of `contains` that will return true if the testing
 // point lies on the rectangles border
 template<typename Rect, typename T>
