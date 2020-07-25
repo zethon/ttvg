@@ -52,19 +52,7 @@ public:
 
     [[maybe_unused]] sf::Vector2f next() const
     {
-        auto nextidx = _idx + 1;
-        if (_points.size() == nextidx)
-        {
-            if (_repeating)
-            {
-                nextidx = 0;
-            }
-            else
-            {
-                nextidx = _points.size() - 1;
-            }
-        }
-        return _points.at(nextidx);
+        return _points.at(nextIndex());
     }
 
     auto current() const
@@ -72,9 +60,27 @@ public:
         return _points.at(_idx);
     }
 
-    auto index() const
+    std::size_t index() const
     {
         return _idx;
+    }
+
+    std::size_t nextIndex() const
+    {
+        std::size_t nextidx = _idx + 1;
+        if (_points.size() == nextidx)
+        {
+            if (_repeating)
+            {
+                return 0;
+            }
+            else
+            {
+                return _points.size() - 1;
+            }
+        }
+
+        return nextidx;
     }
 
 private:

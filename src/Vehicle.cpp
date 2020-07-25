@@ -53,6 +53,37 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
     return false;
 }
 
+bool shouldTurn(const sf::Vector2f pathpoint, const sf::Vector2f& current, Direction direction)
+{
+    switch (direction)
+    {
+    default:
+        return false;
+
+    case RIGHT:
+    {
+        return current.x >= pathpoint.x;
+    }
+
+    case LEFT:
+    {
+        return current.x <= pathpoint.x;
+    }
+
+    case UP:
+    {
+        return current.y >= pathpoint.y;
+    }
+
+    case DOWN:
+    {
+        return current.y >= pathpoint.y;
+    }
+    }
+
+    return false;
+}
+
 Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundSharedPtr bg)
     : AnimatedSprite(texture, size),
       _bg { bg }
@@ -92,13 +123,13 @@ void Vehicle::move()
         auto nextpos = vehicleStepDirection(
             sf::Vector2f{ xpos, ypos }, _direction, _speed, _bg->getScale());
 
-        if (const auto ntile = _bg->getTileFromGlobal(nextpos);
-            ntile == _path.next())
+        if (shouldTurn(_globalPoints.at(_path.nextIndex()), nextpos, _direction))
         {
             _path.step();
             nextpos = _globalPoints.at(_path.index());
 
-            auto newdirection = tt::getDirection(ntile, _path.next());
+            const auto ntile = _bg->getTileFromGlobal(nextpos);
+            const auto newdirection = tt::getDirection(ntile, _path.next());
             setDirection(newdirection);
         }
 
