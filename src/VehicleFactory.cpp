@@ -24,12 +24,31 @@ VehicleFactory::VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg)
     }
 
     std::ifstream file(jsonfile.c_str());
-    if (file.is_open()) file >> _json;
+    if (file.is_open())
+    {
+        nl::json json;
+        file >> json;
+        loadVehicles(json);
+    }
+}
+
+void VehicleFactory::loadVehicles(const nl::json& json)
+{
+    if (!json.at("zones").is_array()) return;
+
+    for (const auto& item : json["vehicles"]["assets"].items())
+    {
+
+    }
 }
 
 VehiclePtr VehicleFactory::createVehicle()
 {
     assert(_pathFactory);
+
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_real_distribution<float> dis(8.0f, 20.0f);
 
     auto temptext = *(_resources.load<sf::Texture>("textures/car1.png"));
     auto vehicle = std::make_shared<Vehicle>(temptext, sf::Vector2i{ 77, 41 }, _background);
@@ -38,6 +57,8 @@ VehiclePtr VehicleFactory::createVehicle()
     path.setRepeating(false);
     
     vehicle->setPath(path);
+    vehicle->setSpeed(dis(gen));
+    vehicle->setScale(1.4f, 1.4f);
 
     return vehicle;
 }

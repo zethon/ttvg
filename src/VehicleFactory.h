@@ -18,12 +18,20 @@ using PathFactoryPtr = std::shared_ptr<PathFactory>;
 class Vehicle;
 using VehiclePtr = std::shared_ptr<Vehicle>;
 
+struct VehicleInfo
+{
+    sf::Texture     texture;
+    sf::Vector2f    size;   
+    sf::Vector2f    scale;
+    sf::Vector2f    speed;  // the car's speed is randomly selected within this range
+};
+
 class VehicleFactory
 {
     BackgroundSharedPtr             _background;
     ResourceManager&                _resources;
     std::shared_ptr<PathFactory>    _pathFactory;
-    nl::json                        _json;
+    std::vector<sf::Texture>        _textures;
 
 public:
     VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg);
@@ -32,6 +40,9 @@ public:
     PathFactoryPtr pathFactory() { return _pathFactory; }
 
     VehiclePtr createVehicle();
+
+private:
+    void loadVehicles(const nl::json& json);
 };
 
 } // namespace tt

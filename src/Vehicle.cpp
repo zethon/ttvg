@@ -90,7 +90,6 @@ Vehicle::Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundShared
 {
     _texture.setSmooth(true);
     setSource(0, 0);
-    setScale(1.4f, 1.4f);
     setState(AnimatedSprite::State::ANIMATED);
 }
 
