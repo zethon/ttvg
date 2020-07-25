@@ -41,7 +41,6 @@ protected:
 
     AnimatedState   _state = AnimatedState::STILL;
     Direction       _direction = Direction::DOWN;
-    sf::Texture     _texture;
     sf::Vector2i    _size;
     sf::Vector2i    _source;
     sf::Clock       _timer;
