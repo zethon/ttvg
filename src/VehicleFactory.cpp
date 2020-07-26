@@ -37,8 +37,8 @@ VehicleFactory::VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg)
 
 void VehicleFactory::loadVehicles(const nl::json& json)
 {
-    assert(_resources.cacheSound("sounds/carhorn1.wav"));
-    assert(_resources.cacheSound("sounds/carhorn2.wav"));
+    _resources.cacheSound("sounds/carhorn1.wav");
+    _resources.cacheSound("sounds/carhorn2.wav");
 
     for (const auto& item : json["vehicles"]["assets"].items())
     {
