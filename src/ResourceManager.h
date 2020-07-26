@@ -7,17 +7,49 @@
 #include <nlohmann/json_fwd.hpp>
 
 #include <SFML/Graphics/Font.hpp>
+#include <SFML/Audio.hpp>
 
 namespace tt
 {
 
 class ResourceManager
 {
-    boost::filesystem::path _resourceFolder;
+    using TextureCache = std::map<std::string, sf::Texture>;
+    using SoundCache = std::map<std::string, sf::SoundBuffer>;
+
+    boost::filesystem::path     _resourceFolder;
+    TextureCache                _textcache;
+    SoundCache                  _soundcache;
 
 public:
-
     explicit ResourceManager(const boost::filesystem::path& path);
+
+    /// \brief Loads a texture into the cache
+    ///
+    /// \param name The relative path of the texture from the
+    ///             resource folder (e.g. "items/sax.png").
+    ///
+    /// \ see getTexture
+    ///
+    /// \return Pointer to the object in the container, or null
+    ///
+    sf::Texture* cacheTexture(const std::string& name);
+
+    /// \brief Returns a pointer to the texture
+    ///
+    /// \param name The relative path of the texture
+    ///             (e.g. "items/sax.png").
+    ///
+    /// \ see cacheTexture
+    ///
+    /// \return A pointer to the texture or NULL
+    ///
+    sf::Texture* getTexture(const std::string& name);
+    void clearTextureCache() { _textcache.clear(); }
+
+    sf::SoundBuffer* cacheSound(const std::string& name);
+    sf::SoundBuffer* getSound(const std::string& name);
+    void clearSoundCache() { _soundcache.clear();  }
 
     template<typename T>
     std::optional<T> load(const std::string& name)

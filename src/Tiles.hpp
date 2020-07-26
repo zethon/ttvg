@@ -5,10 +5,13 @@
 
 namespace tt
 {
-    
+
 using Tile = sf::Vector2f;
 using Size = sf::Vector2f;
 using Scale = sf::Vector2f;
+
+namespace tiles
+{
 
 inline Tile getTileFromGlobal(const sf::Vector2f& global, const Size& tilesize, const Scale& scale)
 {
@@ -22,10 +25,15 @@ inline Tile getTileFromGlobal(const sf::Vector2f& global, const Size& tilesize, 
     return temp;
 }
 
-//template<typename V>
-//Tile getTileFromGlobal(const V& global, const Size& tilesize, const Scale& scale)
-//{
-//    return getTileFromGlobal(sf::Vector2f { global }, tilesize, scale);
-//}
+inline sf::Vector2f getGlobalFromTile(const Tile& tilepos, const Size& tileSize, const Scale& scale)
+{
+    sf::Vector2f temp;
+    
+    temp.x = static_cast<float>(tilepos.x * tileSize.x * scale.x);
+    temp.y = static_cast<float>(tilepos.y * tileSize.y * scale.y);
+    
+    return temp;
+}
 
+} // tiles
 } // namespace tt

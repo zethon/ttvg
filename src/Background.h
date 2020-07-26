@@ -15,19 +15,6 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-inline sf::Vector2f getGlobalFromTile(const sf::Vector2f& tilepos, const sf::Vector2f& tileSize)
-{
-    auto x = static_cast<float>(tilepos.x * tileSize.x);
-    auto y = static_cast<float>(tilepos.y * tileSize.y);
-    return { x, y };
-}
-
-template<typename Int>
-inline sf::Vector2f getGlobalFromTile(Int posx, Int posy, const sf::Vector2f& tileSize)
-{
-    return getGlobalFromTile(sf::Vector2f{ posx, posy }, tileSize);
-}
-
 struct zone_compare
 {
 
@@ -58,15 +45,24 @@ public:
 
     tt::Tile getTileFromGlobal(const sf::Vector2f& global) const
     {
-        return tt::getTileFromGlobal(global, tilesize(), getScale());
+        return tiles::getTileFromGlobal(global, tilesize(), getScale());
     }
 
     sf::Vector2f getGlobalFromTile(const tt::Tile& tile) const
     {
-        sf::Vector2f temp;
-        temp.x = static_cast<float>(tile.x * getScale().x);
-        temp.y = static_cast<float>(tile.y * getScale().y);
-        return sf::Vector2f{tt::getGlobalFromTile(temp, _tilesize )};
+        return tiles::getGlobalFromTile(tile, tilesize(), getScale());
+    }
+
+    sf::Vector2f getGlobalCenterFromTile(const sf::Vector2f& tile) const
+    {
+        auto[tilex, tiley] = tilesize();
+        auto[scalex, scaley] = getScale();
+
+        auto pos = getGlobalFromTile(tile);
+        pos.x += (tilex * scalex) / 2;
+        pos.y += (tiley * scaley) / 2;
+
+        return pos;
     }
 
     sf::Vector2f tilesize() const { return _tilesize; }

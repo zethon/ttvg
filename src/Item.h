@@ -16,7 +16,7 @@ namespace tt
         public:
 
             Item(       const std::string&  id,
-                        sf::Texture         texture,
+            			const sf::Texture& texture, 
                         const sf::Vector2i& size,
                         const nl::json&     json );
 

@@ -6,6 +6,8 @@
 #include "../src/ResourceManager.h"
 #include "../src/Background.h"
 
+#include "Test.h"
+
 namespace tools = boost::test_tools;
 namespace data = boost::unit_test::data;
 
@@ -14,17 +16,6 @@ using TilePairs = std::vector<TilePair>;
 
 namespace std
 {
-
-template<typename T>
-std::ostream& operator<<(std::ostream& out, const sf::Vector2<T> item)
-{
-    auto[x, y] = item;
-    out << "{ x=" << x
-        << " y=" << y
-        << " }";
-
-    return out;
-}
 
 std::ostream& operator<<(std::ostream& out, const TilePair& item)
 {
@@ -51,7 +42,7 @@ BOOST_AUTO_TEST_SUITE(bg)
 // 1 - tile size
 // 2 - scale (x and y)
 // 3 - array of tile and global coords to test
-std::tuple<sf::Vector2u, sf::Vector2f, sf::Vector2f, TilePairs> rectTestData[] = 
+std::tuple<sf::Vector2u, sf::Vector2f, sf::Vector2f, TilePairs> globalFromTileData[] =
 {
     {
         { 100, 100 },
@@ -62,6 +53,7 @@ std::tuple<sf::Vector2u, sf::Vector2f, sf::Vector2f, TilePairs> rectTestData[] =
             { { 1.0f, 0.0f}, { 2.0f, 0.0f } },
             { { 0.0f, 1.0f}, { 0.0f, 2.0f } },
             { { 1.0f, 1.0f}, { 2.0f, 2.0f } },
+            { { -1.0f, 0.0f}, { -2.0f, 0.0f } }
         }   
     },
     {
@@ -78,7 +70,7 @@ std::tuple<sf::Vector2u, sf::Vector2f, sf::Vector2f, TilePairs> rectTestData[] =
 };
 
 // --run_test=tt/bg/testRect
-BOOST_DATA_TEST_CASE(testRect, data::make(rectTestData), textSize, tileSize, bgScale, testdata)
+BOOST_DATA_TEST_CASE(globalFromTileTest, data::make(globalFromTileData), textSize, tileSize, bgScale, testdata)
 {
     sf::Texture texture;
     texture.create(textSize.x, textSize.y);
@@ -90,8 +82,54 @@ BOOST_DATA_TEST_CASE(testRect, data::make(rectTestData), textSize, tileSize, bgS
 
     for (const auto&[tile, global] : testdata)
     {
-        const auto calc = bg.getGlobalFromTile(tile);
-        BOOST_TEST(calc.x == global.x, tools::tolerance(float(0.01))); 
+        const auto g = bg.getGlobalFromTile(tile);
+        BOOST_TEST(g.x == global.x, tools::tolerance(float(0.01)));
+        BOOST_TEST(g.y == global.y, tools::tolerance(float(0.01)));
+
+        // round trip testing
+        const auto testtile = bg.getTileFromGlobal(g);
+        BOOST_TEST(testtile.x == tile.x, tools::tolerance(float(0.01)));
+        BOOST_TEST(testtile.y == tile.y, tools::tolerance(float(0.01)));
+    }
+}
+
+// 0 - texture size
+// 1 - tile size
+// 2 - scale (x and y)
+// 3 - array of tile and global coords to test
+std::tuple<sf::Vector2u, sf::Vector2f, sf::Vector2f, TilePairs> globalCenterFromTileData[] =
+{
+    {
+        { 100, 100 },
+        { 10.0f, 10.0f },
+        { 1.5f, 1.5f},
+        {
+            { { 0.0f, 0.0f}, { 7.5f, 7.5f } },
+        }
+    }
+};
+
+// --run_test=tt/bg/globalCenterFromTileTest
+BOOST_DATA_TEST_CASE(globalCenterFromTileTest, data::make(globalCenterFromTileData), textSize, tileSize, bgScale, testdata)
+{
+    sf::Texture texture;
+    texture.create(textSize.x, textSize.y);
+
+    tt::ResourceManager mgr{ boost::filesystem::path{} };
+    tt::Background bg{ "test", mgr, tileSize };
+    bg.setTexture(texture, true);
+    bg.setScale(bgScale);
+
+    for (const auto&[tile, global] : testdata)
+    {
+        const auto gcenter = bg.getGlobalCenterFromTile(tile);
+        BOOST_TEST(gcenter.x == global.x, tools::tolerance(float(0.01)));
+        BOOST_TEST(gcenter.y == global.y, tools::tolerance(float(0.01)));
+
+        // round trip testing
+        const auto testtile = bg.getTileFromGlobal(gcenter);
+        BOOST_TEST(testtile.x == tile.x, tools::tolerance(float(0.01)));
+        BOOST_TEST(testtile.y == tile.y, tools::tolerance(float(0.01)));
     }
 }
 

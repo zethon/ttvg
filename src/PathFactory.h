@@ -25,7 +25,8 @@ public:
     ////////////////////////////////////////////////////////////
     /// \brief Construct the RiboPath generator
     ///
-    /// \param size   The size of the world in which the paths exist
+    /// \param size     The tilesize of the world in which the paths 
+    ///                 exist
     ///
     ////////////////////////////////////////////////////////////
     PathFactory(const sf::Vector2i& size);
@@ -35,7 +36,7 @@ public:
     ///
     /// The edges are the starting points of each RiboPath. When
     /// a path is generated, one edge is selected a random. The 
-    /// edges are copied and PathFactory stores its own copy
+    /// collection of edges is copied
     ///
     /// \param edges    Container of edges
     ///
@@ -60,6 +61,7 @@ public:
     { 
         _turns = points; 
     }
+
     ////////////////////////////////////////////////////////////
     /// \brief Add a single turning point
     ///
@@ -78,11 +80,11 @@ public:
     ////////////////////////////////////////////////////////////
     /// \brief Generate a new RiboPath
     ///
-    /// This overload accept a Path object in which to generate
+    /// This overload accepts a Path object in which to generate
     /// the path. This should be used during gameplay to avoid
     /// a vector copy
     ///
-    /// \param path         The path in which to generate the RiboPath
+    /// \param path     The path in which to generate the RiboPath
     ///
     ////////////////////////////////////////////////////////////
     void makeRiboPath(Path& path) const;
@@ -103,9 +105,9 @@ private:
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    TurningPoints   _edges; //!< Starting points that are slightly off the map
-    TurningPoints   _turns; //!< Turns generated from configured intersections
-    sf::Vector2i    _size;  //!< X and Y tilesize of the map
+    TurningPoints   _edges; // Starting points that are slightly off the map
+    TurningPoints   _turns; // Turns generated from configured intersections
+    sf::Vector2i    _size;  // X and Y tilesize of the map
 
 };
 

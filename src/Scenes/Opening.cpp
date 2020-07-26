@@ -28,7 +28,7 @@ constexpr auto TILESIZE_Y = 16.0f;
 
 constexpr auto MAPNAME = "tucson";
 
-constexpr auto MAX_VEHICLES = 500u;
+constexpr auto MAX_VEHICLES = 25u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
@@ -37,6 +37,8 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
       _statusBar{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
+    _resources.clearTextureCache();
+
     _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
@@ -45,9 +47,11 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
 
-    auto temptext = *(_resources.load<sf::Texture>("textures/tommy.png"));
-    _player = std::make_shared<Player>(temptext, sf::Vector2i{ 64, 64 });
-    _player->texture().setSmooth(true);
+    auto textptr = _resources.cacheTexture("textures/tommy.png");
+    assert(textptr);
+    textptr->setSmooth(true);
+
+    _player = std::make_shared<Player>(*textptr, sf::Vector2i{ 64, 64 });
     _player->setSource(0, 10);
     _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
     _player->setOrigin(0.0f, 0.0f);
@@ -61,7 +65,16 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     addDrawable(_background);
 
     initTraffic();
+    createItems();
 
+    sf::Vector2f tile{ getPlayerTile() };
+    _statusBar.setZoneText(_background->zoneName(tile));
+
+    _missionText.setText("Find the magic vagina");
+}
+
+void Opening::createItems()
+{
     //
     // Create items
     //
@@ -72,30 +85,29 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     //
 
     ItemPtr sax = _itemFactory->createItem(
-                                    "sax", 
-                                    sf::Vector2f { 1516.0f, 2875.0f } );
+        "sax",
+        sf::Vector2f{ 1516.0f, 2875.0f });
     _items.push_back(sax);
 
     ItemPtr menorah = _itemFactory->createItem(
-                                    "menorah", 
-                                    sf::Vector2f { 1416.0f, 2725.0f } );
+        "menorah",
+        sf::Vector2f{ 1416.0f, 2725.0f });
     _items.push_back(menorah);
 
     ItemPtr bag1 = _itemFactory->createItem(
-                                    "bag-of-weed", 
-                                    sf::Vector2f { 1216.0f, 3005.0f } );
+        "bag-of-weed",
+        sf::Vector2f{ 1216.0f, 3005.0f });
     _items.push_back(bag1);
 
     ItemPtr bag2 = _itemFactory->createItem(
-                                    "bag-of-tobacco", 
-                                    sf::Vector2f { 1206.0f, 3105.0f } );
+        "bag-of-tobacco",
+        sf::Vector2f{ 1206.0f, 3105.0f });
     _items.push_back(bag2);
 
     ItemPtr bag3 = _itemFactory->createItem(
-                                    "bag-of-crack",
-                                    sf::Vector2f { 1716.0f, 2975.0f } );
+                                    "bag-of-crack", 
+        sf::Vector2f{ 1716.0f, 2975.0f });
     _items.push_back(bag3);
-
     ItemPtr bag4 = _itemFactory->createItem(
                                     "bag-of-crack",
                                     sf::Vector2f { 1756.0f, 2975.0f } );
@@ -106,11 +118,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
                                     sf::Vector2f { 1796.0f, 2975.0f } );
     _items.push_back(bag5);
 
-
-    sf::Vector2f tile{ getPlayerTile() };
-    _statusBar.setZoneText(_background->zoneName(tile));
-
-    _missionText.setText("Find the magic vagina");
 }
 
 void Opening::initTraffic()
@@ -242,37 +249,37 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Left:
             {
-                if (_player->state() == AnimatedSprite::ANIMATED
-                    && _player->direction() == AnimatedSprite::LEFT)
+                if (_player->state() == AnimatedState::ANIMATED
+                    && _player->direction() == Direction::LEFT)
                 {
                     return 0;
                 }
 
                 _player->setSource(0, 9);
                 _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedSprite::ANIMATED);
-                _player->setDirection(AnimatedSprite::LEFT);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::LEFT);
             }
             break;
 
             case sf::Keyboard::Right:
             {
-                if (_player->state() == AnimatedSprite::ANIMATED
-                    && _player->direction() == AnimatedSprite::RIGHT)
+                if (_player->state() == AnimatedState::ANIMATED
+                    && _player->direction() == Direction::RIGHT)
                 {
                     return 0;
                 }
 
                 _player->setSource(0, 11);
                 _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedSprite::ANIMATED);
-                _player->setDirection(AnimatedSprite::RIGHT);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::RIGHT);
             }
             break;
 
             case sf::Keyboard::Up:
             {
-                if ((_player->state() == AnimatedSprite::ANIMATED && _player->direction() == AnimatedSprite::UP)
+                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
                     return 0;
@@ -280,14 +287,14 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
                 _player->setSource(0, 8);
                 _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedSprite::ANIMATED);
-                _player->setDirection(AnimatedSprite::UP);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::UP);
             }
             break;
 
             case sf::Keyboard::Down:
             {
-                if ((_player->state() == AnimatedSprite::ANIMATED && _player->direction() == AnimatedSprite::DOWN)
+                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
                     return 0;
@@ -295,8 +302,8 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
                 _player->setSource(0, 10);
                 _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedSprite::ANIMATED);
-                _player->setDirection(AnimatedSprite::DOWN);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::DOWN);
             }
             break;
 
@@ -320,13 +327,13 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
 std::uint16_t Opening::timestep()
 {
-    if (_player->state() == AnimatedSprite::ANIMATED
+    if (_player->state() == AnimatedState::ANIMATED
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        _player->setState(AnimatedSprite::STILL);
+        _player->setState(AnimatedState::STILL);
     }
 
     timestepTraffic();
@@ -360,14 +367,9 @@ std::uint16_t Opening::timestep()
 
 void Opening::timestepTraffic()
 {
-    auto runSeconds = static_cast<std::uint32_t>(_globalClock.getElapsedTime().asSeconds());
-    if (_vehicles.size() < MAX_VEHICLES 
-        && (runSeconds % VEHICLE_SPAWN_RATE) == 0)
-    {
-        auto vehicle = _vehicleFactory->createVehicle();
-        _vehicles.push_back(vehicle);
-    }
-
+    // update existing vehicles before creating any new ones
+    // this also gives newly created vehicles a chance to be
+    // drawn at their initial position
     static sf::Clock test;
     auto vi = _vehicles.begin();
     const auto playerBounds = _player->getGlobalBounds();
@@ -391,6 +393,14 @@ void Opening::timestepTraffic()
         }
 
         vi++;
+    }
+
+    auto runSeconds = static_cast<std::uint32_t>(_globalClock.getElapsedTime().asSeconds());
+    if (_vehicles.size() < MAX_VEHICLES
+        && ((runSeconds % VEHICLE_SPAWN_RATE) == 0) && runSeconds != 0)
+    {
+        auto vehicle = _vehicleFactory->createVehicle();
+        _vehicles.push_back(vehicle);
     }
 }
 

@@ -14,35 +14,14 @@
 #include "../src/Intersection.h"
 #include "../src/PathFactory.h"
 
+#include "Test.h"
+
 using namespace std::string_literals;
 
 namespace data = boost::unit_test::data;
 
 namespace std
 {
-
-std::ostream& operator<<(std::ostream& out, const sf::FloatRect& item)
-{
-    auto [left, top, width, height] = item;
-    out << "{ left=" << left
-        << " top=" << top
-        << " width=" << width
-        << " height=" << height
-        << "}";
-
-    return out;
-}
-
-template<typename T>
-std::ostream& operator<<(std::ostream& out, const sf::Vector2<T> item)
-{
-    auto[x, y] = item;
-    out << "{ x=" << x
-        << " y=" << y
-        << " }";
-
-    return out;
-}
 
 std::ostream& operator<<(std::ostream& out, const tt::TurningPoint& item)
 {
@@ -222,27 +201,27 @@ BOOST_DATA_TEST_CASE(intersectionTest, data::make(intersectionTestData), source,
     }
 }
 
-const std::tuple<sf::FloatRect, sf::FloatRect, tt::Vehicle::Direction, float, bool> vehicleBlocks[]
+const std::tuple<sf::FloatRect, sf::FloatRect, tt::Direction, float, bool> vehicleBlocks[]
 {
     // rects the same size
     {
         sf::FloatRect{ 0, 0, 10, 10},
         sf::FloatRect{ 20, 0, 10, 10},
-        tt::Vehicle::RIGHT,
+        tt::Direction::RIGHT,
         15.0f,
         true
     },
     {
         sf::FloatRect{ 0, 0, 10, 10},
         sf::FloatRect{ 20, 5, 10, 10},
-        tt::Vehicle::RIGHT,
+        tt::Direction::RIGHT,
         15.0f,
         true
     },
     {
         sf::FloatRect{ 0, 5, 10, 10},
         sf::FloatRect{ 20, 0, 10, 10},
-        tt::Vehicle::RIGHT,
+        tt::Direction::RIGHT,
         15.0f,
         true
     },
@@ -251,21 +230,21 @@ const std::tuple<sf::FloatRect, sf::FloatRect, tt::Vehicle::Direction, float, bo
     {
         sf::FloatRect{ 0, 0, 10, 20},
         sf::FloatRect{ 20, 5, 15, 15},
-        tt::Vehicle::RIGHT,
+        tt::Direction::RIGHT,
         15.0f,
         true
     },
     {
         sf::FloatRect{ 0, 2, 10, 18},
         sf::FloatRect{ 20, 0, 15, 5},
-        tt::Vehicle::RIGHT,
+        tt::Direction::RIGHT,
         15.0f,
         true
     },
     {
         sf::FloatRect{ 0, 0, 10, 10},
         sf::FloatRect{ 20, 8, 15, 4},
-        tt::Vehicle::RIGHT,
+        tt::Direction::RIGHT,
         15.0f,
         true
     },
@@ -302,7 +281,7 @@ BOOST_AUTO_TEST_CASE(path_ForcedSingleLaneTest)
 
     auto path = fact.makeRiboPath();
     
-    std::vector<sf::Vector2i> expected = 
+    std::vector<sf::Vector2f> expected = 
     {
         {-1,2}, {2,2}, {2,8}, {6,8},{6,-1}
     };
@@ -335,7 +314,7 @@ BOOST_AUTO_TEST_CASE(path_forcedDoubleLaneTest)
 
     auto path = fact.makeRiboPath();
 
-    std::vector<sf::Vector2i> expected =
+    std::vector<sf::Vector2f> expected =
     {
         {-1,3}, {2,3}, {2,9}, {7,9},{7,-1}
     };

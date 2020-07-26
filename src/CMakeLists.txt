@@ -28,6 +28,7 @@ set(HEADER_FILES
     Engine.h
     ExitScreen.h
     GameScreen.h
+    GameTypes.h
     Intersection.h
     IntroScreen.h
     Path.hpp
