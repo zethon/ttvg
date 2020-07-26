@@ -2,6 +2,7 @@
 #include <vector>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 #include "GameTypes.h"
 #include "Path.hpp"
@@ -40,7 +41,7 @@ public:
     bool isBlocked(const sf::FloatRect& point);
 
     State vehicleState() const { return _state; }
-    void setVehicleState(State val) { _state = val; }
+    void setVehicleState(State val);
 
     void setPath(const Path& path);
     const Path& path() const { return _path; }
@@ -53,13 +54,19 @@ public:
 
     tt::Tile currentTile() const;
 
+    void setHornSound(sf::SoundBuffer* v) 
+    { 
+        _hornbuffer = v; 
+        _hornsound.setBuffer(*_hornbuffer);
+    }
+
     void move();
 
 private:
     void setDirection(std::uint32_t dir);
 
-    sf::Clock           _movementClock;
-    sf::Clock           _lifeClock;
+    sf::Clock                   _movementClock;
+    sf::Clock                   _lifeClock;
 
     BackgroundSharedPtr         _bg;
 
@@ -67,10 +74,13 @@ private:
     std::vector<sf::Vector2f>   _globalPoints;
     float                       _speed = 10.0f;  // Pixels per timestep
 
-    Direction           _direction = DOWN;  // Current direction of the object
-    State               _state = MOVING;
+    Direction                   _direction = DOWN;  // Current direction of the object
+    State                       _state = MOVING;
 
     bool                _finishedPath = false;
+
+    sf::SoundBuffer*    _hornbuffer = nullptr;
+    sf::Sound           _hornsound;
 
 };
 

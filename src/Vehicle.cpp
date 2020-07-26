@@ -157,6 +157,18 @@ bool Vehicle::isBlocked(const sf::FloatRect& test)
     return isPathBlocked(getGlobalBounds(), test, _direction, minDistance);
 }
 
+void Vehicle::setVehicleState(State val) 
+{ 
+    if (_state == Vehicle::MOVING
+        && val == Vehicle::STOPPED
+        && _hornbuffer != nullptr)
+    {
+        _hornsound.play();
+    }
+
+    _state = val; 
+}
+
 void Vehicle::setPath(const Path& path)
 {
     assert(path.points().size() > 1);

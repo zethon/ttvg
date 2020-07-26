@@ -7,6 +7,7 @@
 #include <nlohmann/json_fwd.hpp>
 
 #include <SFML/Graphics/Font.hpp>
+#include <SFML/Audio.hpp>
 
 namespace tt
 {
@@ -14,9 +15,11 @@ namespace tt
 class ResourceManager
 {
     using TextureCache = std::map<std::string, sf::Texture>;
+    using SoundCache = std::map<std::string, sf::SoundBuffer>;
 
     boost::filesystem::path     _resourceFolder;
     TextureCache                _textcache;
+    SoundCache                  _soundcache;
 
 public:
     explicit ResourceManager(const boost::filesystem::path& path);
@@ -43,6 +46,10 @@ public:
     ///
     sf::Texture* getTexture(const std::string& name);
     void clearTextureCache() { _textcache.clear(); }
+
+    sf::SoundBuffer* cacheSound(const std::string& name);
+    sf::SoundBuffer* getSound(const std::string& name);
+    void clearSoundCache() { _soundcache.clear();  }
 
     template<typename T>
     std::optional<T> load(const std::string& name)

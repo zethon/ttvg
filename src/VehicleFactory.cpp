@@ -33,12 +33,13 @@ VehicleFactory::VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg)
         file >> json;
         loadVehicles(json);
     }
-
-    assert(_resources.cacheTexture("textures/car1.png"));
 }
 
 void VehicleFactory::loadVehicles(const nl::json& json)
 {
+    assert(_resources.cacheSound("sounds/carhorn1.wav"));
+    assert(_resources.cacheSound("sounds/carhorn2.wav"));
+
     for (const auto& item : json["vehicles"]["assets"].items())
     {
         VehicleInfo info;
@@ -51,6 +52,11 @@ void VehicleFactory::loadVehicles(const nl::json& json)
 
         temp = item.value().at("speed").get<std::string>();
         phrase_parse(temp.begin(), temp.end(), VectorFloatParser, x3::ascii::space, info.speed);
+
+        const auto soundname = fmt::format("sounds/{}.wav",
+            item.value().at("horn").get<std::string>());
+
+        info.sound = _resources.cacheSound(soundname);
 
         const auto textname = fmt::format("textures/{}.png",
             item.value().at("name").get<std::string>());
@@ -74,6 +80,7 @@ VehiclePtr VehicleFactory::createVehicle()
     auto vinfo = tt::select_randomly(_vehicles);
     auto vehicle = std::make_shared<Vehicle>(*(vinfo->texture), sf::Vector2i{ vinfo->size }, _background);
 
+    vehicle->setHornSound(vinfo->sound);
     vehicle->setScale(vinfo->scale);
 
     std::uniform_real_distribution<float> dis(vinfo->speed.x, vinfo->speed.y);

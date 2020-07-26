@@ -40,6 +40,37 @@ sf::Texture* ResourceManager::getTexture(const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////
+sf::SoundBuffer* ResourceManager::cacheSound(const std::string & name)
+{
+    if (auto temp = getSound(name);
+        temp != nullptr)
+    {
+        return temp;
+    }
+
+    const auto filename = getFilename(name);
+    if (sf::SoundBuffer sound;
+        sound.loadFromFile(filename))
+    {
+        auto retval = _soundcache.emplace(name, std::move(sound));
+        return &(retval.first->second);
+    }
+
+    return nullptr;
+}
+
+////////////////////////////////////////////////////////////
+sf::SoundBuffer* ResourceManager::getSound(const std::string & name)
+{
+    if (_soundcache.find(name) != _soundcache.end())
+    {
+        return &(_soundcache[name]);
+    }
+
+    return nullptr;
+}
+
+////////////////////////////////////////////////////////////
 std::string ResourceManager::getFilename(const std::string& name)
 {
     auto filepath = _resourceFolder / name;

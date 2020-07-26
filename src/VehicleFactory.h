@@ -3,6 +3,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include <SFML/Audio.hpp>
+
 #include "Path.hpp"
 #include "ResourceManager.h"
 #include "Intersection.h"
@@ -20,10 +22,11 @@ using VehiclePtr = std::shared_ptr<Vehicle>;
 
 struct VehicleInfo
 {
-    sf::Texture*    texture = nullptr;
-    sf::Vector2f    size;   
-    sf::Vector2f    scale;
-    sf::Vector2f    speed;  // the car's speed is randomly selected within this range
+    sf::Texture*        texture = nullptr;
+    sf::SoundBuffer*    sound = nullptr;
+    sf::Vector2f        size;   
+    sf::Vector2f        scale;
+    sf::Vector2f        speed;  // the car's speed is randomly selected within this range
 };
 
 class VehicleFactory
