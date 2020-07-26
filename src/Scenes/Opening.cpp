@@ -169,14 +169,6 @@ void Opening::initTraffic()
         }
     }
     _vehicleFactory->setPathFactory(pathFactory);
-
-    // TODO: `PathLines` is really a debugging class that needs a `PathFactory`
-    // Ideally the `_pathLines` member would be removed, as would the 
-    // `_pathFactory` member and instead if would be constructed inside the
-    // `VehicleFactory` class
-    _pathLines = std::make_unique<PathLines>(*_background);
-    Path path = pathFactory->makeRiboPath();
-    _pathLines->setPath(path);
 }
 
 std::uint16_t Opening::poll(const sf::Event& e)
@@ -312,13 +304,6 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 _debugWindow.setVisible(!_debugWindow.visible());
             }
             break;
-
-            case sf::Keyboard::Space:
-            {
-                auto p = _vehicleFactory->pathFactory()->makeRiboPath();
-                _pathLines->setPath(p);
-            }
-            break;
         }
     }
 
@@ -415,8 +400,6 @@ void Opening::draw()
     // draw the vehicles
     std::for_each(_vehicles.begin(), _vehicles.end(),
         [this](VehiclePtr v) { _window.draw(*v); });
-
-    _pathLines->draw(_window);
 
     //
     // Draw items
