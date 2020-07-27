@@ -21,20 +21,12 @@ namespace tt
 
     std::string Item::getName() const
     {
-
-        //
-        // Why is it that the json object can be treated as a top level
-        // associative array when this is created in ItemFactory but 
-        // after it is assigned to the member variable in this object
-        // instance, it becomes a json array at the top level, 
-        // and we must use _json[0] to get the first item?
-        //
-        return _json[0].at("name");
+        return _json["name"];
     }
 
     std::string Item::getDescription() const
     {
-        return _json[0].at("description");
+        return _json["description"];
     }
 
     bool Item::isObtainable() const
@@ -43,7 +35,7 @@ namespace tt
         {
             return false;
         }
-        return _json[0].at("obtainable");
+        return _json["obtainable"];
     }
 
 }
