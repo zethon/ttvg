@@ -20,6 +20,9 @@ find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES Clang)
 
     add_compile_options(
+        # treat errors as warnings
+        $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:-Werror>
+
         # remove dead code
         -ffunction-sections
         -fdata-sections
@@ -43,6 +46,10 @@ if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES Clang)
         -Werror=uninitialized
         -Werror=char-subscripts
         $<$<COMPILE_LANGUAGE:CXX>:-Werror=non-virtual-dtor>
+
+        $<$<AND:$<COMPILE_LANGUAGE:CXX>,$<CXX_COMPILER_ID:GNU>>:-Wsuggest-override>
+        $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:-Wshorten-64-to-32>
+        $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:GNU>>:-Wunused-but-set-variable>
 
         # disabled errors/warnings
         -Wno-error=date-time
