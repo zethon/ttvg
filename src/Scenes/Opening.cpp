@@ -460,7 +460,6 @@ void Opening::animeCallback()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
         auto xx = _player->getGlobalLeft();
-        auto [x, y] = _player->getPosition();
         assert(xx >= 0);
         if (xx == 0) return;
 

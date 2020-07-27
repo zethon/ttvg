@@ -31,8 +31,8 @@ namespace tt
 
         private:
 
-            std::string _id;
             nl::json    _json;
+            std::string _id;
 
     };
 

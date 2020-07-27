@@ -77,8 +77,6 @@ private:
     Direction                   _direction = DOWN;  // Current direction of the object
     State                       _state = MOVING;
 
-    bool                _finishedPath = false;
-
     sf::SoundBuffer*    _hornbuffer = nullptr;
     sf::Sound           _hornsound;
 
