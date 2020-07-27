@@ -26,9 +26,6 @@ namespace tt
         std::string jsonFile =
             _resources.getFilename(fmt::format("items/{}.json", name));
 
-        std::string textureFile = fmt::format("items/{}.png", name);
-        auto texture = *(_resources.load<sf::Texture>(textureFile));
-
         if( !boost::filesystem::exists(jsonFile) )
         {
             auto error = fmt::format("file '{}' not found", jsonFile);
@@ -43,11 +40,14 @@ namespace tt
             file >> json;
         }
 
+        std::string textureFile = fmt::format("items/{}.png", name);
+        sf::Texture* texture = _resources.cacheTexture(textureFile);
+
         //
         // By default, scale item image to tile size.
         //
-        int     width   = texture.getSize().x;
-        int     height  = texture.getSize().y;
+        int     width   = texture->getSize().x;
+        int     height  = texture->getSize().y;
         float   scaleX  = DEFAULT_ITEM_WIDTH    / width;
         float   scaleY  = DEFAULT_ITEM_HEIGHT   / height;
        
@@ -59,22 +59,21 @@ namespace tt
         {
             nl::json children = json["image-attr"];
 
-            if( children.find("width")    != children.end()   &&
-                children.find("height")   != children.end()   &&
-                children.find("scale-x")  != children.end()   &&
-                children.find("scale-y")  != children.end()   )
+            if (children.find("width") != children.end() &&
+                children.find("height") != children.end() &&
+                children.find("scale-x") != children.end() &&
+                children.find("scale-y") != children.end())
             {
 
-                width   = json["image-attr"]["width"];
-                height  = json["image-attr"]["height"];
-                scaleX  = json["image-attr"]["scale-x"];
-                scaleY  = json["image-attr"]["scale-y"];
-
+                width = json["image-attr"]["width"];
+                height = json["image-attr"]["height"];
+                scaleX = json["image-attr"]["scale-x"];
+                scaleY = json["image-attr"]["scale-y"];
             }
         }
-
-        auto item = std::make_shared<Item>( name,
-                                            texture, 
+        
+        auto item   = std::make_shared<Item>(   name, 
+                                            *texture, 
                                             sf::Vector2i{ width, height },
                                             json );
 
@@ -85,5 +84,4 @@ namespace tt
 
         return item;
     }
-
 } // namespace tt

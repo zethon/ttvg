@@ -2,10 +2,13 @@
 #include <vector>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
+#include "GameTypes.h"
 #include "Path.hpp"
 #include "AnimatedSprite.h"
 #include "Intersection.h"
+#include "Tiles.hpp"
 
 namespace tt
 {
@@ -32,41 +35,70 @@ public:
         STOPPED
     };
 
-    Vehicle(sf::Texture texture, const sf::Vector2i& size, BackgroundSharedPtr bg);
+    Vehicle(const sf::Texture& texture, const sf::Vector2i& size, BackgroundSharedPtr bg);
 
     std::uint16_t timestep() override;
     bool isBlocked(const sf::FloatRect& point);
 
     State vehicleState() const { return _state; }
-    void setVehicleState(State val) { _state = val; }
+    void setVehicleState(State val);
 
     void setPath(const Path& path);
     const Path& path() const { return _path; }
     Path& path() { return const_cast<Path&>((static_cast<const Vehicle&>(*this)).path()); }
 
-private:
+    void setSpeed(float v) { _speed = v; }
+    float speed() const { return _speed; }
+
+    Direction direction() const { return _direction; }
+
+    tt::Tile currentTile() const;
+
+    void setHornSound(sf::SoundBuffer* v) 
+    { 
+        _hornbuffer = v; 
+        _hornsound.setBuffer(*_hornbuffer);
+    }
+
     void move();
 
-    sf::Clock           _movementClock;
-    sf::Clock           _lifeClock;
+private:
+    void setDirection(std::uint32_t dir);
 
-    BackgroundSharedPtr _background;
+    sf::Clock                   _movementClock;
+    sf::Clock                   _lifeClock;
 
-    Path                _path;
-    const sf::Vector2i  _tilesize;
+    BackgroundSharedPtr         _bg;
 
-    Direction           _direction = DOWN;
-    State               _state = MOVING;
+    Path                        _path;
+    std::vector<sf::Vector2f>   _globalPoints;
+    float                       _speed = 10.0f;  // Pixels per timestep
+
+    Direction                   _direction = DOWN;  // Current direction of the object
+    State                       _state = MOVING;
 
     bool                _finishedPath = false;
+
+    sf::SoundBuffer*    _hornbuffer = nullptr;
+    sf::Sound           _hornsound;
 
 };
 
 bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
-    Vehicle::Direction direction, float minDistance);
+    Direction direction, float minDistance);
 
+////////////////////////////////////////////////////////////
+/// \brief Calculate the next position in the given direction
+///
+/// \param point        Starting point
+/// \param direction    Direction of movement
+/// \param speed        Speed in pixels
+///
+/// \return The new global coordinates 
+///
+////////////////////////////////////////////////////////////
 template<typename V>
-sf::Vector2<V> stepDirection(const sf::Vector2<V>& point, Direction direction, V speed)
+inline sf::Vector2<V> vehicleStepDirection(const sf::Vector2<V>& point, Direction direction, V speed, const Scale& scale)
 {
     switch (direction)
     {
@@ -74,16 +106,16 @@ sf::Vector2<V> stepDirection(const sf::Vector2<V>& point, Direction direction, V
         break;
 
     case Direction::UP:
-        return { point.x, point.y - speed };
+        return { point.x, point.y - (speed * scale.y) };
 
     case Direction::DOWN:
-        return { point.x, point.y + speed };
+        return { point.x, point.y + (speed * scale.y) };
 
     case Direction::LEFT:
-        return { point.x - speed, point.y };
+        return { point.x - (speed * scale.x), point.y };
 
     case Direction::RIGHT:
-        return { point.x + speed, point.y };
+        return { point.x + (speed * scale.x), point.y };
     }
 
     return point;

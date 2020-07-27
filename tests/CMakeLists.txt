@@ -51,3 +51,4 @@ set(PROJECT_FILES
 
 create_test("misc" "${PROJECT_FILES}")
 create_test("background" "${PROJECT_FILES}")
+create_test("vehicle" "${PROJECT_FILES}")

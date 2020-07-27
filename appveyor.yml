@@ -11,6 +11,9 @@ install:
   - set PATH=%PATH%;%PYTHON%/Scripts/
   - pip.exe install conan
   - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+  - curl -fsS -o oalinst.zip http://www.openal.org/downloads/oalinst.zip
+  - 7z x oalinst.zip
+  - oalinst.exe /silent
 
 build_script:
   - mkdir build

@@ -154,82 +154,13 @@ public:
 
 };
 
-class PathLines
-{
-    std::vector<sf::RectangleShape> _shapes;
-    Background&                     _background;
-
-public: 
-    PathLines(Background& bg)
-        : _background{ bg }
-    {
-        //sf::RectangleShape shape;
-        //shape.setPosition(100.f, 8.f);
-        //shape.setSize(sf::Vector2f(-100.f, 8.f));
-        //shape.setFillColor(sf::Color::Yellow);
-        //_shapes.push_back(shape);
-    }
-    
-    void setPath(const Path& path)
-    {
-        _shapes.clear();
-        const auto& points = path.points();
-        if (points.size() == 0) return;
-
-        auto prev = points.front();
-        for (const auto& pt : path.points())
-        {
-            if (prev == pt) continue;
-
-            // TODO: GET RID OF THESE TEMPS
-            auto gPrev = _background.getGlobalFromTile(sf::Vector2f{ prev });
-            auto gPt = _background.getGlobalFromTile(sf::Vector2f{ pt });
-
-            float width = 0.f;
-            float height = 0.f;
-            sf::Vector2f topleft{ static_cast<float>(gPrev.x), static_cast<float>(gPrev.y) };
-
-            if (prev.y == pt.y)
-            {
-                width = static_cast<float>(gPt.x - gPrev.x);
-                height = 16.0f;
-            }
-            else
-            {
-                height = static_cast<float>(gPt.y - gPrev.y);
-                width = 16.0f;
-            }
-
-            sf::RectangleShape shape;
-            shape.setPosition(topleft);
-            shape.setSize(sf::Vector2f{ width, height });
-
-            _shapes.push_back(shape);
-            prev = pt;
-        }
-
-        for (const auto& s : (_shapes | boost::adaptors::indexed()))
-        {
-            auto c = static_cast<sf::Uint8>((s.index() + 1) * (255 /_shapes.size()));
-            s.value().setFillColor(sf::Color{ 0,c,c });
-        }
-    }
-
-    void draw(sf::RenderTarget& window)
-    {
-        for (const auto& s : _shapes)
-        {
-            window.draw(s);
-        }
-    }
-
-};
-
 class Opening : public Scene
 {
 
 public:
     Opening(ResourceManager& resmgr, sf::RenderTarget& target);
+
+    void createItems();
 
     std::uint16_t poll(const sf::Event& e) override;
     std::uint16_t timestep() override;
@@ -263,7 +194,6 @@ private:
     sf::Clock                           _globalClock;
     nl::json                            _json;
 
-    std::unique_ptr<PathLines>          _pathLines;
     std::unique_ptr<VehicleFactory>     _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;
 

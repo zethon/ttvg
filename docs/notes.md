@@ -45,8 +45,30 @@ I've started using the program here (https://github.com/colinvella/tIDE) to make
 
 * `VehicleFactory` should generate random vehicles on random paths at random intervals for random durations.
  
- ## 2020-0705
+ ## 2020-07-05
 
  * `ResourceManager` should have type-specific version of some loaders (i.e. `loadFont()`) that then caches the resources.
 
- 
+## 2020-07-25 - Vehicles
+
+Tecture images for vehicles must contain four rows of sprites, each row corresponds to the sprite shown when the car is moving in a particular direction. The rows are: DOWN, LEFT, RIGHT, UP. 
+
+Here is how a vehicle is defined in a map's JSON config file:
+
+```
+"name" : "car1",
+"size" : "77,41",
+"tiles": "2,4",
+"scale": "1.4,1.4",
+"speed": "8.0,12.0"
+ ```
+
+ `name` - This is the base filename of the vehicle. This will resolve to `%resource-folder%/resources/textures/%name%.png`
+ `size` : The size of each sprite within the text.
+ `tiles` : The texture dimensions in terms of "tiles". For example, for the horizontal axis, this should be equal to width of the texture file divided by size.x. For the vertical axis, this should always be `4`.
+ `scale` : The scaling factor applied to the sprites when drawn on the map.
+ `speed` : The possible range of a vehicle's speed. 
+
+ ### Speed
+
+ The speed of the vehicle is measures in terms of pixels per timestep. However, the number of pixels is **not** the number of pixels drawn on the screen, which takes into account scrolling. The pixels are instead the numbe of pixels before any scaling is applied to the background.
