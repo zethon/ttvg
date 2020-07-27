@@ -51,6 +51,8 @@ public:
     sf::SoundBuffer* getSound(const std::string& name);
     void clearSoundCache() { _soundcache.clear();  }
 
+    void clearCaches();
+
     template<typename T>
     std::optional<T> load(const std::string& name)
     {

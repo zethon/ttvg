@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
             ),
             x3::space);
 
-        if (!r)
+        if (!r || width < 480 || height < 320)
         {
             std::cerr << fmt::format("invalid screen size '{}'\n", windowsize);
             return 1;
@@ -107,5 +107,6 @@ int main(int argc, char *argv[])
         engine.drawScreen();
         win->display();
     }
+
     return 0;
 }
