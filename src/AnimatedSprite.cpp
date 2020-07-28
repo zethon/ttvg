@@ -18,7 +18,6 @@ AnimatedSprite::AnimatedSprite(const sf::Texture& texture, const sf::Vector2i& s
     _highlight.setOutlineThickness(2);
     _highlight.setOutlineColor(sf::Color(255, 255, 255));
     _highlight.setSize(sf::Vector2f{ size });
-    _highlight.setPosition(20, 20);
 }
 
 void AnimatedSprite::setSource(std::uint32_t x, std::uint32_t y)
