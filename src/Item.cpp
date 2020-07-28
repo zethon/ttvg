@@ -3,15 +3,13 @@
 
 namespace tt
 {
-    Item::Item(	const std::string&  id,
-				const sf::Texture& texture,
-               	const sf::Vector2i& size,
-               	const nl::json&     json )
+    Item::Item( const std::string&  id,
+                const sf::Texture& texture,
+                const sf::Vector2i& size )
         : AnimatedSprite(texture, size),
-            _json   { json },
-            _id     { id }
+            _id { id }
     {
-
+        _isObtainable = false;
     }
 
     std::string Item::getID() const
@@ -19,31 +17,34 @@ namespace tt
         return _id;
     }
 
+    void Item::setName(const std::string& s)
+    {
+        _name = s;
+    }
+
     std::string Item::getName() const
     {
+        return _name;
+    }
 
-        //
-        // Why is it that the json object can be treated as a top level
-        // associative array when this is created in ItemFactory but 
-        // after it is assigned to the member variable in this object
-        // instance, it becomes a json array at the top level, 
-        // and we must use _json[0] to get the first item?
-        //
-        return _json[0].at("name");
+    void Item::setDescription(const std::string& s)
+    {
+        _description = s;
     }
 
     std::string Item::getDescription() const
     {
-        return _json[0].at("description");
+        return _description;
+    }
+
+    void Item::setObtainable(bool b)
+    {
+        _isObtainable = b;
     }
 
     bool Item::isObtainable() const
     {
-        if(_json[0].find("obtainable") == _json[0].end())
-        {
-            return false;
-        }
-        return _json[0].at("obtainable");
+        return _isObtainable;
     }
 
 }

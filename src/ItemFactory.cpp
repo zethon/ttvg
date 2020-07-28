@@ -80,16 +80,30 @@ namespace tt
             }
         }
         
-        auto item   = std::make_shared<Item>(   name, 
-                                            *texture, 
-                                            sf::Vector2i{ width, height },
-                                            json );
-
-
+        auto item   = std::make_shared<Item>(   
+                                        name, 
+                                        *texture, 
+                                        sf::Vector2i{ width, height } );
 
         item->setScale(scaleX, scaleY);
         item->setPosition(position);
 
+        if(json.find("name") != json.end())
+        {
+            item->setName(json["name"]);
+        }
+
+        if(json.find("description") != json.end())
+        {
+            item->setDescription(json["description"]);
+        }
+
+        if(json.find("obtainable") != json.end())
+        {
+            item->setObtainable(json["obtainable"]);
+        }
+
         return item;
     }
+
 } // namespace tt
