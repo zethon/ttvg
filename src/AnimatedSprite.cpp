@@ -5,9 +5,6 @@
 namespace tt
 {
 
-constexpr auto HIGHLIGHT_WIDTH = 32;
-constexpr auto HIGHLIGHT_HEIGHT = 32;
-
 AnimatedSprite::AnimatedSprite(const sf::Texture& texture, const sf::Vector2i& size)
     :   _size{ size }
 {
@@ -77,7 +74,7 @@ void AnimatedSprite::setHighlight(bool h)
 {
     if (h)
     {
-        _highlight.setSize(sf::Vector2f(HIGHLIGHT_WIDTH, HIGHLIGHT_WIDTH));
+        _highlight.setSize(sf::Vector2f{ _size });
     }
     else
     {
