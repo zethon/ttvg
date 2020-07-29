@@ -238,6 +238,19 @@ std::uint16_t Opening::poll(const sf::Event& e)
                     std::cout << key << ": " << inv.at(key) << std::endl;
                 }
             }
+            break;
+
+            case sf::Keyboard::H:
+            {
+                toggleHighlight();
+            }
+            break;
+
+            case sf::Keyboard::P:
+            {
+                _updateTraffic = !_updateTraffic;
+            }
+            break;
 
             case sf::Keyboard::Left:
             {
@@ -352,6 +365,8 @@ std::uint16_t Opening::timestep()
 
 void Opening::timestepTraffic()
 {
+    if (!_updateTraffic) return;
+
     // update existing vehicles before creating any new ones
     // this also gives newly created vehicles a chance to be
     // drawn at their initial position
@@ -450,7 +465,7 @@ void Opening::adjustView()
     _window.setView(view);
 }
 
-void Opening::animeCallback()
+sf::Vector2f Opening::animeCallback()
 {
     const auto stepSize = STEPSIZE 
         + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
@@ -517,6 +532,8 @@ void Opening::animeCallback()
         sf::Vector2f tile{ getPlayerTile() };
         _statusBar.setZoneText(_background->zoneName(tile));
     }
+
+    return _player->getPosition();
 }
 
 //
@@ -527,6 +544,22 @@ void Opening::animeCallback()
 void Opening::updateMessage()
 {
     _missionText.setText("Find the magic vagina");
+}
+
+void Opening::toggleHighlight()
+{
+    _player->setHighlighted(!_player->highlighted());
+    _vehicleFactory->setHighlighted(!_vehicleFactory->highlighted());
+
+    for (auto& v : _vehicles)
+    {
+        v->setHighlighted(!v->highlighted());
+    }
+
+    for (auto& i : _items)
+    {
+        i->setHighlighted(!i->highlighted());
+    }
 }
 
 } // namespace tt

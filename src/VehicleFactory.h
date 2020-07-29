@@ -35,12 +35,16 @@ class VehicleFactory
     ResourceManager&                _resources;
     std::shared_ptr<PathFactory>    _pathFactory;
     std::vector<VehicleInfo>        _vehicles;
+    bool                            _highlighted = false;
 
 public:
     VehicleFactory(ResourceManager& resmgr, BackgroundSharedPtr bg);
 
     void setPathFactory(PathFactoryPtr pf) { _pathFactory = pf; }
     PathFactoryPtr pathFactory() { return _pathFactory; }
+
+    void setHighlighted(bool b) { _highlighted = b; }
+    bool highlighted() const { return _highlighted; }
 
     VehiclePtr createVehicle();
 

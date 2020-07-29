@@ -15,7 +15,7 @@ using AnimatedSpritePtr = std::shared_ptr<AnimatedSprite>;
 class AnimatedSprite;
 using AnimatedSpritePtr = std::shared_ptr<AnimatedSprite>;
 
-using AnimeCallback = std::function<void()>;
+using AnimeCallback = std::function<sf::Vector2f()>;
 
 class AnimatedSprite :
     public sf::Drawable,
@@ -44,8 +44,9 @@ public:
     ///
     void setMaxFramesPerRow(std::uint32_t max);
     
-    void setHighlight(bool h);
+    void setHighlighted(bool h);
     bool highlighted() const { return _highlight.getSize().x != 0; }
+    
     sf::RectangleShape& highlight() { return _highlight; }
 
     void setAnimeCallback(AnimeCallback cb) { _animeCallback = cb; }

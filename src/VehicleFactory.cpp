@@ -89,6 +89,8 @@ VehiclePtr VehicleFactory::createVehicle()
     auto path = _pathFactory->makeRiboPath();
     path.setRepeating(false);
     vehicle->setPath(path);
+
+    vehicle->setHighlighted(_highlighted);
     
     return vehicle;
 }

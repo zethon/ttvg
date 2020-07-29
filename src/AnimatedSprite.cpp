@@ -60,10 +60,8 @@ std::uint16_t AnimatedSprite::timestep()
 
         if (_animeCallback)
         {
-            _animeCallback();
+            _highlight.setPosition(_animeCallback());
         }
-
-        _highlight.setPosition(getPosition());
 
         _timer.restart();
     }
@@ -79,7 +77,7 @@ sf::FloatRect AnimatedSprite::getGlobalBounds() const
     return getTransform().transformRect(sf::FloatRect(0.f, 0.f, width, height));
 }
 
-void AnimatedSprite::setHighlight(bool h)
+void AnimatedSprite::setHighlighted(bool h)
 {
     if (h)
     {

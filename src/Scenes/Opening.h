@@ -178,9 +178,11 @@ private:
     void timestepTraffic();
 
     void adjustView();
-    void animeCallback();
+    sf::Vector2f animeCallback();
 
     void updateMessage();
+
+    void toggleHighlight();
 
     MissionText                         _missionText;
     StatusBar                           _statusBar;
@@ -197,6 +199,8 @@ private:
 
     std::unique_ptr<ItemFactory>        _itemFactory;
     std::vector<ItemPtr>                _items;
+
+    bool                                _updateTraffic = true;
 
 };
 
