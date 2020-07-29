@@ -60,12 +60,13 @@ std::uint16_t AnimatedSprite::timestep()
 
         if (_animeCallback)
         {
-            _highlight.setPosition(_animeCallback());
+            _animeCallback();
         }
 
         _timer.restart();
     }
 
+    _highlight.setPosition(getPosition());
     return 0;
 }
 

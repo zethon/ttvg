@@ -56,7 +56,12 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
     _player->setOrigin(0.0f, 0.0f);
     _player->setPosition(PLAYER_START_X, PLAYER_START_Y);
-    _player->setAnimeCallback([this]() { this->animeCallback(); });
+    _player->setAnimeCallback(
+        [this]() 
+        { 
+            return this->animeCallback(); 
+        });
+        
     addUpdateable(_player);
 
     // the order in which we add everything to the draw'able
@@ -477,7 +482,7 @@ sf::Vector2f Opening::animeCallback()
         auto xx = _player->getGlobalLeft();
         auto [x, y] = _player->getPosition();
         assert(xx >= 0);
-        if (xx == 0) return;
+        if (xx == 0) return _player->getPosition();
 
         xx -= stepSize;
         if (xx < 0) xx = 0;
@@ -491,7 +496,7 @@ sf::Vector2f Opening::animeCallback()
 
         auto x = _player->getGlobalRight();
         assert(x <= boundaryRight);
-        if (x == boundaryRight) return;
+        if (x == boundaryRight) return _player->getPosition();
 
         x += stepSize;
         if (x > boundaryRight) x = boundaryRight;
@@ -503,7 +508,7 @@ sf::Vector2f Opening::animeCallback()
     {
         auto y = _player->getGlobalTop();
         assert(y >= 0);
-        if (y == 0) return;
+        if (y == 0) return _player->getPosition();
 
         y -= stepSize;
         if (y < 0) y = 0;
@@ -516,7 +521,7 @@ sf::Vector2f Opening::animeCallback()
 
         auto y = _player->getGlobalBottom();
         assert(y <= boundaryBottom);
-        if (y == boundaryBottom) return;
+        if (y == boundaryBottom) return _player->getPosition();
 
         y += stepSize;
         if (y > boundaryBottom)

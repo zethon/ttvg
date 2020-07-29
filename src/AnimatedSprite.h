@@ -15,7 +15,7 @@ using AnimatedSpritePtr = std::shared_ptr<AnimatedSprite>;
 class AnimatedSprite;
 using AnimatedSpritePtr = std::shared_ptr<AnimatedSprite>;
 
-using AnimeCallback = std::function<sf::Vector2f()>;
+using AnimeCallback = std::function<sf::Vector2f(void)>;
 
 class AnimatedSprite :
     public sf::Drawable,
