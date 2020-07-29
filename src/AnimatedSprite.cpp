@@ -64,6 +64,8 @@ std::uint16_t AnimatedSprite::timestep()
             _animeCallback();
         }
 
+        _highlight.setPosition(getPosition());
+
         _timer.restart();
     }
 
@@ -82,7 +84,9 @@ void AnimatedSprite::setHighlight(bool h)
 {
     if (h)
     {
-        _highlight.setSize(sf::Vector2f{ _size });
+        _highlight.setPosition(getPosition());
+        auto b = getGlobalBounds();
+        _highlight.setSize(sf::Vector2f{ b.width, b.height });
     }
     else
     {
@@ -95,7 +99,7 @@ void AnimatedSprite::draw(sf::RenderTarget & target, sf::RenderStates states) co
 {
     states.transform *= getTransform();
     target.draw(_sprite, states);
-    target.draw(_highlight, states);
+    target.draw(_highlight);
 }
 
 } // namespace tt

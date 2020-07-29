@@ -43,7 +43,11 @@ public:
     ///         this number of cells
     ///
     void setMaxFramesPerRow(std::uint32_t max);
+    
     void setHighlight(bool h);
+    bool highlighted() const { return _highlight.getSize().x != 0; }
+    sf::RectangleShape& highlight() { return _highlight; }
+
     void setAnimeCallback(AnimeCallback cb) { _animeCallback = cb; }
 
     sf::FloatRect getGlobalBounds() const;

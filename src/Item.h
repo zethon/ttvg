@@ -38,7 +38,7 @@ namespace tt
             std::string _id;
             std::string _name;
             std::string _description;
-            bool        _isObtainable;
+            bool        _isObtainable = false;
 
     };
 
