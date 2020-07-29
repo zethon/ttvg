@@ -9,7 +9,6 @@ namespace tt
         : AnimatedSprite(texture, size),
             _id { id }
     {
-        _isObtainable = false;
     }
 
     std::string Item::getID() const
