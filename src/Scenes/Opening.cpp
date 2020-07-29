@@ -129,42 +129,6 @@ void Opening::createItems()
         }
     }
 
-	/*
-    ItemPtr sax = _itemFactory->createItem(
-        "sax",
-        sf::Vector2f{ 1516.0f, 2875.0f });
-    _items.push_back(sax);
-
-    ItemPtr menorah = _itemFactory->createItem(
-        "menorah",
-        sf::Vector2f{ 1416.0f, 2725.0f });
-    _items.push_back(menorah);
-
-    ItemPtr bag1 = _itemFactory->createItem(
-        "bag-of-weed",
-        sf::Vector2f{ 1216.0f, 3005.0f });
-    _items.push_back(bag1);
-
-    ItemPtr bag2 = _itemFactory->createItem(
-        "bag-of-tobacco",
-        sf::Vector2f{ 1206.0f, 3105.0f });
-    _items.push_back(bag2);
-
-    ItemPtr bag3 = _itemFactory->createItem(
-                                    "bag-of-crack", 
-        sf::Vector2f{ 1716.0f, 2975.0f });
-    _items.push_back(bag3);
-    ItemPtr bag4 = _itemFactory->createItem(
-                                    "bag-of-crack",
-                                    sf::Vector2f { 1756.0f, 2975.0f } );
-    _items.push_back(bag4);
-
-    ItemPtr bag5 = _itemFactory->createItem(
-                                    "bag-of-crack",
-                                    sf::Vector2f { 1796.0f, 2975.0f } );
-    _items.push_back(bag5);
-	*/
-
 }
 
 void Opening::initTraffic()
