@@ -1,5 +1,6 @@
 {
     "name":         "Saxophone",
     "description":  "You lost this fine horn on the bus once.",
+    "obtainable":   true,
     "attributes":   { }
 }

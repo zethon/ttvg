@@ -9,8 +9,12 @@
 namespace tt
 {
 
-class AnimatedSprite;
-using AnimatedSpritePtr = std::shared_ptr<AnimatedSprite>;
+    //
+    // Default highlight size.
+    //
+    constexpr auto DEFAULT_HIGHLIGHT_WIDTH  = 32.0f;
+    constexpr auto DEFAULT_HIGHLIGHT_HEIGHT = 32.0f;
+
 
 class AnimatedSprite;
 using AnimatedSpritePtr = std::shared_ptr<AnimatedSprite>;
@@ -45,7 +49,7 @@ public:
     void setMaxFramesPerRow(std::uint32_t max);
     
     void setHighlight(bool h);
-    bool highlighted() const { return _highlight.getSize().x != 0; }
+    bool highlighted() const { return _isHighlighted; }
     sf::RectangleShape& highlight() { return _highlight; }
 
     void setAnimeCallback(AnimeCallback cb) { _animeCallback = cb; }
@@ -54,8 +58,15 @@ public:
 
     std::uint16_t timestep() override;
 
+    void setPosition(float x, float y);
+    void setPosition(const sf::Vector2f& position);
+
 protected:
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override final;
+
+    void draw(  sf::RenderTarget& target, 
+                sf::RenderStates states ) const override final;
+
+    void setHighlightPosition();
 
     const sf::Vector2i      _size; // fixed cell size of each frame within the sprite
 
@@ -73,6 +84,8 @@ protected:
 
     sf::Sprite              _sprite;
     sf::RectangleShape      _highlight;
+
+    bool                    _isHighlighted;
 
 };
 

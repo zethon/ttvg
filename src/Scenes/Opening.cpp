@@ -37,6 +37,8 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
       _statusBar{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
+    _debugEnabled = false;
+
     _resources.clearCaches();
 
     _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
@@ -80,10 +82,54 @@ void Opening::createItems()
     //
     _itemFactory = std::make_unique<ItemFactory>(_resources);
 
-    //
-    // This should probably come from a .json associated with map data.
-    //
+    const auto& config = _background->json();
 
+    //
+    // Check if items are present in the map .json
+    //
+    if(config.find("items") != config.end())
+    {
+        // std::cout << "DEBUG found map items." << std::endl;
+
+        //
+        // Iterate over all item names.
+        //
+        for(auto& el: config["items"].items())
+        {
+            const auto& itemId = el.key();
+
+            //
+            // The associated value is a list of objects representing
+            // coordinate pairs.
+            //
+            const auto& list = el.value();  
+
+            //
+            // For each coordinate pair, create an item of this type
+            // at the specified location on the map and add it to the 
+            // _items vector.
+            //
+            for(auto& coords: list.items())
+            {
+                const auto& coord = coords.value();
+
+                //
+                // Is there a util to perform this conversion?
+                //
+                float x = (TILESIZE_X * SCALE_BACKGROUND) * 
+                            static_cast<int>(coord["x"]);
+                float y = (TILESIZE_Y * SCALE_BACKGROUND) * 
+                            static_cast<int>(coord["y"]);
+
+                ItemPtr i = _itemFactory->createItem(
+                                                itemId, 
+                                                sf::Vector2f { x, y } );
+                _items.push_back(i);
+            }
+        }
+    }
+
+	/*
     ItemPtr sax = _itemFactory->createItem(
         "sax",
         sf::Vector2f{ 1516.0f, 2875.0f });
@@ -117,6 +163,7 @@ void Opening::createItems()
                                     "bag-of-crack",
                                     sf::Vector2f { 1796.0f, 2975.0f } );
     _items.push_back(bag5);
+	*/
 
 }
 
@@ -197,8 +244,8 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 {
                     ItemPtr item = *it;
 
-                    if( item->getGlobalBounds().intersects(
-                                                _player->getGlobalBounds()) &&
+                    if( item->highlight().getGlobalBounds().intersects(
+                            _player->highlight().getGlobalBounds()) &&
                         item->isObtainable() )
                     {
 
@@ -301,7 +348,18 @@ std::uint16_t Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Num0:
             {
+                _debugEnabled = !_debugEnabled;
                 _debugWindow.setVisible(!_debugWindow.visible());
+
+                //
+                // Highlight player and items.
+                //
+                _player->setHighlight(_debugEnabled);
+                for(auto it = _items.begin(); it != _items.end(); it++)
+                {
+                    ItemPtr item = *it;
+                    item->setHighlight(_debugEnabled);
+                }
             }
             break;
         }
@@ -328,9 +386,11 @@ std::uint16_t Opening::timestep()
     //
     std::for_each(  _items.begin(), 
                     _items.end(),
-                    [this](ItemPtr item) { 
-                        if(item->getGlobalBounds().intersects(
-                                                _player->getGlobalBounds())) {
+                    [this](ItemPtr item) 
+                    { 
+                        if( item->highlight().getGlobalBounds().intersects(
+                                _player->highlight().getGlobalBounds()) )
+                        {
                             _missionText.setText(
                                 item->getName() + ": " +
                                 item->getDescription() );

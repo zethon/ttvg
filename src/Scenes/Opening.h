@@ -198,6 +198,8 @@ private:
     std::unique_ptr<ItemFactory>        _itemFactory;
     std::vector<ItemPtr>                _items;
 
+    bool                                _debugEnabled;
+
 };
 
 } // namespace tt
