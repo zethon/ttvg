@@ -85,43 +85,52 @@ void Opening::createItems()
     //
     _itemFactory = std::make_unique<ItemFactory>(_resources);
 
+    const auto& config = _background->json();
+
     //
-    // This should probably come from a .json associated with map data.
+    // Check if items are present in the map .json
     //
+    if(config.find("items") != config.end())
+    {
+        // std::cout << "DEBUG found map items." << std::endl;
 
-    ItemPtr sax = _itemFactory->createItem(
-        "sax",
-        sf::Vector2f{ 1516.0f, 2875.0f });
-    _items.push_back(sax);
+        //
+        // Iterate over all item names.
+        //
+        for(auto& el: config["items"].items())
+        {
+            const auto& itemId = el.key();
 
-    ItemPtr menorah = _itemFactory->createItem(
-        "menorah",
-        sf::Vector2f{ 1416.0f, 2725.0f });
-    _items.push_back(menorah);
+            //
+            // The associated value is a list of objects representing
+            // coordinate pairs.
+            //
+            const auto& list = el.value();  
 
-    ItemPtr bag1 = _itemFactory->createItem(
-        "bag-of-weed",
-        sf::Vector2f{ 1216.0f, 3005.0f });
-    _items.push_back(bag1);
+            //
+            // For each coordinate pair, create an item of this type
+            // at the specified location on the map and add it to the 
+            // _items vector.
+            //
+            for(auto& coords: list.items())
+            {
+                const auto& coord = coords.value();
 
-    ItemPtr bag2 = _itemFactory->createItem(
-        "bag-of-tobacco",
-        sf::Vector2f{ 1206.0f, 3105.0f });
-    _items.push_back(bag2);
+                //
+                // Is there a util to perform this conversion?
+                //
+                float x = (TILESIZE_X * SCALE_BACKGROUND) * 
+                            static_cast<int>(coord["x"]);
+                float y = (TILESIZE_Y * SCALE_BACKGROUND) * 
+                            static_cast<int>(coord["y"]);
 
-    ItemPtr bag3 = _itemFactory->createItem(
-                                    "bag-of-crack", 
-        sf::Vector2f{ 1716.0f, 2975.0f });
-    _items.push_back(bag3);
-    ItemPtr bag4 = _itemFactory->createItem(
-                                    "bag-of-crack",
-                                    sf::Vector2f { 1756.0f, 2975.0f } );
-    _items.push_back(bag4);
-
-    ItemPtr bag5 = _itemFactory->createItem(
-                                    "bag-of-crack",
-                                    sf::Vector2f { 1796.0f, 2975.0f } );
-    _items.push_back(bag5);
+                ItemPtr i = _itemFactory->createItem(
+                                                itemId, 
+                                                sf::Vector2f { x, y } );
+                _items.push_back(i);
+            }
+        }
+    }
 
 }
 
@@ -317,11 +326,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
             }
             break;
 
-            case sf::Keyboard::Num0:
-            {
-                _debugWindow.setVisible(!_debugWindow.visible());
-            }
-            break;
+
         }
     }
 
