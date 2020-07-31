@@ -21,7 +21,8 @@ public:
     std::uint16_t timestep() override;
 
 private:
-    ScenePtr    _currentScene;
+    std::size_t             _currentScene = 1;
+    std::vector<ScenePtr>   _scenes;
 
 };
 

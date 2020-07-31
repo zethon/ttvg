@@ -18,6 +18,18 @@ constexpr std::uint16_t SCREEN_OUTRO = 50;
 
 using DrawablePtr = std::shared_ptr<sf::Drawable>;
 
+enum class ScreenActionType
+{
+    NONE = 0,
+    CHANGE_SCREEN,
+};
+
+struct ScreenAction
+{
+    ScreenActionType    type;
+    std::uint32_t       data;
+};
+
 class Screen
 {
 
