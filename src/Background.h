@@ -9,6 +9,7 @@
 
 #include "TTUtils.h"
 #include "Tiles.hpp"
+#include "TransitionPoint.h"
 
 namespace nl = nlohmann;
 
@@ -20,11 +21,15 @@ struct zone_compare
 
 bool operator()(const sf::FloatRect& lhs, const sf::FloatRect& rhs) const
 {
+    if (lhs.left == rhs.left)
+    {
+        return lhs.top < rhs.top;
+    }
+
     return lhs.left < rhs.left;
 }
 
 };
-
 using ZoneSet = std::set<sf::FloatRect, zone_compare>;
 
 class ResourceManager;
@@ -80,10 +85,12 @@ public:
 protected:
 
     std::unique_ptr<sf::Texture>    _texture;
-    std::vector<Zone>               _zones;
+    std::vector<Zone>              _zones;
+    TransitionSet                   _transitions;    
 
 private:
     void initZones();
+    void initTransitionPoints();
 
     sf::Vector2f                _tilesize;
     std::unique_ptr<nl::json>   _json;

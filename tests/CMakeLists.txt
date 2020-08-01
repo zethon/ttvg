@@ -39,6 +39,9 @@ set(PROJECT_FILES
     ../src/ResourceManager.h
     ../src/ResourceManager.cpp
 
+    ../src/TransitionPoint.h
+    ../src/TransitionPoint.cpp
+
     ../src/TTUtils.h
     ../src/TTUtils.cpp
 

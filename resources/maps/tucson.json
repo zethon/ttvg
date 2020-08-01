@@ -55,7 +55,7 @@
             ]
         }
     ],
-    "transitions"
+    "transitions":
     [
         {
             "id": "euclid_house",

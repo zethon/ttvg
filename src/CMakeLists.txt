@@ -10,6 +10,7 @@ set(SOURCE_FILES
     Player.cpp
     ResourceManager.cpp
     Screen.cpp
+    TransitionPoint.cpp
     TTUtils.cpp
     Vehicle.cpp
     VehicleFactory.cpp
@@ -36,6 +37,7 @@ set(HEADER_FILES
     ResourceManager.h
     Screen.h
     Tiles.hpp
+    TransitionPoint.h
     TTUtils.h
     Vehicle.h
     VehicleFactory.h

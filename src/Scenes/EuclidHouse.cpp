@@ -1,5 +1,3 @@
-#pragma once
-
 #include "EuclidHouse.h"
 
 namespace nl = nlohmann;

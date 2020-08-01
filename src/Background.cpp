@@ -53,9 +53,22 @@ void Background::initZones()
 
             if (result)
             {
+                //_zones.emplace(item.value()["name"].get<std::string>(), rect);
                 _zones.emplace_back(item.value()["name"].get<std::string>(), rect);
             }
         }
+    }
+}
+
+void Background::initTransitionPoints()
+{
+    if (!_json) return;
+    if (!_json->at("transitions").is_array()) return;
+
+    for (const auto& item : (*_json)["transitions"].items())
+    {
+        auto t = item.value().get<tt::Transition>();
+        _transitions.insert(t);
     }
 }
 
