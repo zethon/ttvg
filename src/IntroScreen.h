@@ -30,8 +30,8 @@ class IntroScreen : public Screen
 public:
     IntroScreen(ResourceManager& res, sf::RenderTarget& target);
 
-    std::uint16_t poll(const sf::Event& e) override;
-    std::uint16_t timestep() override;
+    ScreenAction poll(const sf::Event& e) override;
+    ScreenAction timestep() override;
     void close() override;
 };
 
@@ -49,8 +49,8 @@ class SplashScreen : public Screen
 public:
     SplashScreen(ResourceManager& res, sf::RenderTarget& target);
 
-    std::uint16_t poll(const sf::Event& e) override;
-    std::uint16_t timestep() override;
+    ScreenAction poll(const sf::Event& e) override;
+    ScreenAction timestep() override;
 };
 
 

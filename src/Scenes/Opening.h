@@ -162,8 +162,8 @@ public:
 
     void createItems();
 
-    std::uint16_t poll(const sf::Event& e) override;
-    std::uint16_t timestep() override;
+    ScreenAction poll(const sf::Event& e) override;
+    ScreenAction timestep() override;
     void draw() override;
 
     sf::Vector2f getPlayerTile() const

@@ -17,11 +17,11 @@ public:
     GameScreen(ResourceManager& resmgr, sf::RenderTarget& target);
 
     void draw() override;
-    std::uint16_t poll(const sf::Event&) override;
-    std::uint16_t timestep() override;
+    ScreenAction poll(const sf::Event&) override;
+    ScreenAction timestep() override;
 
 private:
-    std::size_t             _currentScene = 1;
+    std::size_t             _currentScene = 0;
     std::vector<ScenePtr>   _scenes;
 
 };

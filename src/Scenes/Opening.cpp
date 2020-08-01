@@ -185,7 +185,7 @@ void Opening::initTraffic()
     _vehicleFactory->setPathFactory(pathFactory);
 }
 
-std::uint16_t Opening::poll(const sf::Event& e)
+ScreenAction Opening::poll(const sf::Event& e)
 {
 
     if (e.type == sf::Event::KeyPressed)
@@ -271,7 +271,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 if (_player->state() == AnimatedState::ANIMATED
                     && _player->direction() == Direction::LEFT)
                 {
-                    return 0;
+                    return {};
                 }
 
                 _player->setSource(0, 9);
@@ -286,7 +286,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 if (_player->state() == AnimatedState::ANIMATED
                     && _player->direction() == Direction::RIGHT)
                 {
-                    return 0;
+                    return {};
                 }
 
                 _player->setSource(0, 11);
@@ -301,7 +301,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
-                    return 0;
+                    return {};
                 }
 
                 _player->setSource(0, 8);
@@ -316,7 +316,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
-                    return 0;
+                    return {};
                 }
 
                 _player->setSource(0, 10);
@@ -325,15 +325,13 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 _player->setDirection(Direction::DOWN);
             }
             break;
-
-
         }
     }
 
-    return 0;
+    return {};
 }
 
-std::uint16_t Opening::timestep()
+ScreenAction Opening::timestep()
 {
     if (_player->state() == AnimatedState::ANIMATED
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
@@ -370,7 +368,7 @@ std::uint16_t Opening::timestep()
     auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
     _debugWindow.setText(posText);
 
-    return 0;
+    return {};
 }
 
 void Opening::timestepTraffic()

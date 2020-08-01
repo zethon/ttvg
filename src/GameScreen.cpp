@@ -18,25 +18,26 @@ void GameScreen::draw()
     _scenes[_currentScene]->draw();
 }
 
-std::uint16_t GameScreen::poll(const sf::Event& e)
+ScreenAction GameScreen::poll(const sf::Event& e)
 {
-    assert(_currentScene);
-    auto result = _scenes[_currentScene]->poll(e);
-    
-    switch (result)
-    {
-        defaut:
-        break;
+    assert(_scenes[_currentScene]);
 
-        case ScreenAction::CHANGE_SCREEN:
-            break;
-    }
+    //auto result = _scenes[_currentScene]->poll(e);
+    //switch (result)
+    //{
+    //    defaut:
+    //    break;
 
-    return 0;
+    //    case ScreenAction::CHANGE_SCREEN:
+    //    break;
+    //}
+
+    return Screen::poll(e);
 }
 
-std::uint16_t GameScreen::timestep()
+ScreenAction GameScreen::timestep()
 {
+    assert(_scenes[_currentScene]);
     _scenes[_currentScene]->timestep();
     return Screen::timestep();
 }

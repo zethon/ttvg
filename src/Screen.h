@@ -22,6 +22,7 @@ enum class ScreenActionType
 {
     NONE = 0,
     CHANGE_SCREEN,
+    CHANGE_SCENE
 };
 
 struct ScreenAction
@@ -52,10 +53,10 @@ public:
     virtual void draw();
 
     // poll system/user events
-    [[maybe_unused]] virtual std::uint16_t poll(const sf::Event&);
+    [[maybe_unused]] virtual ScreenAction poll(const sf::Event&);
 
     // update positions and state
-    [[maybe_unused]] virtual std::uint16_t timestep();
+    [[maybe_unused]] virtual ScreenAction timestep();
 
     // clean up any resources
     virtual void close()
