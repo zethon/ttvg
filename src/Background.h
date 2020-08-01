@@ -102,7 +102,7 @@ public:
 protected:
     std::unique_ptr<sf::Texture>    _texture;
     ZoneSet                         _zones;
-    TransitionSet                   _transitions;    
+    std::set<Transition>                   _transitions;    
 
 private:
     void initZones();

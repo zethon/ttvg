@@ -24,15 +24,14 @@ struct Transition
     sf::Vector2f    position;
     bool            enabled;
     Type            type;
+
+    bool operator==(const Transition& other)
+    {
+        return position == other.position;
+    }
 };
 
-void to_json(nl::json& j, const Transition& t);
-void from_json(const nl::json& j, Transition& t);
-
-struct transition_compare
-{
-
-bool operator()(const tt::Transition& lhs, const tt::Transition& rhs) const
+inline bool operator<(const Transition& lhs, const Transition& rhs)
 {
     if (lhs.position.x == rhs.position.x)
     {
@@ -42,9 +41,7 @@ bool operator()(const tt::Transition& lhs, const tt::Transition& rhs) const
     return lhs.position.x < rhs.position.x;
 }
 
-};
-
-using TransitionSet = std::set<Transition, transition_compare>;
-
+void to_json(nl::json& j, const Transition& t);
+void from_json(const nl::json& j, Transition& t);
 
 } // namespace tt

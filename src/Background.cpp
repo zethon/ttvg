@@ -1,6 +1,6 @@
 #include <fstream>
 
-#include <boost/filesystem.hpp>
+#include <boost/iterator/transform_iterator.hpp>
 
 #include <fmt/core.h>
 
@@ -80,6 +80,27 @@ sf::FloatRect Background::getWorldTileRect() const
 
 std::string Background::zoneName(const sf::Vector2f& v)
 {
+//     auto tr = [](const Transition& t)
+//     {
+//         return t.position;
+//     };
+
+//     auto tbegin = boost::make_transform_iterator(_transitions.begin(), tr);
+//     auto tend = boost::make_transform_iterator(_transitions.end(), tr);
+//     auto result = std::equal_range(tbegin, tend, v);
+//     if (result != _transitions.end())
+//     {
+
+//     }
+
+//     // auto transition = std::binary_search(_transitions.begin(), _transitions.end(),
+//     //     [](const Transition& lhs, const Transition& rhs)
+//     //     {
+//     //         return lhs.position == rhs.position;
+//     //     });
+    
+// // auto transition = std::binary_search(_transitions.begin(), _transitions.end(), 
+
     for (const auto& [name, rect] : _zones)
     {
         if (RectContains(rect, v))

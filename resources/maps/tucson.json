@@ -64,6 +64,30 @@
             "type": "manual",
             "description" : "Your House",
             "enabled": true
+        },
+        {
+            "id": "3",
+            "x": 3, 
+            "y": 1,
+            "type": "manual",
+            "description" : "Your House",
+            "enabled": true
+        },
+        {
+            "id": "2",
+            "x": 2, 
+            "y": 1,
+            "type": "manual",
+            "description" : "Your House",
+            "enabled": true
+        },
+        {
+            "id": "1",
+            "x": 1, 
+            "y": 1,
+            "type": "manual",
+            "description" : "Your House",
+            "enabled": true
         }
     ],
     "vehicles":
