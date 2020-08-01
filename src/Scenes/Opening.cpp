@@ -187,7 +187,6 @@ void Opening::initTraffic()
 
 ScreenAction Opening::poll(const sf::Event& e)
 {
-
     if (e.type == sf::Event::KeyPressed)
     {
         updateMessage();

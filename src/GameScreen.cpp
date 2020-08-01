@@ -21,6 +21,11 @@ void GameScreen::draw()
 ScreenAction GameScreen::poll(const sf::Event& e)
 {
     assert(_scenes[_currentScene]);
+    auto result = _scenes[_currentScene]->poll(e);
+    if (result.type == ScreenActionType::NONE)
+    {
+        return Screen::poll(e);
+    }
 
     //auto result = _scenes[_currentScene]->poll(e);
     //switch (result)
