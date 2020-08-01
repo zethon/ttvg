@@ -22,20 +22,23 @@ ScreenAction GameScreen::poll(const sf::Event& e)
 {
     assert(_scenes[_currentScene]);
     auto result = _scenes[_currentScene]->poll(e);
-    if (result.type == ScreenActionType::NONE)
+    switch (result.type)
     {
-        return Screen::poll(e);
+        default:
+            return Screen::poll(e);
+
+        case ScreenActionType::CHANGE_SCREEN:
+        break;
+
+        case ScreenActionType::CHANGE_SCENE:
+        {
+            if (_scenes[result.data] != nullptr)
+            {
+                _currentScene = result.data;
+            }
+        }
+        break;
     }
-
-    //auto result = _scenes[_currentScene]->poll(e);
-    //switch (result)
-    //{
-    //    defaut:
-    //    break;
-
-    //    case ScreenAction::CHANGE_SCREEN:
-    //    break;
-    //}
 
     return Screen::poll(e);
 }

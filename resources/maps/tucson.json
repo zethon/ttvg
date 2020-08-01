@@ -62,7 +62,8 @@
             "x": 51, 
             "y": 80,
             "type": "manual",
-            "description" : "Your House"
+            "description" : "Your House",
+            "enabled": true
         }
     ],
     "vehicles":

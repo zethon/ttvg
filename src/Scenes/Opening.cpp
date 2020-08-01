@@ -270,7 +270,7 @@ ScreenAction Opening::poll(const sf::Event& e)
                 if (_player->state() == AnimatedState::ANIMATED
                     && _player->direction() == Direction::LEFT)
                 {
-                    return {};
+                    return Scene::poll(e);
                 }
 
                 _player->setSource(0, 9);
@@ -285,7 +285,7 @@ ScreenAction Opening::poll(const sf::Event& e)
                 if (_player->state() == AnimatedState::ANIMATED
                     && _player->direction() == Direction::RIGHT)
                 {
-                    return {};
+                    return Scene::poll(e);
                 }
 
                 _player->setSource(0, 11);
@@ -300,7 +300,7 @@ ScreenAction Opening::poll(const sf::Event& e)
                 if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
-                    return {};
+                    return Scene::poll(e);
                 }
 
                 _player->setSource(0, 8);
@@ -315,7 +315,7 @@ ScreenAction Opening::poll(const sf::Event& e)
                 if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
-                    return {};
+                    return Scene::poll(e);
                 }
 
                 _player->setSource(0, 10);
@@ -324,10 +324,16 @@ ScreenAction Opening::poll(const sf::Event& e)
                 _player->setDirection(Direction::DOWN);
             }
             break;
+
+            case sf::Keyboard::Space:
+            {
+                return { ScreenActionType::CHANGE_SCENE, 1 };
+            }
+            break;
         }
     }
 
-    return {};
+    return Scene::poll(e);
 }
 
 ScreenAction Opening::timestep()

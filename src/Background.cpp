@@ -32,6 +32,7 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
     }
 
     initZones();
+    initTransitionPoints();
 }
 
 void Background::initZones()

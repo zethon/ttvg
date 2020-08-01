@@ -25,6 +25,8 @@ class EuclidHouse : public Scene
 public:
     EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target);
 
+    ScreenAction poll(const sf::Event& e) override;
+
 private:
     BackgroundSharedPtr                 _background;
     PlayerPtr                           _player;
