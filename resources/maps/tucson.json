@@ -55,6 +55,16 @@
             ]
         }
     ],
+    "transitions"
+    [
+        {
+            "id": "euclid_house",
+            "x": 51, 
+            "y": 80,
+            "type": "manual",
+            "description" : "Your House"
+        }
+    ],
     "vehicles":
     {
         "assets":

@@ -3,12 +3,6 @@
 namespace tt
 {
 
-enum class GameScreens
-{
-    TUCSON = 0,
-    EUCLIDHOUSE
-};
-
 enum Direction
 {
     NONE    = 0x00,
