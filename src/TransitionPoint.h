@@ -24,6 +24,7 @@ struct Transition
     sf::Vector2f    position;
     bool            enabled;
     Type            type;
+    std::uint32_t   newscene;
 
     bool operator==(const Transition& other)
     {

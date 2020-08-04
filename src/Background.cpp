@@ -78,38 +78,35 @@ sf::FloatRect Background::getWorldTileRect() const
     return { 0, 0, width, height };
 }
 
-std::string Background::zoneName(const sf::Vector2f& v)
+TileInfo Background::zoneName(const sf::Vector2f& v)
 {
-//     auto tr = [](const Transition& t)
-//     {
-//         return t.position;
-//     };
-
-//     auto tbegin = boost::make_transform_iterator(_transitions.begin(), tr);
-//     auto tend = boost::make_transform_iterator(_transitions.end(), tr);
-//     auto result = std::equal_range(tbegin, tend, v);
-//     if (result != _transitions.end())
-//     {
-
-//     }
-
-//     // auto transition = std::binary_search(_transitions.begin(), _transitions.end(),
-//     //     [](const Transition& lhs, const Transition& rhs)
-//     //     {
-//     //         return lhs.position == rhs.position;
-//     //     });
-    
-// // auto transition = std::binary_search(_transitions.begin(), _transitions.end(), 
+    // TODO: This is ugly, figure out a better way to search
+    // the set. See: https://bit.ly/3fn03k9
+    Transition temp;
+    temp.position = v;
+    auto result = _transitions.find(temp);
+    if (result != _transitions.end())
+    {
+        TileInfo info;
+        info.tile = v;
+        info.type = TileType::TRANSITION;
+        info.data = *result;
+        return info;
+    }
 
     for (const auto& [name, rect] : _zones)
     {
         if (RectContains(rect, v))
         {
-            return name;
+            TileInfo info;
+            info.tile = v;
+            info.type = TileType::ZONE_NAME;
+            info.data = name;
+            return info;
         }
     }
 
-    return std::string();
+    return {};
 }
 
 } // namespace tt

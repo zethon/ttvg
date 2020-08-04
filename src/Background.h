@@ -94,10 +94,7 @@ public:
 
     std::string mapname() const { return _mapname; }
 
-    // TODO: there are some interesting optimizations that
-    // could be done here, which might be interesting to do
-    // but there are other things I want to do right now
-    std::string zoneName(const sf::Vector2f& v);
+    TileInfo zoneName(const sf::Vector2f& v);
 
 protected:
     std::unique_ptr<sf::Texture>    _texture;

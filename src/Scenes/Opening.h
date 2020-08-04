@@ -181,6 +181,7 @@ private:
     sf::Vector2f animeCallback();
 
     void updateMessage();
+    void updateCurrentTile(const TileInfo& info);
 
     void toggleHighlight();
 
@@ -190,18 +191,17 @@ private:
 
     BackgroundSharedPtr                 _background;
     PlayerPtr                           _player;
+    TileInfo                            _currentTile;
 
     sf::Clock                           _globalClock;
     nl::json                            _json;
 
     std::unique_ptr<VehicleFactory>     _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;
+    bool                                _updateTraffic = true;
 
     std::unique_ptr<ItemFactory>        _itemFactory;
     std::vector<ItemPtr>                _items;
-
-    bool                                _updateTraffic = true;
-
 };
 
 } // namespace tt

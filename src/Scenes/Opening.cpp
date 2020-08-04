@@ -73,7 +73,8 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     createItems();
 
     sf::Vector2f tile{ getPlayerTile() };
-    _statusBar.setZoneText(_background->zoneName(tile));
+    auto tileinfo = _background->zoneName(tile);
+    updateCurrentTile(tileinfo);
 
     _missionText.setText("Find the magic vagina");
 }
@@ -327,7 +328,11 @@ ScreenAction Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Space:
             {
-                return { ScreenActionType::CHANGE_SCENE, 1 };
+                if (_currentTile.type == TileType::TRANSITION)
+                {
+                    auto transinfo = boost::any_cast<Transition>(_currentTile.data);
+                    return { ScreenActionType::CHANGE_SCENE, transinfo.newscene };
+                }
             }
             break;
         }
@@ -543,7 +548,8 @@ sf::Vector2f Opening::animeCallback()
     if (moved)
     {
         sf::Vector2f tile{ getPlayerTile() };
-        _statusBar.setZoneText(_background->zoneName(tile));
+        auto tileinfo = _background->zoneName(tile);
+        updateCurrentTile(tileinfo);
     }
 
     return _player->getPosition();
@@ -557,6 +563,24 @@ sf::Vector2f Opening::animeCallback()
 void Opening::updateMessage()
 {
     _missionText.setText("Find the magic vagina");
+}
+
+void Opening::updateCurrentTile(const TileInfo& info)
+{
+    _currentTile = info;
+
+    switch (_currentTile.type)
+    {
+        default:
+            _statusBar.setZoneText({});
+        break;
+
+        case TileType::ZONE_NAME:
+        {
+            _statusBar.setZoneText(boost::any_cast<std::string>(_currentTile.data));
+        }
+        break;
+    }
 }
 
 void Opening::toggleHighlight()
