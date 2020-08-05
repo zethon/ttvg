@@ -1,0 +1,7 @@
+{
+    "name":         "Sidewalk",
+    "description":  "You can walk safely here.",
+    "obtainable":   false,
+    "attributes":   { }
+}
+

@@ -1,0 +1,12 @@
+{
+    "name":         "Chinese Restaurant",
+    "description":  "No extra spicy restroom customer only.",
+    "obtainable":   false,
+    "blocking":     true,
+    "attributes":   { },
+    "image-attr":   {   "width":    300,
+                        "height":   300,
+                        "scale-x":  1.0,
+                        "scale-y":  1.0     }
+
+}
