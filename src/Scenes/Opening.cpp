@@ -335,6 +335,12 @@ ScreenAction Opening::poll(const sf::Event& e)
                 }
             }
             break;
+
+            case sf::Keyboard::Num0:
+            {
+                _debugWindow.setVisible(!_debugWindow.visible());
+            }
+            break;
         }
     }
 
