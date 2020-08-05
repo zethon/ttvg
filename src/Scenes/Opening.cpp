@@ -31,14 +31,12 @@ constexpr auto MAPNAME = "tucson";
 constexpr auto MAX_VEHICLES = 25u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
-Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
-    : Scene{ resmgr, target },
+Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
+    : Scene{ resmgr, target, player },
       _missionText { resmgr, target },
       _statusBar{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _resources.clearCaches();
-
     _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
@@ -47,23 +45,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
 
-    auto textptr = _resources.cacheTexture("textures/tommy.png");
-    assert(textptr);
-    textptr->setSmooth(true);
-
-    _player = std::make_shared<Player>(*textptr, sf::Vector2i{ 64, 64 });
-    _player->setSource(0, 10);
-    _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
-    _player->setOrigin(0.0f, 0.0f);
-    _player->setPosition(PLAYER_START_X, PLAYER_START_Y);
-    _player->setAnimeCallback(
-        [this]() 
-        { 
-            return this->animeCallback(); 
-        });
-        
-    addUpdateable(_player);
-
     // the order in which we add everything to the draw'able
     // vector is important, so we do it all at the end of
     // the function
@@ -71,10 +52,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
 
     initTraffic();
     createItems();
-
-    sf::Vector2f tile{ getPlayerTile() };
-    auto tileinfo = _background->zoneName(tile);
-    updateCurrentTile(tileinfo);
 
     _missionText.setText("Find the magic vagina");
 }
@@ -133,6 +110,32 @@ void Opening::createItems()
         }
     }
 
+}
+
+void Opening::enter()
+{
+    Scene::enter();
+
+    _player->setSource(0, 10);
+    _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
+    _player->setOrigin(0.0f, 0.0f);
+    _player->setPosition(PLAYER_START_X, PLAYER_START_Y);
+    _player->setAnimeCallback(
+        [this]()
+        {
+            return this->animeCallback();
+        });
+
+    addUpdateable(_player);
+
+    sf::Vector2f tile{ getPlayerTile() };
+    auto tileinfo = _background->zoneName(tile);
+    updateCurrentTile(tileinfo);
+}
+
+void Opening::exit()
+{
+    Scene::exit();
 }
 
 void Opening::initTraffic()

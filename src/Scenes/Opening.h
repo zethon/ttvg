@@ -22,7 +22,7 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-class StatusBar : public Scene
+class StatusBar : public Screen
 {
     sf::Font    _statusFont;
 
@@ -32,7 +32,7 @@ class StatusBar : public Scene
 
 public: 
     StatusBar(ResourceManager& resmgr, sf::RenderTarget& target)
-        : Scene(resmgr, target)
+        : Screen(resmgr, target)
     {
         _background = std::make_shared<sf::RectangleShape>();
         _background->setFillColor(sf::Color{ 100, 100, 0, 104 });
@@ -69,7 +69,7 @@ public:
     }
 };
 
-class DebugWindow : public Scene
+class DebugWindow : public Screen
 {
     sf::Font    _debugFont;
 
@@ -78,7 +78,7 @@ class DebugWindow : public Scene
 
 public:
     DebugWindow(ResourceManager& resmgr, sf::RenderTarget& target)
-        : Scene(resmgr, target)
+        : Screen(resmgr, target)
     {
         setVisible(false);
 
@@ -111,7 +111,7 @@ public:
     }
 };
 
-class MissionText : public Scene
+class MissionText : public Screen
 {
     sf::Font                            _font;
     std::shared_ptr<sf::Text>           _text;
@@ -119,7 +119,7 @@ class MissionText : public Scene
 
 public:
     MissionText(ResourceManager& resmgr, sf::RenderTarget& target)
-        : Scene(resmgr, target)
+        : Screen(resmgr, target)
     {
         _background = std::make_shared<sf::RectangleShape>();
         _background->setFillColor(sf::Color{ 0, 0, 0, 175 });
@@ -158,7 +158,7 @@ class Opening : public Scene
 {
 
 public:
-    Opening(ResourceManager& resmgr, sf::RenderTarget& target);
+    Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player);
 
     void createItems();
 
@@ -171,6 +171,9 @@ public:
         auto playerxy = _player->getGlobalCenter();
         return _background->getTileFromGlobal(playerxy);
     }
+
+    void enter() override;
+    void exit() override;
 
 private:
 
@@ -190,7 +193,7 @@ private:
     DebugWindow                         _debugWindow;
 
     BackgroundSharedPtr                 _background;
-    PlayerPtr                           _player;
+    //PlayerPtr                           _player;
     TileInfo                            _currentTile;
 
     sf::Clock                           _globalClock;

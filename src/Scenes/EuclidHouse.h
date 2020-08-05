@@ -23,7 +23,7 @@ class EuclidHouse : public Scene
 {
 
 public:
-    EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target);
+    EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player);
 
     ScreenAction poll(const sf::Event& e) override;
 

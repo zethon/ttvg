@@ -6,6 +6,7 @@
 
 #include "Screen.h"
 #include "AnimatedSprite.h"
+#include "Player.h"
 
 namespace tt
 {
@@ -23,6 +24,7 @@ public:
 private:
     std::size_t             _currentScene = 0;
     std::vector<ScenePtr>   _scenes;
+    PlayerPtr               _player;
 
 };
 
