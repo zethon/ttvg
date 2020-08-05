@@ -192,7 +192,7 @@ private:
     StatusBar                           _statusBar;
     DebugWindow                         _debugWindow;
 
-    BackgroundSharedPtr                 _background;
+    //BackgroundSharedPtr                 _background;
     //PlayerPtr                           _player;
     TileInfo                            _currentTile;
 

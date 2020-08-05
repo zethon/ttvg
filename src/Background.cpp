@@ -85,7 +85,7 @@ TileInfo Background::zoneName(const sf::Vector2f& v)
     Transition temp;
     temp.position = v;
     auto result = _transitions.find(temp);
-    if (result != _transitions.end())
+        if (result != _transitions.end())
     {
         TileInfo info;
         info.tile = v;

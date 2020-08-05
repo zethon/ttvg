@@ -24,6 +24,12 @@ void Screen::addUpdateable(IUpdateablePtr updateable)
     _updateables.push_back(updateable);
 }
 
+void Screen::removeUpdateable(IUpdateablePtr updateable)
+{
+    _updateables.erase(std::remove_if(_updateables.begin(), _updateables.end(),
+        [&updateable](const IUpdateablePtr& o) { return o && (o.get() == updateable.get()); }));
+}
+
 void Screen::clearUpdateable()
 {
     _updateables.clear();

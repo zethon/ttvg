@@ -26,11 +26,12 @@ public:
     EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player);
 
     ScreenAction poll(const sf::Event& e) override;
+    void draw() override;
+
+    void enter() override;
 
 private:
     BackgroundSharedPtr                 _background;
-    PlayerPtr                           _player;
-
 };
 
 } // namespace tt

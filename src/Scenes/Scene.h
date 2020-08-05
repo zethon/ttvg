@@ -4,6 +4,7 @@
 
 #include "../Screen.h"
 #include "../Player.h"
+#include "../Background.h"
 
 namespace tt
 {
@@ -22,8 +23,12 @@ public:
     virtual void exit();
 
 protected:
+    bool walkPlayer(std::uint32_t speed);
+
     sf::Vector2f            _lastPlayerPos;
     std::weak_ptr<Player>   _weakPlayer;
+
+    BackgroundSharedPtr     _background;
     PlayerPtr               _player;
 };
 

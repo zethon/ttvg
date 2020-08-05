@@ -53,6 +53,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
     initTraffic();
     createItems();
 
+    _lastPlayerPos = sf::Vector2f(PLAYER_START_X, PLAYER_START_Y);
     _missionText.setText("Find the magic vagina");
 }
 
@@ -119,7 +120,6 @@ void Opening::enter()
     _player->setSource(0, 10);
     _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
     _player->setOrigin(0.0f, 0.0f);
-    _player->setPosition(PLAYER_START_X, PLAYER_START_Y);
     _player->setAnimeCallback(
         [this]()
         {
@@ -494,67 +494,7 @@ void Opening::adjustView()
 
 sf::Vector2f Opening::animeCallback()
 {
-    const auto stepSize = STEPSIZE 
-        + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-            || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
-
-    bool moved = false;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-    {
-        auto xx = _player->getGlobalLeft();
-        auto [x, y] = _player->getPosition();
-        assert(xx >= 0);
-        if (xx == 0) return _player->getPosition();
-
-        xx -= stepSize;
-        if (xx < 0) xx = 0;
-
-        _player->setGlobalLeft(xx);
-        moved = true;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-    {
-        const auto boundaryRight = _background->getGlobalBounds().width;
-
-        auto x = _player->getGlobalRight();
-        assert(x <= boundaryRight);
-        if (x == boundaryRight) return _player->getPosition();
-
-        x += stepSize;
-        if (x > boundaryRight) x = boundaryRight;
-        _player->setGlobalRight(x);
-        moved = true;
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-    {
-        auto y = _player->getGlobalTop();
-        assert(y >= 0);
-        if (y == 0) return _player->getPosition();
-
-        y -= stepSize;
-        if (y < 0) y = 0;
-        _player->setGlobalTop(y);
-        moved = true;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-    {
-        const auto boundaryBottom = _background->getGlobalBounds().height;
-
-        auto y = _player->getGlobalBottom();
-        assert(y <= boundaryBottom);
-        if (y == boundaryBottom) return _player->getPosition();
-
-        y += stepSize;
-        if (y > boundaryBottom)
-        {
-            y = boundaryBottom;
-        }
-        _player->setGlobalBottom(y);
-        moved = true;
-    }
-
-    if (moved)
+    if (walkPlayer(STEPSIZE))
     {
         sf::Vector2f tile{ getPlayerTile() };
         auto tileinfo = _background->zoneName(tile);
@@ -562,6 +502,76 @@ sf::Vector2f Opening::animeCallback()
     }
 
     return _player->getPosition();
+
+    //const auto stepSize = STEPSIZE
+    //    + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
+    //        || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
+
+    //bool moved = false;
+    //if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+    //{
+    //    auto xx = _player->getGlobalLeft();
+    //    auto[x, y] = _player->getPosition();
+    //    assert(xx >= 0);
+    //    if (xx == 0) return _player->getPosition();
+
+    //    xx -= stepSize;
+    //    if (xx < 0) xx = 0;
+
+    //    _player->setGlobalLeft(xx);
+    //    moved = true;
+    //}
+    //else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+    //{
+    //    const auto boundaryRight = _background->getGlobalBounds().width;
+
+    //    auto x = _player->getGlobalRight();
+    //    assert(x <= boundaryRight);
+    //    if (x == boundaryRight) return _player->getPosition();
+
+    //    x += stepSize;
+    //    if (x > boundaryRight) x = boundaryRight;
+    //    _player->setGlobalRight(x);
+    //    moved = true;
+    //}
+
+    //if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+    //{
+    //    auto y = _player->getGlobalTop();
+    //    assert(y >= 0);
+    //    if (y == 0) return _player->getPosition();
+
+    //    y -= stepSize;
+    //    if (y < 0) y = 0;
+    //    _player->setGlobalTop(y);
+    //    moved = true;
+    //}
+    //else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    //{
+    //    const auto boundaryBottom = _background->getGlobalBounds().height;
+
+    //    auto y = _player->getGlobalBottom();
+    //    assert(y <= boundaryBottom);
+    //    if (y == boundaryBottom) return _player->getPosition();
+
+    //    y += stepSize;
+    //    if (y > boundaryBottom)
+    //    {
+    //        y = boundaryBottom;
+    //    }
+    //    _player->setGlobalBottom(y);
+    //    moved = true;
+    //}
+
+    //if (moved)
+    //{
+    //    sf::Vector2f tile{ getPlayerTile() };
+    //    auto tileinfo = _background->zoneName(tile);
+    //    updateCurrentTile(tileinfo);
+    //}
+
+    //return _player->getPosition();
+
 }
 
 //
@@ -587,6 +597,13 @@ void Opening::updateCurrentTile(const TileInfo& info)
         case TileType::ZONE_NAME:
         {
             _statusBar.setZoneText(boost::any_cast<std::string>(_currentTile.data));
+        }
+        break;
+
+        case TileType::TRANSITION:
+        {
+            auto transinfo = boost::any_cast<Transition>(_currentTile.data);
+            _statusBar.setZoneText(transinfo.description);
         }
         break;
     }

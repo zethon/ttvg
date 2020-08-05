@@ -47,6 +47,7 @@ public:
     }
 
     void addUpdateable(IUpdateablePtr updateable);
+    void removeUpdateable(IUpdateablePtr updateable);
     void clearUpdateable();
 
     // iterate all draw'able obects
