@@ -23,7 +23,7 @@ public:
     virtual void exit();
 
 protected:
-    bool walkPlayer(std::uint32_t speed);
+    [[maybe_unused]] bool walkPlayer(std::uint32_t speed);
 
     sf::Vector2f            _lastPlayerPos;
     std::weak_ptr<Player>   _weakPlayer;

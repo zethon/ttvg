@@ -29,9 +29,6 @@ public:
     void draw() override;
 
     void enter() override;
-
-private:
-    BackgroundSharedPtr                 _background;
 };
 
 } // namespace tt

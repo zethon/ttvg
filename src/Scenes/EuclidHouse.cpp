@@ -108,12 +108,15 @@ void EuclidHouse::enter()
 {
     Scene::enter();
 
-    //_player->setAnimeCallback(
-    //    [this]()->sf::Vector2f
-    //    {
+    _player->setAnimeCallback(
+        [this]()->sf::Vector2f
+        {
+            this->walkPlayer(10);
+            return _player->getPosition();
+        }
+    );
 
-    //    }
-    //);
+    addUpdateable(_player);
 }
 
 } // namespace tt
