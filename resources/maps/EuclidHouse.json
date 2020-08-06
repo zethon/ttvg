@@ -1,0 +1,24 @@
+{
+    "zones":
+    [
+        { 
+            "name" : "Computer",
+            "rects" :
+            [
+                "18,12,19,15" 
+            ]
+        }
+    ],
+    "transitions":
+    [
+        {
+            "id": "tucson",
+            "x": 10, 
+            "y": 18,
+            "type": "manual",
+            "description" : "Go Outside",
+            "enabled": true,
+            "newscene": 0
+        }
+    ]
+}

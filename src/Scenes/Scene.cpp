@@ -73,8 +73,7 @@ bool Scene::walkPlayer(std::uint32_t stepsize)
         const auto boundaryBottom = _background->getGlobalBounds().height;
 
         auto y = _player->getGlobalBottom();
-        assert(y <= boundaryBottom);
-        if (y == boundaryBottom) return false;
+        if (y >= boundaryBottom) return false;
 
         y += stepSize;
         if (y > boundaryBottom)

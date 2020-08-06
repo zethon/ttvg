@@ -6,6 +6,8 @@
 #include "../Player.h"
 #include "../Background.h"
 
+#include "Hud.h"
+
 namespace tt
 {
 
@@ -29,6 +31,8 @@ public:
     }
 
 protected:
+    virtual void updateCurrentTile(const TileInfo& info) = 0;
+
     [[maybe_unused]] bool walkPlayer(std::uint32_t speed);
 
     sf::Vector2f            _lastPlayerPos;

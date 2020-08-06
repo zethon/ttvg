@@ -11,6 +11,7 @@ constexpr auto STEPSIZE = 16u;
 
 EuclidHouse::EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
     : Scene(resmgr, target, player),
+      _hud{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
     _background = std::make_shared<Background>("EuclidHouse", _resources, sf::Vector2f{ 16, 16 });
@@ -20,6 +21,8 @@ EuclidHouse::EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, Play
         static_cast<float>(_window.getSize().x) / static_cast<float>(_background->getTexture()->getSize().x),
         static_cast<float>(_window.getSize().y) / static_cast<float>(_background->getTexture()->getSize().y) };
     _background->setScale(bgscale);
+
+    _hud.setVisible(false);
 
     addDrawable(_background);
 }
@@ -103,6 +106,12 @@ ScreenAction EuclidHouse::poll(const sf::Event& e)
                 _debugWindow.setVisible(!_debugWindow.visible());
             }
             break;
+
+            case sf::Keyboard::Period:
+            {
+                _hud.setVisible(!_hud.visible());
+            }
+            break;
         }
     }
 
@@ -135,6 +144,7 @@ void EuclidHouse::draw()
     Scene::draw();
     _window.draw(*_player);
 
+    _hud.draw();
     _debugWindow.draw();
 }
 
@@ -147,12 +157,40 @@ void EuclidHouse::enter()
     _player->setAnimeCallback(
         [this]()->sf::Vector2f
         {
-            this->walkPlayer(STEPSIZE);
+            if (walkPlayer(STEPSIZE))
+            {
+                sf::Vector2f tile{ getPlayerTile() };
+                auto tileinfo = _background->zoneName(tile);
+                updateCurrentTile(tileinfo);
+            }
             return _player->getPosition();
         }
     );
 
     addUpdateable(_player);
+}
+
+void EuclidHouse::updateCurrentTile(const TileInfo & info)
+{
+    switch (info.type)
+    {
+        default:
+            _hud.setZoneText({});
+            break;
+
+        case TileType::ZONE_NAME:
+        {
+            _hud.setZoneText(boost::any_cast<std::string>(info.data));
+        }
+        break;
+
+        case TileType::TRANSITION:
+        {
+            auto transinfo = boost::any_cast<Transition>(info.data);
+            _hud.setZoneText(transinfo.description);
+        }
+        break;
+    }
 }
 
 } // namespace tt

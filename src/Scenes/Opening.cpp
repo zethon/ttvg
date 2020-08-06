@@ -34,7 +34,7 @@ constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
     : Scene{ resmgr, target, player },
       _missionText { resmgr, target },
-      _statusBar{ resmgr, target },
+      _hud{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
     _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
@@ -458,7 +458,7 @@ void Opening::draw()
     _window.draw(*_player);
   
     _window.setView(_window.getDefaultView());
-    _statusBar.draw();
+    _hud.draw();
     _debugWindow.draw();
     _missionText.draw();
 }
@@ -521,19 +521,19 @@ void Opening::updateCurrentTile(const TileInfo& info)
     switch (_currentTile.type)
     {
         default:
-            _statusBar.setZoneText({});
+            _hud.setZoneText({});
         break;
 
         case TileType::ZONE_NAME:
         {
-            _statusBar.setZoneText(boost::any_cast<std::string>(_currentTile.data));
+            _hud.setZoneText(boost::any_cast<std::string>(_currentTile.data));
         }
         break;
 
         case TileType::TRANSITION:
         {
             auto transinfo = boost::any_cast<Transition>(_currentTile.data);
-            _statusBar.setZoneText(transinfo.description);
+            _hud.setZoneText(transinfo.description);
         }
         break;
     }

@@ -13,6 +13,7 @@
 #include "../Player.h"
 
 #include "Scene.h"
+#include "Hud.h"
 
 namespace nl = nlohmann;
 
@@ -74,8 +75,12 @@ public:
 
     void enter() override;
 
+protected:
+    void updateCurrentTile(const TileInfo& info) override;
+
 private:
-    DebugWindow2                         _debugWindow;
+    Hud             _hud;
+    DebugWindow2    _debugWindow;
 };
 
 } // namespace tt
