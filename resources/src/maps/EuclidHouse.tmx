@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="1">
  <tileset firstgid="1" source="city_tileset.tsx"/>
  <tileset firstgid="1037" source="Interior.tsx"/>
  <tileset firstgid="2573" source="interior2.tsx"/>
- <layer id="1" name="Tile Layer 1" width="20" height="20">
+ <tileset firstgid="3597" source="interior5.tsx"/>
+ <tileset firstgid="4621" source="interior3.tsx"/>
+ <tileset firstgid="6925" source="nature.tsx"/>
+ <layer id="4" name="Floor" width="20" height="20">
   <data encoding="base64" compression="zstd">
-   KLUv/WBABaUBAMgZAAAAGxoAAAAcAAAAH0E+AAAAQB4dPwAcCQDAwMEkF+fgUyG7qhN7qABN4WcEUEmj7g0=
+   KLUv/WBABfUBAPgBAAAAAwIAAAAEAAAABykmAAAAKAYFJwAAAPEDBPEDCgCZwgneI1yYkO1sOFUtW9V3rxWWKfyMACpp1L0B
   </data>
  </layer>
- <layer id="2" name="Tile Layer 2" width="20" height="20">
+ <layer id="8" name="Floor2" width="20" height="20">
   <data encoding="base64" compression="zstd">
-   KLUv/WBABe0EAOKJHCaQOYICTw6s1D85sLRLDtjtdrvLDKtmDmbMzGRWMYPZiCKlFwHhHhUfxTfxSUR8EN/D57DwKXwJH8IL+AC+zsdZB5fBVXARTJt02SybS3NlLky0QZENUrko1+SSNGwM9tgc1bgY1+I6G9gEph/pE/1AARIgsMPy4SoA0A+AfjChn12qHaAq5rnX/TTaae6n0bgYVMIyZdpQbwQ=
+   KLUv/WBABU0JANaXPTvwsgAQAP///wNf6P8DDwAAAAADDwDA/P//H75g/YcvupkZq8rUJnm+QLAYRvEFlSQh3yqAn8yKptR0OiwALQAuADkejhVPxUvxULwTz8Qr8UhgeBeehVfhUXgTnoQX4Qo8Am/AE/ACPADv5/kctXPpXDkXznVz2SQIpwcnB6cGJwZXy8VyrVwqV8oVukAXyo/n4/V4PN6Op+MFB56BmSfzYh7Me3kuO3nRM3klj+SN3DjZONU40TjNOMkYcRJxCnECcfpw9Vw8B6OaI5pR6AhU5BF5Q56QF+QBifFgvBfPxWvxWHh4HR6Ht+FpeBkWPAUvwUPwAhMgkMNiBxmgoLajgN9kjKipZEFiIbEosZCY72wxSYwB0UAhwnC64NOF6XQrcvbBAg==
   </data>
  </layer>
- <layer id="3" name="Tile Layer 3" width="20" height="20">
+ <layer id="7" name="Walls" width="20" height="20">
   <data encoding="base64" compression="zstd">
-   KLUv/WBABXUCAOQCAADDCQAAxAkAADUEAAA2BADzCQAA9AkAAGUEAABmBADTDAAA1AwA8wwAAPQMAAsgsHPMAxlQIb8BFggoIZjhC0RVY6ghXa0t1Z+nDQ==
+   KLUv/WBABf0AACgAALwAvAgAFUAFGUDBHl7J+FKjAxT0TEEFC1CsACw=
+  </data>
+ </layer>
+ <layer id="6" name="Furniture1" width="20" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBABYUKADaaRDYAdwAFeVOTgQdAnP+/4P8vGAqh6hobMID/pWrKYA1AlQ6m+xgNmQMwKANAjVq0xvEwe/JD2AE1ADQANQAfjA/me/lefC6YrJaslKySrJCsjiSY00tnNPOR+EZ8Ll/LJ+ILoXisdqx0rHKscKxuRDKjmDRf54vyQcGwXdgsbBU2CtsEmVMMhNODj8g35BPyBfmAfD/stgAbgM02taX4OPVIAk7rixEtQ82IZiuwEdg2kZFRkdWTlZNVkwvE68OL5bXy8vDqcC14KXgleCF4HXgZmDqnmcRyWvlqvp8ZPzI4jFRGnJ8VPypanFiMHIwajBj8uPy0mDiVmFROnGZjq7HRkHCKsKXYUGwn0uY0YNuwaRgaIIADg4IHPqgmSSv6HJzOZ4NuZfJJWmYp5CSBKtmCiv4p8O1r2DjoMzO62RmN0Q5XZtiliWTnDe0rRg==
+  </data>
+ </layer>
+ <layer id="9" name="Furniture2" width="20" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBABb0GACJMIylgD6AAZJ4r5QXkGZufjMPGnZ8f+E9STpr/v3iJsoAWSMS5KN0VD8bcAdPESaKzPaeCxtk2TWQLqUBWHyuPjU0DdUYlJ4VTQsYKY3Wh2TJfyoeCOKPNKeAEoBpWDKuF9rA5nHwmJN9IxAYh8FzHx2EE28CieGleGYuv4kJ4HbwM3svnsvKpxHwwr+VjORsg8IIKJlwHHqQMTEQyv2qXjHAaBPIT1tqXFbtjUj/H1FZGwGcgx0JpvBPS06jB+KaECx101WkbeQehDE6GakwkbVAzoSgW
   </data>
  </layer>
 </map>
