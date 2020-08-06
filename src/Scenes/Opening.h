@@ -166,12 +166,6 @@ public:
     ScreenAction timestep() override;
     void draw() override;
 
-    sf::Vector2f getPlayerTile() const
-    {
-        auto playerxy = _player->getGlobalCenter();
-        return _background->getTileFromGlobal(playerxy);
-    }
-
     void enter() override;
     void exit() override;
 
@@ -192,8 +186,6 @@ private:
     StatusBar                           _statusBar;
     DebugWindow                         _debugWindow;
 
-    //BackgroundSharedPtr                 _background;
-    //PlayerPtr                           _player;
     TileInfo                            _currentTile;
 
     sf::Clock                           _globalClock;

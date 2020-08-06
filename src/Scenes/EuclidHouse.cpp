@@ -1,3 +1,5 @@
+#include <fmt/core.h>
+
 #include "EuclidHouse.h"
 
 namespace nl = nlohmann;
@@ -5,10 +7,13 @@ namespace nl = nlohmann;
 namespace tt
 {
     
+constexpr auto STEPSIZE = 16u;
+
 EuclidHouse::EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
-    : Scene(resmgr, target, player)
+    : Scene(resmgr, target, player),
+      _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>("EuclidHouse", _resources, sf::Vector2f{ 64, 64 });
+    _background = std::make_shared<Background>("EuclidHouse", _resources, sf::Vector2f{ 16, 16 });
     _background->setPosition(0.0f, 0.0f);
 
     const sf::Vector2f bgscale{
@@ -92,26 +97,57 @@ ScreenAction EuclidHouse::poll(const sf::Event& e)
             {
                 return { ScreenActionType::CHANGE_SCENE, 0 };
             }
+
+            case sf::Keyboard::Num0:
+            {
+                _debugWindow.setVisible(!_debugWindow.visible());
+            }
+            break;
         }
     }
 
+    if (_player->state() == AnimatedState::ANIMATED
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    {
+        _player->setState(AnimatedState::STILL);
+    }
+
     return Scene::poll(e);
+}
+
+ScreenAction EuclidHouse::timestep()
+{
+    std::stringstream ss;
+    ss << _player->getGlobalCenter();
+    std::stringstream ss1;
+    ss1 << getPlayerTile();
+    auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
+    _debugWindow.setText(posText);
+
+    return Scene::timestep();
 }
 
 void EuclidHouse::draw()
 {
     Scene::draw();
     _window.draw(*_player);
+
+    _debugWindow.draw();
 }
 
 void EuclidHouse::enter()
 {
     Scene::enter();
 
+    _player->setScale(2.25f, 2.25f);
+    _player->setPosition(600.0f, 580.0f);
     _player->setAnimeCallback(
         [this]()->sf::Vector2f
         {
-            this->walkPlayer(10);
+            this->walkPlayer(STEPSIZE);
             return _player->getPosition();
         }
     );

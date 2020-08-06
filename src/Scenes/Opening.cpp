@@ -347,11 +347,6 @@ ScreenAction Opening::poll(const sf::Event& e)
         }
     }
 
-    return Scene::poll(e);
-}
-
-ScreenAction Opening::timestep()
-{
     if (_player->state() == AnimatedState::ANIMATED
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right)
@@ -361,6 +356,11 @@ ScreenAction Opening::timestep()
         _player->setState(AnimatedState::STILL);
     }
 
+    return Scene::poll(e);
+}
+
+ScreenAction Opening::timestep()
+{
     timestepTraffic();
 
     //

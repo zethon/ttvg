@@ -22,6 +22,12 @@ public:
     virtual void enter();
     virtual void exit();
 
+    sf::Vector2f getPlayerTile() const
+    {
+        auto playerxy = _player->getGlobalCenter();
+        return _background->getTileFromGlobal(playerxy);
+    }
+
 protected:
     [[maybe_unused]] bool walkPlayer(std::uint32_t speed);
 
