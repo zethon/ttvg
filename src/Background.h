@@ -27,14 +27,6 @@ struct Zone
 
 void from_json(const nl::json& j, Zone& z);
 
-//struct ZoneInfo
-//{
-//    std::string name;
-//    std::string description;
-//};
-//
-//using Zone = std::tuple<ZoneInfo, sf::FloatRect>;
-
 class ResourceManager;
 
 class Background;
@@ -100,11 +92,9 @@ public:
 protected:
     std::unique_ptr<sf::Texture>    _texture;
     ZoneSet                         _zones;
-    std::set<Transition>            _transitions;    
 
 private:
     void initZones();
-    void initTransitionPoints();
 
     sf::Vector2f                _tilesize;
     std::unique_ptr<nl::json>   _json;

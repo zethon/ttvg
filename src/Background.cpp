@@ -44,7 +44,6 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
     }
 
     initZones();
-    //initTransitionPoints();
 }
 
 void Background::initZones()
@@ -71,17 +70,6 @@ void Background::initZones()
                 _zones.emplace(zone);
             }
         }
-    }
-}
-
-void Background::initTransitionPoints()
-{
-    if (!_json) return;
-    if (!_json->at("transitions").is_array()) return;
-
-    for (const auto& item : (*_json)["transitions"].items())
-    {
-        _transitions.emplace(item.value().get<tt::Transition>());
     }
 }
 
