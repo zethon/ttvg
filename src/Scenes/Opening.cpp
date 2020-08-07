@@ -231,6 +231,8 @@ std::uint16_t Opening::poll(const sf::Event& e)
             //
             case sf::Keyboard::I:
             {
+                std::cout   << std::endl;
+
                 const auto& inv = _player->getInventory();
 
                 std::vector<std::string> keys;
@@ -251,6 +253,18 @@ std::uint16_t Opening::poll(const sf::Event& e)
                     std::string key = *it;
                     std::cout << key << ": " << inv.at(key) << std::endl;
                 }
+
+                std::cout   << std::endl;
+
+                sf::Vector2f tile{ getPlayerTile() };
+
+                std::cout   << "{ \"x\": " << tile.x 
+                            << ", \"y\": " << tile.y
+                            << " }"
+                            << std::endl;
+
+                std::cout   << std::endl;
+                std::cout   << std::endl;
             }
             break;
 
