@@ -131,7 +131,6 @@ private:
     void adjustView();
     sf::Vector2f animeCallback();
 
-    void updateMessage();
     void updateCurrentTile(const TileInfo& info) override;
 
     void toggleHighlight();

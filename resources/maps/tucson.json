@@ -25,11 +25,18 @@
         },
         { 
             "name" : "Home",
+            "description": "Press SPACE to enter your filthy apartment",
             "rects" :
             [ 
                 "48,77,52,80", 
                 "53,77,54,79"
-            ]
+            ],
+            "transition":
+            {
+                "type": "manual",
+                "enabled": true,
+                "newscene": 1
+            }
         },
         { 
             "name" : "Dumpster",
@@ -53,45 +60,14 @@
             [
                 "95,75,128,106"
             ]
-        }
-    ],
-    "transitions":
-    [
-        {
-            "id": "euclid_house",
-            "x": 51, 
-            "y": 80,
-            "type": "manual",
-            "description" : "Your House",
-            "enabled": true,
-            "newscene": 1
         },
         {
-            "id": "3",
-            "x": 3, 
-            "y": 1,
-            "type": "manual",
-            "description" : "Your House",
-            "enabled": true,
-            "newscene": 1
-        },
-        {
-            "id": "2",
-            "x": 2, 
-            "y": 1,
-            "type": "manual",
-            "description" : "Your House",
-            "enabled": true,
-            "newscene": 1
-        },
-        {
-            "id": "1",
-            "x": 1, 
-            "y": 1,
-            "type": "manual",
-            "description" : "Your House",
-            "enabled": true,
-            "newscene": 1
+            "name": "Chinese Restaurant",
+            "description": "No extra spicy restroom customer only.",
+            "rects": 
+            [
+                "48,62,57,67"
+            ]
         }
     ],
     "vehicles":

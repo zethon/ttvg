@@ -160,7 +160,7 @@ void EuclidHouse::enter()
             if (walkPlayer(STEPSIZE))
             {
                 sf::Vector2f tile{ getPlayerTile() };
-                auto tileinfo = _background->zoneName(tile);
+                auto tileinfo = _background->getTileInfo(tile);
                 updateCurrentTile(tileinfo);
             }
             return _player->getPosition();
@@ -178,7 +178,7 @@ void EuclidHouse::updateCurrentTile(const TileInfo & info)
             _hud.setZoneText({});
             break;
 
-        case TileType::ZONE_NAME:
+        case TileType::ZONE:
         {
             _hud.setZoneText(boost::any_cast<std::string>(info.data));
         }
