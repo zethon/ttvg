@@ -18,22 +18,6 @@ namespace tt
 
 using Zone = std::tuple<std::string, sf::FloatRect>;
 
-// struct zone_compare
-// {
-
-// bool operator()(const sf::FloatRect& lhs, const sf::FloatRect& rhs) const
-// {
-//     if (lhs.left == rhs.left)
-//     {
-//         return lhs.top < rhs.top;
-//     }
-
-//     return lhs.left < rhs.left;
-// }
-
-// };
-// using ZoneSet = std::set<sf::FloatRect, zone_compare>;
-
 class ResourceManager;
 
 class Background;
@@ -99,7 +83,7 @@ public:
 protected:
     std::unique_ptr<sf::Texture>    _texture;
     ZoneSet                         _zones;
-    std::set<Transition>                   _transitions;    
+    std::set<Transition>            _transitions;    
 
 private:
     void initZones();

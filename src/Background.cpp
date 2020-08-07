@@ -1,7 +1,5 @@
 #include <fstream>
 
-#include <boost/iterator/transform_iterator.hpp>
-
 #include <fmt/core.h>
 
 #include "ResourceManager.h"
