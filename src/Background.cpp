@@ -82,6 +82,9 @@ sf::FloatRect Background::getWorldTileRect() const
 
 TileInfo Background::getTileInfo(const sf::Vector2f& v)
 {
+    // TODO: explore options of adding `RectConains` to 
+    // the compare functor so that we can use `std::set::find`
+    // to do this search, which should be faster
     for (const auto& zone : _zones)
     {
         if (RectContains(zone.rect, v))

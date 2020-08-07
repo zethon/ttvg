@@ -15,8 +15,7 @@ using Scale = sf::Vector2f;
 enum class TileType
 {
     NONE,
-    ZONE,
-    TRANSITION
+    ZONE
 };
 
 struct TileInfo
