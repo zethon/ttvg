@@ -16,6 +16,12 @@ namespace nl = nlohmann;
 namespace tt
 {
 
+struct ZoneInfo
+{
+    std::string name;
+    std::string description;
+};
+
 using Zone = std::tuple<std::string, sf::FloatRect>;
 
 class ResourceManager;
