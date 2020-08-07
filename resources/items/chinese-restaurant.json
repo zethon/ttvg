@@ -6,7 +6,7 @@
     "attributes":   { },
     "image-attr":   {   "width":    300,
                         "height":   300,
-                        "scale-x":  1.0,
+                        "scale-x":  1.15,
                         "scale-y":  1.0     }
 
 }
