@@ -180,14 +180,8 @@ void EuclidHouse::updateCurrentTile(const TileInfo & info)
 
         case TileType::ZONE:
         {
-            _hud.setZoneText(boost::any_cast<std::string>(info.data));
-        }
-        break;
-
-        case TileType::TRANSITION:
-        {
-            auto transinfo = boost::any_cast<Transition>(info.data);
-            _hud.setZoneText(transinfo.description);
+            const auto zoneinfo = boost::any_cast<Zone>(info.data);
+            _hud.setZoneText(zoneinfo.name);
         }
         break;
     }
