@@ -1,6 +1,8 @@
 #pragma once
 #include <cmath>
 
+#include <boost/any.hpp>
+
 #include <SFML/System/Vector2.hpp>
 
 namespace tt
@@ -9,6 +11,20 @@ namespace tt
 using Tile = sf::Vector2f;
 using Size = sf::Vector2f;
 using Scale = sf::Vector2f;
+
+enum class TileType
+{
+    NONE,
+    ZONE_NAME,
+    TRANSITION
+};
+
+struct TileInfo
+{
+    TileType        type;
+    boost::any      data;
+    Tile            tile;
+};
 
 namespace tiles
 {

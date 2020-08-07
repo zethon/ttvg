@@ -111,7 +111,7 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
 }
 
-std::uint16_t IntroScreen::poll(const sf::Event& e)
+ScreenAction IntroScreen::poll(const sf::Event& e)
 {
     if (e.type == sf::Event::KeyReleased
         && e.key.code == sf::Keyboard::Up)
@@ -147,7 +147,7 @@ std::uint16_t IntroScreen::poll(const sf::Event& e)
 
             case 0: // play game
             {
-                return SCREEN_GAME;
+                return { ScreenActionType::CHANGE_SCREEN, SCREEN_GAME };
             }
 
             case 2: // exit
@@ -172,10 +172,10 @@ std::uint16_t IntroScreen::poll(const sf::Event& e)
         }
     }
 
-    return 0;
+    return {};
 }
 
-std::uint16_t IntroScreen::timestep()
+ScreenAction IntroScreen::timestep()
 {
     auto[x, y] = _sprite->getPosition();
 
@@ -192,7 +192,7 @@ std::uint16_t IntroScreen::timestep()
         _clock.restart();
     }
 
-    return 0;
+    return {};
 }
 
 void IntroScreen::close()
@@ -234,27 +234,27 @@ SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
     _clock.restart();
 }
 
-std::uint16_t SplashScreen::poll(const sf::Event& e)
+ScreenAction SplashScreen::poll(const sf::Event& e)
 {
     if (e.type == sf::Event::KeyReleased
             && e.key.code == sf::Keyboard::Space)
     {
-        return SCREEN_INTRO;
+        return { ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO };
     }
 
-    return 0;
+    return {};
 }
 
-std::uint16_t SplashScreen::timestep()
+ScreenAction SplashScreen::timestep()
 {
     if (auto elapsed = _clock.getElapsedTime();
         elapsed.asMilliseconds() > 1500)
     {
         _tomWillKillSound.stop();
-        return SCREEN_INTRO;
+        return { ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO };
     }
 
-    return 0;
+    return {};
 }
 
 } // namespace tt

@@ -1,7 +1,5 @@
 #include <fstream>
 
-#include <boost/filesystem.hpp>
-
 #include <fmt/core.h>
 
 #include "ResourceManager.h"
@@ -32,6 +30,7 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
     }
 
     initZones();
+    initTransitionPoints();
 }
 
 void Background::initZones()
@@ -53,9 +52,20 @@ void Background::initZones()
 
             if (result)
             {
-                _zones.emplace_back(item.value()["name"].get<std::string>(), rect);
+                _zones.emplace(item.value()["name"].get<std::string>(), rect);
             }
         }
+    }
+}
+
+void Background::initTransitionPoints()
+{
+    if (!_json) return;
+    if (!_json->at("transitions").is_array()) return;
+
+    for (const auto& item : (*_json)["transitions"].items())
+    {
+        _transitions.emplace(item.value().get<tt::Transition>());
     }
 }
 
@@ -66,17 +76,35 @@ sf::FloatRect Background::getWorldTileRect() const
     return { 0, 0, width, height };
 }
 
-std::string Background::zoneName(const sf::Vector2f& v)
+TileInfo Background::zoneName(const sf::Vector2f& v)
 {
+    // TODO: This is ugly, figure out a better way to search
+    // the set. See: https://bit.ly/3fn03k9
+    Transition temp;
+    temp.position = v;
+    auto result = _transitions.find(temp);
+        if (result != _transitions.end())
+    {
+        TileInfo info;
+        info.tile = v;
+        info.type = TileType::TRANSITION;
+        info.data = *result;
+        return info;
+    }
+
     for (const auto& [name, rect] : _zones)
     {
         if (RectContains(rect, v))
         {
-            return name;
+            TileInfo info;
+            info.tile = v;
+            info.type = TileType::ZONE_NAME;
+            info.data = name;
+            return info;
         }
     }
 
-    return std::string();
+    return {};
 }
 
 } // namespace tt

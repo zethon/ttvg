@@ -22,17 +22,19 @@ void TooterEngine::drawScreen()
 
 void TooterEngine::poll(const sf::Event& e)
 {
-    if (auto id = _currentScreen->poll(e); id != 0)
+    if (auto action = _currentScreen->poll(e); 
+        action.type == ScreenActionType::CHANGE_SCREEN)
     {
-        changeScreen(id);
+        changeScreen(action.data);
     }
 }
 
 void TooterEngine::timestep()
 {
-    if (auto id = _currentScreen->timestep(); id != 0)
+    if (auto action = _currentScreen->timestep(); 
+        action.type == ScreenActionType::CHANGE_SCREEN)
     {
-        changeScreen(id);
+        changeScreen(action.data);
     }
 }
 

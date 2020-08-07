@@ -18,6 +18,19 @@ constexpr std::uint16_t SCREEN_OUTRO = 50;
 
 using DrawablePtr = std::shared_ptr<sf::Drawable>;
 
+enum class ScreenActionType
+{
+    NONE = 0,
+    CHANGE_SCREEN,
+    CHANGE_SCENE
+};
+
+struct ScreenAction
+{
+    ScreenActionType    type;
+    std::uint32_t       data;
+};
+
 class Screen
 {
 
@@ -34,16 +47,17 @@ public:
     }
 
     void addUpdateable(IUpdateablePtr updateable);
+    void removeUpdateable(IUpdateablePtr updateable);
     void clearUpdateable();
 
     // iterate all draw'able obects
     virtual void draw();
 
     // poll system/user events
-    [[maybe_unused]] virtual std::uint16_t poll(const sf::Event&);
+    [[maybe_unused]] virtual ScreenAction poll(const sf::Event&);
 
     // update positions and state
-    [[maybe_unused]] virtual std::uint16_t timestep();
+    [[maybe_unused]] virtual ScreenAction timestep();
 
     // clean up any resources
     virtual void close()

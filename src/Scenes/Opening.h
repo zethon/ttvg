@@ -16,60 +16,14 @@
 #include "../Player.h"
 
 #include "Scene.h"
+#include "Hud.h"
 
 namespace nl = nlohmann;
 
 namespace tt
 {
 
-class StatusBar : public Scene
-{
-    sf::Font    _statusFont;
-
-    std::shared_ptr<sf::RectangleShape> _background;
-    std::shared_ptr<sf::Text>           _zoneText;
-    std::shared_ptr<sf::Text>           _balanceText;
-
-public: 
-    StatusBar(ResourceManager& resmgr, sf::RenderTarget& target)
-        : Scene(resmgr, target)
-    {
-        _background = std::make_shared<sf::RectangleShape>();
-        _background->setFillColor(sf::Color{ 100, 100, 0, 104 });
-        _background->setPosition(5.f, 2.f);
-        _background->setSize(sf::Vector2f{ _window.getSize().x - 10.f, 40.f });
-        addDrawable(_background);
-
-        _statusFont = *(_resources.load<sf::Font>("fonts/mono_bold.ttf"));
-        _zoneText = std::make_shared<sf::Text>("", _statusFont);
-        _zoneText->setFillColor(sf::Color::White);
-        _zoneText->setPosition(10.f, 2.5f);
-        addDrawable(_zoneText);
-
-        _balanceText = std::make_shared<sf::Text>("Cash: $40.00", _statusFont);
-        _balanceText->setFillColor(sf::Color::White);
-        _balanceText->setPosition(10.f, 2.5f);
-        addDrawable(_balanceText);
-    }
-
-    void setZoneText(const std::string& zone)
-    {
-        _zoneText->setString(zone);
-        auto rect = _zoneText->getGlobalBounds();
-
-        if (zone.size() > 0)
-        {
-            _zoneText->setPosition(_window.getSize().x - (rect.width + 10.f), 2.f);
-        }
-    }
-
-    void setBalanceText(const std::string& text)
-    {
-        _balanceText->setString(text);
-    }
-};
-
-class DebugWindow : public Scene
+class DebugWindow : public Screen
 {
     sf::Font    _debugFont;
 
@@ -78,7 +32,7 @@ class DebugWindow : public Scene
 
 public:
     DebugWindow(ResourceManager& resmgr, sf::RenderTarget& target)
-        : Scene(resmgr, target)
+        : Screen(resmgr, target)
     {
         setVisible(false);
 
@@ -111,7 +65,7 @@ public:
     }
 };
 
-class MissionText : public Scene
+class MissionText : public Screen
 {
     sf::Font                            _font;
     std::shared_ptr<sf::Text>           _text;
@@ -119,7 +73,7 @@ class MissionText : public Scene
 
 public:
     MissionText(ResourceManager& resmgr, sf::RenderTarget& target)
-        : Scene(resmgr, target)
+        : Screen(resmgr, target)
     {
         _background = std::make_shared<sf::RectangleShape>();
         _background->setFillColor(sf::Color{ 0, 0, 0, 175 });
@@ -158,19 +112,16 @@ class Opening : public Scene
 {
 
 public:
-    Opening(ResourceManager& resmgr, sf::RenderTarget& target);
+    Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player);
 
     void createItems();
 
-    std::uint16_t poll(const sf::Event& e) override;
-    std::uint16_t timestep() override;
+    ScreenAction poll(const sf::Event& e) override;
+    ScreenAction timestep() override;
     void draw() override;
 
-    sf::Vector2f getPlayerTile() const
-    {
-        auto playerxy = _player->getGlobalCenter();
-        return _background->getTileFromGlobal(playerxy);
-    }
+    void enter() override;
+    void exit() override;
 
 private:
 
@@ -181,27 +132,25 @@ private:
     sf::Vector2f animeCallback();
 
     void updateMessage();
+    void updateCurrentTile(const TileInfo& info) override;
 
     void toggleHighlight();
 
     MissionText                         _missionText;
-    StatusBar                           _statusBar;
+    Hud                                 _hud;
     DebugWindow                         _debugWindow;
 
-    BackgroundSharedPtr                 _background;
-    PlayerPtr                           _player;
+    TileInfo                            _currentTile;
 
     sf::Clock                           _globalClock;
     nl::json                            _json;
 
     std::unique_ptr<VehicleFactory>     _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;
+    bool                                _updateTraffic = true;
 
     std::unique_ptr<ItemFactory>        _itemFactory;
     std::vector<ItemPtr>                _items;
-
-    bool                                _updateTraffic = true;
-
 };
 
 } // namespace tt

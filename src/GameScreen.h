@@ -6,6 +6,7 @@
 
 #include "Screen.h"
 #include "AnimatedSprite.h"
+#include "Player.h"
 
 namespace tt
 {
@@ -17,11 +18,13 @@ public:
     GameScreen(ResourceManager& resmgr, sf::RenderTarget& target);
 
     void draw() override;
-    std::uint16_t poll(const sf::Event&) override;
-    std::uint16_t timestep() override;
+    ScreenAction poll(const sf::Event&) override;
+    ScreenAction timestep() override;
 
 private:
-    ScenePtr    _currentScene;
+    std::size_t             _currentScene = 0;
+    std::vector<ScenePtr>   _scenes;
+    PlayerPtr               _player;
 
 };
 

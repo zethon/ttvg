@@ -9,23 +9,14 @@
 
 #include "TTUtils.h"
 #include "Tiles.hpp"
+#include "TransitionPoint.h"
 
 namespace nl = nlohmann;
 
 namespace tt
 {
 
-struct zone_compare
-{
-
-bool operator()(const sf::FloatRect& lhs, const sf::FloatRect& rhs) const
-{
-    return lhs.left < rhs.left;
-}
-
-};
-
-using ZoneSet = std::set<sf::FloatRect, zone_compare>;
+using Zone = std::tuple<std::string, sf::FloatRect>;
 
 class ResourceManager;
 
@@ -35,10 +26,25 @@ using BackgroundSharedPtr = std::shared_ptr<Background>;
 
 class Background : public sf::Sprite
 {
+    struct zone_compare
+    {
+        bool operator()(const Zone& z1, const Zone& z2) const
+        {
+            auto lhs = std::get<1>(z1);
+            auto rhs = std::get<1>(z2);
+
+            if (lhs.left == rhs.left)
+            {
+                return lhs.top < rhs.top;
+            }
+
+            return lhs.left < rhs.left;
+        }
+    };
+
+    using ZoneSet = std::set<Zone, zone_compare>;
 
 public:
-    using Zone = std::tuple<std::string, sf::FloatRect>;
-
     Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2f& tilesize);
 
     sf::FloatRect getWorldTileRect() const;
@@ -72,18 +78,16 @@ public:
 
     std::string mapname() const { return _mapname; }
 
-    // TODO: there are some interesting optimizations that
-    // could be done here, which might be interesting to do
-    // but there are other things I want to do right now
-    std::string zoneName(const sf::Vector2f& v);
+    TileInfo zoneName(const sf::Vector2f& v);
 
 protected:
-
     std::unique_ptr<sf::Texture>    _texture;
-    std::vector<Zone>               _zones;
+    ZoneSet                         _zones;
+    std::set<Transition>            _transitions;    
 
 private:
     void initZones();
+    void initTransitionPoints();
 
     sf::Vector2f                _tilesize;
     std::unique_ptr<nl::json>   _json;

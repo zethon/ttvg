@@ -31,14 +31,12 @@ constexpr auto MAPNAME = "tucson";
 constexpr auto MAX_VEHICLES = 25u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
-Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
-    : Scene{ resmgr, target },
+Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
+    : Scene{ resmgr, target, player },
       _missionText { resmgr, target },
-      _statusBar{ resmgr, target },
+      _hud{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _resources.clearCaches();
-
     _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
@@ -46,23 +44,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     sf::View view(sf::FloatRect(0.f, 0.f,
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
-
-    auto textptr = _resources.cacheTexture("textures/tommy.png");
-    assert(textptr);
-    textptr->setSmooth(true);
-
-    _player = std::make_shared<Player>(*textptr, sf::Vector2i{ 64, 64 });
-    _player->setSource(0, 10);
-    _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
-    _player->setOrigin(0.0f, 0.0f);
-    _player->setPosition(PLAYER_START_X, PLAYER_START_Y);
-    _player->setAnimeCallback(
-        [this]() 
-        { 
-            return this->animeCallback(); 
-        });
-        
-    addUpdateable(_player);
 
     // the order in which we add everything to the draw'able
     // vector is important, so we do it all at the end of
@@ -72,9 +53,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target)
     initTraffic();
     createItems();
 
-    sf::Vector2f tile{ getPlayerTile() };
-    _statusBar.setZoneText(_background->zoneName(tile));
-
+    _lastPlayerPos = sf::Vector2f(PLAYER_START_X, PLAYER_START_Y);
     _missionText.setText("Find the magic vagina");
 }
 
@@ -134,6 +113,31 @@ void Opening::createItems()
 
 }
 
+void Opening::enter()
+{
+    Scene::enter();
+
+    _player->setSource(0, 10);
+    _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
+    _player->setOrigin(0.0f, 0.0f);
+    _player->setAnimeCallback(
+        [this]()
+        {
+            return this->animeCallback();
+        });
+
+    addUpdateable(_player);
+
+    sf::Vector2f tile{ getPlayerTile() };
+    auto tileinfo = _background->zoneName(tile);
+    updateCurrentTile(tileinfo);
+}
+
+void Opening::exit()
+{
+    Scene::exit();
+}
+
 void Opening::initTraffic()
 {
     // initialize the traffic system
@@ -185,9 +189,8 @@ void Opening::initTraffic()
     _vehicleFactory->setPathFactory(pathFactory);
 }
 
-std::uint16_t Opening::poll(const sf::Event& e)
+ScreenAction Opening::poll(const sf::Event& e)
 {
-
     if (e.type == sf::Event::KeyPressed)
     {
         updateMessage();
@@ -285,7 +288,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 if (_player->state() == AnimatedState::ANIMATED
                     && _player->direction() == Direction::LEFT)
                 {
-                    return 0;
+                    return Scene::poll(e);
                 }
 
                 _player->setSource(0, 9);
@@ -300,7 +303,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 if (_player->state() == AnimatedState::ANIMATED
                     && _player->direction() == Direction::RIGHT)
                 {
-                    return 0;
+                    return Scene::poll(e);
                 }
 
                 _player->setSource(0, 11);
@@ -315,7 +318,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
-                    return 0;
+                    return Scene::poll(e);
                 }
 
                 _player->setSource(0, 8);
@@ -330,7 +333,7 @@ std::uint16_t Opening::poll(const sf::Event& e)
                 if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
-                    return 0;
+                    return Scene::poll(e);
                 }
 
                 _player->setSource(0, 10);
@@ -340,15 +343,24 @@ std::uint16_t Opening::poll(const sf::Event& e)
             }
             break;
 
+            case sf::Keyboard::Space:
+            {
+                if (_currentTile.type == TileType::TRANSITION)
+                {
+                    auto transinfo = boost::any_cast<Transition>(_currentTile.data);
+                    return { ScreenActionType::CHANGE_SCENE, transinfo.newscene };
+                }
+            }
+            break;
 
+            case sf::Keyboard::Num0:
+            {
+                _debugWindow.setVisible(!_debugWindow.visible());
+            }
+            break;
         }
     }
 
-    return 0;
-}
-
-std::uint16_t Opening::timestep()
-{
     if (_player->state() == AnimatedState::ANIMATED
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right)
@@ -358,6 +370,11 @@ std::uint16_t Opening::timestep()
         _player->setState(AnimatedState::STILL);
     }
 
+    return Scene::poll(e);
+}
+
+ScreenAction Opening::timestep()
+{
     timestepTraffic();
 
     //
@@ -384,7 +401,7 @@ std::uint16_t Opening::timestep()
     auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
     _debugWindow.setText(posText);
 
-    return 0;
+    return {};
 }
 
 void Opening::timestepTraffic()
@@ -455,7 +472,7 @@ void Opening::draw()
     _window.draw(*_player);
   
     _window.setView(_window.getDefaultView());
-    _statusBar.draw();
+    _hud.draw();
     _debugWindow.draw();
     _missionText.draw();
 }
@@ -491,70 +508,11 @@ void Opening::adjustView()
 
 sf::Vector2f Opening::animeCallback()
 {
-    const auto stepSize = STEPSIZE 
-        + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-            || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
-
-    bool moved = false;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-    {
-        auto xx = _player->getGlobalLeft();
-        auto [x, y] = _player->getPosition();
-        assert(xx >= 0);
-        if (xx == 0) return _player->getPosition();
-
-        xx -= stepSize;
-        if (xx < 0) xx = 0;
-
-        _player->setGlobalLeft(xx);
-        moved = true;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-    {
-        const auto boundaryRight = _background->getGlobalBounds().width;
-
-        auto x = _player->getGlobalRight();
-        assert(x <= boundaryRight);
-        if (x == boundaryRight) return _player->getPosition();
-
-        x += stepSize;
-        if (x > boundaryRight) x = boundaryRight;
-        _player->setGlobalRight(x);
-        moved = true;
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-    {
-        auto y = _player->getGlobalTop();
-        assert(y >= 0);
-        if (y == 0) return _player->getPosition();
-
-        y -= stepSize;
-        if (y < 0) y = 0;
-        _player->setGlobalTop(y);
-        moved = true;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-    {
-        const auto boundaryBottom = _background->getGlobalBounds().height;
-
-        auto y = _player->getGlobalBottom();
-        assert(y <= boundaryBottom);
-        if (y == boundaryBottom) return _player->getPosition();
-
-        y += stepSize;
-        if (y > boundaryBottom)
-        {
-            y = boundaryBottom;
-        }
-        _player->setGlobalBottom(y);
-        moved = true;
-    }
-
-    if (moved)
+    if (walkPlayer(STEPSIZE))
     {
         sf::Vector2f tile{ getPlayerTile() };
-        _statusBar.setZoneText(_background->zoneName(tile));
+        auto tileinfo = _background->zoneName(tile);
+        updateCurrentTile(tileinfo);
     }
 
     return _player->getPosition();
@@ -568,6 +526,31 @@ sf::Vector2f Opening::animeCallback()
 void Opening::updateMessage()
 {
     _missionText.setText("Find the magic vagina");
+}
+
+void Opening::updateCurrentTile(const TileInfo& info)
+{
+    _currentTile = info;
+
+    switch (_currentTile.type)
+    {
+        default:
+            _hud.setZoneText({});
+        break;
+
+        case TileType::ZONE_NAME:
+        {
+            _hud.setZoneText(boost::any_cast<std::string>(_currentTile.data));
+        }
+        break;
+
+        case TileType::TRANSITION:
+        {
+            auto transinfo = boost::any_cast<Transition>(_currentTile.data);
+            _hud.setZoneText(transinfo.description);
+        }
+        break;
+    }
 }
 
 void Opening::toggleHighlight()

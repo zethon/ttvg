@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="1">
+ <tileset firstgid="1" source="city_tileset.tsx"/>
+ <tileset firstgid="1037" source="Interior.tsx"/>
+ <tileset firstgid="2573" source="interior2.tsx"/>
+ <tileset firstgid="3597" source="interior5.tsx"/>
+ <tileset firstgid="4621" source="interior3.tsx"/>
+ <tileset firstgid="6925" source="nature.tsx"/>
+ <layer id="4" name="Floor" width="20" height="20" locked="1">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBABfUBAPgBAAAAAwIAAAAEAAAABykmAAAAKAYFJwAAAPEDBPEDCgCZwgneI1yYkO1sOFUtW9V3rxWWKfyMACpp1L0B
+  </data>
+ </layer>
+ <layer id="8" name="Floor2" width="20" height="20" locked="1">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBABU0JANaXPTvwsgAQAP///wNf6P8DDwAAAAADDwDA/P//H75g/YcvupkZq8rUJnm+QLAYRvEFlSQh3yqAn8yKptR0OiwALQAuADkejhVPxUvxULwTz8Qr8UhgeBeehVfhUXgTnoQX4Qo8Am/AE/ACPADv5/kctXPpXDkXznVz2SQIpwcnB6cGJwZXy8VyrVwqV8oVukAXyo/n4/V4PN6Op+MFB56BmSfzYh7Me3kuO3nRM3klj+SN3DjZONU40TjNOMkYcRJxCnECcfpw9Vw8B6OaI5pR6AhU5BF5Q56QF+QBifFgvBfPxWvxWHh4HR6Ht+FpeBkWPAUvwUPwAhMgkMNiBxmgoLajgN9kjKipZEFiIbEosZCY72wxSYwB0UAhwnC64NOF6XQrcvbBAg==
+  </data>
+ </layer>
+ <layer id="7" name="Walls" width="20" height="20" locked="1">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBABf0AACgAALwAvAgAFUAFGUDBHl7J+FKjAxT0TEEFC1CsACw=
+  </data>
+ </layer>
+ <layer id="6" name="Furniture1" width="20" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBABTUKAGbZQjUQVwAF6ednFB6knBkUHgCFR5G0I2s98D+AdJMnpB5AynqA/GIXrMKW1eCpzWLEyAhPT+DWDjYAMQAzAAfje9FkxWS1ZKVklWSF5MfJRxpwWl+Jj8S38ql8Iz4RqseKx2rHSscqxwpHajmxdEac6GXkEoZhu7BZ2CpsFDonTsoJ5SvyEfmGfEK+IB8Qu03AFmCzTW0AXk4uEU4QPhlfjK/lYzltw6YhZgSzGdgKbJkjIyOvEC8Qr5QXyuvDy8PF4LXgpeCV4IXgdeDFfDBf5+N8Tz4nGQ4fGj8zOow2I80Pi58VLk4tRg9GDkYNflZ+VE6cTEybk6bd2GxsNSacJGwqthQbipQ5Edg4DBkgkAOjaz6oJksr6hyczmeAbmXyWVomKeREJBBnSLnvFM0RuxtfLouFecl5vuZ5ZENww0n2DA1b
+  </data>
+ </layer>
+ <layer id="9" name="Furniture2" width="20" height="20">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBABf0HAPKMJSpgT0ABYDk8k0s++bmQ//Y0BYf/1/kfkc/hvyUxJqP0YCqmwo1p9qlPY/KTxCnCQtvmVADaPiDbR+Wx6lhxZGwYUeho5KRwSrhYWawqPFvnO/lMItDR5xRwAlANK4bVgnE2B07NKvlIRL4Qgc3b+DSW59Wh+CYuhNfBywBie7iZT+aL+WBeNpdGsA1cy8fyrXwqlrKhHCugoGAgwFkAFhxwAjNTyQEeohBM7qgDzAlbL/z4PYbLOgtCTlznKxO7PrUuYGSVWUWbSn7FqJfoU+OQnQ0IzypPiTuJ/r05BQTwcRyJU94Zgr2ZiLEZoqnhIF27BcZYLunFZk0tJg==
+  </data>
+ </layer>
+</map>

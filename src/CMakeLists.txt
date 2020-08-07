@@ -10,6 +10,7 @@ set(SOURCE_FILES
     Player.cpp
     ResourceManager.cpp
     Screen.cpp
+    TransitionPoint.cpp
     TTUtils.cpp
     Vehicle.cpp
     VehicleFactory.cpp
@@ -17,6 +18,8 @@ set(SOURCE_FILES
     Item.cpp
     ItemFactory.cpp
 
+    Scenes/Hud.cpp
+    Scenes/EuclidHouse.cpp
     Scenes/Opening.cpp
     Scenes/Scene.cpp
 )
@@ -35,6 +38,7 @@ set(HEADER_FILES
     ResourceManager.h
     Screen.h
     Tiles.hpp
+    TransitionPoint.h
     TTUtils.h
     Vehicle.h
     VehicleFactory.h
@@ -42,6 +46,8 @@ set(HEADER_FILES
     Item.h
     ItemFactory.h
 
+    Scenes/Hud.h
+    Scenes/EuclidHouse.h
     Scenes/Opening.h
     Scenes/Scene.h
 )
