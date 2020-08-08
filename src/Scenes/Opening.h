@@ -104,7 +104,6 @@ private:
     std::vector<VehiclePtr>             _vehicles;
     bool                                _updateTraffic = true;
 
-    std::unique_ptr<ItemFactory>        _itemFactory;
     std::vector<ItemPtr>                _items;
 };
 

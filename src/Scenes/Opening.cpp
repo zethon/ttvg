@@ -61,7 +61,7 @@ void Opening::createItems()
     //
     // Create items
     //
-    _itemFactory = std::make_unique<ItemFactory>(_resources);
+    auto itemFactory = ItemFactory(_resources);
 
     const auto& config = _background->json();
 
@@ -102,7 +102,7 @@ void Opening::createItems()
                 float y = (TILESIZE_Y * SCALE_BACKGROUND) * 
                             static_cast<int>(coord["y"]);
 
-                ItemPtr i = _itemFactory->createItem(
+                ItemPtr i = itemFactory.createItem(
                                                 itemId, 
                                                 sf::Vector2f { x, y } );
                 _items.push_back(i);
