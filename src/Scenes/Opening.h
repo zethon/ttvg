@@ -139,8 +139,6 @@ private:
     Hud                                 _hud;
     DebugWindow                         _debugWindow;
 
-    TileInfo                            _currentTile;
-
     sf::Clock                           _globalClock;
     nl::json                            _json;
 

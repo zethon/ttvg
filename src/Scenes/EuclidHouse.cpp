@@ -98,8 +98,16 @@ ScreenAction EuclidHouse::poll(const sf::Event& e)
 
             case sf::Keyboard::Space:
             {
-                return { ScreenActionType::CHANGE_SCENE, 0 };
+                if (_currentTile.type == TileType::ZONE)
+                {
+                    auto zone = boost::any_cast<Zone>(_currentTile.data);
+                    if (zone.transition.has_value())
+                    {
+                        return { ScreenActionType::CHANGE_SCENE, zone.transition->newscene };
+                    }
+                }
             }
+            break;
 
             case sf::Keyboard::Num0:
             {
@@ -172,15 +180,17 @@ void EuclidHouse::enter()
 
 void EuclidHouse::updateCurrentTile(const TileInfo & info)
 {
-    switch (info.type)
+    _currentTile = info;
+
+    switch (_currentTile.type)
     {
         default:
             _hud.setZoneText({});
-            break;
+        break;
 
         case TileType::ZONE:
         {
-            const auto zoneinfo = boost::any_cast<Zone>(info.data);
+            const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
             _hud.setZoneText(zoneinfo.name);
         }
         break;
