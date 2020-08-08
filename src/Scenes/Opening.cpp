@@ -19,8 +19,8 @@ constexpr auto SCALE_BACKGROUND = 2.25f;
 
 constexpr auto STEPSIZE = 16u;
 
-constexpr auto PLAYER_START_X = 1616.0f;
-constexpr auto PLAYER_START_Y = 2875.0f;
+constexpr auto PLAYER_START_X = 1660;
+constexpr auto PLAYER_START_Y = 2855.0f;
 
 constexpr auto TILESIZE_X = 16.0f;
 constexpr auto TILESIZE_Y = 16.0f;
@@ -159,7 +159,7 @@ ScreenAction Opening::poll(const sf::Event& e)
                         item->isObtainable() )
                     {
 
-                        _player->addItem(item->getID());
+                        _player->addItem(item);
                         _descriptionText.setText("Picked up " + item->getName());
                         _items.erase(it);
 
@@ -178,35 +178,10 @@ ScreenAction Opening::poll(const sf::Event& e)
 
                 const auto& inv = _player->getInventory();
 
-                std::vector<std::string> keys;
-
-                for(auto it = inv.begin(); it != inv.end(); it++)
+                for (const auto& item : _player->getInventory())
                 {
-                    keys.push_back(it->first);
+                    std::cout << item->getName() << '\n';
                 }
-
-                //
-                // Sort keys, so we can display these in some kind of order.
-                // Should really sort by display name rather than ID.
-                //
-                std::sort(keys.begin(), keys.end());
-
-                for(auto it = keys.begin(); it != keys.end(); it++)
-                {
-                    std::string key = *it;
-                    std::cout << key << ": " << inv.at(key) << std::endl;
-                }
-
-                std::cout   << std::endl;
-
-                sf::Vector2f tile{ getPlayerTile() };
-
-                std::cout   << "{ \"x\": " << tile.x 
-                            << ", \"y\": " << tile.y
-                            << " }"
-                            << std::endl;
-
-                std::cout   << std::endl;
                 std::cout   << std::endl;
             }
             break;

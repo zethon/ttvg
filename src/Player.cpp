@@ -59,13 +59,13 @@ void Player::setGlobalBottom(float bottom)
 }
 
 
-void Player::addItem(const std::string& itemID)
+void Player::addItem(ItemPtr item)
 {
-    _inventory[itemID]++;
+    _inventory.push_back(item);
 }
 
 
-const std::map<std::string, std::int32_t>& Player::getInventory() const
+const std::vector<ItemPtr>& Player::getInventory() const
 {
     return _inventory;
 }

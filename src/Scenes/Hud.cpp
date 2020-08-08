@@ -9,7 +9,7 @@ Hud::Hud(ResourceManager & resmgr, sf::RenderTarget & target, bool visible)
     _background = std::make_shared<sf::RectangleShape>();
     _background->setFillColor(sf::Color{ 0, 0, 0, 175 });
     _background->setPosition(5.f, 2.f);
-    _background->setSize(sf::Vector2f{ _window.getSize().x - 10.f, 40.f });
+    _background->setSize(sf::Vector2f{ _window.getSize().x - 10.f, 70.f });
     addDrawable(_background);
 
     _statusFont = *(_resources.load<sf::Font>("fonts/mono_bold.ttf"));
