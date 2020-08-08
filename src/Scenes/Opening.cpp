@@ -6,7 +6,6 @@
 #include <fmt/core.h>
 
 #include "../TTUtils.h"
-#include "../Item.h"
 #include "../Vehicle.h"
 #include "../PathFactory.h"
 
@@ -51,65 +50,8 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
     addDrawable(_background);
 
     initTraffic();
-    createItems();
 
     _lastPlayerPos = sf::Vector2f(PLAYER_START_X, PLAYER_START_Y);
-}
-
-void Opening::createItems()
-{
-    //
-    // Create items
-    //
-    auto itemFactory = ItemFactory(_resources);
-
-    const auto& config = _background->json();
-
-    //
-    // Check if items are present in the map .json
-    //
-    if(config.find("items") != config.end())
-    {
-        // std::cout << "DEBUG found map items." << std::endl;
-
-        //
-        // Iterate over all item names.
-        //
-        for(auto& el: config["items"].items())
-        {
-            const auto& itemId = el.key();
-
-            //
-            // The associated value is a list of objects representing
-            // coordinate pairs.
-            //
-            const auto& list = el.value();  
-
-            //
-            // For each coordinate pair, create an item of this type
-            // at the specified location on the map and add it to the 
-            // _items vector.
-            //
-            for(auto& coords: list.items())
-            {
-                const auto& coord = coords.value();
-
-                //
-                // Is there a util to perform this conversion?
-                //
-                float x = (TILESIZE_X * SCALE_BACKGROUND) * 
-                            static_cast<int>(coord["x"]);
-                float y = (TILESIZE_Y * SCALE_BACKGROUND) * 
-                            static_cast<int>(coord["y"]);
-
-                ItemPtr i = itemFactory.createItem(
-                                                itemId, 
-                                                sf::Vector2f { x, y } );
-                _items.push_back(i);
-            }
-        }
-    }
-
 }
 
 void Opening::enter()

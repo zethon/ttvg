@@ -9,9 +9,6 @@
 #include "../Vehicle.h"
 #include "../VehicleFactory.h"
 
-#include "../Item.h"
-#include "../ItemFactory.h"
-
 #include "../Background.h"
 #include "../Player.h"
 
@@ -72,8 +69,6 @@ class Opening : public Scene
 public:
     Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player);
 
-    void createItems();
-
     ScreenAction poll(const sf::Event& e) override;
     ScreenAction timestep() override;
     void draw() override;
@@ -103,8 +98,6 @@ private:
     std::unique_ptr<VehicleFactory>     _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;
     bool                                _updateTraffic = true;
-
-    std::vector<ItemPtr>                _items;
 };
 
 } // namespace tt

@@ -23,6 +23,15 @@ void Scene::exit()
     _player.reset();
 }
 
+//void Scene::updateCurrentTile(const TileInfo & info)
+//{
+//}
+
+void Scene::init()
+{
+    createItems();
+}
+
 bool Scene::walkPlayer(std::uint32_t stepsize)
 {
     const auto stepSize = stepsize
@@ -85,6 +94,53 @@ bool Scene::walkPlayer(std::uint32_t stepsize)
     }
 
     return moved;
+}
+
+void Scene::createItems()
+{
+    //
+    // Create items
+    //
+    auto itemFactory = ItemFactory(_resources);
+
+    const auto& config = _background->json();
+
+    //
+    // Check if items are present in the map .json
+    //
+    if (config.find("items") != config.end())
+    {
+        // std::cout << "DEBUG found map items." << std::endl;
+
+        //
+        // Iterate over all item names.
+        //
+        for (auto& el : config["items"].items())
+        {
+            const auto& itemId = el.key();
+
+            //
+            // The associated value is a list of objects representing
+            // coordinate pairs.
+            //
+            const auto& list = el.value();
+
+            //
+            // For each coordinate pair, create an item of this type
+            // at the specified location on the map and add it to the 
+            // _items vector.
+            //
+            for (auto& coords : list.items())
+            {
+                const auto& c = coords.value();
+                sf::Vector2f position = 
+                    _background->getGlobalFromTile(sf::Vector2f(c["x"].get<float>(), c["y"].get<float>()));
+
+                ItemPtr i = itemFactory.createItem(itemId, position);
+                _items.push_back(i);
+            }
+        }
+    }
 }
 
 } // namespace tt
