@@ -54,7 +54,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
     createItems();
 
     _lastPlayerPos = sf::Vector2f(PLAYER_START_X, PLAYER_START_Y);
-    _missionText.setText("Find the magic vagina");
 }
 
 void Opening::createItems()
@@ -129,7 +128,7 @@ void Opening::enter()
     addUpdateable(_player);
 
     sf::Vector2f tile{ getPlayerTile() };
-    auto tileinfo = _background->zoneName(tile);
+    auto tileinfo = _background->getTileInfo(tile);
     updateCurrentTile(tileinfo);
 }
 
@@ -193,11 +192,10 @@ ScreenAction Opening::poll(const sf::Event& e)
 {
     if (e.type == sf::Event::KeyPressed)
     {
-        updateMessage();
-
         switch (e.key.code)
         {
             default:
+                _missionText.setText({});
             break;
 
             //
@@ -345,10 +343,13 @@ ScreenAction Opening::poll(const sf::Event& e)
 
             case sf::Keyboard::Space:
             {
-                if (_currentTile.type == TileType::TRANSITION)
+                if (_currentTile.type == TileType::ZONE)
                 {
-                    auto transinfo = boost::any_cast<Transition>(_currentTile.data);
-                    return { ScreenActionType::CHANGE_SCENE, transinfo.newscene };
+                    auto zone = boost::any_cast<Zone>(_currentTile.data);
+                    if (zone.transition.has_value())
+                    {
+                        return { ScreenActionType::CHANGE_SCENE, zone.transition->newscene };
+                    }
                 }
             }
             break;
@@ -511,21 +512,11 @@ sf::Vector2f Opening::animeCallback()
     if (walkPlayer(STEPSIZE))
     {
         sf::Vector2f tile{ getPlayerTile() };
-        auto tileinfo = _background->zoneName(tile);
+        auto tileinfo = _background->getTileInfo(tile);
         updateCurrentTile(tileinfo);
     }
 
     return _player->getPosition();
-}
-
-//
-// Only update message text with the generic mission message
-// if the player moves. This allows the user to see  the result message 
-// of any last action they may have performed.
-//
-void Opening::updateMessage()
-{
-    _missionText.setText("Find the magic vagina");
 }
 
 void Opening::updateCurrentTile(const TileInfo& info)
@@ -536,18 +527,17 @@ void Opening::updateCurrentTile(const TileInfo& info)
     {
         default:
             _hud.setZoneText({});
+            _missionText.setText({});
         break;
 
-        case TileType::ZONE_NAME:
+        case TileType::ZONE:
         {
-            _hud.setZoneText(boost::any_cast<std::string>(_currentTile.data));
-        }
-        break;
-
-        case TileType::TRANSITION:
-        {
-            auto transinfo = boost::any_cast<Transition>(_currentTile.data);
-            _hud.setZoneText(transinfo.description);
+            const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
+            _hud.setZoneText(zoneinfo.name);
+            if (!zoneinfo.description.empty())
+            {
+                _missionText.setText(zoneinfo.description);
+            }
         }
         break;
     }

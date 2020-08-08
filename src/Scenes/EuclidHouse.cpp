@@ -98,8 +98,16 @@ ScreenAction EuclidHouse::poll(const sf::Event& e)
 
             case sf::Keyboard::Space:
             {
-                return { ScreenActionType::CHANGE_SCENE, 0 };
+                if (_currentTile.type == TileType::ZONE)
+                {
+                    auto zone = boost::any_cast<Zone>(_currentTile.data);
+                    if (zone.transition.has_value())
+                    {
+                        return { ScreenActionType::CHANGE_SCENE, zone.transition->newscene };
+                    }
+                }
             }
+            break;
 
             case sf::Keyboard::Num0:
             {
@@ -160,7 +168,7 @@ void EuclidHouse::enter()
             if (walkPlayer(STEPSIZE))
             {
                 sf::Vector2f tile{ getPlayerTile() };
-                auto tileinfo = _background->zoneName(tile);
+                auto tileinfo = _background->getTileInfo(tile);
                 updateCurrentTile(tileinfo);
             }
             return _player->getPosition();
@@ -172,22 +180,18 @@ void EuclidHouse::enter()
 
 void EuclidHouse::updateCurrentTile(const TileInfo & info)
 {
-    switch (info.type)
+    _currentTile = info;
+
+    switch (_currentTile.type)
     {
         default:
             _hud.setZoneText({});
-            break;
-
-        case TileType::ZONE_NAME:
-        {
-            _hud.setZoneText(boost::any_cast<std::string>(info.data));
-        }
         break;
 
-        case TileType::TRANSITION:
+        case TileType::ZONE:
         {
-            auto transinfo = boost::any_cast<Transition>(info.data);
-            _hud.setZoneText(transinfo.description);
+            const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
+            _hud.setZoneText(zoneinfo.name);
         }
         break;
     }

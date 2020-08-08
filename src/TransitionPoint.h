@@ -42,7 +42,6 @@ inline bool operator<(const Transition& lhs, const Transition& rhs)
     return lhs.position.x < rhs.position.x;
 }
 
-void to_json(nl::json& j, const Transition& t);
 void from_json(const nl::json& j, Transition& t);
 
 } // namespace tt

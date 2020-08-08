@@ -131,7 +131,6 @@ private:
     void adjustView();
     sf::Vector2f animeCallback();
 
-    void updateMessage();
     void updateCurrentTile(const TileInfo& info) override;
 
     void toggleHighlight();
@@ -139,8 +138,6 @@ private:
     MissionText                         _missionText;
     Hud                                 _hud;
     DebugWindow                         _debugWindow;
-
-    TileInfo                            _currentTile;
 
     sf::Clock                           _globalClock;
     nl::json                            _json;

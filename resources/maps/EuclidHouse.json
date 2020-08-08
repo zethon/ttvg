@@ -7,18 +7,19 @@
             [
                 "18,12,19,15" 
             ]
-        }
-    ],
-    "transitions":
-    [
+        },
         {
-            "id": "tucson",
-            "x": 10, 
-            "y": 18,
-            "type": "manual",
-            "description" : "Go Outside",
-            "enabled": true,
-            "newscene": 0
+            "name" : "Leave your hovel",
+            "transition":
+            {
+                "type": "manual",
+                "enabled": true,
+                "newscene": 0
+            },
+            "rects" : 
+            [
+                "7,17,13,19"
+            ]
         }
     ]
 }

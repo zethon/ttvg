@@ -10,6 +10,20 @@ namespace nl = nlohmann;
 namespace tt
 {
 
+void from_json(const nl::json& j, Zone& z)
+{
+    j.at("name").get_to(z.name);
+    if (j.contains("description"))
+    {
+        j.at("description").get_to(z.description);
+    }
+    
+    if (j.contains("transition"))
+    {
+        z.transition = j["transition"].get<Transition>();
+    }
+}
+
 Background::Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2f& tilesize)
     : _tilesize { tilesize },
       _mapname{ name }
@@ -30,7 +44,6 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
     }
 
     initZones();
-    initTransitionPoints();
 }
 
 void Background::initZones()
@@ -40,6 +53,7 @@ void Background::initZones()
 
     for (const auto& item : (*_json)["zones"].items())
     {
+        Zone zone = item.value().get<Zone>();
         for (const auto& c : item.value()["rects"].items())
         {
             std::string temp{ c.value().get<std::string>() };
@@ -51,21 +65,11 @@ void Background::initZones()
                 phrase_parse(start, stop, FloatRectParser, x3::ascii::space, rect);
 
             if (result)
-            {
-                _zones.emplace(item.value()["name"].get<std::string>(), rect);
+            {   
+                zone.rect = rect;
+                _zones.emplace(zone);
             }
         }
-    }
-}
-
-void Background::initTransitionPoints()
-{
-    if (!_json) return;
-    if (!_json->at("transitions").is_array()) return;
-
-    for (const auto& item : (*_json)["transitions"].items())
-    {
-        _transitions.emplace(item.value().get<tt::Transition>());
     }
 }
 
@@ -76,30 +80,19 @@ sf::FloatRect Background::getWorldTileRect() const
     return { 0, 0, width, height };
 }
 
-TileInfo Background::zoneName(const sf::Vector2f& v)
+TileInfo Background::getTileInfo(const sf::Vector2f& v)
 {
-    // TODO: This is ugly, figure out a better way to search
-    // the set. See: https://bit.ly/3fn03k9
-    Transition temp;
-    temp.position = v;
-    auto result = _transitions.find(temp);
-        if (result != _transitions.end())
+    // TODO: explore options of adding `RectConains` to 
+    // the compare functor so that we can use `std::set::find`
+    // to do this search, which should be faster
+    for (const auto& zone : _zones)
     {
-        TileInfo info;
-        info.tile = v;
-        info.type = TileType::TRANSITION;
-        info.data = *result;
-        return info;
-    }
-
-    for (const auto& [name, rect] : _zones)
-    {
-        if (RectContains(rect, v))
+        if (RectContains(zone.rect, v))
         {
             TileInfo info;
             info.tile = v;
-            info.type = TileType::ZONE_NAME;
-            info.data = name;
+            info.type = TileType::ZONE;
+            info.data = zone;
             return info;
         }
     }

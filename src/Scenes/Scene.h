@@ -35,10 +35,12 @@ protected:
 
     [[maybe_unused]] bool walkPlayer(std::uint32_t speed);
 
-    sf::Vector2f            _lastPlayerPos;
-    std::weak_ptr<Player>   _weakPlayer;
+    sf::Vector2f            _lastPlayerPos;    
 
     BackgroundSharedPtr     _background;
+    TileInfo                _currentTile;
+
+    std::weak_ptr<Player>   _weakPlayer;
     PlayerPtr               _player;
 };
 

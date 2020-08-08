@@ -2,6 +2,7 @@
 #include <cmath>
 #include <set>
 #include <memory>
+#include <optional>
 
 #include <nlohmann/json.hpp>
 
@@ -16,7 +17,15 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-using Zone = std::tuple<std::string, sf::FloatRect>;
+struct Zone
+{
+    std::string                 name;
+    std::string                 description;
+    sf::FloatRect               rect;
+    std::optional<Transition>   transition;
+};
+
+void from_json(const nl::json& j, Zone& z);
 
 class ResourceManager;
 
@@ -30,8 +39,8 @@ class Background : public sf::Sprite
     {
         bool operator()(const Zone& z1, const Zone& z2) const
         {
-            auto lhs = std::get<1>(z1);
-            auto rhs = std::get<1>(z2);
+            auto lhs = z1.rect;
+            auto rhs = z2.rect;
 
             if (lhs.left == rhs.left)
             {
@@ -78,16 +87,14 @@ public:
 
     std::string mapname() const { return _mapname; }
 
-    TileInfo zoneName(const sf::Vector2f& v);
+    TileInfo getTileInfo(const sf::Vector2f& v);
 
 protected:
     std::unique_ptr<sf::Texture>    _texture;
     ZoneSet                         _zones;
-    std::set<Transition>            _transitions;    
 
 private:
     void initZones();
-    void initTransitionPoints();
 
     sf::Vector2f                _tilesize;
     std::unique_ptr<nl::json>   _json;
