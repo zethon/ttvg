@@ -12,8 +12,8 @@ namespace tt
     // Default item size.
     // Might want this to be the same as a "tile size" on the map.
     //
-    constexpr auto DEFAULT_ITEM_WIDTH   = 32.0f;
-    constexpr auto DEFAULT_ITEM_HEIGHT  = 32.0f;
+    constexpr auto DEFAULT_ITEM_WIDTH   = 36.0f;
+    constexpr auto DEFAULT_ITEM_HEIGHT  = 36.0f;
 
 
     ItemFactory::ItemFactory(ResourceManager& resMgr)

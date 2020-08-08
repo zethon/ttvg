@@ -1,0 +1,7 @@
+{
+    "name":         "Stone Wall",
+    "description":  "It's a wall. Made out of stone.",
+    "obtainable":   false,
+    "blocking":     true,
+    "attributes":   { }
+}

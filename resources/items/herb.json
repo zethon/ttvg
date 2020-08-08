@@ -1,0 +1,6 @@
+{
+    "name":         "Herb",
+    "description":  "You can make tea with this.",
+    "obtainable":   true,
+    "attributes":   { }
+}
