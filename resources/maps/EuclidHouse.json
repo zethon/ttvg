@@ -9,6 +9,38 @@
                 "17,12,19,15" 
             ]
         },
+        { 
+            "name" : "Kitchen Sink",
+            "description": "\"there are dirty dishes and mail in the sink. Fucking envelopes. In the sink.\"",
+            "rects" :
+            [
+                "3,12,4,17" 
+            ]
+        },
+        { 
+            "name" : "Old Couch",
+            "description": "A woman died on this couch in your backyard",
+            "rects" :
+            [
+                "7,2,12,4" 
+            ]
+        },
+        { 
+            "name" : "Toilet",
+            "description": "That's not magnesium",
+            "rects" :
+            [
+                "3,1,4,4" 
+            ]
+        },
+        { 
+            "name" : "Pretty Dress",
+            "description": "One day you will look beutiful in this dress",
+            "rects" :
+            [
+                "17,7,19,10" 
+            ]
+        },
         {
             "name" : "Leave your hovel",
             "transition":
