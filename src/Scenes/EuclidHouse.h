@@ -14,6 +14,7 @@
 
 #include "Scene.h"
 #include "Hud.h"
+#include "DescriptionText.h"
 
 namespace nl = nlohmann;
 
@@ -80,6 +81,7 @@ protected:
 
 private:
     Hud             _hud;
+    DescriptionText _descriptionText;
     DebugWindow2    _debugWindow;
 };
 

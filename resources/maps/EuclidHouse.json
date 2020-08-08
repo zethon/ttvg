@@ -3,9 +3,10 @@
     [
         { 
             "name" : "Computer",
+            "description": "Press SPACE to use your Gateway 2000",
             "rects" :
             [
-                "18,12,19,15" 
+                "17,12,19,15" 
             ]
         },
         {

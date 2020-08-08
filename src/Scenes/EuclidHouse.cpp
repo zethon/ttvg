@@ -12,6 +12,7 @@ constexpr auto STEPSIZE = 16u;
 EuclidHouse::EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
     : Scene(resmgr, target, player),
       _hud{ resmgr, target },
+      _descriptionText{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
     _background = std::make_shared<Background>("EuclidHouse", _resources, sf::Vector2f{ 16, 16 });
@@ -21,8 +22,6 @@ EuclidHouse::EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, Play
         static_cast<float>(_window.getSize().x) / static_cast<float>(_background->getTexture()->getSize().x),
         static_cast<float>(_window.getSize().y) / static_cast<float>(_background->getTexture()->getSize().y) };
     _background->setScale(bgscale);
-
-    _hud.setVisible(false);
 
     addDrawable(_background);
 }
@@ -152,7 +151,9 @@ void EuclidHouse::draw()
     Scene::draw();
     _window.draw(*_player);
 
+    _window.setView(_window.getDefaultView());
     _hud.draw();
+    _descriptionText.draw();
     _debugWindow.draw();
 }
 
@@ -160,7 +161,7 @@ void EuclidHouse::enter()
 {
     Scene::enter();
 
-    _player->setScale(2.25f, 2.25f);
+    _player->setScale(2.5f, 2.5f);
     _player->setPosition(600.0f, 580.0f);
     _player->setAnimeCallback(
         [this]()->sf::Vector2f
@@ -186,12 +187,17 @@ void EuclidHouse::updateCurrentTile(const TileInfo & info)
     {
         default:
             _hud.setZoneText({});
+            _descriptionText.setText({});
         break;
 
         case TileType::ZONE:
         {
             const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
             _hud.setZoneText(zoneinfo.name);
+            if (!zoneinfo.description.empty())
+            {
+                _descriptionText.setText(zoneinfo.description);
+            }
         }
         break;
     }

@@ -33,8 +33,8 @@ constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
     : Scene{ resmgr, target, player },
-      _missionText { resmgr, target },
       _hud{ resmgr, target },
+      _descriptionText{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
     _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
@@ -195,7 +195,7 @@ ScreenAction Opening::poll(const sf::Event& e)
         switch (e.key.code)
         {
             default:
-                _missionText.setText({});
+                //_missionText.setText({});
             break;
 
             //
@@ -218,7 +218,7 @@ ScreenAction Opening::poll(const sf::Event& e)
                     {
 
                         _player->addItem(item->getID());
-                        _missionText.setText("Picked up " + item->getName());
+                        _descriptionText.setText("Picked up " + item->getName());
                         _items.erase(it);
 
                         break;
@@ -378,21 +378,6 @@ ScreenAction Opening::timestep()
 {
     timestepTraffic();
 
-    //
-    // Check item bounds.
-    //
-    std::for_each(  _items.begin(), 
-                    _items.end(),
-                    [this](ItemPtr item) { 
-                        if(item->getGlobalBounds().intersects(
-                                                _player->getGlobalBounds())) {
-                            _missionText.setText(
-                                item->getName() + ": " +
-                                item->getDescription() );
-                        }
-                    }
-    );
-
     Scene::timestep();
 
     std::stringstream ss;
@@ -461,12 +446,11 @@ void Opening::draw()
     //
     // Draw items
     //
-    std::for_each(  _items.begin(), 
-                    _items.end(),
-                    [this](ItemPtr item) { 
-                        _window.draw(*item); 
-                    }
-    );
+    std::for_each(_items.begin(), _items.end(),
+        [this](ItemPtr item) 
+        { 
+            _window.draw(*item); 
+        });
 
     // the player should always be the last thing on the 
     // game board to be drawn
@@ -475,7 +459,7 @@ void Opening::draw()
     _window.setView(_window.getDefaultView());
     _hud.draw();
     _debugWindow.draw();
-    _missionText.draw();
+    _descriptionText.draw();
 }
 
 void Opening::adjustView()
@@ -523,11 +507,28 @@ void Opening::updateCurrentTile(const TileInfo& info)
 {
     _currentTile = info;
 
+    bool handled = false;
+    std::for_each(_items.begin(), _items.end(),
+        [this, &handled](ItemPtr item) 
+        {
+            if (item->getGlobalBounds().intersects(_player->getGlobalBounds())) 
+            {
+                _descriptionText.setText(
+                    item->getName() + ": " +
+                    item->getDescription());
+
+                handled = true;
+            }
+        }
+    );
+
+    if (handled) return;
+
     switch (_currentTile.type)
     {
         default:
             _hud.setZoneText({});
-            _missionText.setText({});
+            _descriptionText.setText({});
         break;
 
         case TileType::ZONE:
@@ -536,7 +537,7 @@ void Opening::updateCurrentTile(const TileInfo& info)
             _hud.setZoneText(zoneinfo.name);
             if (!zoneinfo.description.empty())
             {
-                _missionText.setText(zoneinfo.description);
+                _descriptionText.setText(zoneinfo.description);
             }
         }
         break;

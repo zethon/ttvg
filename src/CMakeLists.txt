@@ -18,6 +18,7 @@ set(SOURCE_FILES
     Item.cpp
     ItemFactory.cpp
 
+    Scenes/DescriptionText.cpp
     Scenes/Hud.cpp
     Scenes/EuclidHouse.cpp
     Scenes/Opening.cpp
@@ -46,6 +47,7 @@ set(HEADER_FILES
     Item.h
     ItemFactory.h
 
+    Scenes/DescriptionText.h
     Scenes/Hud.h
     Scenes/EuclidHouse.h
     Scenes/Opening.h
