@@ -70,5 +70,27 @@ const std::vector<ItemPtr>& Player::getInventory() const
     return _inventory;
 }
 
+void Player::setHealth(std::uint32_t h) 
+{ 
+    _health = h;
+    onSetHealth(_health);
+}
+
+void Player::reduceHealth(std::uint32_t amount)
+{
+    setHealth(_health - amount);
+}
+
+void Player::increaseHealth(std::uint32_t amount)
+{
+    setHealth(_health + amount);
+}
+
+void Player::setBalance(float c) 
+{ 
+    _cash = c;
+    onSetCash(_cash);
+}
+
 
 } // namespace tt

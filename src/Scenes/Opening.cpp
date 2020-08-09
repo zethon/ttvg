@@ -67,15 +67,35 @@ void Opening::enter()
             return this->animeCallback();
         });
 
+    _player->onSetHealth.connect(
+        [this](std::uint32_t health)
+        {
+            _hud.setHealth(health);
+        });
+
+    _player->onSetCash.connect(
+        [this](float cash)
+        {
+            _hud.setBalance(cash);
+        });
+
     addUpdateable(_player);
 
     sf::Vector2f tile{ getPlayerTile() };
     auto tileinfo = _background->getTileInfo(tile);
     updateCurrentTile(tileinfo);
+
+    _hud.setHealth(_player->health());
+    _hud.setBalance(_player->balance());
 }
 
 void Opening::exit()
 {
+    // `Scene::exit()` invalidates the _player object
+    // so we have to remove it before calling the base
+    // class method
+    removeUpdateable(_player);
+
     Scene::exit();
 }
 
@@ -274,6 +294,18 @@ ScreenAction Opening::poll(const sf::Event& e)
             case sf::Keyboard::Num0:
             {
                 _debugWindow.setVisible(!_debugWindow.visible());
+            }
+            break;
+
+            case sf::Keyboard::LBracket:
+            {
+                _player->reduceHealth(10);
+            }
+            break;
+
+            case sf::Keyboard::RBracket:
+            {
+                _player->increaseHealth(10);
             }
             break;
         }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Screen.h"
+#include "../Player.h"
 
 namespace tt
 {
@@ -11,7 +12,11 @@ class Hud : public Screen
 
     std::shared_ptr<sf::RectangleShape> _background;
     std::shared_ptr<sf::Text>           _zoneText;
+
+    std::shared_ptr<sf::Text>           _healthText;
     std::shared_ptr<sf::Text>           _balanceText;
+
+    PlayerPtr   _player;
 
 public: 
     Hud(ResourceManager& resmgr, sf::RenderTarget& target)
@@ -21,7 +26,9 @@ public:
     Hud(ResourceManager& resmgr, sf::RenderTarget& target, bool visible);
 
     void setZoneText(const std::string& zone);
-    void setBalanceText(const std::string& text);
+
+    void setHealth(std::uint32_t health);
+    void setBalance(float cash);
 };
 
 } // namespace
