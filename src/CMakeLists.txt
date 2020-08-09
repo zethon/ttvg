@@ -2,6 +2,7 @@ set(SOURCE_FILES
     AnimatedSprite.cpp
     Background.cpp
     Engine.cpp
+    GameOverScreen.cpp
     GameScreen.cpp
     Intersection.cpp
     IntroScreen.cpp
@@ -29,6 +30,7 @@ set(HEADER_FILES
     AnimatedSprite.h
     Background.h
     Engine.h
+    GameOverScreen.h
     GameScreen.h
     GameTypes.h
     Intersection.h

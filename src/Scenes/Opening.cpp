@@ -336,6 +336,11 @@ ScreenAction Opening::timestep()
     auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
     _debugWindow.setText(posText);
 
+    if (_player->health() <= 0)
+    {
+        return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
+    }
+
     return {};
 }
 

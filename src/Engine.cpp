@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include "IntroScreen.h"
 #include "GameScreen.h"
+#include "GameOverScreen.h"
 
 namespace tt
 {
@@ -47,15 +48,27 @@ void TooterEngine::changeScreen(std::uint16_t id)
         break;
 
         case SCREEN_INTRO:
+        {
             _currentScreen->close();
             _currentScreen.reset();
             _currentScreen = std::make_shared<IntroScreen>(_resourceManager, *_renderTarget);
+        }
         break;
 
         case SCREEN_GAME:
+        {
             _currentScreen->close();
             _currentScreen.reset();
             _currentScreen = std::make_shared<GameScreen>(_resourceManager, *_renderTarget);
+        }
+        break;
+
+        case SCREEN_GAMEOVER:
+        {
+            _currentScreen->close();
+            _currentScreen.reset();
+            _currentScreen = std::make_shared<GameOverScreen>(_resourceManager, *_renderTarget);
+        }
         break;
     }
 }
