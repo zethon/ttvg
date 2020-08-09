@@ -6,7 +6,6 @@
 #include <fmt/core.h>
 
 #include "../TTUtils.h"
-#include "../Item.h"
 #include "../Vehicle.h"
 #include "../PathFactory.h"
 
@@ -20,8 +19,8 @@ constexpr auto SCALE_BACKGROUND = 2.25f;
 
 constexpr auto STEPSIZE = 16u;
 
-constexpr auto PLAYER_START_X = 1616.0f;
-constexpr auto PLAYER_START_Y = 2875.0f;
+constexpr auto PLAYER_START_X = 1660;
+constexpr auto PLAYER_START_Y = 2855.0f;
 
 constexpr auto TILESIZE_X = 16.0f;
 constexpr auto TILESIZE_Y = 16.0f;
@@ -33,8 +32,8 @@ constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
     : Scene{ resmgr, target, player },
-      _missionText { resmgr, target },
       _hud{ resmgr, target },
+      _descriptionText{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
     _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
@@ -51,65 +50,8 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
     addDrawable(_background);
 
     initTraffic();
-    createItems();
 
     _lastPlayerPos = sf::Vector2f(PLAYER_START_X, PLAYER_START_Y);
-}
-
-void Opening::createItems()
-{
-    //
-    // Create items
-    //
-    _itemFactory = std::make_unique<ItemFactory>(_resources);
-
-    const auto& config = _background->json();
-
-    //
-    // Check if items are present in the map .json
-    //
-    if(config.find("items") != config.end())
-    {
-        // std::cout << "DEBUG found map items." << std::endl;
-
-        //
-        // Iterate over all item names.
-        //
-        for(auto& el: config["items"].items())
-        {
-            const auto& itemId = el.key();
-
-            //
-            // The associated value is a list of objects representing
-            // coordinate pairs.
-            //
-            const auto& list = el.value();  
-
-            //
-            // For each coordinate pair, create an item of this type
-            // at the specified location on the map and add it to the 
-            // _items vector.
-            //
-            for(auto& coords: list.items())
-            {
-                const auto& coord = coords.value();
-
-                //
-                // Is there a util to perform this conversion?
-                //
-                float x = (TILESIZE_X * SCALE_BACKGROUND) * 
-                            static_cast<int>(coord["x"]);
-                float y = (TILESIZE_Y * SCALE_BACKGROUND) * 
-                            static_cast<int>(coord["y"]);
-
-                ItemPtr i = _itemFactory->createItem(
-                                                itemId, 
-                                                sf::Vector2f { x, y } );
-                _items.push_back(i);
-            }
-        }
-    }
-
 }
 
 void Opening::enter()
@@ -125,15 +67,35 @@ void Opening::enter()
             return this->animeCallback();
         });
 
+    _player->onSetHealth.connect(
+        [this](std::uint32_t health)
+        {
+            _hud.setHealth(health);
+        });
+
+    _player->onSetCash.connect(
+        [this](float cash)
+        {
+            _hud.setBalance(cash);
+        });
+
     addUpdateable(_player);
 
     sf::Vector2f tile{ getPlayerTile() };
     auto tileinfo = _background->getTileInfo(tile);
     updateCurrentTile(tileinfo);
+
+    _hud.setHealth(_player->health());
+    _hud.setBalance(_player->balance());
 }
 
 void Opening::exit()
 {
+    // `Scene::exit()` invalidates the _player object
+    // so we have to remove it before calling the base
+    // class method
+    removeUpdateable(_player);
+
     Scene::exit();
 }
 
@@ -195,7 +157,7 @@ ScreenAction Opening::poll(const sf::Event& e)
         switch (e.key.code)
         {
             default:
-                _missionText.setText({});
+                //_missionText.setText({});
             break;
 
             //
@@ -217,8 +179,8 @@ ScreenAction Opening::poll(const sf::Event& e)
                         item->isObtainable() )
                     {
 
-                        _player->addItem(item->getID());
-                        _missionText.setText("Picked up " + item->getName());
+                        _player->addItem(item);
+                        _descriptionText.setText("Picked up " + item->getName());
                         _items.erase(it);
 
                         break;
@@ -236,35 +198,10 @@ ScreenAction Opening::poll(const sf::Event& e)
 
                 const auto& inv = _player->getInventory();
 
-                std::vector<std::string> keys;
-
-                for(auto it = inv.begin(); it != inv.end(); it++)
+                for (const auto& item : _player->getInventory())
                 {
-                    keys.push_back(it->first);
+                    std::cout << item->getName() << '\n';
                 }
-
-                //
-                // Sort keys, so we can display these in some kind of order.
-                // Should really sort by display name rather than ID.
-                //
-                std::sort(keys.begin(), keys.end());
-
-                for(auto it = keys.begin(); it != keys.end(); it++)
-                {
-                    std::string key = *it;
-                    std::cout << key << ": " << inv.at(key) << std::endl;
-                }
-
-                std::cout   << std::endl;
-
-                sf::Vector2f tile{ getPlayerTile() };
-
-                std::cout   << "{ \"x\": " << tile.x 
-                            << ", \"y\": " << tile.y
-                            << " }"
-                            << std::endl;
-
-                std::cout   << std::endl;
                 std::cout   << std::endl;
             }
             break;
@@ -359,6 +296,18 @@ ScreenAction Opening::poll(const sf::Event& e)
                 _debugWindow.setVisible(!_debugWindow.visible());
             }
             break;
+
+            case sf::Keyboard::LBracket:
+            {
+                _player->reduceHealth(10);
+            }
+            break;
+
+            case sf::Keyboard::RBracket:
+            {
+                _player->increaseHealth(10);
+            }
+            break;
         }
     }
 
@@ -377,21 +326,6 @@ ScreenAction Opening::poll(const sf::Event& e)
 ScreenAction Opening::timestep()
 {
     timestepTraffic();
-
-    //
-    // Check item bounds.
-    //
-    std::for_each(  _items.begin(), 
-                    _items.end(),
-                    [this](ItemPtr item) { 
-                        if(item->getGlobalBounds().intersects(
-                                                _player->getGlobalBounds())) {
-                            _missionText.setText(
-                                item->getName() + ": " +
-                                item->getDescription() );
-                        }
-                    }
-    );
 
     Scene::timestep();
 
@@ -461,12 +395,11 @@ void Opening::draw()
     //
     // Draw items
     //
-    std::for_each(  _items.begin(), 
-                    _items.end(),
-                    [this](ItemPtr item) { 
-                        _window.draw(*item); 
-                    }
-    );
+    std::for_each(_items.begin(), _items.end(),
+        [this](ItemPtr item) 
+        { 
+            _window.draw(*item); 
+        });
 
     // the player should always be the last thing on the 
     // game board to be drawn
@@ -475,7 +408,7 @@ void Opening::draw()
     _window.setView(_window.getDefaultView());
     _hud.draw();
     _debugWindow.draw();
-    _missionText.draw();
+    _descriptionText.draw();
 }
 
 void Opening::adjustView()
@@ -523,11 +456,28 @@ void Opening::updateCurrentTile(const TileInfo& info)
 {
     _currentTile = info;
 
+    bool handled = false;
+    std::for_each(_items.begin(), _items.end(),
+        [this, &handled](ItemPtr item) 
+        {
+            if (item->getGlobalBounds().intersects(_player->getGlobalBounds())) 
+            {
+                _descriptionText.setText(
+                    item->getName() + ": " +
+                    item->getDescription());
+
+                handled = true;
+            }
+        }
+    );
+
+    if (handled) return;
+
     switch (_currentTile.type)
     {
         default:
             _hud.setZoneText({});
-            _missionText.setText({});
+            _descriptionText.setText({});
         break;
 
         case TileType::ZONE:
@@ -536,7 +486,7 @@ void Opening::updateCurrentTile(const TileInfo& info)
             _hud.setZoneText(zoneinfo.name);
             if (!zoneinfo.description.empty())
             {
-                _missionText.setText(zoneinfo.description);
+                _descriptionText.setText(zoneinfo.description);
             }
         }
         break;

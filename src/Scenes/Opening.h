@@ -9,14 +9,12 @@
 #include "../Vehicle.h"
 #include "../VehicleFactory.h"
 
-#include "../Item.h"
-#include "../ItemFactory.h"
-
 #include "../Background.h"
 #include "../Player.h"
 
 #include "Scene.h"
 #include "Hud.h"
+#include "DescriptionText.h"
 
 namespace nl = nlohmann;
 
@@ -65,56 +63,11 @@ public:
     }
 };
 
-class MissionText : public Screen
-{
-    sf::Font                            _font;
-    std::shared_ptr<sf::Text>           _text;
-    std::shared_ptr<sf::RectangleShape> _background;
-
-public:
-    MissionText(ResourceManager& resmgr, sf::RenderTarget& target)
-        : Screen(resmgr, target)
-    {
-        _background = std::make_shared<sf::RectangleShape>();
-        _background->setFillColor(sf::Color{ 0, 0, 0, 175 });
-        addDrawable(_background);
-
-        _font = *(_resources.load<sf::Font>("fonts/mono_bold.ttf"));
-        _text = std::make_shared<sf::Text>("", _font);
-        _text->setFillColor(sf::Color::Yellow);
-        _text->setCharacterSize(25);
-        addDrawable(_text);
-    }
-
-    void setText(const std::string& text)
-    {
-        if (text.size() == 0)
-        {
-            setVisible(false);
-            return;
-        }
-
-        setVisible(true);
-        _text->setString(text);
-
-        auto rect = _text->getGlobalBounds();
-        _text->setPosition((_window.getSize().x /2) - (rect.width / 2), 42.5f);
-        
-        auto[x, y, w, h] = _text->getGlobalBounds();
-
-        _background->setSize(sf::Vector2f{ w + 20.f, h + 10.f });
-        _background->setPosition(x - 10.f, y - 5.f);
-    }
-
-};
-
 class Opening : public Scene
 {
 
 public:
     Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player);
-
-    void createItems();
 
     ScreenAction poll(const sf::Event& e) override;
     ScreenAction timestep() override;
@@ -135,8 +88,8 @@ private:
 
     void toggleHighlight();
 
-    MissionText                         _missionText;
     Hud                                 _hud;
+    DescriptionText                     _descriptionText;
     DebugWindow                         _debugWindow;
 
     sf::Clock                           _globalClock;
@@ -145,9 +98,6 @@ private:
     std::unique_ptr<VehicleFactory>     _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;
     bool                                _updateTraffic = true;
-
-    std::unique_ptr<ItemFactory>        _itemFactory;
-    std::vector<ItemPtr>                _items;
 };
 
 } // namespace tt

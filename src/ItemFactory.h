@@ -9,8 +9,6 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-    using ItemPtr = std::shared_ptr<Item>;
-
     class ItemFactory
     {
         ResourceManager&    _resources;

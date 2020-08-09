@@ -9,13 +9,23 @@ namespace tt
 GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     : Screen(resmgr, target)
 {
+    // the `Player` object is shared among all the `Scene` objects
     auto textptr = _resources.cacheTexture("textures/tommy.png");
     assert(textptr);
     textptr->setSmooth(true);
     _player = std::make_shared<Player>(*textptr, sf::Vector2i{ 64, 64 });
 
+    // TODO: as the game grows these constructions will take longer
+    // and should probably be done in parallel and/or with a loading screen
     _scenes.emplace_back(std::make_unique<Opening>(resmgr, target, _player));
     _scenes.emplace_back(std::make_unique<EuclidHouse>(resmgr, target, _player));
+
+    // make sure all constructors across all scenes
+    // have been run BEFORE init()'ing the scenes
+    for (auto& scene : _scenes)
+    {
+        scene->init();
+    }
 
     _scenes[_currentScene]->enter();
 }

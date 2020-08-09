@@ -1,6 +1,9 @@
 #pragma once
 
+#include <boost/signals2.hpp>
+
 #include "AnimatedSprite.h"
+#include "Item.h"
 
 namespace tt
 {
@@ -25,22 +28,24 @@ public:
     void setGlobalTop(float top);
     void setGlobalBottom(float bottom);
 
-    //
-    // Add an item to the player's inventory.
-    //
-    void addItem(const std::string& itemID);
+    void addItem(const ItemPtr item);
+    const std::vector<ItemPtr>& getInventory() const;
 
-    //
-    // Get the player's inventory.
-    //
-    const std::map<std::string, std::int32_t>& getInventory() const;
+    std::uint32_t health() const { return _health; }
+    void setHealth(std::uint32_t h);
+    void reduceHealth(std::uint32_t amount);
+    void increaseHealth(std::uint32_t amount);
+    boost::signals2::signal<void(std::uint32_t health)> onSetHealth;
+
+    float balance() const { return _cash; }
+    void setBalance(float c);
+    boost::signals2::signal<void(float cash)> onSetCash;
 
 private:
+    std::vector<ItemPtr>    _inventory;
 
-    //
-    // Inventory. Map an item ID to a quantity.
-    //
-    std::map<std::string, std::int32_t> _inventory;
+    std::uint32_t           _health = 100;
+    float                   _cash = 40.0f;
 
 };
 
