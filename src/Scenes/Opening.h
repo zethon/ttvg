@@ -98,6 +98,8 @@ private:
     std::unique_ptr<VehicleFactory>     _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;
     bool                                _updateTraffic = true;
+
+    //std::unique_ptr<sf::Music>          _bgsong;
 };
 
 } // namespace tt

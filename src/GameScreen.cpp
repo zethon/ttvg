@@ -65,8 +65,7 @@ ScreenAction GameScreen::poll(const sf::Event& e)
 ScreenAction GameScreen::timestep()
 {
     assert(_scenes[_currentScene]);
-    _scenes[_currentScene]->timestep();
-    return Screen::timestep();
+    return _scenes[_currentScene]->timestep();
 }
 
 } // namespace tt
