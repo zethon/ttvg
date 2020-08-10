@@ -52,6 +52,10 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
     initTraffic();
 
     _lastPlayerPos = sf::Vector2f(PLAYER_START_X, PLAYER_START_Y);
+
+    //_bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
+    //_bgsong->setLoop(true);
+    //_bgsong->play();
 }
 
 void Opening::enter()
@@ -338,6 +342,7 @@ ScreenAction Opening::timestep()
 
     if (_player->health() <= 0)
     {
+        //_bgsong->stop();
         return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
     }
 

@@ -18,8 +18,13 @@ GameOverScreen::GameOverScreen(ResourceManager& res, sf::RenderTarget& target)
     }
 
     auto textobj = std::make_shared<sf::Text>("Game Over", _font);
-    textobj->setPosition(690, 10);
-    textobj->setFillColor(sf::Color(255, 215, 9));
+    textobj->setCharacterSize(150);
+
+    textobj->setFillColor(sf::Color::Red);
+
+    auto x = (_window.getSize().x / 2) - (textobj->getGlobalBounds().width / 2);
+    textobj->setPosition(x, 30);
+    
     addDrawable(textobj);
 }
 
