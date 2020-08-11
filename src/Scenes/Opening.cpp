@@ -53,6 +53,10 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
 
     _lastPlayerPos = sf::Vector2f(PLAYER_START_X, PLAYER_START_Y);
 
+    _pgSoundBuffer = *(resmgr.load<sf::SoundBuffer>("sounds/playground.wav"));
+    _pgSound.setBuffer(_pgSoundBuffer);
+    _pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 141.f, 118.f });
+
     //_bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
     //_bgsong->setLoop(true);
     //_bgsong->play();
@@ -337,6 +341,7 @@ ScreenAction Opening::timestep()
     ss << _player->getGlobalCenter();
     std::stringstream ss1;
     ss1 << getPlayerTile();
+
     auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
     _debugWindow.setText(posText);
 
@@ -465,6 +470,30 @@ sf::Vector2f Opening::animeCallback()
 void Opening::updateCurrentTile(const TileInfo& info)
 {
     _currentTile = info;
+
+    auto pgdist = tt::distance(_pgCenter, _player->getGlobalCenter());
+    if (pgdist < 500.0f)
+    {
+        if (_pgSound.getStatus() != sf::SoundSource::Status::Playing)
+        {
+            _pgSound.setVolume(100.0);
+            _pgSound.play();
+        }
+    }
+    else if (pgdist < 1000.0f)
+    {
+        //_pgSound.setVolume(1.f / (pgdist / 10.f));
+        _pgSound.setVolume((1000.f / pgdist) * 50.f);
+        if (_pgSound.getStatus() != sf::SoundSource::Status::Playing)
+        {
+            _pgSound.play();
+        }
+    }
+    else
+    {
+        _pgSound.setVolume(0.f);
+        _pgSound.pause();
+    }
 
     bool handled = false;
     std::for_each(_items.begin(), _items.end(),

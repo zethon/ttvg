@@ -79,6 +79,11 @@
             [
                 "83,14,90,21"
             ]
+        },
+        {
+            "name": "Park of Childhood Innocence",
+            "description": "None of these children live among adults",
+            "rects":[ "131,110,149,128"]
         }
     ],
     "vehicles":
@@ -199,7 +204,6 @@
             "93,109,right,true"
         ]
     },
-
     "items":
     {
         "sax": 
