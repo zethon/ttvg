@@ -54,6 +54,7 @@
                 "14,97,43,105"
             ]
         },
+
         {
             "name": "University of Arizona",
             "rects": 
@@ -61,6 +62,16 @@
                 "95,75,128,106"
             ]
         },
+
+        {
+            "name": "Spooky Graveyard",
+            "description": "Mostly your dreams are buried here.",
+            "rects": 
+            [
+                "132,112,147,127"
+            ]
+        },
+
         {
             "name": "Chinese Restaurant",
             "description": "No extra spicy restroom customer only.",
@@ -263,6 +274,17 @@
             { "x": 57, "y": 92 },
             { "x": 66, "y": 92 },
             { "x": 48, "y": 42 }
+        ],
+
+        "tombstone-01":
+        [
+            { "x": 135, "y": 115 }
+        ],
+
+        "tombstone-02":
+        [
+            { "x": 145, "y": 123 }
         ]
+
     }
 }

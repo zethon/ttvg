@@ -1,0 +1,6 @@
+{
+    "name":         "Tombstone",
+    "description":  "A woman is buried here. She died in your backyard.",
+    "obtainable":   false,
+    "attributes":   { }
+}
