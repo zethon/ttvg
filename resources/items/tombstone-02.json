@@ -1,0 +1,6 @@
+{
+    "name":         "Tombstone",
+    "description":  "Find a shovel to dig with.",
+    "obtainable":   false,
+    "attributes":   { }
+}
