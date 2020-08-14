@@ -100,6 +100,11 @@ private:
     bool                                _updateTraffic = true;
 
     //std::unique_ptr<sf::Music>          _bgsong;
+
+    sf::SoundBuffer                     _pgSoundBuffer;
+    sf::Sound                           _pgSound;
+    sf::Vector2f                        _pgCenter;
+    float                               _pgVolume = 0.f;
 };
 
 } // namespace tt
