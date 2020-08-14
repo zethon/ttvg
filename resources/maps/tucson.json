@@ -267,7 +267,8 @@
 
         "treasure-chest":
         [
-            { "x": 37, "y": 31 }
+            { "x": 37, "y": 31 },
+            { "x": 56, "y": 81 }
         ],
 
         "magnifying-glass":

@@ -29,6 +29,9 @@ public:
     void setGlobalBottom(float bottom);
 
     void addItem(const ItemPtr item);
+    bool hasItem(const std::string& s);
+    void removeItem(const std::string& s);
+
     const std::vector<ItemPtr>& getInventory() const;
 
     std::uint32_t health() const { return _health; }
