@@ -1,0 +1,6 @@
+{
+    "name":         "Golf Pin",
+    "description":  "Hobos are not allowed on the course.",
+    "obtainable":   false,
+    "attributes":   { }
+}
