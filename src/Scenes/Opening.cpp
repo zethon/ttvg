@@ -55,7 +55,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
 
     _pgSoundBuffer = *(resmgr.load<sf::SoundBuffer>("sounds/playground.wav"));
     _pgSound.setBuffer(_pgSoundBuffer);
-    _pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 141.f, 118.f });
+    _pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 140.f, 84.f });
 
     //_bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
     //_bgsong->setLoop(true);

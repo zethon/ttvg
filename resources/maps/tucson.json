@@ -77,13 +77,13 @@
             "description": "No extra spicy restroom customer only.",
             "rects": 
             [
-                "83,14,90,21"
+                "48,62,57,67"
             ]
         },
         {
             "name": "Park of Childhood Innocence",
             "description": "None of these children live among adults",
-            "rects":[ "131,110,149,128"]
+            "rects":[ "131,75,149,94"]
         }
     ],
     "vehicles":
