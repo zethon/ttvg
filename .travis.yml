@@ -12,6 +12,8 @@ addons:
     - libxcb-image0-dev
     - libxcb-keysyms1-dev
     - libxcb-xinerama0-dev
+    - gcc-9
+    - g++-9
 
 before_script:
 - mkdir build && cd build
@@ -54,6 +56,7 @@ matrix:
       - "export DISPLAY=:99.0"
     install:
       - pip install conan
+      - export CXX="g++-9" CC="gcc-9"
     env:
       - CONFIG=Debug
 
@@ -66,6 +69,7 @@ matrix:
       - "export DISPLAY=:99.0"
     install:
       - pip install conan
+      - export CXX="g++-9" CC="gcc-9"
     env:
       - CONFIG=Release
 
