@@ -23,7 +23,6 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
             temprect.top -= minDistance;
             return temprect.intersects(other);
         }
-        break;
 
         case Direction::DOWN:
         {
@@ -31,7 +30,6 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
             temprect.top += minDistance;
             return temprect.intersects(other);
         }
-        break;
 
         case Direction::LEFT:
         {
@@ -39,7 +37,6 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
             temprect.left -= minDistance;
             return temprect.intersects(other);
         }
-        break;
 
         case Direction::RIGHT:
         {
@@ -47,7 +44,6 @@ bool isPathBlocked(const sf::FloatRect& object, const sf::FloatRect& other,
             temprect.left += minDistance;
             return temprect.intersects(other);
         }
-        break;
     }
 
     return false;
