@@ -112,7 +112,7 @@ inline float distance(const sf::Vector2f& v1, const sf::Vector2f& v2)
 {
     auto x = v1.x - v2.x;
     auto y = v1.y - v2.y;
-    return std::sqrtf((x*x) + (y*y));
+    return std::sqrt((x*x) + (y*y));
 }
     
 } // namespace tt
