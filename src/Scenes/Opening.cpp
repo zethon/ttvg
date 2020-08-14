@@ -472,7 +472,7 @@ void Opening::updateCurrentTile(const TileInfo& info)
     _currentTile = info;
 
     auto pgdist = tt::distance(_pgCenter, _player->getGlobalCenter());
-    if (pgdist < 500.0f)
+    if (pgdist < 400.0f)
     {
         if (_pgSound.getStatus() != sf::SoundSource::Status::Playing)
         {
@@ -480,10 +480,10 @@ void Opening::updateCurrentTile(const TileInfo& info)
             _pgSound.play();
         }
     }
-    else if (pgdist < 1000.0f)
+    else if (pgdist < 900.0f)
     {
-        //_pgSound.setVolume(1.f / (pgdist / 10.f));
-        _pgSound.setVolume((1000.f / pgdist) * 50.f);
+        float volume = (1.f - ((pgdist - 400.f) / 500.f)) * 100.f;
+        _pgSound.setVolume(volume);
         if (_pgSound.getStatus() != sf::SoundSource::Status::Playing)
         {
             _pgSound.play();
