@@ -64,6 +64,15 @@
         },
 
         {
+            "name": "Rent-A-Car",
+            "description": "No debit cards accepted here.",
+            "rects": 
+            [
+                "17,128,28,140"
+            ]
+        },
+
+        {
             "name": "Spooky Graveyard",
             "description": "Mostly your dreams are buried here.",
             "rects": 
@@ -223,7 +232,7 @@
 
         "toilet-brush": 
         [    
-            { "x": 17, "y": 139 }
+            { "x": 14, "y": 131 }
         ],
 
         "herb":
