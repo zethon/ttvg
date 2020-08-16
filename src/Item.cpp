@@ -46,4 +46,55 @@ namespace tt
         return _isObtainable;
     }
 
+
+	bool Item::isActionable() const
+    {
+        return _isActionable;
+    }
+
+    void Item::setActionable(bool b)
+    {
+        _isActionable = b;
+    }
+
+    std::string Item::getActionRequiresItem()
+    {
+        return _actionRequiresItem;
+    }
+
+    void Item::setActionRequiresItem(const std::string& s)
+    {
+        _actionRequiresItem = s;
+    }
+
+    std::string Item::getActionProvidesItem()
+    {
+        return _actionProvidesItem;
+    }
+
+    void Item::setActionProvidesItem(const std::string& s)
+    {
+        _actionProvidesItem = s;
+    }
+
+    std::string Item::getActionFailureMsg()
+    {
+        return _actionFailureMsg;
+    }
+
+    void Item::setActionFailureMsg(const std::string& s)
+    {
+        _actionFailureMsg = s;
+    }
+
+    std::string Item::getActionSuccessMsg()
+    {
+        return _actionSuccessMsg;
+    }
+
+    void Item::setActionSuccessMsg(const std::string& s)
+    {
+        _actionSuccessMsg = s;
+    }
+ 
 }

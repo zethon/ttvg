@@ -169,29 +169,107 @@ ScreenAction Opening::poll(const sf::Event& e)
             break;
 
             //
-            // Action. Perform an action. E.g. pick up an item.
+            // Action. Perform an action. 
+            // E.g. pick up an item or perform an action on an item.
             //
             case sf::Keyboard::A:
             {
                 //
-                // Check if we are on an item.
-                // If yes, remove it from the map's _items and add it to the 
-                // player's inventory.
+                // Check if player is standing on an item.
+                //
+                // Check if it is obtainable.
+                //      If it is obtainable, remove it from the map's _items 
+                //      and add it to the player's inventory.
+                //
+                // Check if it is actionable.
+                //      If it is actionable, attempt to perform an action 
+                //      on the item.
                 //
                 for(auto it = _items.begin(); it != _items.end(); it++)
                 {
                     ItemPtr item = *it;
 
                     if( item->getGlobalBounds().intersects(
-                                                _player->getGlobalBounds()) &&
-                        item->isObtainable() )
-                    {
+                                                _player->getGlobalBounds()) )
+                    { 
 
-                        _player->addItem(item);
-                        _descriptionText.setText("Picked up " + item->getName());
-                        _items.erase(it);
+                        if(item->isObtainable())
+                        {
+                            //
+                            // Player obtains the item
+                            //
+                            _player->addItem(item);
+                            _descriptionText.setText(
+                                                "Picked up " + item->getName());
+                            _items.erase(it);
+                            break;
+                        }
 
-                        break;
+                        if(item->isActionable())
+                        {
+
+                            const auto& requiredItem = 
+                                                item->getActionRequiresItem();
+
+                            if(_player->hasItem(requiredItem))
+                            {
+                                //
+                                // Player has the required item in their
+                                // inventory to perform the action.
+                                // It will cost them this item.
+                                // This could also be optional. Not all
+                                // actions should require an item.
+                                //
+                                _player->removeItem(requiredItem);
+                                
+                                //
+                                // Remove the object we are
+                                // operating on from the map.
+                                // This should be optional, or change its
+                                // state to reflect the action was performed.
+                                // E.g. a closed chest might become open, but
+                                // be empty. A locked door might become 
+                                // unlocked or opened.
+                                //
+                                _items.erase(it);
+
+                                //
+                                // "Drop" the new item into place
+                                // This should also be optional.
+                                // Not all actions should result in a drop.
+                                //
+                                const auto& providedItem = 
+                                                item->getActionProvidesItem();
+
+                                auto itemFactory = ItemFactory(_resources);
+                                sf::Vector2f position = item->getPosition();
+
+                                ItemPtr p = itemFactory.createItem(
+                                                            providedItem,
+                                                            position);
+                                _items.push_back(p);
+
+                                //
+                                // Show success message
+                                //
+                                _descriptionText.setText(
+                                    item->getActionSuccessMsg());
+
+                                break;
+
+                            }
+                            else
+                            {
+
+                                //
+                                // Player does not have the required item
+                                //
+                                _descriptionText.setText(
+                                    item->getActionFailureMsg());
+                                break;
+
+                            }
+                        }
                     }
                 }
             }

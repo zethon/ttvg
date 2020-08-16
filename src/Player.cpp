@@ -58,12 +58,35 @@ void Player::setGlobalBottom(float bottom)
     setPosition(bounds.left, y);
 }
 
-
 void Player::addItem(ItemPtr item)
 {
     _inventory.push_back(item);
 }
 
+bool Player::hasItem(const std::string& s)
+{
+	for(const auto& i: _inventory)
+    {
+    	if(i->getID() == s)
+        {
+            return true;
+        }
+    }
+	return false;
+}
+
+void Player::removeItem(const std::string& s)
+{
+    for(auto it = _inventory.begin(); it != _inventory.end(); it++)
+    {
+        ItemPtr item = *it;
+    	if(item->getID() == s)
+        {
+            _inventory.erase(it);
+            return;
+        }
+    }
+}
 
 const std::vector<ItemPtr>& Player::getInventory() const
 {

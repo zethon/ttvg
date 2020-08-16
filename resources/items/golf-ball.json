@@ -1,0 +1,6 @@
+{
+    "name":         "Gold Ball",
+    "description":  "You can never have too many balls.",
+    "obtainable":   true,
+    "attributes":   { }
+}

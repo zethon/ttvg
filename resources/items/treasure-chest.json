@@ -1,0 +1,11 @@
+{
+    "name":                 "Treasure Chest",
+    "description":          "It is locked.",
+    "obtainable":           false,
+    "actionable":           true,
+    "action-requires-item": "key",
+    "action-provides-item": "magic-space-vagina",
+    "action-failure-msg":   "You can't open this.",
+    "action-success-msg":   "You opened the chest!",
+    "attributes":           { }
+}
