@@ -2,7 +2,7 @@
 
 ![](docs/images/screenshot1.png)
 
-This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs on Winows, Mac and probably Ubuntu.
+This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs on Windows, Mac and probably Ubuntu.
 
 ## How to Install
 
@@ -97,6 +97,12 @@ sudo apt install libxcb-icccm4-dev
 sudo apt install libxcb-image0-dev
 sudo apt install libxcb-keysyms1-dev
 sudo apt install libxcb-xinerama0-dev
+```
+
+Install Dependencies (Ubuntu 20.04)
+```
+sudo apt install libxcb-shape0-dev
+sudo apt install libxcb-xfixes0-dev
 ```
 
 Run Build
