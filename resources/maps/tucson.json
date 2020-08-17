@@ -73,6 +73,15 @@
         },
 
         {
+            "name": "PayPail",
+            "description": "Complain about the money you sent in here.",
+            "rects": 
+            [
+                "54,130,62,141"
+            ]
+        },
+
+        {
             "name": "Spooky Graveyard",
             "description": "Mostly your dreams are buried here.",
             "rects": 
@@ -267,6 +276,11 @@
         "nine-iron":
         [
             { "x": 132, "y": 142 }
+        ],
+
+        "nissan-vagina":
+        [
+            { "x": 30, "y": 138 }
         ],
 
         "key":
