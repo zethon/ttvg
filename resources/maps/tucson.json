@@ -82,6 +82,24 @@
         },
 
         {
+            "name": "Court House",
+            "description": "Be sure to bring your weed with you.",
+            "rects": 
+            [
+                "105,48,113,56"
+            ]
+        },
+
+        {
+            "name": "Police Station",
+            "description": "Confess to your crimes against children and dogs.",
+            "rects": 
+            [
+                "116,45,128,56"
+            ]
+        },
+
+        {
             "name": "Spooky Graveyard",
             "description": "Mostly your dreams are buried here.",
             "rects": 
@@ -253,14 +271,14 @@
             { "x": 102, "y": 42 },
             { "x": 111, "y": 48 },
             { "x": 101, "y": 54 },
-            { "x": 109, "y": 56 },
-            { "x": 116, "y": 54 }
+            { "x": 109, "y": 57 },
+            { "x": 114, "y": 54 }
         ],
 
         "herb-69":
         [
-            { "x": 110, "y": 51 },
-            { "x": 105, "y": 49 }
+            { "x": 110, "y": 47 },
+            { "x": 105, "y": 46 }
         ],
 
         "golf-pin":
