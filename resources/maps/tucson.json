@@ -308,13 +308,37 @@
 
         "treasure-chest":
         [
-            { "x": 37, "y": 31 },
-            { "x": 56, "y": 81 }
+            { "x": 37, "y": 31 }
         ],
 
         "magnifying-glass":
         [
             { "x": 115, "y": 5 }
+        ],
+
+        "car-key":
+        [
+            { "x": 114, "y": 51 }
+        ],
+
+        "electric-piano":
+        [
+            { "x": 64, "y": 139 }
+        ],
+
+        "lighter":
+        [
+            { "x": 113, "y": 95 }
+        ],
+
+        "rolling-papers":
+        [
+            { "x": 5, "y": 100 }
+        ],
+
+        "weed-pipe":
+        [
+            { "x": 20, "y": 54 }
         ],
 
         "bag":
