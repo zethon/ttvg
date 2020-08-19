@@ -14,7 +14,14 @@ void from_json(const nl::json& j, AvatarInfo& av)
 
     if (j.contains("scale"))
     {
-        j.at("scale").get_to(av.scale);
+        if (j.at("scale").get<std::string>() == "auto")
+        {
+            av.scale = sf::Vector2f{ -1.0f, -1.0f };
+        }
+        else
+        {
+            j.at("scale").get_to(av.scale);
+        }
     }
 }
 

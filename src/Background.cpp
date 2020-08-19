@@ -64,7 +64,15 @@ void Background::initBackground()
     const auto bg = _json->at("background");
     if (bg.contains("scale"))
     {
-        this->setScale(bg["scale"].get<sf::Vector2f>());
+        auto scale = bg["scale"].get<sf::Vector2f>();
+        if (scale.x < 0.f)
+        {
+            assert(scale.y < 0.f);
+            scale = sf::Vector2f{
+                static_cast<float>(_window.getSize().x) / static_cast<float>(_background->getTexture()->getSize().x),
+                static_cast<float>(_window.getSize().y) / static_cast<float>(_background->getTexture()->getSize().y) };
+
+        this->setScale(scale);
     }
 
     if (bg.contains("tiles"))
