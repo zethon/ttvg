@@ -92,12 +92,22 @@
 
         {
             "name": "Police Station",
-            "description": "Confess to your crimes against children and dogs.",
+            "description": "Confess to your crimes against children and pets.",
             "rects": 
             [
                 "116,45,128,56"
             ]
         },
+
+        {
+            "name": "Hospital",
+            "description": "Fixing gunshot wounds to the spleen since 1982.",
+            "rects": 
+            [
+                "47,26,59,38"
+            ]
+        },
+
 
         {
             "name": "Spooky Graveyard",
