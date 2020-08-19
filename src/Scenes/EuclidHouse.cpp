@@ -16,7 +16,7 @@ EuclidHouse::EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, Play
       _descriptionText{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>(SCENE_NAME, _resources, sf::Vector2f{ 16, 16 });
+    _background = std::make_shared<Background>(SCENE_NAME, _resources);
     _background->setPosition(0.0f, 0.0f);
 
     const sf::Vector2f bgscale{

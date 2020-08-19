@@ -14,18 +14,7 @@
 namespace tt
 {
 
-constexpr auto SCALE_PLAYER = 1.50f;
-constexpr auto SCALE_BACKGROUND = 2.25f;
-
 constexpr auto STEPSIZE = 16u;
-
-constexpr auto PLAYER_START_X = 1660;
-constexpr auto PLAYER_START_Y = 2855.0f;
-
-constexpr auto TILESIZE_X = 16.0f;
-constexpr auto TILESIZE_Y = 16.0f;
-
-constexpr auto MAPNAME = "tucson";
 constexpr auto SCENE_NAME = "tucson";
 
 constexpr auto MAX_VEHICLES = 25u;
@@ -50,8 +39,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
 
     initTraffic();
 
-    // _lastPlayerPos = sf::Vector2f(_playerAvatarInfo.start.x, _playerAvatarInfo.start.y);
-
     _pgSoundBuffer = *(resmgr.load<sf::SoundBuffer>("sounds/playground.wav"));
     _pgSound.setBuffer(_pgSoundBuffer);
     _pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 140.f, 84.f });
@@ -67,7 +54,7 @@ void Opening::enter()
 
     _player->setSource(0, 10);
     _player->setOrigin(0.0f, 0.0f);
-    
+
     _player->setAnimeCallback(
         [this]()
         {
@@ -548,6 +535,8 @@ void Opening::updateCurrentTile(const TileInfo& info)
 {
     _currentTile = info;
 
+    // TODO: PUT THIS IN A CONFIG FILE
+    // BEGIN MESSY HARCODED PLAYGROUND SOUND CODE TO BE REMOVED
     auto pgdist = tt::distance(_pgCenter, _player->getGlobalCenter());
     if (pgdist < 400.0f)
     {
@@ -571,6 +560,7 @@ void Opening::updateCurrentTile(const TileInfo& info)
         _pgSound.setVolume(0.f);
         _pgSound.pause();
     }
+    // END UGLY HARDCOED PLAYGROUND CODE
 
     bool handled = false;
     std::for_each(_items.begin(), _items.end(),
