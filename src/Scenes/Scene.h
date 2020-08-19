@@ -13,6 +13,15 @@
 namespace tt
 {
 
+struct AvatarInfo
+{
+    sf::Vector2f    start;
+    sf::Vector2f    scale;
+    sf::Vector2f    stepsize;
+};
+
+void from_json(const nl::json& j, AvatarInfo& av);
+
 class Scene;
 using ScenePtr = std::unique_ptr<Scene>;
 using SceneSharedPtr = std::shared_ptr<Scene>;
@@ -47,6 +56,8 @@ protected:
     std::weak_ptr<Player>   _weakPlayer;
     PlayerPtr               _player;
     sf::Vector2f            _lastPlayerPos;
+    AvatarInfo              _playerAvatarInfo;
+
     std::vector<ItemPtr>    _items;
 
 private:

@@ -54,6 +54,7 @@ class Background : public sf::Sprite
     using ZoneSet = std::set<Zone, zone_compare>;
 
 public:
+    Background(std::string_view name, ResourceManager& resmgr);
     Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2f& tilesize);
 
     sf::FloatRect getWorldTileRect() const;
@@ -94,6 +95,7 @@ protected:
     ZoneSet                         _zones;
 
 private:
+    void initBackground();
     void initZones();
 
     sf::Vector2f                _tilesize;

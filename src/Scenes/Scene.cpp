@@ -1,20 +1,48 @@
+#include <fmt/core.h>
+
 #include "Scene.h"
 
 namespace tt
 {
+
+void from_json(const nl::json& j, AvatarInfo& av)
+{
+    if (j.contains("start"))
+    {
+        j.at("start").get_to(av.start);
+    }
+
+    if (j.contains("scale"))
+    {
+        j.at("scale").get_to(av.scale);
+    }
+}
 
 Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& target, PlayerPtr player)
     : Screen(res, target),
       _name{ name },
       _weakPlayer{ player }
 {
+    if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", name)); 
+            jsonopt.has_value())
+    {
+        const auto& json = *jsonopt;
+        if (json.contains("player"))
+        {
+            _playerAvatarInfo = json["player"].get<AvatarInfo>();
+        }
+    }
+
+    _lastPlayerPos = _playerAvatarInfo.start;
 }
 
 void Scene::enter()
 {
     assert(!_player);
     _player = _weakPlayer.lock();
+
     _player->setPosition(_lastPlayerPos);
+    _player->setScale(_playerAvatarInfo.scale);
 }
 
 void Scene::exit()

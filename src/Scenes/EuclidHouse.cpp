@@ -162,8 +162,6 @@ void EuclidHouse::enter()
 {
     Scene::enter();
 
-    _player->setScale(2.5f, 2.5f);
-    _player->setPosition(600.0f, 560.0f);
     _player->setAnimeCallback(
         [this]()->sf::Vector2f
         {

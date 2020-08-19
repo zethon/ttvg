@@ -7,8 +7,7 @@
     "player":
     {
         "start": { "x": 600, "y": 560 },
-        "scale": { "x": 2.5, "y": 2.5 },
-        "step": { "x": 16, "y": 16 }
+        "scale": { "x": 2.5, "y": 2.5 }
     },
     "zones":
     [
@@ -57,8 +56,7 @@
             "transition":
             {
                 "scene": "tucson",
-                "enabled": true,
-                "newscene": 0
+                "enabled": true
             },
             "rects" : 
             [

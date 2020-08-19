@@ -8,7 +8,29 @@
 
 #include <boost/spirit/home/x3.hpp>
 
+#include <nlohmann/json.hpp>
+
 #include <SFML/Graphics.hpp>
+
+namespace nl = nlohmann;
+
+namespace sf
+{
+
+inline void from_json(const nl::json& j, Vector2f& v)
+{
+    if (j.contains("x"))
+    {
+        j.at("x").get_to(v.x);
+    }
+
+    if (j.contains("y"))
+    {
+        j.at("y").get_to(v.y);
+    }
+}
+
+} // namespace sf
 
 namespace tt
 {

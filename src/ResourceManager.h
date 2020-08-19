@@ -4,10 +4,12 @@
 
 #include <boost/filesystem.hpp>
 
-#include <nlohmann/json_fwd.hpp>
+#include <nlohmann/json.hpp>
 
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio.hpp>
+
+namespace nl = nlohmann;
 
 namespace tt
 {
@@ -105,6 +107,15 @@ public:
     }
 
     std::string getFilename(const std::string& name);
+
+    /// \brief Return a loaded JSON file
+    ///
+    /// \param name Filename and relative path of the JSON file
+    ///             (e.g. "maps/tucson.json").
+    ///
+    /// \return An optional with the loaded JSON object if loaded
+    ///
+    std::optional<nl::json> getJson(const std::string& name);
 };
 
 } // namespace tt

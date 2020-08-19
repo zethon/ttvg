@@ -37,9 +37,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
       _descriptionText{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>(SCENE_NAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
-    _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
-    _background->setPosition(0.0f, 0.0f);
+    _background = std::make_shared<Background>(SCENE_NAME, _resources);
 
     sf::View view(sf::FloatRect(0.f, 0.f,
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
@@ -52,7 +50,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
 
     initTraffic();
 
-    _lastPlayerPos = sf::Vector2f(PLAYER_START_X, PLAYER_START_Y);
+    // _lastPlayerPos = sf::Vector2f(_playerAvatarInfo.start.x, _playerAvatarInfo.start.y);
 
     _pgSoundBuffer = *(resmgr.load<sf::SoundBuffer>("sounds/playground.wav"));
     _pgSound.setBuffer(_pgSoundBuffer);
@@ -68,8 +66,8 @@ void Opening::enter()
     Scene::enter();
 
     _player->setSource(0, 10);
-    _player->setScale(SCALE_PLAYER, SCALE_PLAYER);
     _player->setOrigin(0.0f, 0.0f);
+    
     _player->setAnimeCallback(
         [this]()
         {
