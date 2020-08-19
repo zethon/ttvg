@@ -26,17 +26,18 @@ constexpr auto TILESIZE_X = 16.0f;
 constexpr auto TILESIZE_Y = 16.0f;
 
 constexpr auto MAPNAME = "tucson";
+constexpr auto SCENE_NAME = "tucson";
 
 constexpr auto MAX_VEHICLES = 25u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
-    : Scene{ resmgr, target, player },
+    : Scene{ SCENE_NAME, resmgr, target, player },
       _hud{ resmgr, target },
       _descriptionText{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>(MAPNAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
+    _background = std::make_shared<Background>(SCENE_NAME, _resources, sf::Vector2f { TILESIZE_X, TILESIZE_Y });
     _background->setScale(SCALE_BACKGROUND, SCALE_BACKGROUND);
     _background->setPosition(0.0f, 0.0f);
 

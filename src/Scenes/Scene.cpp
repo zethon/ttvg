@@ -3,8 +3,9 @@
 namespace tt
 {
 
-Scene::Scene(ResourceManager& res, sf::RenderTarget& target, PlayerPtr player)
+Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& target, PlayerPtr player)
     : Screen(res, target),
+      _name{ name },
       _weakPlayer{ player }
 {
 }
@@ -23,9 +24,11 @@ void Scene::exit()
     _player.reset();
 }
 
-//void Scene::updateCurrentTile(const TileInfo & info)
-//{
-//}
+sf::Vector2f Scene::getPlayerTile() const
+{
+    auto playerxy = _player->getGlobalCenter();
+    return _background->getTileFromGlobal(playerxy);
+}
 
 void Scene::init()
 {

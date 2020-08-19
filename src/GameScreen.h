@@ -15,6 +15,8 @@ class GameScreen : public Screen
 {
 
 public:
+    using SceneMap = std::map<std::string, SceneSharedPtr>;
+
     GameScreen(ResourceManager& resmgr, sf::RenderTarget& target);
 
     void draw() override;
@@ -22,8 +24,9 @@ public:
     ScreenAction timestep() override;
 
 private:
-    std::size_t             _currentScene = 0;
+    SceneSharedPtr          _currentScene;
     std::vector<ScenePtr>   _scenes;
+    SceneMap                _scenes2;
     PlayerPtr               _player;
 
 };

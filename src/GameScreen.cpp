@@ -17,8 +17,10 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
 
     // TODO: as the game grows these constructions will take longer
     // and should probably be done in parallel and/or with a loading screen
-    _scenes.emplace_back(std::make_unique<Opening>(resmgr, target, _player));
-    _scenes.emplace_back(std::make_unique<EuclidHouse>(resmgr, target, _player));
+    _scenes2.emplace("tucson", std::make_shared<Opening>(resmgr, target, _player));
+    _scenes2.emplace("EuclidHouse", std::make_shared<EuclidHouse>(resmgr, target, _player));
+
+    _currentScene = _scenes2["tucson"];
 
     // make sure all constructors across all scenes
     // have been run BEFORE init()'ing the scenes
@@ -27,18 +29,18 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
         scene->init();
     }
 
-    _scenes[_currentScene]->enter();
+    _currentScene->enter();
 }
 
 void GameScreen::draw()
 {
-    _scenes[_currentScene]->draw();
+    _currentScene->draw();
 }
 
 ScreenAction GameScreen::poll(const sf::Event& e)
 {
-    assert(_scenes[_currentScene]);
-    auto result = _scenes[_currentScene]->poll(e);
+    assert(_currentScene);
+    auto result = _currentScene->poll(e);
     switch (result.type)
     {
         default:
@@ -49,12 +51,12 @@ ScreenAction GameScreen::poll(const sf::Event& e)
 
         case ScreenActionType::CHANGE_SCENE:
         {
-            if (_scenes[result.data] != nullptr)
-            {
-                _scenes[_currentScene]->exit();
-                _currentScene = result.data;
-                _scenes[_currentScene]->enter();
-            }
+            const auto name = std::any_cast<std::string>(result.data);
+            assert(_scenes2.find(name) != _scenes2.end());
+
+            _currentScene->exit();
+            _currentScene = _scenes2.at(name);
+            _currentScene->enter();
         }
         break;
     }
@@ -64,8 +66,8 @@ ScreenAction GameScreen::poll(const sf::Event& e)
 
 ScreenAction GameScreen::timestep()
 {
-    assert(_scenes[_currentScene]);
-    return _scenes[_currentScene]->timestep();
+    assert(_currentScene);
+    return _currentScene->timestep();
 }
 
 } // namespace tt

@@ -7,15 +7,16 @@ namespace nl = nlohmann;
 namespace tt
 {
     
+constexpr auto SCENE_NAME = "EuclidHouse";
 constexpr auto STEPSIZE = 16u;
 
 EuclidHouse::EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
-    : Scene(resmgr, target, player),
+    : Scene(SCENE_NAME, resmgr, target, player),
       _hud{ resmgr, target },
       _descriptionText{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>("EuclidHouse", _resources, sf::Vector2f{ 16, 16 });
+    _background = std::make_shared<Background>(SCENE_NAME, _resources, sf::Vector2f{ 16, 16 });
     _background->setPosition(0.0f, 0.0f);
 
     const sf::Vector2f bgscale{

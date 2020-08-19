@@ -1,4 +1,15 @@
 {
+    "background":
+    {
+        "scale": { "x": 2.25, "y": 2.25 },
+        "tile": { "x": 16, "y": 26 }
+    },
+    "player":
+    {
+        "start": { "x": 1660, "y": 2855 },
+        "scale": { "x": 1.5, "y": 1.5 },
+        "step": { "x": 16, "y": 16 }
+    },
     "zones":
     [
         { 
@@ -33,6 +44,7 @@
             ],
             "transition":
             {
+                "scene": "EuclidHouse",
                 "type": "manual",
                 "enabled": true,
                 "newscene": 1

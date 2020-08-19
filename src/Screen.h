@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <any>
 
 #include <SFML/Graphics.hpp>
 
@@ -28,7 +29,7 @@ enum class ScreenActionType
 struct ScreenAction
 {
     ScreenActionType    type;
-    std::uint32_t       data;
+    std::any            data;
 };
 
 class Screen

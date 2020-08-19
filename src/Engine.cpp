@@ -26,7 +26,7 @@ void TooterEngine::poll(const sf::Event& e)
     if (auto action = _currentScreen->poll(e); 
         action.type == ScreenActionType::CHANGE_SCREEN)
     {
-        changeScreen(action.data);
+        changeScreen(std::any_cast<std::uint16_t>(action.data));
     }
 }
 
@@ -35,7 +35,7 @@ void TooterEngine::timestep()
     if (auto action = _currentScreen->timestep(); 
         action.type == ScreenActionType::CHANGE_SCREEN)
     {
-        changeScreen(action.data);
+        changeScreen(std::any_cast<std::uint16_t>(action.data));
     }
 }
 

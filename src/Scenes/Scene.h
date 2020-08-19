@@ -21,22 +21,25 @@ class Scene : public Screen
 {
 
 public:
-    Scene(ResourceManager& res, sf::RenderTarget& target, PlayerPtr player);
+    Scene(std::string_view name, 
+        ResourceManager& res, 
+        sf::RenderTarget& target, 
+        PlayerPtr player);
+
+    virtual void init();
 
     virtual void enter();
     virtual void exit();
 
-    sf::Vector2f getPlayerTile() const
-    {
-        auto playerxy = _player->getGlobalCenter();
-        return _background->getTileFromGlobal(playerxy);
-    }
+    sf::Vector2f getPlayerTile() const;
 
-    virtual void init();
+    std::string name() const { return _name; }
 
 protected:
     virtual void updateCurrentTile(const TileInfo& info) = 0;
     [[maybe_unused]] bool walkPlayer(std::uint32_t speed);
+
+    std::string             _name;
 
     BackgroundSharedPtr     _background;
     TileInfo                _currentTile;
