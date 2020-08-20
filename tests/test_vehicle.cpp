@@ -16,14 +16,15 @@ namespace data = boost::unit_test::data;
 BOOST_AUTO_TEST_SUITE(tt)
 BOOST_AUTO_TEST_SUITE(vehicle)
 
-
 BOOST_AUTO_TEST_CASE(vehicleTurnTest)
 {
     sf::Texture texture;
     texture.create(100, 100);
 
+    tt:NullWindow window;
+
     tt::ResourceManager mgr{ boost::filesystem::path{} };
-    auto bg = std::make_shared<tt::Background>("test", mgr, sf::Vector2f{ 5,5 });
+    auto bg = std::make_shared<tt::Background>("test", mgr, window, sf::Vector2f{ 5,5 });
     bg->setTexture(texture, true);
     bg->setScale(1.0f, 1.0f);
 
@@ -86,8 +87,10 @@ BOOST_AUTO_TEST_CASE(fastVehicleTest)
     sf::Texture texture;
     texture.create(100, 100);
 
+    tt::NullWindow window;
+
     tt::ResourceManager mgr{ boost::filesystem::path{} };
-    auto bg = std::make_shared<tt::Background>("test", mgr, sf::Vector2f{ 5,5 });
+    auto bg = std::make_shared<tt::Background>("test", mgr, window, sf::Vector2f{ 5,5 });
     bg->setTexture(texture, true);
     bg->setScale(1.0f, 1.0f);
 

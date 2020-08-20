@@ -28,3 +28,17 @@ std::ostream& operator<<(std::ostream& out, const sf::FloatRect& item)
 }
 
 } // namespace std
+
+namespace tt
+{
+
+class NullWindow : public sf::RenderTarget
+{
+public:
+    sf::Vector2u getSize() const override
+    {
+        return sf::Vector2u{};
+    }
+};
+
+}

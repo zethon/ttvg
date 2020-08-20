@@ -75,8 +75,10 @@ BOOST_DATA_TEST_CASE(globalFromTileTest, data::make(globalFromTileData), textSiz
     sf::Texture texture;
     texture.create(textSize.x, textSize.y);
 
+    tt::NullWindow window;
+
     tt::ResourceManager mgr{ boost::filesystem::path{} };
-    tt::Background bg{ "test", mgr, tileSize };
+    tt::Background bg{ "test", mgr, window, tileSize };
     bg.setTexture(texture, true);
     bg.setScale(bgScale);
 
@@ -115,8 +117,10 @@ BOOST_DATA_TEST_CASE(globalCenterFromTileTest, data::make(globalCenterFromTileDa
     sf::Texture texture;
     texture.create(textSize.x, textSize.y);
 
+    tt::NullWindow window;
+
     tt::ResourceManager mgr{ boost::filesystem::path{} };
-    tt::Background bg{ "test", mgr, tileSize };
+    tt::Background bg{ "test", mgr, window, tileSize };
     bg.setTexture(texture, true);
     bg.setScale(bgScale);
 
