@@ -1,7 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <any>
+
+#include <boost/any.hpp>
 
 #include <SFML/Graphics.hpp>
 
@@ -29,7 +30,7 @@ enum class ScreenActionType
 struct ScreenAction
 {
     ScreenActionType    type;
-    std::any            data;
+    boost::any            data;
 };
 
 class Screen

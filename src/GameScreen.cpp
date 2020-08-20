@@ -51,7 +51,7 @@ ScreenAction GameScreen::poll(const sf::Event& e)
 
         case ScreenActionType::CHANGE_SCENE:
         {
-            const auto name = std::any_cast<std::string>(result.data);
+            const auto name = boost::any_cast<std::string>(result.data);
             assert(_scenes2.find(name) != _scenes2.end());
 
             _currentScene->exit();
