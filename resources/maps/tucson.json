@@ -108,6 +108,15 @@
             ]
         },
 
+        {
+            "name": "Tucson Fire Department",
+            "description": "Two Pumpers",
+            "rects": 
+            [
+                "1,60,13,71"
+            ]
+        },
+
 
         {
             "name": "Spooky Graveyard",
