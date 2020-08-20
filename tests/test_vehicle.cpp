@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE(vehicleTurnTest)
     sf::Texture texture;
     texture.create(100, 100);
 
-    tt:NullWindow window;
+    tt::NullWindow window;
 
     tt::ResourceManager mgr{ boost::filesystem::path{} };
     auto bg = std::make_shared<tt::Background>("test", mgr, window, sf::Vector2f{ 5,5 });
