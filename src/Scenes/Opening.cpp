@@ -14,7 +14,6 @@
 namespace tt
 {
 
-constexpr auto STEPSIZE = 16u;
 constexpr auto SCENE_NAME = "tucson";
 
 constexpr auto MAX_VEHICLES = 25u;
@@ -26,8 +25,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
       _descriptionText{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>(SCENE_NAME, _resources);
-
     sf::View view(sf::FloatRect(0.f, 0.f,
         static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
@@ -521,7 +518,7 @@ void Opening::adjustView()
 
 sf::Vector2f Opening::animeCallback()
 {
-    if (walkPlayer(STEPSIZE))
+    if (walkPlayer(_playerAvatarInfo.stepsize))
     {
         sf::Vector2f tile{ getPlayerTile() };
         auto tileinfo = _background->getTileInfo(tile);

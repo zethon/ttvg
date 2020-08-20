@@ -23,6 +23,11 @@ void from_json(const nl::json& j, AvatarInfo& av)
             j.at("scale").get_to(av.scale);
         }
     }
+
+    if (j.contains("stepsize"))
+    {
+        j.at("stepsize").get_to(av.stepsize);
+    }
 }
 
 Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& target, PlayerPtr player)
@@ -41,6 +46,8 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
     }
 
     _lastPlayerPos = _playerAvatarInfo.start;
+
+    _background = std::make_shared<Background>(_name, _resources, target);
 }
 
 void Scene::enter()
@@ -70,11 +77,11 @@ void Scene::init()
     createItems();
 }
 
-bool Scene::walkPlayer(std::uint32_t stepsize)
+bool Scene::walkPlayer(float stepsize)
 {
-    const auto stepSize = stepsize
+    const float stepSize = stepsize
         + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-            || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
+            || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20.f : 0.f);
 
     bool moved = false;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))

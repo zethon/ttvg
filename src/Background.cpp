@@ -24,12 +24,12 @@ void from_json(const nl::json& j, Zone& z)
     }
 }
 
-Background::Background(std::string_view name, ResourceManager& resmgr)
-    : Background(name, resmgr, sf::Vector2f{})
+Background::Background(std::string_view name, ResourceManager& resmgr, sf::RenderTarget& target)
+    : Background(name, resmgr, target, sf::Vector2f{})
 {
 }
 
-Background::Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2f& tilesize)
+Background::Background(std::string_view name, ResourceManager& resmgr, sf::RenderTarget& target, const sf::Vector2f& tilesize)
     : _tilesize { tilesize },
       _mapname{ name }
 {
@@ -48,7 +48,7 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
         file.close();
     }
 
-    initBackground();
+    initBackground(target);
     initZones();
 
     // tilesize must come from either the constructor or
@@ -56,7 +56,7 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
     assert(_tilesize.x > 0 && _tilesize.y > 0);
 }
 
-void Background::initBackground()
+void Background::initBackground(const sf::RenderTarget& target)
 {
     if (!_json) return;
     if (!_json->at("background").is_object()) return;
@@ -64,13 +64,20 @@ void Background::initBackground()
     const auto bg = _json->at("background");
     if (bg.contains("scale"))
     {
-        auto scale = bg["scale"].get<sf::Vector2f>();
-        if (scale.x < 0.f)
+        sf::Vector2f scale{ 1.f, 1.f };
+
+        if (bg.at("scale").is_string()
+            && bg.at("scale") == "auto")
         {
-            assert(scale.y < 0.f);
             scale = sf::Vector2f{
-                static_cast<float>(_window.getSize().x) / static_cast<float>(_background->getTexture()->getSize().x),
-                static_cast<float>(_window.getSize().y) / static_cast<float>(_background->getTexture()->getSize().y) };
+                static_cast<float>(target.getSize().x) / static_cast<float>(getTexture()->getSize().x),
+                static_cast<float>(target.getSize().y) / static_cast<float>(getTexture()->getSize().y) };
+        }
+        else if (bg.at("scale").is_object())
+        {
+            scale = bg["scale"].get<sf::Vector2f>();
+            assert(scale.y < 0.f);   
+        }
 
         this->setScale(scale);
     }

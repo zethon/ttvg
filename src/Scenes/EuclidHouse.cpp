@@ -8,7 +8,6 @@ namespace tt
 {
     
 constexpr auto SCENE_NAME = "EuclidHouse";
-constexpr auto STEPSIZE = 16u;
 
 EuclidHouse::EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
     : Scene(SCENE_NAME, resmgr, target, player),
@@ -16,9 +15,6 @@ EuclidHouse::EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, Play
       _descriptionText{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    _background = std::make_shared<Background>(SCENE_NAME, _resources);
-    _background->setPosition(0.0f, 0.0f);
-
     const sf::Vector2f bgscale{
         static_cast<float>(_window.getSize().x) / static_cast<float>(_background->getTexture()->getSize().x),
         static_cast<float>(_window.getSize().y) / static_cast<float>(_background->getTexture()->getSize().y) };
@@ -165,7 +161,7 @@ void EuclidHouse::enter()
     _player->setAnimeCallback(
         [this]()->sf::Vector2f
         {
-            if (walkPlayer(STEPSIZE))
+            if (walkPlayer(_playerAvatarInfo.stepsize))
             {
                 sf::Vector2f tile{ getPlayerTile() };
                 auto tileinfo = _background->getTileInfo(tile);
