@@ -2,7 +2,7 @@
     "background":
     {
         "scale": "auto",
-        "tile": { "x": 16, "y": 26 }
+        "tiles": { "x": 16, "y": 26 }
     },
     "player":
     {

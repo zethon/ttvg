@@ -14,12 +14,12 @@
 
 namespace nl = nlohmann;
 
-//namespace sf
-//{
-//
-//void from_json(const nl::json& j, Vector2f& v);
-//
-//} // namespace sf
+namespace sf
+{
+
+void from_json(const nl::json& j, Vector2f& v);
+
+} // namespace sf
 
 namespace tt
 {

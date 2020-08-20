@@ -76,7 +76,8 @@ void Background::initBackground(const sf::RenderTarget& target)
         else if (bg.at("scale").is_object())
         {
             scale = bg["scale"].get<sf::Vector2f>();
-            assert(scale.y < 0.f);   
+            assert(scale.x > 0.f);
+            assert(scale.y > 0.f);
         }
 
         this->setScale(scale);

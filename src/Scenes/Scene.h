@@ -16,8 +16,9 @@ namespace tt
 struct AvatarInfo
 {
     sf::Vector2f    start;
-    sf::Vector2f    scale;
     float           stepsize;
+    sf::Vector2f    scale;
+    bool            autoScale = false;
 };
 
 void from_json(const nl::json& j, AvatarInfo& av);
