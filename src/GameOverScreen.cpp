@@ -28,12 +28,12 @@ GameOverScreen::GameOverScreen(ResourceManager& res, sf::RenderTarget& target)
     addDrawable(textobj);
 }
 
-ScreenAction GameOverScreen::poll(const sf::Event & e)
+PollResult GameOverScreen::poll(const sf::Event & e)
 {
     if (e.type == sf::Event::KeyReleased
         && e.key.code == sf::Keyboard::Space)
     {
-        return { ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO };
+        return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO }};
     }
 
     return {};

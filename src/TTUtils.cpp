@@ -2,6 +2,24 @@
 
 #include <boost/filesystem.hpp>
 
+namespace sf
+{
+
+void from_json(const nl::json& j, Vector2f& v)
+{
+   if (j.contains("x"))
+   {
+       j.at("x").get_to(v.x);
+   }
+
+   if (j.contains("y"))
+   {
+       j.at("y").get_to(v.y);
+   }
+}
+
+}
+
 namespace tt
 {
 

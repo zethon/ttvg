@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <boost/any.hpp>
+
 #include <SFML/Graphics.hpp>
 
 #include "ResourceManager.h"
@@ -28,7 +30,13 @@ enum class ScreenActionType
 struct ScreenAction
 {
     ScreenActionType    type;
-    std::uint32_t       data;
+    boost::any          data;
+};
+
+struct PollResult
+{
+    bool            handled = false;
+    ScreenAction    action;
 };
 
 class Screen
@@ -54,7 +62,7 @@ public:
     virtual void draw();
 
     // poll system/user events
-    [[maybe_unused]] virtual ScreenAction poll(const sf::Event&);
+    [[maybe_unused]] virtual PollResult poll(const sf::Event&);
 
     // update positions and state
     [[maybe_unused]] virtual ScreenAction timestep();

@@ -1,4 +1,17 @@
 {
+    "background":
+    {
+        "scale": "auto",
+        "tiles": { "x": 16, "y": 16 }
+    },
+    "player":
+    {
+        "start": { "x": 600, "y": 560 },
+        "scale": { "x": 2.5, "y": 2.5 },
+        "source": { "x": 0, "y": 10 },
+        "origin": { "x": 0, "y": 0 },
+        "stepsize" : 16.0
+    },
     "zones":
     [
         { 
@@ -43,11 +56,11 @@
         },
         {
             "name" : "Leave your hovel",
+            "description": "Press SPACE to leave your rat infested apartment",
             "transition":
             {
-                "type": "manual",
-                "enabled": true,
-                "newscene": 0
+                "scene": "tucson",
+                "enabled": true
             },
             "rects" : 
             [

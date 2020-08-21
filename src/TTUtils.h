@@ -8,7 +8,18 @@
 
 #include <boost/spirit/home/x3.hpp>
 
+#include <nlohmann/json.hpp>
+
 #include <SFML/Graphics.hpp>
+
+namespace nl = nlohmann;
+
+namespace sf
+{
+
+void from_json(const nl::json& j, Vector2f& v);
+
+} // namespace sf
 
 namespace tt
 {

@@ -111,7 +111,7 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
 }
 
-ScreenAction IntroScreen::poll(const sf::Event& e)
+PollResult IntroScreen::poll(const sf::Event& e)
 {
     if (e.type == sf::Event::KeyReleased
         && e.key.code == sf::Keyboard::Up)
@@ -147,7 +147,7 @@ ScreenAction IntroScreen::poll(const sf::Event& e)
 
             case 0: // play game
             {
-                return { ScreenActionType::CHANGE_SCREEN, SCREEN_GAME };
+                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_GAME }};
             }
 
             case 2: // exit
@@ -234,12 +234,12 @@ SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
     _clock.restart();
 }
 
-ScreenAction SplashScreen::poll(const sf::Event& e)
+PollResult SplashScreen::poll(const sf::Event& e)
 {
     if (e.type == sf::Event::KeyReleased
             && e.key.code == sf::Keyboard::Space)
     {
-        return { ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO };
+        return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO }};
     }
 
     return {};

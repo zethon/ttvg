@@ -1,42 +1,256 @@
+#include <fmt/core.h>
+
 #include "Scene.h"
 
 namespace tt
 {
 
-Scene::Scene(ResourceManager& res, sf::RenderTarget& target, PlayerPtr player)
+void from_json(const nl::json& j, AvatarInfo& av)
+{
+    if (j.contains("start"))
+    {
+        j.at("start").get_to(av.start);
+    }
+
+    if (j.contains("scale"))
+    {
+        j.at("scale").get_to(av.scale);
+    }
+
+    if (j.contains("source"))
+    {
+        j.at("source").get_to(av.source);
+    }
+
+    if (j.contains("origin"))
+    {
+        j.at("origin").get_to(av.origin);
+    }
+
+    if (j.contains("stepsize"))
+    {
+        j.at("stepsize").get_to(av.stepsize);
+    }
+}
+
+Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& target, PlayerPtr player)
     : Screen(res, target),
+      _name{ name },
+      _hud{ res, target },
+      _descriptionText{ res, target },
       _weakPlayer{ player }
 {
-}
+    if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _name)); 
+            jsonopt.has_value())
+    {
+        const auto& json = *jsonopt;
+        if (json.contains("player"))
+        {
+            _playerAvatarInfo = json["player"].get<AvatarInfo>();
+        }
+    }
 
-void Scene::enter()
-{
-    assert(!_player);
-    _player = _weakPlayer.lock();
-    _player->setPosition(_lastPlayerPos);
-}
+    _lastPlayerPos = _playerAvatarInfo.start;
 
-void Scene::exit()
-{
-    assert(_player);
-    _lastPlayerPos = _player->getPosition();
-    _player.reset();
+    _background = std::make_shared<Background>(_name, _resources, target);
+    addDrawable(_background);
 }
-
-//void Scene::updateCurrentTile(const TileInfo & info)
-//{
-//}
 
 void Scene::init()
 {
     createItems();
 }
 
-bool Scene::walkPlayer(std::uint32_t stepsize)
+void Scene::enter()
 {
-    const auto stepSize = stepsize
+    assert(!_player);
+    _player = _weakPlayer.lock();
+
+    _player->setPosition(_lastPlayerPos);
+    _player->setScale(_playerAvatarInfo.scale);
+    _player->setOrigin(_playerAvatarInfo.origin);
+
+    _player->setSource(
+        static_cast<std::uint32_t>(_playerAvatarInfo.source.x),
+        static_cast<std::uint32_t>(_playerAvatarInfo.source.y));
+
+    _player->setAnimeCallback(
+        [this]()
+        {
+            return this->animeCallback();
+        });
+
+    addUpdateable(_player);
+}
+
+void Scene::exit()
+{
+    assert(_player);
+    _lastPlayerPos = _player->getPosition();
+
+    removeUpdateable(_player);
+    _player.reset();
+}
+
+PollResult Scene::poll(const sf::Event& e)
+{
+    if (e.type == sf::Event::KeyPressed)
+    {
+        switch (e.key.code)
+        {
+            default:
+            break;
+
+            case sf::Keyboard::Left:
+            {
+                if (_player->state() == AnimatedState::ANIMATED
+                    && _player->direction() == Direction::LEFT)
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 9);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::LEFT);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Right:
+            {
+                if (_player->state() == AnimatedState::ANIMATED
+                    && _player->direction() == Direction::RIGHT)
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 11);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::RIGHT);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Up:
+            {
+                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
+                    || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 8);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::UP);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Down:
+            {
+                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
+                    || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 10);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::DOWN);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Space:
+            {
+                if (_currentTile.type == TileType::ZONE)
+                {
+                    auto zone = boost::any_cast<Zone>(_currentTile.data);
+                    if (zone.transition.has_value())
+                    {
+                        return {true, { ScreenActionType::CHANGE_SCENE, zone.transition->newscene }};
+                    }
+                }
+            }
+            break;
+
+            case sf::Keyboard::Period:
+            {
+                _hud.setVisible(!_hud.visible());
+            }
+            break;
+        }
+    }
+
+    if (_player->state() == AnimatedState::ANIMATED
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    {
+        _player->setState(AnimatedState::STILL);
+    }
+
+    return {};
+}
+
+void Scene::draw()
+{
+    Screen::draw();
+    _window.draw(*_player);
+
+    _window.setView(_window.getDefaultView());
+    _hud.draw();
+    _descriptionText.draw();
+}
+
+sf::Vector2f Scene::getPlayerTile() const
+{
+    auto playerxy = _player->getGlobalCenter();
+    return _background->getTileFromGlobal(playerxy);
+}
+
+void Scene::updateCurrentTile(const TileInfo& info)
+{
+    _currentTile = info;
+
+    switch (_currentTile.type)
+    {
+        default:
+            _hud.setZoneText({});
+            _descriptionText.setText({});
+        break;
+
+        case TileType::ZONE:
+        {
+            const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
+            _hud.setZoneText(zoneinfo.name);
+            if (!zoneinfo.description.empty())
+            {
+                _descriptionText.setText(zoneinfo.description);
+            }
+        }
+        break;
+    }
+}
+
+sf::Vector2f Scene::animeCallback()
+{
+    if (walkPlayer(_playerAvatarInfo.stepsize))
+    {
+        sf::Vector2f tile{ getPlayerTile() };
+        auto tileinfo = _background->getTileInfo(tile);
+        updateCurrentTile(tileinfo);
+    }
+
+    return _player->getPosition();
+}
+
+bool Scene::walkPlayer(float stepsize)
+{
+    const float stepSize = stepsize
         + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-            || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20 : 0);
+            || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20.f : 0.f);
 
     bool moved = false;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))

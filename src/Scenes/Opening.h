@@ -13,8 +13,6 @@
 #include "../Player.h"
 
 #include "Scene.h"
-#include "Hud.h"
-#include "DescriptionText.h"
 
 namespace nl = nlohmann;
 
@@ -69,23 +67,19 @@ class Opening : public Scene
 public:
     Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player);
 
-    ScreenAction poll(const sf::Event& e) override;
+    PollResult poll(const sf::Event& e) override;
     ScreenAction timestep() override;
     void draw() override;
 
     void enter() override;
-    void exit() override;
 
-private:
-
-    void initTraffic();
-    void timestepTraffic();
-
-    void adjustView();
-    sf::Vector2f animeCallback();
-
+protected:
     void updateCurrentTile(const TileInfo& info) override;
 
+private:
+    void initTraffic();
+    void timestepTraffic();
+    void adjustView();
     void toggleHighlight();
 
     Hud                                 _hud;

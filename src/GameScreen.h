@@ -15,15 +15,17 @@ class GameScreen : public Screen
 {
 
 public:
+    using SceneMap = std::map<std::string, SceneSharedPtr>;
+
     GameScreen(ResourceManager& resmgr, sf::RenderTarget& target);
 
     void draw() override;
-    ScreenAction poll(const sf::Event&) override;
+    PollResult poll(const sf::Event&) override;
     ScreenAction timestep() override;
 
 private:
-    std::size_t             _currentScene = 0;
-    std::vector<ScenePtr>   _scenes;
+    SceneSharedPtr          _currentScene;
+    SceneMap                _scenes;
     PlayerPtr               _player;
 
 };

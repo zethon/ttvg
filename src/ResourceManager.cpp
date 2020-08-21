@@ -1,3 +1,5 @@
+#include <fmt/core.h>
+
 #include "ResourceManager.h"
 
 namespace tt
@@ -83,5 +85,21 @@ std::string ResourceManager::getFilename(const std::string& name)
     return filepath.string();
 }
 
+////////////////////////////////////////////////////////////
+std::optional<nl::json> ResourceManager::getJson(const std::string& name)
+{
+    const std::string jsonfile =  this->getFilename(name);
+
+    std::ifstream file(jsonfile.c_str());
+    if (file.is_open())
+    {
+        nl::json retval;
+        file >> retval;
+        file.close();
+        return retval;
+    }
+
+    return {};
+}
 
 } // namespace tt

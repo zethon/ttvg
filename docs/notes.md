@@ -72,3 +72,4 @@ Here is how a vehicle is defined in a map's JSON config file:
  ### Speed
 
  The speed of the vehicle is measures in terms of pixels per timestep. However, the number of pixels is **not** the number of pixels drawn on the screen, which takes into account scrolling. The pixels are instead the numbe of pixels before any scaling is applied to the background.
+

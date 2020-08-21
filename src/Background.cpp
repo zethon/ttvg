@@ -24,7 +24,12 @@ void from_json(const nl::json& j, Zone& z)
     }
 }
 
-Background::Background(std::string_view name, ResourceManager& resmgr, const sf::Vector2f& tilesize)
+Background::Background(std::string_view name, ResourceManager& resmgr, sf::RenderTarget& target)
+    : Background(name, resmgr, target, sf::Vector2f{})
+{
+}
+
+Background::Background(std::string_view name, ResourceManager& resmgr, sf::RenderTarget& target, const sf::Vector2f& tilesize)
     : _tilesize { tilesize },
       _mapname{ name }
 {
@@ -43,7 +48,50 @@ Background::Background(std::string_view name, ResourceManager& resmgr, const sf:
         file.close();
     }
 
+    initBackground(target);
     initZones();
+
+    // tilesize must come from either the constructor or
+    // the json configuration
+    assert(_tilesize.x > 0 && _tilesize.y > 0);
+}
+
+void Background::initBackground(const sf::RenderTarget& target)
+{
+    if (!_json) return;
+    if (!_json->at("background").is_object()) return;
+
+    const auto bg = _json->at("background");
+    if (bg.contains("scale"))
+    {
+        sf::Vector2f scale{ 1.f, 1.f };
+
+        if (bg.at("scale").is_string()
+            && bg.at("scale") == "auto")
+        {
+            scale = sf::Vector2f{
+                static_cast<float>(target.getSize().x) / static_cast<float>(getTexture()->getSize().x),
+                static_cast<float>(target.getSize().y) / static_cast<float>(getTexture()->getSize().y) };
+        }
+        else if (bg.at("scale").is_object())
+        {
+            scale = bg["scale"].get<sf::Vector2f>();
+            assert(scale.x > 0.f);
+            assert(scale.y > 0.f);
+        }
+
+        this->setScale(scale);
+    }
+
+    if (bg.contains("tiles"))
+    {
+        _tilesize = bg["tiles"].get<sf::Vector2f>();
+    }
+
+    if (bg.contains("position"))
+    {
+        this->setPosition(bg["position"].get<sf::Vector2f>());
+    }
 }
 
 void Background::initZones()

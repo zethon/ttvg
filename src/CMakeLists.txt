@@ -21,7 +21,6 @@ set(SOURCE_FILES
 
     Scenes/DescriptionText.cpp
     Scenes/Hud.cpp
-    Scenes/EuclidHouse.cpp
     Scenes/Opening.cpp
     Scenes/Scene.cpp
 )
@@ -51,7 +50,6 @@ set(HEADER_FILES
 
     Scenes/DescriptionText.h
     Scenes/Hud.h
-    Scenes/EuclidHouse.h
     Scenes/Opening.h
     Scenes/Scene.h
 )
