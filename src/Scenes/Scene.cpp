@@ -51,12 +51,15 @@ void Scene::enter()
 
     _player->setPosition(_lastPlayerPos);
     _player->setScale(_playerAvatarInfo.scale);
+    addUpdateable(_player);
 }
 
 void Scene::exit()
 {
     assert(_player);
     _lastPlayerPos = _player->getPosition();
+
+    removeUpdateable(_player);
     _player.reset();
 }
 

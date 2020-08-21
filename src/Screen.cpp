@@ -55,16 +55,16 @@ void Screen::draw()
     }
 }
 
-ScreenAction Screen::poll(const sf::Event&)
-{
-    return {};
-}
-
 ScreenAction Screen::timestep()
 {
     std::for_each(_updateables.begin(), _updateables.end(),
         [](IUpdateablePtr i) { i->timestep(); });
 
+    return {};
+}
+
+ScreenAction Screen::poll(const sf::Event&)
+{
     return {};
 }
 

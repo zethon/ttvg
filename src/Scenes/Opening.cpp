@@ -70,24 +70,12 @@ void Opening::enter()
             _hud.setBalance(cash);
         });
 
-    addUpdateable(_player);
-
     sf::Vector2f tile{ getPlayerTile() };
     auto tileinfo = _background->getTileInfo(tile);
     updateCurrentTile(tileinfo);
 
     _hud.setHealth(_player->health());
     _hud.setBalance(_player->balance());
-}
-
-void Opening::exit()
-{
-    // `Scene::exit()` invalidates the _player object
-    // so we have to remove it before calling the base
-    // class method
-    removeUpdateable(_player);
-
-    Scene::exit();
 }
 
 void Opening::initTraffic()

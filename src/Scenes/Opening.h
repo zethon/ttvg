@@ -74,7 +74,6 @@ public:
     void draw() override;
 
     void enter() override;
-    void exit() override;
 
 private:
 

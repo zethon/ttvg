@@ -146,8 +146,6 @@ void EuclidHouse::enter()
             return _player->getPosition();
         }
     );
-
-    addUpdateable(_player);
 }
 
 void EuclidHouse::updateCurrentTile(const TileInfo & info)
