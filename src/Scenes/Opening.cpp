@@ -49,14 +49,8 @@ void Opening::enter()
 {
     Scene::enter();
 
-    _player->setSource(0, 10);
-    _player->setOrigin(0.0f, 0.0f);
-
-    _player->setAnimeCallback(
-        [this]()
-        {
-            return this->animeCallback();
-        });
+    // _player->setSource(0, 10);
+    // _player->setOrigin(0.0f, 0.0f);
 
     _player->onSetHealth.connect(
         [this](std::uint32_t health)
@@ -502,18 +496,6 @@ void Opening::adjustView()
 
     view.setCenter(xpos, ypos);
     _window.setView(view);
-}
-
-sf::Vector2f Opening::animeCallback()
-{
-    if (walkPlayer(_playerAvatarInfo.stepsize))
-    {
-        sf::Vector2f tile{ getPlayerTile() };
-        auto tileinfo = _background->getTileInfo(tile);
-        updateCurrentTile(tileinfo);
-    }
-
-    return _player->getPosition();
 }
 
 void Opening::updateCurrentTile(const TileInfo& info)

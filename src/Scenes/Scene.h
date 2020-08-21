@@ -16,9 +16,10 @@ namespace tt
 struct AvatarInfo
 {
     sf::Vector2f    start;
-    float           stepsize;
     sf::Vector2f    scale;
-    bool            autoScale = false;
+    sf::Vector2f    source;
+    sf::Vector2f    origin;
+    float           stepsize;
 };
 
 void from_json(const nl::json& j, AvatarInfo& av);
@@ -41,6 +42,7 @@ public:
     virtual void init();
 
     ScreenAction poll(const sf::Event& e) override;
+    ScreenAction timestep() override;
 
     virtual void enter();
     virtual void exit();
@@ -49,6 +51,8 @@ public:
 
 protected:
     virtual void updateCurrentTile(const TileInfo& info) = 0;
+    virtual sf::Vector2f animeCallback();
+
     [[maybe_unused]] bool walkPlayer(float speed);
 
     std::string             _name;

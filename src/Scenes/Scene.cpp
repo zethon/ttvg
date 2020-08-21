@@ -17,6 +17,16 @@ void from_json(const nl::json& j, AvatarInfo& av)
         j.at("scale").get_to(av.scale);
     }
 
+    if (j.contains("source"))
+    {
+        j.at("source").get_to(av.source);
+    }
+
+    if (j.contains("origin"))
+    {
+        j.at("origin").get_to(av.origin);
+    }
+
     if (j.contains("stepsize"))
     {
         j.at("stepsize").get_to(av.stepsize);
@@ -54,6 +64,11 @@ ScreenAction Scene::poll(const sf::Event& e)
     return Screen::poll(e);
 }
 
+ScreenAction Scene::timestep()
+{
+    return Screen::timestep();
+}
+
 void Scene::enter()
 {
     assert(!_player);
@@ -61,6 +76,18 @@ void Scene::enter()
 
     _player->setPosition(_lastPlayerPos);
     _player->setScale(_playerAvatarInfo.scale);
+    _player->setOrigin(_playerAvatarInfo.origin);
+
+    _player->setSource(
+        static_cast<std::uint32_t>(_playerAvatarInfo.source.x),
+        static_cast<std::uint32_t>(_playerAvatarInfo.source.y));
+
+    _player->setAnimeCallback(
+        [this]()
+        {
+            return this->animeCallback();
+        });
+
     addUpdateable(_player);
 }
 
@@ -77,6 +104,18 @@ sf::Vector2f Scene::getPlayerTile() const
 {
     auto playerxy = _player->getGlobalCenter();
     return _background->getTileFromGlobal(playerxy);
+}
+
+sf::Vector2f Scene::animeCallback()
+{
+    if (walkPlayer(_playerAvatarInfo.stepsize))
+    {
+        sf::Vector2f tile{ getPlayerTile() };
+        auto tileinfo = _background->getTileInfo(tile);
+        updateCurrentTile(tileinfo);
+    }
+
+    return _player->getPosition();
 }
 
 bool Scene::walkPlayer(float stepsize)

@@ -75,16 +75,13 @@ public:
 
     void enter() override;
 
-private:
-
-    void initTraffic();
-    void timestepTraffic();
-
-    void adjustView();
-    sf::Vector2f animeCallback();
-
+protected:
     void updateCurrentTile(const TileInfo& info) override;
 
+private:
+    void initTraffic();
+    void timestepTraffic();
+    void adjustView();
     void toggleHighlight();
 
     Hud                                 _hud;

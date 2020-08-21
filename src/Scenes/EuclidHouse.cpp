@@ -133,19 +133,6 @@ void EuclidHouse::draw()
 void EuclidHouse::enter()
 {
     Scene::enter();
-
-    _player->setAnimeCallback(
-        [this]()->sf::Vector2f
-        {
-            if (walkPlayer(_playerAvatarInfo.stepsize))
-            {
-                sf::Vector2f tile{ getPlayerTile() };
-                auto tileinfo = _background->getTileInfo(tile);
-                updateCurrentTile(tileinfo);
-            }
-            return _player->getPosition();
-        }
-    );
 }
 
 void EuclidHouse::updateCurrentTile(const TileInfo & info)

@@ -30,7 +30,7 @@ enum class ScreenActionType
 struct ScreenAction
 {
     ScreenActionType    type;
-    boost::any            data;
+    boost::any          data;
 };
 
 class Screen
