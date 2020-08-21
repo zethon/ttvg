@@ -41,6 +41,7 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
     _lastPlayerPos = _playerAvatarInfo.start;
 
     _background = std::make_shared<Background>(_name, _resources, target);
+    addDrawable(_background);
 }
 
 void Scene::enter()

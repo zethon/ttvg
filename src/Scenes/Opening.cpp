@@ -32,7 +32,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
     // the order in which we add everything to the draw'able
     // vector is important, so we do it all at the end of
     // the function
-    addDrawable(_background);
+    // addDrawable(_background);
 
     initTraffic();
 

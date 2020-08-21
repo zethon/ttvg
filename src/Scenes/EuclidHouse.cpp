@@ -12,19 +12,14 @@ constexpr auto SCENE_NAME = "EuclidHouse";
 EuclidHouse::EuclidHouse(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
     : Scene(SCENE_NAME, resmgr, target, player),
       _hud{ resmgr, target },
-      _descriptionText{ resmgr, target },
-      _debugWindow{ resmgr, target }
+      _descriptionText{ resmgr, target }
 {
-    const sf::Vector2f bgscale{
-        static_cast<float>(_window.getSize().x) / static_cast<float>(_background->getTexture()->getSize().x),
-        static_cast<float>(_window.getSize().y) / static_cast<float>(_background->getTexture()->getSize().y) };
-    _background->setScale(bgscale);
-
-    addDrawable(_background);
 }
 
 ScreenAction EuclidHouse::poll(const sf::Event& e)
 {
+    auto retval = Scene::poll(e);
+
     if (e.type == sf::Event::KeyPressed)
     {
         switch (e.key.code)
@@ -105,12 +100,6 @@ ScreenAction EuclidHouse::poll(const sf::Event& e)
             }
             break;
 
-            case sf::Keyboard::Num0:
-            {
-                _debugWindow.setVisible(!_debugWindow.visible());
-            }
-            break;
-
             case sf::Keyboard::Period:
             {
                 _hud.setVisible(!_hud.visible());
@@ -131,18 +120,6 @@ ScreenAction EuclidHouse::poll(const sf::Event& e)
     return Scene::poll(e);
 }
 
-ScreenAction EuclidHouse::timestep()
-{
-    std::stringstream ss;
-    ss << _player->getGlobalCenter();
-    std::stringstream ss1;
-    ss1 << getPlayerTile();
-    auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
-    _debugWindow.setText(posText);
-
-    return Scene::timestep();
-}
-
 void EuclidHouse::draw()
 {
     Scene::draw();
@@ -151,7 +128,6 @@ void EuclidHouse::draw()
     _window.setView(_window.getDefaultView());
     _hud.draw();
     _descriptionText.draw();
-    _debugWindow.draw();
 }
 
 void EuclidHouse::enter()

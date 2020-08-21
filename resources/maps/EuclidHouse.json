@@ -2,7 +2,7 @@
     "background":
     {
         "scale": "auto",
-        "tiles": { "x": 16, "y": 26 }
+        "tiles": { "x": 16, "y": 16 }
     },
     "player":
     {
@@ -56,6 +56,7 @@
         },
         {
             "name" : "Leave your hovel",
+            "description": "Press SPACE to leave your rat infested apartment",
             "transition":
             {
                 "scene": "tucson",
