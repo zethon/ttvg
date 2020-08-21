@@ -20,7 +20,7 @@ public:
     GameScreen(ResourceManager& resmgr, sf::RenderTarget& target);
 
     void draw() override;
-    ScreenAction poll(const sf::Event&) override;
+    PollResult poll(const sf::Event&) override;
     ScreenAction timestep() override;
 
 private:

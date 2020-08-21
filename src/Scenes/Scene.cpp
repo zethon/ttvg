@@ -59,16 +59,6 @@ void Scene::init()
     createItems();
 }
 
-ScreenAction Scene::poll(const sf::Event& e)
-{
-    return Screen::poll(e);
-}
-
-ScreenAction Scene::timestep()
-{
-    return Screen::timestep();
-}
-
 void Scene::enter()
 {
     assert(!_player);
@@ -98,6 +88,102 @@ void Scene::exit()
 
     removeUpdateable(_player);
     _player.reset();
+}
+
+PollResult Scene::poll(const sf::Event& e)
+{
+    if (e.type == sf::Event::KeyPressed)
+    {
+        switch (e.key.code)
+        {
+            default:
+            break;
+
+            case sf::Keyboard::Left:
+            {
+                if (_player->state() == AnimatedState::ANIMATED
+                    && _player->direction() == Direction::LEFT)
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 9);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::LEFT);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Right:
+            {
+                if (_player->state() == AnimatedState::ANIMATED
+                    && _player->direction() == Direction::RIGHT)
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 11);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::RIGHT);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Up:
+            {
+                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
+                    || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 8);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::UP);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Down:
+            {
+                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
+                    || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 10);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::DOWN);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Space:
+            {
+                if (_currentTile.type == TileType::ZONE)
+                {
+                    auto zone = boost::any_cast<Zone>(_currentTile.data);
+                    if (zone.transition.has_value())
+                    {
+                        return {true, { ScreenActionType::CHANGE_SCENE, zone.transition->newscene }};
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    if (_player->state() == AnimatedState::ANIMATED
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up)
+        && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+    {
+        _player->setState(AnimatedState::STILL);
+    }
+
+    return {};
 }
 
 sf::Vector2f Scene::getPlayerTile() const

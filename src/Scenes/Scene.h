@@ -41,11 +41,10 @@ public:
 
     virtual void init();
 
-    ScreenAction poll(const sf::Event& e) override;
-    ScreenAction timestep() override;
-
     virtual void enter();
     virtual void exit();
+
+    PollResult poll(const sf::Event& e) override;
 
     sf::Vector2f getPlayerTile() const;
 

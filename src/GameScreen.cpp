@@ -37,21 +37,22 @@ void GameScreen::draw()
     _currentScene->draw();
 }
 
-ScreenAction GameScreen::poll(const sf::Event& e)
+PollResult GameScreen::poll(const sf::Event& e)
 {
     assert(_currentScene);
     auto result = _currentScene->poll(e);
-    switch (result.type)
+
+    switch (result.action.type)
     {
         default:
-            return Screen::poll(e);
+        break;
 
         case ScreenActionType::CHANGE_SCREEN:
         break;
 
         case ScreenActionType::CHANGE_SCENE:
         {
-            const auto name = boost::any_cast<std::string>(result.data);
+            const auto name = boost::any_cast<std::string>(result.action.data);
             assert(_scenes2.find(name) != _scenes2.end());
 
             _currentScene->exit();
@@ -61,7 +62,7 @@ ScreenAction GameScreen::poll(const sf::Event& e)
         break;
     }
 
-    return Screen::poll(e);
+    return result;
 }
 
 ScreenAction GameScreen::timestep()

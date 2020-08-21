@@ -30,7 +30,7 @@ class IntroScreen : public Screen
 public:
     IntroScreen(ResourceManager& res, sf::RenderTarget& target);
 
-    ScreenAction poll(const sf::Event& e) override;
+    PollResult poll(const sf::Event& e) override;
     ScreenAction timestep() override;
     void close() override;
 };
@@ -49,7 +49,7 @@ class SplashScreen : public Screen
 public:
     SplashScreen(ResourceManager& res, sf::RenderTarget& target);
 
-    ScreenAction poll(const sf::Event& e) override;
+    PollResult poll(const sf::Event& e) override;
     ScreenAction timestep() override;
 };
 

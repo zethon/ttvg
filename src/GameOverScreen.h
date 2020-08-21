@@ -13,7 +13,7 @@ class GameOverScreen : public Screen
 public:
     GameOverScreen(ResourceManager& res, sf::RenderTarget& target);
 
-    ScreenAction poll(const sf::Event& e) override;
+    PollResult poll(const sf::Event& e) override;
 };
 
 } // namespace tt

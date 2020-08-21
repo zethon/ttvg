@@ -63,7 +63,7 @@ ScreenAction Screen::timestep()
     return {};
 }
 
-ScreenAction Screen::poll(const sf::Event&)
+PollResult Screen::poll(const sf::Event&)
 {
     return {};
 }

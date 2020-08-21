@@ -69,7 +69,7 @@ class Opening : public Scene
 public:
     Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player);
 
-    ScreenAction poll(const sf::Event& e) override;
+    PollResult poll(const sf::Event& e) override;
     ScreenAction timestep() override;
     void draw() override;
 
