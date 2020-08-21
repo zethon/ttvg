@@ -36,9 +36,11 @@ void from_json(const nl::json& j, AvatarInfo& av)
 Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& target, PlayerPtr player)
     : Screen(res, target),
       _name{ name },
+      _hud{ res, target },
+      _descriptionText{ res, target },
       _weakPlayer{ player }
 {
-    if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", name)); 
+    if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _name)); 
             jsonopt.has_value())
     {
         const auto& json = *jsonopt;
@@ -171,6 +173,12 @@ PollResult Scene::poll(const sf::Event& e)
                 }
             }
             break;
+
+            case sf::Keyboard::Period:
+            {
+                _hud.setVisible(!_hud.visible());
+            }
+            break;
         }
     }
 
@@ -186,10 +194,44 @@ PollResult Scene::poll(const sf::Event& e)
     return {};
 }
 
+void Scene::draw()
+{
+    Screen::draw();
+    _window.draw(*_player);
+
+    _window.setView(_window.getDefaultView());
+    _hud.draw();
+    _descriptionText.draw();
+}
+
 sf::Vector2f Scene::getPlayerTile() const
 {
     auto playerxy = _player->getGlobalCenter();
     return _background->getTileFromGlobal(playerxy);
+}
+
+void Scene::updateCurrentTile(const TileInfo& info)
+{
+    _currentTile = info;
+
+    switch (_currentTile.type)
+    {
+        default:
+            _hud.setZoneText({});
+            _descriptionText.setText({});
+        break;
+
+        case TileType::ZONE:
+        {
+            const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
+            _hud.setZoneText(zoneinfo.name);
+            if (!zoneinfo.description.empty())
+            {
+                _descriptionText.setText(zoneinfo.description);
+            }
+        }
+        break;
+    }
 }
 
 sf::Vector2f Scene::animeCallback()

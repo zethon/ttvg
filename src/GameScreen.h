@@ -25,8 +25,7 @@ public:
 
 private:
     SceneSharedPtr          _currentScene;
-    std::vector<ScenePtr>   _scenes;
-    SceneMap                _scenes2;
+    SceneMap                _scenes;
     PlayerPtr               _player;
 
 };

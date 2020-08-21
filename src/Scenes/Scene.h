@@ -9,6 +9,7 @@
 #include "../ItemFactory.h"
 
 #include "Hud.h"
+#include "DescriptionText.h"
 
 namespace tt
 {
@@ -45,11 +46,12 @@ public:
     virtual void exit();
 
     PollResult poll(const sf::Event& e) override;
+    void draw() override;
 
     sf::Vector2f getPlayerTile() const;
 
 protected:
-    virtual void updateCurrentTile(const TileInfo& info) = 0;
+    virtual void updateCurrentTile(const TileInfo& info);
     virtual sf::Vector2f animeCallback();
 
     [[maybe_unused]] bool walkPlayer(float speed);
@@ -57,12 +59,14 @@ protected:
     std::string             _name;
 
     BackgroundSharedPtr     _background;
-    TileInfo                _currentTile;
+    Hud                     _hud;
+    DescriptionText         _descriptionText;
 
     std::weak_ptr<Player>   _weakPlayer;
     PlayerPtr               _player;
     sf::Vector2f            _lastPlayerPos;
     AvatarInfo              _playerAvatarInfo;
+    TileInfo                _currentTile;
 
     std::vector<ItemPtr>    _items;
 

@@ -13,8 +13,6 @@
 #include "../Player.h"
 
 #include "Scene.h"
-#include "Hud.h"
-#include "DescriptionText.h"
 
 namespace nl = nlohmann;
 
