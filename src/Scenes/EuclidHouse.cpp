@@ -130,11 +130,6 @@ void EuclidHouse::draw()
     _descriptionText.draw();
 }
 
-void EuclidHouse::enter()
-{
-    Scene::enter();
-}
-
 void EuclidHouse::updateCurrentTile(const TileInfo & info)
 {
     _currentTile = info;

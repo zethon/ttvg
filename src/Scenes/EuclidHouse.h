@@ -30,8 +30,6 @@ public:
     ScreenAction poll(const sf::Event& e) override;
     void draw() override;
 
-    void enter() override;
-
 protected:
     void updateCurrentTile(const TileInfo& info) override;
 
