@@ -36,14 +36,16 @@ public:
         sf::RenderTarget& target, 
         PlayerPtr player);
 
+    std::string name() const { return _name; }
+
     virtual void init();
+
+    ScreenAction poll(const sf::Event& e) override;
 
     virtual void enter();
     virtual void exit();
 
     sf::Vector2f getPlayerTile() const;
-
-    std::string name() const { return _name; }
 
 protected:
     virtual void updateCurrentTile(const TileInfo& info) = 0;

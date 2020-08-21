@@ -44,6 +44,16 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
     addDrawable(_background);
 }
 
+void Scene::init()
+{
+    createItems();
+}
+
+ScreenAction Scene::poll(const sf::Event& e)
+{
+    return Screen::poll(e);
+}
+
 void Scene::enter()
 {
     assert(!_player);
@@ -67,11 +77,6 @@ sf::Vector2f Scene::getPlayerTile() const
 {
     auto playerxy = _player->getGlobalCenter();
     return _background->getTileFromGlobal(playerxy);
-}
-
-void Scene::init()
-{
-    createItems();
 }
 
 bool Scene::walkPlayer(float stepsize)
