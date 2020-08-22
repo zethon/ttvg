@@ -2,7 +2,8 @@
     "background":
     {
         "scale": { "x": 2.25, "y": 2.25 },
-        "tiles": { "x": 16, "y": 16 }
+        "tiles": { "x": 16, "y": 16 },
+        "camera": "follow"
     },
     "player":
     {
