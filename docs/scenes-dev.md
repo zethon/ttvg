@@ -13,6 +13,7 @@ Scenes are either a class derived from the `Scene` class or an instantiated `Scr
 * player movement
 * HUD display
 * zone notifications and transitions
+* item pickup and inventory
 
 The `GameScreen` creates all of the necessary scene objects in its constructor. Loading all the scenes when the game starts can be time consuming, but doing so allows for smoother transition between scenes during gameplay. 
 
@@ -130,13 +131,34 @@ Transitions allow users to navigate from one scene to another by pressing the SP
 * `scene` - The name of the scene to be entered.
 * `enabled` - **Currently not supported**
 
+## Inventory
+
+Items can be placed anywhere on a scene/map using the JSON configuration. For example, say we want to add a pair of handcuffs inside our police station that the player can pickup. To add the "handcuffs" we:
+
+* Add the item .png file to *resources/items* (i.e. *resources/items/handcuffs.png*)
+* Create a configuration item for the item (i.e. *resources/items/handcuff.json*). 
+* Add the item to the PoliceStation's configuration
+
+```
+"items":
+{
+    "handcuffs": 
+    [    
+        { "x": 5, "y": 5 }
+        { "x": 24, "y": 32 }
+    ]
+}
+```
+
+The item name should be used as the JSON key for the item (in this case "handcuffs"). For each pair of coordinates in the array, and item will be placed at that location. The coordinates are defined in terms of tile coordinates.
+
+(More documentation needs to be written on the Item functionality. It is probably dsserving of its own doc file, but I will leave that to the author of the functionality.)
+
 ## TODO
 
 These are some remaining tasks relating to scenes and their default behavior.
 
 * Give zones definable `id` attributes. This will allow for code to do things such as enable and disable transitions, or change the name and/or description based on certain conditions.
-
-* Item support should be included in the default `Scene` functionality.
 
 * The roaming camera view on the Tucson map should be included in the default `Scene` functionality.
 
