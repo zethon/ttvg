@@ -2,7 +2,7 @@
 
  ## Intro
 
-The game is divided into multiple *screens* that represent different stages in the interaction of the program, for example there is the splash screen, a menu screen and, of course, the game screen. All screens are derived from the `Screen`, and the `TooterEngine` class is reponsible for loading and unloading scenes as needed. Screens are loaded on an as-needed basis.
+The game is divided into multiple *screens* that represent different stages in the interaction of the program. For example there is the splash screen, a menu screen and, of course, the game screen. All screens are derived from the `Screen` class, and the `TooterEngine` class is reponsible for loading and unloading scenes. Screens are loaded on an as-needed basis.
 
 Game play itself is further divided into mutiple *scenes*. Scenes represent different maps or areas within the game. The `GameScreen` class contains all of the scene objects and is responsible for controlling transitions between scenes. All scenes are loaded when control of the game is given to the `GameScreen` class.
 
@@ -20,7 +20,7 @@ The `GameScreen` creates all of the necessary scene objects in its constructor. 
 
 Assume we wish to add a new scene that is the interior of a police station that we will aptly call "PoliceStation". A breakdown of the process to add this scene is as follows:
 
-* Create a settings file for the scene in the *resources/maps* folder (i.e. *resource/maps/PoliceStation.json*). See **Scene Configuration** below.
+* Create a settings file for the scene in the *resources/maps* folder (i.e. *resource/maps/PoliceStation.json*). Configure the scene as needed (see **Scene Configuration** below).
 * Create a PNG background image for the scene (i.e. *resources/maps/PoliceStation.png*)
 * Add the scene to `GameScreen`'s constructor like so:
 
@@ -30,13 +30,13 @@ _scenes.emplace("EuclidHouse", std::make_shared<Scene>("EuclidHouse", resmgr, ta
 _scenes.emplace("PoliceStation", std::make_shared<Scene>("PoliceStation", resmgr, target, _player)); // new scene!
 ```
 * Create a transition point from an existing (source) scene to the new scene. For example, we would add a transition in the *tucson.json* file in order to allow the player to enter the police station. See **Transitions** below.
-* Create a transition from the new scene to the source. For example, we want to the player to be able to exit the police stationa and return to the map of Tucson.
+* Create a transition from the new scene to the source. For example, we want to the player to be able to exit the police station and return to the map of Tucson.
 
-After these steps the new scene should be navigable within the game. 
+After these steps are completed, the new scene should be navigable within the game. 
 
 ## Scene Configuration
 
-When a `Scene` object is constructed, a corresponding JSON configuration file is loaded. The configuration filename is the same as the scene's name in the `/resources/maps` folder. For example, the "EuclidHouse" scene in our example above has a configuation file of `resources/maps/EuclidHouse.json` (the filenames **are** case sensative). 
+When a `Scene` object is constructed, a corresponding JSON configuration file is loaded. The configuration filename is scene's name with the ".json" extension in the `/resources/maps` folder. For example, the "PoliceStation" scene in our example above has a configuation file of `resources/maps/PoliceStation.json`. 
 
 The configuration file defines several things including:
 
@@ -48,9 +48,9 @@ The configuration file defines several things including:
 
 **NOTE** - Currently the `Scene` class only has support for a fixed viewport. The functionality on the Tucson map which moves the camera with the player is specific to the `Opening` class. This functionality will soon be moved into `Scene` and supported through configuration.
 
-The background image used for a scene is defined by the scene's name. All background images must have the ".png" extension and exist in the "resources/maps" folder. For example, our "PoliceStation" scene had a background image named `resources/maps/PoliceStation.png`.
+The background image used for a scene is defined by the scene's name. All background images must have the ".png" extension and exist in the "resources/maps" folder. For example, our "PoliceStation" scene has a background image named `resources/maps/PoliceStation.png`.
 
-The background for each scene can have a custom scaling. It is also with the background settings that the tilesize for scene is defined.
+The background for each scene can have a custom scaling. It is also with the background settings that the tilesize for the scene is defined.
 
 Example:
 
@@ -90,7 +90,7 @@ A consequence of each scene having its own settings for the player means that **
 
 ### Zones
 
-The zones define rectangular blocks that trigger certain actions. The most common action is to simply display a string in the HUD.
+The zones define rectangles that when entered can trigger certain actions. For example, when a player enters a zone the "name" and "description" are shown in the HUD.
 
 ```
 { 
