@@ -92,6 +92,18 @@ void Background::initBackground(const sf::RenderTarget& target)
     {
         this->setPosition(bg["position"].get<sf::Vector2f>());
     }
+
+    if (bg.contains("camera") && bg.at("camera").is_string())
+    {
+        if (bg["camera"].get<std::string>() == "follow")
+        {
+            _cameraType = CameraType::FOLLOW;
+        }
+        else
+        {
+            _cameraType = CameraType::FIXED;
+        }
+    }
 }
 
 void Background::initZones()

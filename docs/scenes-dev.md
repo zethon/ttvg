@@ -58,13 +58,19 @@ Example:
 ```
 "background":
 {
+    "position": { "x": 0, "y": 0 },
     "scale": { "x": 2.25, "y": 2.25 },
-    "tiles": { "x": 16, "y": 16 }
+    "tiles": { "x": 16, "y": 16 },
+    "camera": "fixed"
 }
 ```
 
-* `scale` - Defines the scaling for the background image.
+* `position` (optional) - This defines where the upper left corner of the background image should be in terms of global coordinates. Default is `(0, 0)`.
+* `scale` (optional) - Defines the scaling for the background image. Default is `(1,1)`.
 * `tiles` - The tilesize for the map. For compatibility purposes, this should match up with the tilesize defined by in the PNG's corresponding TMX file.
+* `camera` (optional) - Defines the behavior of the viewport. Default is `fixed`.
+    * `fixed` - The viewport will never move. This means that if the image is bigger than the screen then the player can walk off the edge of the screen. Usually "fixed" should be used with a `scale` of "auto".
+    * `follow` - The viewport will follow the player as the avatar moves about the screen if the background is bigger than the window. 
 
 ### Player Information
 
@@ -84,7 +90,7 @@ A consequence of each scene having its own settings for the player means that **
 ```
 
 * `start` - This defines the starting position of the player **the first time the player enteres the scene**. When a player leaves a scene, the exact coordinates of their leaving position are stored and then restored in subsequent visits to the scene. These coordinates are defined in terms of global coordinates. 
-* `scale` - The scaling of the player image. Larger maps may want to make the player avatar appear smaller (e.g. the `tucson` scene), whereas smaller maps might want to make the player avatar larger (e.g. the `EuclidHouse` scene).
+* `scale` - The scaling of the player image. Larger maps may want to make the player avatar appear smaller (e.g. the `tucson` scene), whereas smaller maps might want to make the player avatar larger (e.g. the `EuclidHouse` scene). This setting can also be the word "auto" which means the image will scale automatically to the size of the game's window.
 * `source` - These coordinates define the starting sprite image of the player when entering the scene. These coordinates are in terms of row and column of the player's sprite sheet (`resources/images/tommy-1.png`). 
 * `origin` - **Should always be (0,0) for now** 
 * `stepsize` - This defines how "fast" the player walks and is defined in terms of "pixels per game loop". 
@@ -154,13 +160,15 @@ The item name should be used as the JSON key for the item (in this case "handcuf
 
 (More documentation needs to be written on the Item functionality. It is probably dsserving of its own doc file, but I will leave that to the author of the functionality.)
 
+## Subclassing `Scene`
+
+More than likely classes derived from `Scene` will have to implement their own `draw()` method. When doing so it is important that the derived class **does not** call `Scene::draw()`. 
+
 ## TODO
 
 These are some remaining tasks relating to scenes and their default behavior.
 
 * Give zones definable `id` attributes. This will allow for code to do things such as enable and disable transitions, or change the name and/or description based on certain conditions.
-
-* The roaming camera view on the Tucson map should be included in the default `Scene` functionality.
 
 * The `source` field in the player configuration should be supported, but first there needs to be consistency to how it's used. This field allows you to define how the object is referenced in the world. For example, `player->setPosition(1,1)` will set the position of the center of the player avatar at `(1,1)`, **however** if you do:
 

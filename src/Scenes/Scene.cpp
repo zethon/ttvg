@@ -54,6 +54,10 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
 
     _background = std::make_shared<Background>(_name, _resources, target);
     addDrawable(_background);
+
+    sf::View view(sf::FloatRect(0.f, 0.f,
+    static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
+    _window.setView(view);
 }
 
 void Scene::init()
@@ -320,6 +324,9 @@ PollResult Scene::poll(const sf::Event& e)
 
 void Scene::draw()
 {
+    // always adjust the view 
+    adjustView();
+
     Screen::draw();
     _window.draw(*_player);
 
@@ -479,6 +486,40 @@ void Scene::createItems()
             }
         }
     }
+}
+
+void Scene::adjustView()
+{
+    if (_background->cameraType() != Background::CameraType::FOLLOW)
+    {
+        return;
+    }
+    
+    auto view = _window.getView();
+    auto [xpos,ypos] = _player->getGlobalCenter();
+
+    if (xpos < (_window.getSize().x / 2))
+    {
+        xpos = view.getCenter().x;
+    }
+    else if (auto totalWidth = _background->getGlobalBounds().width;
+                xpos > (totalWidth - (_window.getSize().x / 2)))
+    {
+        xpos = totalWidth - (view.getSize().x / 2);
+    }
+
+    if (ypos < (_window.getSize().y / 2))
+    {
+        ypos = view.getCenter().y;
+    }
+    else if (auto totalHeight = _background->getGlobalBounds().height;
+                ypos > (totalHeight - (_window.getSize().y / 2)))
+    {
+        ypos = totalHeight - (view.getSize().y / 2);
+    }
+
+    view.setCenter(xpos, ypos);
+    _window.setView(view);
 }
 
 } // namespace tt

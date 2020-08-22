@@ -79,7 +79,6 @@ protected:
 private:
     void initTraffic();
     void timestepTraffic();
-    void adjustView();
     void toggleHighlight();
 
     Hud                                 _hud;

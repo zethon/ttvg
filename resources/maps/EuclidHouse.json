@@ -2,7 +2,8 @@
     "background":
     {
         "scale": "auto",
-        "tiles": { "x": 16, "y": 16 }
+        "tiles": { "x": 16, "y": 16 },
+        "camera": "fixed" 
     },
     "player":
     {

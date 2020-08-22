@@ -25,16 +25,7 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
       _descriptionText{ resmgr, target },
       _debugWindow{ resmgr, target }
 {
-    sf::View view(sf::FloatRect(0.f, 0.f,
-        static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
-    _window.setView(view);
-
-    // the order in which we add everything to the draw'able
-    // vector is important, so we do it all at the end of
-    // the function
-    // addDrawable(_background);
-
-    initTraffic();
+     initTraffic();
 
     _pgSoundBuffer = *(resmgr.load<sf::SoundBuffer>("sounds/playground.wav"));
     _pgSound.setBuffer(_pgSoundBuffer);
@@ -265,35 +256,6 @@ void Opening::draw()
     _hud.draw();
     _debugWindow.draw();
     _descriptionText.draw();
-}
-
-void Opening::adjustView()
-{
-    auto view = _window.getView();
-    auto [xpos,ypos] = _player->getGlobalCenter();
-
-    if (xpos < (_window.getSize().x / 2))
-    {
-        xpos = view.getCenter().x;
-    }
-    else if (auto totalWidth = _background->getGlobalBounds().width;
-                xpos > (totalWidth - (_window.getSize().x / 2)))
-    {
-        xpos = totalWidth - (view.getSize().x / 2);
-    }
-
-    if (ypos < (_window.getSize().y / 2))
-    {
-        ypos = view.getCenter().y;
-    }
-    else if (auto totalHeight = _background->getGlobalBounds().height;
-                ypos > (totalHeight - (_window.getSize().y / 2)))
-    {
-        ypos = totalHeight - (view.getSize().y / 2);
-    }
-
-    view.setCenter(xpos, ypos);
-    _window.setView(view);
 }
 
 void Opening::updateCurrentTile(const TileInfo& info)

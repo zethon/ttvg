@@ -54,6 +54,8 @@ class Background : public sf::Sprite
     using ZoneSet = std::set<Zone, zone_compare>;
 
 public:
+    enum class CameraType { FIXED, FOLLOW };
+
     Background(std::string_view name, ResourceManager& resmgr, sf::RenderTarget& target);
     Background(std::string_view name, ResourceManager& resmgr, sf::RenderTarget& target, const sf::Vector2f& tilesize);
 
@@ -90,6 +92,8 @@ public:
 
     TileInfo getTileInfo(const sf::Vector2f& v);
 
+    CameraType cameraType() const { return _cameraType; }
+
 protected:
     std::unique_ptr<sf::Texture>    _texture;
     ZoneSet                         _zones;
@@ -101,6 +105,7 @@ private:
     sf::Vector2f                _tilesize;
     std::unique_ptr<nl::json>   _json;
     std::string                 _mapname;
+    CameraType                  _cameraType = CameraType::FIXED;
 };
 
 } // namespace tt

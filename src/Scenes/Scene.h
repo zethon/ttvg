@@ -53,8 +53,9 @@ public:
 protected:
     virtual void updateCurrentTile(const TileInfo& info);
     virtual sf::Vector2f animeCallback();
+    virtual void adjustView();
 
-    [[maybe_unused]] bool walkPlayer(float speed);
+    [[maybe_unused]] bool walkPlayer(float speed);    
 
     std::string             _name;
 
