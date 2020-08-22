@@ -2,44 +2,39 @@
 
  ## Intro
 
-The game is divided into multiple screens that represent different stages in the interaction of the program, for example there is the splash screen, the menu screen and, of course, the game screen. The `Screen` class is the base class of all screens in the game.
+The game is divided into multiple *screens* that represent different stages in the interaction of the program, for example there is the splash screen, a menu screen and, of course, the game screen. All screens are derived from the `Screen`, and the `TooterEngine` class is reponsible for loading and unloading scenes as needed. Screens are loaded on an as-needed basis.
 
-The most import screen is `GameScreen` which contains the actual game play. Game play itself is further divided into mutiple scenes.
+Game play itself is further divided into mutiple *scenes*. Scenes represent different maps or areas within the game. The `GameScreen` class contains all of the scene objects and is responsible for controlling transitions between scenes. All scenes are loaded when control of the game is given to the `GameScreen` class.
 
-The `TooterEngine` class is responsible for controling the active screen, and the `GameScreen` class is reponsible for controling the current screen.
+## Scenes
 
-## Adding Scenes
+Scenes are either a class derived from the `Scene` class or an instantiated `Screen` object. The default behavior of `Scene` supports:
 
-Scenes are either a class derived from `Scene` or an actual `Screen` object. The `GameScreen` class has a `std::map` that contains the name of each `Scene` and a shared pointer to the object itself. Too add a new scene to the game we simply create the `Scene` object and add it to `GameScreen::_scences`:
+* player movement
+* HUD display
+* zone notifications and transitions
+
+The `GameScreen` creates all of the necessary scene objects in its constructor. Loading all the scenes when the game starts can be time consuming, but doing so allows for smoother transition between scenes during gameplay. 
+
+## Adding a New Scene
+
+Assume we wish to add a new scene that is the interior of a police station that we will aptly call "PoliceStation". A breakdown of the process to add this scene is as follows:
+
+* Create a settings file for the scene in the *resources/maps* folder (i.e. *resource/maps/PoliceStation.json*). See **Scene Configuration** below.
+* Create a PNG background image for the scene (i.e. *resources/maps/PoliceStation.png*)
+* Add the scene to `GameScreen`'s constructor like so:
 
 ```
 _scenes.emplace("tucson", std::make_shared<Opening>(resmgr, target, _player));
 _scenes.emplace("EuclidHouse", std::make_shared<Scene>("EuclidHouse", resmgr, target, _player));
+_scenes.emplace("PoliceStation", std::make_shared<Scene>("PoliceStation", resmgr, target, _player)); // new scene!
 ```
+* Create a transition point from an existing (source) scene to the new scene. For example, we would add a transition in the *tucson.json* file in order to allow the player to enter the police station. See **Transitions** below.
+* Create a transition from the new scene to the source. For example, we want to the player to be able to exit the police stationa and return to the map of Tucson.
 
-In the above example, we have added two scenes. The first is of type `Opening` which is derived from `Scene`. We do not have to pass in the name of the `Opening` object since that is taken care of in the constructor:
+After these steps the new scene should be navigable within the game. 
 
-```
-constexpr auto SCENE_NAME = "tucson";
-
-Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
-    : Scene{ SCENE_NAME, resmgr, target, player },
-
-```
-
-However, if the scene doesn't need any custom behavior, then using the `Scene` class should suffice for most purposes. 
-
-## Scene Name
-
-The scene name is how the game engine references the scene in various contexts. There are two primary places where this is used.
-
-### Scene Image
-
-The background imagine used for a scene is defined by the scene's name. The image is a ".png" file that is contained in the `resources/maps` folder. For example, the "EuclidHouse" scene's background image is `resources/maps/EuclidHouse.png`. 
-
-**Note:** Currently the filename of the image is fixed and cannot be changed through configuration.
-
-### Scene Configuration
+## Scene Configuration
 
 When a `Scene` object is constructed, a corresponding JSON configuration file is loaded. The configuration filename is the same as the scene's name in the `/resources/maps` folder. For example, the "EuclidHouse" scene in our example above has a configuation file of `resources/maps/EuclidHouse.json` (the filenames **are** case sensative). 
 
@@ -48,11 +43,16 @@ The configuration file defines several things including:
 * background image scaling, and tilesize
 * player object attributes for the screen 
 * zone information
-* item information
 
-### Background Information
+### Background Image
 
-The background for each scene can have a custom scaling of the image, and each scene can have a custom tilesize. 
+**NOTE** - Currently the `Scene` class only has support for a fixed viewport. The functionality on the Tucson map which moves the camera with the player is specific to the `Opening` class. This functionality will soon be moved into `Scene` and supported through configuration.
+
+The background image used for a scene is defined by the scene's name. All background images must have the ".png" extension and exist in the "resources/maps" folder. For example, our "PoliceStation" scene had a background image named `resources/maps/PoliceStation.png`.
+
+The background for each scene can have a custom scaling. It is also with the background settings that the tilesize for scene is defined.
+
+Example:
 
 ```
 "background":
@@ -62,8 +62,8 @@ The background for each scene can have a custom scaling of the image, and each s
 }
 ```
 
-* `scale` - Defines the scaling for the background image
-* `tiles` - The tilesize for the map. For now this is always 16x16.
+* `scale` - Defines the scaling for the background image.
+* `tiles` - The tilesize for the map. For compatibility purposes, this should match up with the tilesize defined by in the PNG's corresponding TMX file.
 
 ### Player Information
 
@@ -90,7 +90,26 @@ A consequence of each scene having its own settings for the player means that **
 
 ### Zones
 
-The zones define rectangular blocks on the map that trigger certain actions. The most common action is to simply display a string showing the player where they are.
+The zones define rectangular blocks that trigger certain actions. The most common action is to simply display a string in the HUD.
+
+```
+{ 
+    "name" : "Iron Horse Park",
+    "rects" :
+    [
+        "0,76,13,105",
+        "14,97,43,105"
+    ]
+}
+```
+
+* `name` - This is the name of the zone that is displayed in the user's HUD.
+* `description` - This text is displayed just below the user's HUD. This is a good place to give the user instructions (e.g. "Press SPACE to enter")
+* `rects` - This is an array of strings that are parsed into rectangles. Unlike SFML rects which are defined as `(top, left, width, height)`, these rectangles are defined as `(x1, y1, x2, y2)`. Configuration can define one or more rectangles within this array.
+
+## Transitions
+
+Transitions allow users to navigate from one scene to another by pressing the SPACE bar. Transitions are defined as part of a zone. 
 
 ```
 { 
@@ -108,18 +127,18 @@ The zones define rectangular blocks on the map that trigger certain actions. The
     }
 }
 ```
+* `scene` - The name of the scene to be entered.
+* `enabled` - **Currently not supported**
 
-* `name` - This is the name of the zone that is displayed in the user's HUD.
-* `description` - This text is displayed just below the user's HUD. This is a good place to give the user instructions (e.g. "Press SPACE to enter")
-* `rects` - This is an array of strings that are parsed into rectangles. Unlike SFML rects which are defined as `(top, left, width, height)`, these rectangles are defined as `(x1, y1, x2, y2)`. Configuration can define one or more rectangles within this array.
-* `transition` - This argument is optional. This settings allows the user to load another scene by pressing the space bar. 
-    * `scene` - The name of the scene to be entered. 
-    * `enabled` - **Currently not supported**
+## TODO
 
+These are some remaining tasks relating to scenes and their default behavior.
 
-## Todo
+* Give zones definable `id` attributes. This will allow for code to do things such as enable and disable transitions, or change the name and/or description based on certain conditions.
 
-* Give zones definable `id` attributes. This will allow for code to do things such as enable and disable transitions, or change the name or description based on certain conditions.
+* Item support should be included in the default `Scene` functionality.
+
+* The roaming camera view on the Tucson map should be included in the default `Scene` functionality.
 
 * The `source` field in the player configuration should be supported, but first there needs to be consistency to how it's used. This field allows you to define how the object is referenced in the world. For example, `player->setPosition(1,1)` will set the position of the center of the player avatar at `(1,1)`, **however** if you do:
 
