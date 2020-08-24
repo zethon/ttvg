@@ -1,10 +1,58 @@
-# Introduction
+## Introduction
 
 Lua support is being added to the Tommy Tooter Video Game to make it easier for the Tommy Tooter community to add content to the game. This document talks about the Lua API and gives examples of how to extend the game using Lua.
 
 -- called for the 
 function stripclub_onenter()
 end
+
+## Lua Files
+
+Every scene has a *&lt;scene-name&gt;.lua* file which resides in the same folder as the map image and JSON config file. This Lua file contains all functions and code that is used by the scene and the scene's components. 
+
+In addition to the scene itself, Lua events for zones and items are also supported.
+
+### Configuring Functions
+
+Functions are configured in the JSON like so:
+
+```json
+{
+    "onInit": "scene_onInit()",
+}
+```
+
+In this case, the scene will look in the corresponding *&lt;scene-name&gt;.lua* file for the functions. 
+
+For example, if the above JSON was in the *EuclidHouse.json* file, then we could deduct 5% of the player's health every time they entered the scene by defining the following function in the *EuclidHouse.lua* file:
+
+```lua
+function scene_onEnter()
+    local health = Player.getHealth()
+    Player.setHealth(health - (health * 0.05))
+end
+```
+
+It should be noted that the string passed to the callbacks in the JSON is interpreted as Lua, so it is possible to put Lua directly in the JSON file:
+
+```json
+{
+    "onEnter": "local h=Player.getHealth();Player.setHealth(h-(h*0.05))"
+}
+```
+
+## Scenes
+
+There are three callback functions for every scene.
+
+### `onInit()` *[callback]*
+
+This function is invoked when the scene is first loaded. This should not be confused with when the scene is entered, which can happen multiple times during the game. `onInit` is called only at the start of the game, this can happen when the application is first loaded, or after a game has ended and a new one has begun.
+
+### `onEnter` *[callback]*
+
+### `onExit` *[callback]*
+
 
 # Chapter 3. Resources
 
