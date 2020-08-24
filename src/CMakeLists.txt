@@ -61,9 +61,12 @@ add_executable(tooter
     ${HEADER_FILES}
 )
 
+message("T:(${CONAN_LIBS_FRAMEWORKS_LUADIST})")
+
 target_link_libraries(tooter
 PUBLIC
     ${CONAN_LIBS}
     ${SFML_Libraries}
+    ${CONAN_LIBS_FRAMEWORKS_LUADIST}
 )
 

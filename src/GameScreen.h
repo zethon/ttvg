@@ -1,5 +1,7 @@
 #pragma once
 
+#include <lua/lua.hpp>
+
 #include <SFML/Graphics.hpp>
 
 #include "Scenes/Scene.h"
@@ -24,10 +26,12 @@ public:
     ScreenAction timestep() override;
 
 private:
-    SceneSharedPtr          _currentScene;
-    SceneMap                _scenes;
-    PlayerPtr               _player;
+    void initLua();
 
+    SceneSharedPtr  _currentScene;
+    SceneMap        _scenes;
+    PlayerPtr       _player;
+    lua_State*      _luaState;
 };
 
 } // namespace tt

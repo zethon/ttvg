@@ -7,8 +7,11 @@ namespace tt
 {
 
 GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
-    : Screen(resmgr, target)
+    : Screen(resmgr, target),
+      _luaState { luaL_newstate() }
 {
+    initLua();
+
     // the `Player` object is shared among all the `Scene` objects
     auto textptr = _resources.cacheTexture("textures/tommy.png");
     assert(textptr);
@@ -90,6 +93,11 @@ ScreenAction GameScreen::timestep()
 {
     assert(_currentScene);
     return _currentScene->timestep();
+}
+
+void GameScreen::initLua()
+{
+
 }
 
 } // namespace tt

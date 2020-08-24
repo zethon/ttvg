@@ -1,4 +1,8 @@
 {
+    "onInit": "scene_onInit()",
+    "onEnter": "scene_onEnter()",
+    "onExit": "scene_onExit()",
+
     "background":
     {
         "scale": { "x": 2.25, "y": 2.25 },
@@ -15,6 +19,24 @@
     },
     "zones":
     [
+        {
+            "id": "1-t1",
+            "name": "Lady Boys Club",
+            "description": "This is a local strip club",
+            "rects": 
+            [
+                "10,60,13,71"
+            ],
+            "onEnter": "Modal.message('This looks like a seedy place')",
+            "onLeave": "Modal.message('Good, do not go back there ever again!')",
+            "transition":
+            {
+                "scene": "StripClub",
+                "enabled": true,
+                "onEnter" : "stripclub_onEnter()"
+            }
+        },
+
         { 
             "name" : "Euclid St",
             "rects" :
@@ -145,25 +167,6 @@
                 "1,60,13,71"
             ]
         },
-
-        {
-            "id": "1-t1",
-            "name": "Lady Boys Club",
-            "description": "This is a local strip club",
-            "rects": 
-            [
-                "10,60,13,71"
-            ],
-            "onEnter": "Modal.message('This looks like a seedy place')",
-            "onLeave": "Modal.message('Good, do not go back there ever again!')",
-            "transition":
-            {
-                "scene": "StripClub",
-                "enabled": true,
-                "onEnter" : ""
-            }
-        },
-
 
         {
             "name": "Spooky Graveyard",
