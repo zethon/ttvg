@@ -2,7 +2,7 @@
 
 ![](docs/images/screenshot1.png)
 
-This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs on Windows, Mac and probably Ubuntu.
+This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs on Windows, Mac and Linux.
 
 ## How to Install
 
