@@ -19,6 +19,7 @@ set(SOURCE_FILES
     Item.cpp
     ItemFactory.cpp
 
+    Scenes/DebugWindow.cpp
     Scenes/DescriptionText.cpp
     Scenes/Hud.cpp
     Scenes/Opening.cpp
@@ -48,6 +49,7 @@ set(HEADER_FILES
     Item.h
     ItemFactory.h
 
+    Scenes/DebugWindow.h
     Scenes/DescriptionText.h
     Scenes/Hud.h
     Scenes/Opening.h

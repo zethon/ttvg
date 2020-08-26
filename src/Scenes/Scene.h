@@ -10,6 +10,7 @@
 
 #include "Hud.h"
 #include "DescriptionText.h"
+#include "DebugWindow.h"
 
 namespace tt
 {
@@ -59,9 +60,11 @@ protected:
 
     std::string             _name;
 
-    BackgroundSharedPtr     _background;
     Hud                     _hud;
     DescriptionText         _descriptionText;
+    DebugWindow             _debugWindow;
+
+    BackgroundSharedPtr     _background;
 
     std::weak_ptr<Player>   _weakPlayer;
     PlayerPtr               _player;

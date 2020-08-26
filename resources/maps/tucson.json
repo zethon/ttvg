@@ -118,7 +118,13 @@
             "rects": 
             [
                 "47,26,59,38"
-            ]
+            ],
+            "transition":
+            {
+                "scene": "Hospital",
+                "enabled": true
+            }
+ 
         },
 
         {

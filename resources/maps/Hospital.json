@@ -1,0 +1,52 @@
+{
+    "background":
+    {
+        "scale": "auto",
+        "tiles": { "x": 16, "y": 16 },
+        "camera": "follow" 
+    },
+
+    "player":
+    {
+        "start": { "x": 600, "y": 560 },
+        "scale": { "x": 2.5, "y": 2.5 },
+        "source": { "x": 0, "y": 10 },
+        "origin": { "x": 0, "y": 0 },
+        "stepsize" : 16.0
+    },
+
+    "zones":
+    [
+        { 
+            "name" : "Reception Desk",
+            "description": "Check in for your spa day here",
+            "rects" :
+            [
+                "6,16,14,32"
+            ]
+        },
+
+        { 
+            "name" : "Behind the Counter",
+            "description": "You don't belong behind the counter.",
+            "rects" :
+            [
+                "1,16,5,32"
+            ]
+        },
+
+        {
+            "name" : "Leave the hospital",
+            "description": "Press SPACE to leave the hospital",
+            "transition":
+            {
+                "scene": "tucson",
+                "enabled": true
+            },
+            "rects" : 
+            [
+                "16,32,28,36"
+            ]
+        }
+    ]
+}

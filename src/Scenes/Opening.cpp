@@ -20,10 +20,7 @@ constexpr auto MAX_VEHICLES = 25u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
 Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
-    : Scene{ SCENE_NAME, resmgr, target, player },
-      _hud{ resmgr, target },
-      _descriptionText{ resmgr, target },
-      _debugWindow{ resmgr, target }
+    : Scene{ SCENE_NAME, resmgr, target, player }
 {
      initTraffic();
 
@@ -39,21 +36,6 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
 void Opening::enter()
 {
     Scene::enter();
-
-    // _player->setSource(0, 10);
-    // _player->setOrigin(0.0f, 0.0f);
-
-    _player->onSetHealth.connect(
-        [this](std::uint32_t health)
-        {
-            _hud.setHealth(health);
-        });
-
-    _player->onSetCash.connect(
-        [this](float cash)
-        {
-            _hud.setBalance(cash);
-        });
 
     sf::Vector2f tile{ getPlayerTile() };
     auto tileinfo = _background->getTileInfo(tile);
@@ -139,12 +121,6 @@ PollResult Opening::poll(const sf::Event& e)
             break;
 
 
-            case sf::Keyboard::Num0:
-            {
-                _debugWindow.setVisible(!_debugWindow.visible());
-            }
-            break;
-
             case sf::Keyboard::LBracket:
             {
                 _player->reduceHealth(10);
@@ -167,14 +143,6 @@ ScreenAction Opening::timestep()
     timestepTraffic();
 
     Scene::timestep();
-
-    std::stringstream ss;
-    ss << _player->getGlobalCenter();
-    std::stringstream ss1;
-    ss1 << getPlayerTile();
-
-    auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
-    _debugWindow.setText(posText);
 
     if (_player->health() <= 0)
     {
@@ -254,8 +222,8 @@ void Opening::draw()
   
     _window.setView(_window.getDefaultView());
     _hud.draw();
-    _debugWindow.draw();
     _descriptionText.draw();
+    _debugWindow.draw();
 }
 
 void Opening::updateCurrentTile(const TileInfo& info)
@@ -324,6 +292,14 @@ void Opening::updateCurrentTile(const TileInfo& info)
         }
         break;
     }
+
+    std::stringstream ss;
+    ss << _player->getGlobalCenter();
+    std::stringstream ss1;
+    ss1 << getPlayerTile();
+
+    auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
+    _debugWindow.setText(posText);
 }
 
 void Opening::toggleHighlight()
