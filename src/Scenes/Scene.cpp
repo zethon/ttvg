@@ -38,6 +38,7 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
       _name{ name },
       _hud{ res, target },
       _descriptionText{ res, target },
+      _debugWindow{ res, target },
       _weakPlayer{ player }
 {
     if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _name)); 
@@ -85,6 +86,21 @@ void Scene::enter()
         });
 
     addUpdateable(_player);
+
+    _hud.setHealth(_player->health());
+    _hud.setBalance(_player->balance());
+
+    _player->onSetHealth.connect(
+        [this](std::uint32_t health)
+        {
+            _hud.setHealth(health);
+        });
+
+    _player->onSetCash.connect(
+        [this](float cash)
+        {
+            _hud.setBalance(cash);
+        });
 }
 
 void Scene::exit()
@@ -307,6 +323,12 @@ PollResult Scene::poll(const sf::Event& e)
                 std::cout   << std::endl;
             }
             break;
+
+            case sf::Keyboard::Num0:
+            {
+                _debugWindow.setVisible(!_debugWindow.visible());
+            }
+            break;
         }
     }
 
@@ -333,6 +355,7 @@ void Scene::draw()
     _window.setView(_window.getDefaultView());
     _hud.draw();
     _descriptionText.draw();
+    _debugWindow.draw();
 }
 
 sf::Vector2f Scene::getPlayerTile() const
@@ -363,6 +386,14 @@ void Scene::updateCurrentTile(const TileInfo& info)
         }
         break;
     }
+
+    std::stringstream ss;
+    ss << _player->getGlobalCenter();
+    std::stringstream ss1;
+    ss1 << getPlayerTile();
+
+    auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
+    _debugWindow.setText(posText);
 }
 
 sf::Vector2f Scene::animeCallback()

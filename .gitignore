@@ -2,3 +2,4 @@ build/
 *.pk
 *.tiled-session
 core
+.vscode/settings.json
