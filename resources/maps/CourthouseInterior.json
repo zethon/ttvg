@@ -1,0 +1,43 @@
+{
+    "background":
+    {
+        "scale": "auto",
+        "tiles": { "x": 16, "y": 16 },
+        "camera": "fixed" 
+    },
+
+    "player":
+    {
+        "start": { "x": 400, "y": 550 },
+        "scale": { "x": 2.5, "y": 2.5 },
+        "source": { "x": 0, "y": 10 },
+        "origin": { "x": 0, "y": 0 },
+        "stepsize" : 16.0
+    },
+
+    "zones":
+    [
+        { 
+            "name" : "Court Room",
+            "description": "You do not have any cases on the docket today.",
+            "rects" :
+            [
+                "3,4,6,5"
+            ]
+        },
+
+        {
+            "name" : "Leave the Courthouse",
+            "description": "Press SPACE to leave the Courthouse",
+            "transition":
+            {
+                "scene": "tucson",
+                "enabled": true
+            },
+            "rects" : 
+            [
+                "3,6,6,6"
+            ]
+        }
+    ]
+}

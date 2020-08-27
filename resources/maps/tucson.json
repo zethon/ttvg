@@ -100,7 +100,12 @@
             "rects": 
             [
                 "105,48,113,56"
-            ]
+            ],
+            "transition":
+            {
+                "scene": "CourthouseInterior",
+                "enabled": true
+            }
         },
 
         {
