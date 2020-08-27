@@ -114,7 +114,12 @@
             "rects": 
             [
                 "116,45,128,56"
-            ]
+            ],
+            "transition":
+            {
+                "scene": "PoliceStationInterior",
+                "enabled": true
+            }
         },
 
         {

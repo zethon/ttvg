@@ -1,0 +1,43 @@
+{
+    "background":
+    {
+        "scale": "auto",
+        "tiles": { "x": 16, "y": 16 },
+        "camera": "fixed" 
+    },
+
+    "player":
+    {
+        "start":    { "x": 0, "y": 460 },
+        "scale":    { "x": 2.5, "y": 2.5 },
+        "source":   { "x": 0, "y": 10 },
+        "origin":   { "x": 0, "y": 0 },
+        "stepsize": 16.0
+    },
+
+    "zones":
+    [
+        { 
+            "name" : "Police Station",
+            "description": "Yell at people on the phone here.",
+            "rects" :
+            [
+                "13,14,28,15"
+            ]
+        },
+
+        {
+            "name" : "Leave the Police Station",
+            "description": "Press SPACE to leave the Police Station",
+            "transition":
+            {
+                "scene": "tucson",
+                "enabled": true
+            },
+            "rects" : 
+            [
+                "3,14,3,17"
+            ]
+        }
+    ]
+}
