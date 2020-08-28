@@ -100,7 +100,12 @@
             "rects": 
             [
                 "105,48,113,56"
-            ]
+            ],
+            "transition":
+            {
+                "scene": "CourthouseInterior",
+                "enabled": true
+            }
         },
 
         {
@@ -109,7 +114,12 @@
             "rects": 
             [
                 "116,45,128,56"
-            ]
+            ],
+            "transition":
+            {
+                "scene": "PoliceStationInterior",
+                "enabled": true
+            }
         },
 
         {

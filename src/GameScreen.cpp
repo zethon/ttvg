@@ -24,6 +24,23 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
                 "Hospital", 
                 std::make_shared<Scene>("Hospital", resmgr, target, _player));
 
+    _scenes.emplace(
+                "CourthouseInterior", 
+                std::make_shared<Scene>("CourthouseInterior", 
+                                        resmgr, 
+                                        target, 
+                                        _player)
+    );
+
+    _scenes.emplace(
+                "PoliceStationInterior", 
+                std::make_shared<Scene>("PoliceStationInterior", 
+                                        resmgr, 
+                                        target, 
+                                        _player)
+    );
+
+
     _currentScene = _scenes["tucson"];
 
     // make sure all constructors across all scenes
