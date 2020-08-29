@@ -17,6 +17,7 @@ before_script:
 - mkdir build && cd build
 - conan --version
 - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+- conan remote add owl https://api.bintray.com/conan/zethon/owl
 - conan install .. -s build_type=${CONFIG} --build missing
 - cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON
 
