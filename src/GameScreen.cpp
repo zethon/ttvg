@@ -144,7 +144,7 @@ void GameScreen::initLua()
 
     // create the 'Scene' Lua class
     {
-        luaL_newmetatable(_luaState, "Scene");
+        luaL_newmetatable(_luaState, Scene::CLASS_NAME);
         lua_pushstring(_luaState, "__index");
         lua_pushvalue(_luaState, -2); // push the metatable
         lua_settable(_luaState, -3);  // metatable.__index = metatable

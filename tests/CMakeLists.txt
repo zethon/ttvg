@@ -26,7 +26,6 @@ set(PROJECT_FILES
     ../src/AnimatedSprite.h    
     ../src/AnimatedSprite.cpp
     
-
     ../src/Background.h
     ../src/Background.cpp
     
@@ -55,3 +54,27 @@ set(PROJECT_FILES
 create_test("misc" "${PROJECT_FILES}")
 create_test("background" "${PROJECT_FILES}")
 create_test("vehicle" "${PROJECT_FILES}")
+
+set(LUA_EXTRA_FILES
+
+../src/GameScreen.h
+../src/GameScreen.cpp
+
+../src/Player.h
+../src/Player.cpp
+
+../src/Scenes/DebugWindow.h
+../src/Scenes/DebugWindow.cpp
+
+../src/Scenes/DescriptionText.h
+../src/Scenes/DescriptionText.cpp
+
+../src/Scenes/Hud.h
+../src/Scenes/Hud.cpp
+
+../src/Scenes/Scene.h
+../src/Scenes/Scene.cpp
+
+)
+
+create_test("lua" "${PROJECT_FILES}")

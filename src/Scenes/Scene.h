@@ -36,6 +36,7 @@ class Scene : public Screen
 {
 
 public:
+    static constexpr auto CLASS_NAME = "Scene";
     static const struct luaL_Reg LuaMethods[];
 
     Scene(std::string_view name,

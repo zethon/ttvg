@@ -37,7 +37,7 @@ void from_json(const nl::json& j, AvatarInfo& av)
 
 int Scene_name(lua_State* L)
 {
-    auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, "Scene"));
+    auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
     auto scene = *temp;
     lua_pushstring(L, scene->name().c_str());
     return 1;
@@ -635,7 +635,7 @@ void Scene::loadLuaFile(const std::string& luafile)
         *data = this;
 
         // and set the metatable
-        luaL_getmetatable(_luaState, "Scene"); // -2:ud, -1: mt
+        luaL_getmetatable(_luaState, Scene::CLASS_NAME); // -2:ud, -1: mt
         lua_setmetatable(_luaState, -2); // -1: ud
         _luaIdx = luaL_ref(_luaState, LUA_REGISTRYINDEX);  // empty stack
 
