@@ -90,10 +90,6 @@ void Scene::init()
         throw std::runtime_error(error);
     }
 
-    // manually clear the stack to make sure we're balanced
-    //lua_pop(_luaState, 1); // -1:env
-    //lua_pop(_luaState, 1); // empty stack
-    //assert(lua_gettop(_luaState) == 0);
     lua_settop(_luaState, 0);
 }
 
@@ -588,7 +584,11 @@ void Scene::loadLuaFile(const std::string& luafile)
 {
     lua_newtable(_luaState); // 1:tbl
 
-    assert(luaL_loadfile(_luaState, luafile.c_str()) == 0); // 1:tbl, 2:chunk
+    if (luaL_loadfile(_luaState, luafile.c_str()) != 0) // 1:tbl, 2:chunk
+    {
+        auto error = lua_tostring(_luaState, -1);
+        throw std::runtime_error(error);
+    }
 
     lua_newtable(_luaState); // 1:tbl, 2:chunk, 3:tbl(mt)
     lua_getglobal(_luaState, "_G"); // 1:tbl, 2:chunk, 3:tbl(mt), 4:_G
@@ -604,43 +604,7 @@ void Scene::loadLuaFile(const std::string& luafile)
     }
 
     lua_setglobal(_luaState, _name.c_str()); // empty stack
-
-    //// we want to load
-    ////lua_settop(_luaState, 0); // empty stack
-    ////lua_newtable(_luaState); // 1:env
-    ////lua_newtable(_luaState); // 1:env, 2:env_mt
-    ////lua_pushglobaltable(_luaState); // 1:env, 2:env_mt, 3:_G
-    ////lua_setfield(_luaState, 2, "__index"); // 1:env, 2:env_mt
-    ////lua_setmetatable(_luaState, 1); // 1:env
-    //
-    ////lua_setglobal(_luaState, _name.c_str()); // empty stack
-    //
-    //assert(luaL_loadfile(_luaState, luafile.c_str()) == 0); // 1:chunk
-    //lua_getglobal(_luaState, _name.c_str()); // 1:chunk, 2:env
-    //lua_setupvalue(_luaState, -2, 1); // 1:chunk
-    //
-    //if (lua_pcall(_luaState, 0, 0, 0) != 0) // empty stack
-    //{
-    //    auto error = lua_tostring(_luaState, -1);
-    //    throw std::runtime_error(error);
-    //}
-
-    //// stack should be empyy here
-    //assert(lua_gettop(_luaState) == 0);
-
-    //// create the pointer to ourselves in the Lua state
-    ////std::size_t size = sizeof(Scene*);
-    ////Scene** data
-    ////    = static_cast<Scene**>(lua_newuserdata(_luaState, size)); // -1:ud
-    ////*data = this;
-
-    //// and set the metatable
-    ////luaL_getmetatable(_luaState, DETECTOR_CLASS_NAME); // -2:ud, -1: mt
-    ////lua_setmetatable(_luaState, -2); // -1: ud
-    ////_detectorObjIdx = luaL_ref(_luaState, LUA_REGISTRYINDEX);  // empty stack
-
-    //// make sure we're balanced
-    ////assert(lua_gettop(_luaState) == 0);
+    assert(lua_gettop(_luaState) == 0);
 }
 
 } // namespace tt
