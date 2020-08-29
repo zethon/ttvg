@@ -30,6 +30,9 @@ public:
     PollResult poll(const sf::Event&) override;
     ScreenAction timestep() override;
 
+    lua_State* lua() const { return _luaState; }
+    const SceneMap& scenes() const { return _scenes; }
+
 private:
     void initLua();
 

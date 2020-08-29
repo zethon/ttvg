@@ -1,0 +1,1 @@
+#define TT_SRC_DIRECTORY_ "@CMAKE_SOURCE_DIR@"

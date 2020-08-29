@@ -26,11 +26,12 @@ struct AvatarInfo
     float           stepsize;
 };
 
-void from_json(const nl::json& j, AvatarInfo& av);
-
 class Scene;
 using ScenePtr = std::unique_ptr<Scene>;
 using SceneSharedPtr = std::shared_ptr<Scene>;
+
+void from_json(const nl::json& j, AvatarInfo& av);
+int loadSceneLuaFile(Scene& scene, const std::string& filename, lua_State* L);
 
 class Scene : public Screen
 {
@@ -65,7 +66,7 @@ protected:
     [[maybe_unused]] bool walkPlayer(float speed);    
 
     std::string             _name;
-    lua_State*              _luaState;
+    lua_State*              _luaState = nullptr;
     int                     _luaIdx = 0;
 
     Hud                     _hud;
@@ -84,7 +85,6 @@ protected:
 
 private:
     void createItems();
-    void loadLuaFile(const std::string& luafile);
 };
 
 } // namespace tt

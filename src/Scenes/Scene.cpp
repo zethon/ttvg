@@ -35,6 +35,58 @@ void from_json(const nl::json& j, AvatarInfo& av)
     }
 }
 
+int loadSceneLuaFile(Scene& scene, const std::string& filename, lua_State* L)
+{
+    if (!L) return 0;
+
+    // load the Scene's Lua file into its own sandboxed
+    // environment which also contains everything in _G
+    {
+        lua_newtable(L); // 1:tbl
+        if (luaL_loadfile(L, filename.c_str()) != 0) // 1:tbl, 2:chunk
+        {
+            auto error = lua_tostring(L, -1);
+            throw std::runtime_error(error);
+        }
+
+        lua_newtable(L); // 1:tbl, 2:chunk, 3:tbl(mt)
+        lua_getglobal(L, "_G"); // 1:tbl, 2:chunk, 3:tbl(mt), 4:_G
+        lua_setfield(L, 3, "__index"); // 1:tbl, 2:chunk, 3:tbl(mt)
+        lua_setmetatable(L, 1); // 1:tbl, 2:chunk
+        lua_pushvalue(L, 1); // 1:tbl, 2:chunk, 3:tbl
+
+        lua_setupvalue(L, -2, 1); // 1:tbl, 2:chunk
+        if (lua_pcall(L, 0, 0, 0) != 0) // 1:tbl
+        {
+            auto error = lua_tostring(L, -1);
+            throw std::runtime_error(error);
+        }
+
+        lua_setglobal(L, scene.name().c_str()); // empty stack
+        assert(lua_gettop(L) == 0);
+    }
+
+    // create a pointer to `this` in the Lua state and register
+    // it as a `Scene` class/object/table inside Lua
+    {
+        // create the pointer to ourselves in the Lua state
+        std::size_t size = sizeof(Scene*);
+        Scene** data = static_cast<Scene**>(lua_newuserdata(L, size)); // -1:ud
+        *data = &scene;
+
+        // and set the metatable
+        luaL_getmetatable(L, Scene::CLASS_NAME); // -2:ud, -1: mt
+        lua_setmetatable(L, -2); // -1: ud
+        auto idx = luaL_ref(L, LUA_REGISTRYINDEX);  // empty stack
+
+        // make sure we're balanced
+        assert(lua_gettop(L) == 0);
+        return idx;
+    }
+
+    return 0;
+}
+
 int Scene_name(lua_State* L)
 {
     auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
@@ -71,7 +123,14 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
     if (const auto luafile = _resources.getFilename(fmt::format("lua/{}.lua", _name));
         boost::filesystem::exists(luafile))
     {
-        loadLuaFile(luafile);
+        if (auto temp = loadSceneLuaFile(*this, luafile, _luaState); temp > 0)
+        {
+            _luaIdx = temp;
+        }
+        else
+        {
+            _luaState = nullptr;
+        }
     }
 
     _lastPlayerPos = _playerAvatarInfo.start;
@@ -595,53 +654,6 @@ void Scene::adjustView()
 
     view.setCenter(xpos, ypos);
     _window.setView(view);
-}
-
-void Scene::loadLuaFile(const std::string& luafile)
-{
-    // load the Scene's Lua file into its own sandboxed
-    // environment which also contains everything in _G
-    {
-        lua_newtable(_luaState); // 1:tbl
-        if (luaL_loadfile(_luaState, luafile.c_str()) != 0) // 1:tbl, 2:chunk
-        {
-            auto error = lua_tostring(_luaState, -1);
-            throw std::runtime_error(error);
-        }
-
-        lua_newtable(_luaState); // 1:tbl, 2:chunk, 3:tbl(mt)
-        lua_getglobal(_luaState, "_G"); // 1:tbl, 2:chunk, 3:tbl(mt), 4:_G
-        lua_setfield(_luaState, 3, "__index"); // 1:tbl, 2:chunk, 3:tbl(mt)
-        lua_setmetatable(_luaState, 1); // 1:tbl, 2:chunk
-        lua_pushvalue(_luaState, 1); // 1:tbl, 2:chunk, 3:tbl
-
-        lua_setupvalue(_luaState, -2, 1); // 1:tbl, 2:chunk
-        if (lua_pcall(_luaState, 0, 0, 0) != 0) // 1:tbl
-        {
-            auto error = lua_tostring(_luaState, -1);
-            throw std::runtime_error(error);
-        }
-
-        lua_setglobal(_luaState, _name.c_str()); // empty stack
-        assert(lua_gettop(_luaState) == 0);
-    }
-
-    // create a pointer to `this` in the Lua state and register
-    // it as a `Scene` class/object/table inside Lua
-    {
-        // create the pointer to ourselves in the Lua state
-        std::size_t size = sizeof(Scene*);
-        Scene** data = static_cast<Scene**>(lua_newuserdata(_luaState, size)); // -1:ud
-        *data = this;
-
-        // and set the metatable
-        luaL_getmetatable(_luaState, Scene::CLASS_NAME); // -2:ud, -1: mt
-        lua_setmetatable(_luaState, -2); // -1: ud
-        _luaIdx = luaL_ref(_luaState, LUA_REGISTRYINDEX);  // empty stack
-
-        // make sure we're balanced
-        assert(lua_gettop(_luaState) == 0);
-    }
 }
 
 } // namespace tt

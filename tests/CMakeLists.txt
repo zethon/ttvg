@@ -19,9 +19,6 @@ function(create_test testname FILES)
 
 endfunction(create_test)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-
 set(PROJECT_FILES
     ../src/AnimatedSprite.h    
     ../src/AnimatedSprite.cpp
@@ -55,26 +52,38 @@ create_test("misc" "${PROJECT_FILES}")
 create_test("background" "${PROJECT_FILES}")
 create_test("vehicle" "${PROJECT_FILES}")
 
-set(LUA_EXTRA_FILES
+set(LUA_FILES
+    ${PROJECT_FILES}
 
-../src/GameScreen.h
-../src/GameScreen.cpp
+    ../src/GameScreen.h
+    ../src/GameScreen.cpp
 
-../src/Player.h
-../src/Player.cpp
+    ../src/Item.h
+    ../src/Item.cpp
 
-../src/Scenes/DebugWindow.h
-../src/Scenes/DebugWindow.cpp
+    ../src/ItemFactory.h
+    ../src/ItemFactory.cpp
 
-../src/Scenes/DescriptionText.h
-../src/Scenes/DescriptionText.cpp
+    ../src/Player.h
+    ../src/Player.cpp
 
-../src/Scenes/Hud.h
-../src/Scenes/Hud.cpp
+    ../src/Screen.h
+    ../src/Screen.cpp
 
-../src/Scenes/Scene.h
-../src/Scenes/Scene.cpp
+    ../src/Scenes/DebugWindow.h
+    ../src/Scenes/DebugWindow.cpp
 
+    ../src/Scenes/DescriptionText.h
+    ../src/Scenes/DescriptionText.cpp
+
+    ../src/Scenes/Hud.h
+    ../src/Scenes/Hud.cpp
+
+    ../src/Scenes/Opening.h
+    ../src/Scenes/Opening.cpp
+
+    ../src/Scenes/Scene.h
+    ../src/Scenes/Scene.cpp
 )
 
-create_test("lua" "${PROJECT_FILES}")
+create_test("lua" "${LUA_FILES}")

@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 
+#include <test-config.h>
+
 namespace std
 {
 
