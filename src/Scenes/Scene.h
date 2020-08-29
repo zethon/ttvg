@@ -1,5 +1,7 @@
 #pragma once
 
+#include <lua/lua.hpp>
+
 #include <nlohmann/json.hpp>
 
 #include "../Screen.h"
@@ -34,10 +36,11 @@ class Scene : public Screen
 {
 
 public:
-    Scene(std::string_view name, 
-        ResourceManager& res, 
-        sf::RenderTarget& target, 
-        PlayerPtr player);
+    Scene(std::string_view name,
+        ResourceManager& res,
+        sf::RenderTarget& target,
+        PlayerPtr player,
+        lua_State* luaState);
 
     std::string name() const { return _name; }
 
@@ -59,6 +62,8 @@ protected:
     [[maybe_unused]] bool walkPlayer(float speed);    
 
     std::string             _name;
+    lua_State*              _luaState;
+    int                     _luaIdx = 0;
 
     Hud                     _hud;
     DescriptionText         _descriptionText;
@@ -76,6 +81,7 @@ protected:
 
 private:
     void createItems();
+    void loadLuaFile(const std::string& luafile);
 };
 
 } // namespace tt

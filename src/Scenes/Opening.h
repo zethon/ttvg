@@ -23,7 +23,7 @@ class Opening : public Scene
 {
 
 public:
-    Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player);
+    Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player, lua_State* luaState);
 
     PollResult poll(const sf::Event& e) override;
     ScreenAction timestep() override;

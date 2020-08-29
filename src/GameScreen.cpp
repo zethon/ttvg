@@ -1,3 +1,5 @@
+#include <lua/lua.hpp>
+
 #include "Scenes/Scene.h"
 #include "Scenes/Opening.h"
 
@@ -6,9 +8,32 @@
 namespace tt
 {
 
+//static const struct luaL_Reg GameScreenMethods[] =
+//{
+//    {"onInit", }
+//    {nullptr, nullptr}
+//};
+
+GameScreen* GameScreen::l_get(lua_State * L)
+{
+    lua_rawgeti(L, LUA_REGISTRYINDEX, 1);
+    int type = lua_type(L, -1);
+    if (type != LUA_TLIGHTUSERDATA)
+    {
+        return nullptr;
+    }
+
+    GameScreen* state = static_cast<GameScreen*>(lua_touserdata(L, -1));
+    lua_pop(L, 1); // -1
+    if (!state || state->_luaState != L)
+    {
+        return nullptr;
+    }
+    return state;
+}
+
 GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
-    : Screen(resmgr, target),
-      _luaState { luaL_newstate() }
+    : Screen(resmgr, target)
 {
     initLua();
 
@@ -20,12 +45,12 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
 
     // TODO: as the game grows these constructions will take longer
     // and should probably be done in parallel and/or with a loading screen
-    _scenes.emplace("tucson", std::make_shared<Opening>(resmgr, target, _player));
-    _scenes.emplace("EuclidHouse", std::make_shared<Scene>("EuclidHouse", resmgr, target, _player));
+    _scenes.emplace("tucson", std::make_shared<Opening>(resmgr, target, _player, _luaState));
+    _scenes.emplace("EuclidHouse", std::make_shared<Scene>("EuclidHouse", resmgr, target, _player, _luaState));
 
-    _scenes.emplace(
-                "Hospital", 
-                std::make_shared<Scene>("Hospital", resmgr, target, _player));
+    //_scenes.emplace(
+    //            "Hospital", 
+    //            std::make_shared<Scene>("Hospital", resmgr, target, _player, _luaState));
 
     _scenes.emplace(
                 "CourthouseInterior", 
@@ -54,6 +79,17 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     }
 
     _currentScene->enter();
+}
+
+GameScreen::~GameScreen()
+{
+    if (!_luaState) return;
+
+    // collect all garbage
+    lua_gc(_luaState, LUA_GCCOLLECT, 0);
+
+    // destroy the lua state
+    lua_close(_luaState);
 }
 
 void GameScreen::draw()
@@ -97,7 +133,22 @@ ScreenAction GameScreen::timestep()
 
 void GameScreen::initLua()
 {
+    _luaState = luaL_newstate();
+    luaL_openlibs(_luaState);
 
+    // push a reference to `this` into the registry, it should
+    // always be the 3rd entry
+    lua_pushlightuserdata(_luaState, static_cast<void*>(this));
+    luaL_checktype(_luaState, 1, LUA_TLIGHTUSERDATA);
+    [[maybe_unused]] int reference = luaL_ref(_luaState, LUA_REGISTRYINDEX);
+    assert(GAMESCREEN_LUA_IDX == reference);
+
+    luaL_newmetatable(_luaState, "GameScreen");
+    lua_pushstring(_luaState, "__index");
+    lua_pushvalue(_luaState, -2); // push the metatable
+    lua_settable(_luaState, -3);  // metatable.__index = metatable
+
+    lua_settop(_luaState, 0);
 }
 
 } // namespace tt

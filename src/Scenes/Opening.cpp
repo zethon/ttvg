@@ -19,8 +19,8 @@ constexpr auto SCENE_NAME = "tucson";
 constexpr auto MAX_VEHICLES = 25u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
-Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
-    : Scene{ SCENE_NAME, resmgr, target, player }
+Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player, lua_State* luaState)
+    : Scene{ SCENE_NAME, resmgr, target, player, luaState }
 {
      initTraffic();
 

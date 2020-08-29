@@ -12,14 +12,19 @@
 
 namespace tt
 {
+
+constexpr auto GAMESCREEN_LUA_IDX = 3;
     
-class GameScreen : public Screen
+class GameScreen final : public Screen
 {
 
 public:
     using SceneMap = std::map<std::string, SceneSharedPtr>;
 
+    static GameScreen* l_get(lua_State* L);
+
     GameScreen(ResourceManager& resmgr, sf::RenderTarget& target);
+    ~GameScreen();
 
     void draw() override;
     PollResult poll(const sf::Event&) override;
