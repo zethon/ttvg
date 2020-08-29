@@ -1,3 +1,3 @@
-function onInit()
-    print("welcome from tcuson2!")
+function onInit(scene)
+    print("onInit call for '" .. scene:name() .. "'")
 end

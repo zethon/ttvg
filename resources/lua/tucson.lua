@@ -1,6 +1,3 @@
-function onInit()
-    print("welcome from tcuson!")
+function onInit(scene)
+    print("onInit call for '" .. scene:name() .. "'")
 end
-
-
-print ("HELLO FROM TUCSON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")

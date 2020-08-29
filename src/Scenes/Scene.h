@@ -36,6 +36,8 @@ class Scene : public Screen
 {
 
 public:
+    static const struct luaL_Reg LuaMethods[];
+
     Scene(std::string_view name,
         ResourceManager& res,
         sf::RenderTarget& target,

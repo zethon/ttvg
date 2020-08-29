@@ -8,12 +8,6 @@
 namespace tt
 {
 
-//static const struct luaL_Reg GameScreenMethods[] =
-//{
-//    {"onInit", }
-//    {nullptr, nullptr}
-//};
-
 GameScreen* GameScreen::l_get(lua_State * L)
 {
     lua_rawgeti(L, LUA_REGISTRYINDEX, 1);
@@ -143,10 +137,22 @@ void GameScreen::initLua()
     [[maybe_unused]] int reference = luaL_ref(_luaState, LUA_REGISTRYINDEX);
     assert(GAMESCREEN_LUA_IDX == reference);
 
-    luaL_newmetatable(_luaState, "GameScreen");
-    lua_pushstring(_luaState, "__index");
-    lua_pushvalue(_luaState, -2); // push the metatable
-    lua_settable(_luaState, -3);  // metatable.__index = metatable
+    //luaL_newmetatable(_luaState, "GameScreen");
+    //lua_pushstring(_luaState, "__index");
+    //lua_pushvalue(_luaState, -2); // push the metatable
+    //lua_settable(_luaState, -3);  // metatable.__index = metatable
+
+    // create the 'Scene' Lua class
+    {
+        luaL_newmetatable(_luaState, "Scene");
+        lua_pushstring(_luaState, "__index");
+        lua_pushvalue(_luaState, -2); // push the metatable
+        lua_settable(_luaState, -3);  // metatable.__index = metatable
+
+        // this creates object-like methods by populating the table
+        // on the stack with the function names/pointers
+        luaL_openlib(_luaState, nullptr, Scene::LuaMethods, 0);
+    }
 
     lua_settop(_luaState, 0);
 }

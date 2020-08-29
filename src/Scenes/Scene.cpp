@@ -35,6 +35,20 @@ void from_json(const nl::json& j, AvatarInfo& av)
     }
 }
 
+int Scene_name(lua_State* L)
+{
+    auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, "Scene"));
+    auto scene = *temp;
+    lua_pushstring(L, scene->name().c_str());
+    return 1;
+}
+
+const struct luaL_Reg Scene::LuaMethods[] =
+{
+    {"name", Scene_name},
+    {nullptr, nullptr}
+};
+
 Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& target, PlayerPtr player, lua_State* luaState)
     : Screen(res, target),
       _name{ name },
@@ -80,11 +94,14 @@ void Scene::init()
     lua_getglobal(_luaState, _name.c_str()); // 1:env
     assert(lua_isnil(_luaState, 1) == 0);
 
+    // now load up the init function
     lua_getfield(_luaState, 1, "onInit"); // 1:env, 2:func
     assert(lua_isnil(_luaState, 2) == 0);
     assert(lua_isfunction(_luaState, 2) == 1);
 
-    if (lua_pcall(_luaState, 0, 0, 0) != 0) // 1:env, 2:retval
+    // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
+    lua_rawgeti(_luaState, LUA_REGISTRYINDEX, _luaIdx); // 1:env, 2:func, 1:ud
+    if (lua_pcall(_luaState, 1, 0, 0) != 0) // 1:env, 2:retval
     {
         auto error = lua_tostring(_luaState, -1);
         throw std::runtime_error(error);
@@ -582,29 +599,49 @@ void Scene::adjustView()
 
 void Scene::loadLuaFile(const std::string& luafile)
 {
-    lua_newtable(_luaState); // 1:tbl
-
-    if (luaL_loadfile(_luaState, luafile.c_str()) != 0) // 1:tbl, 2:chunk
+    // load the Scene's Lua file into its own sandboxed
+    // environment which also contains everything in _G
     {
-        auto error = lua_tostring(_luaState, -1);
-        throw std::runtime_error(error);
+        lua_newtable(_luaState); // 1:tbl
+        if (luaL_loadfile(_luaState, luafile.c_str()) != 0) // 1:tbl, 2:chunk
+        {
+            auto error = lua_tostring(_luaState, -1);
+            throw std::runtime_error(error);
+        }
+
+        lua_newtable(_luaState); // 1:tbl, 2:chunk, 3:tbl(mt)
+        lua_getglobal(_luaState, "_G"); // 1:tbl, 2:chunk, 3:tbl(mt), 4:_G
+        lua_setfield(_luaState, 3, "__index"); // 1:tbl, 2:chunk, 3:tbl(mt)
+        lua_setmetatable(_luaState, 1); // 1:tbl, 2:chunk
+        lua_pushvalue(_luaState, 1); // 1:tbl, 2:chunk, 3:tbl
+
+        lua_setupvalue(_luaState, -2, 1); // 1:tbl, 2:chunk
+        if (lua_pcall(_luaState, 0, 0, 0) != 0) // 1:tbl
+        {
+            auto error = lua_tostring(_luaState, -1);
+            throw std::runtime_error(error);
+        }
+
+        lua_setglobal(_luaState, _name.c_str()); // empty stack
+        assert(lua_gettop(_luaState) == 0);
     }
 
-    lua_newtable(_luaState); // 1:tbl, 2:chunk, 3:tbl(mt)
-    lua_getglobal(_luaState, "_G"); // 1:tbl, 2:chunk, 3:tbl(mt), 4:_G
-    lua_setfield(_luaState, 3, "__index"); // 1:tbl, 2:chunk, 3:tbl(mt)
-    lua_setmetatable(_luaState, 1); // 1:tbl, 2:chunk
-    lua_pushvalue(_luaState, 1); // 1:tbl, 2:chunk, 3:tbl
-
-    lua_setupvalue(_luaState, -2, 1); // 1:tbl, 2:chunk
-    if (lua_pcall(_luaState, 0, 0, 0) != 0) // 1:tbl
+    // create a pointer to `this` in the Lua state and register
+    // it as a `Scene` class/object/table inside Lua
     {
-        auto error = lua_tostring(_luaState, -1);
-        throw std::runtime_error(error);
-    }
+        // create the pointer to ourselves in the Lua state
+        std::size_t size = sizeof(Scene*);
+        Scene** data = static_cast<Scene**>(lua_newuserdata(_luaState, size)); // -1:ud
+        *data = this;
 
-    lua_setglobal(_luaState, _name.c_str()); // empty stack
-    assert(lua_gettop(_luaState) == 0);
+        // and set the metatable
+        luaL_getmetatable(_luaState, "Scene"); // -2:ud, -1: mt
+        lua_setmetatable(_luaState, -2); // -1: ud
+        _luaIdx = luaL_ref(_luaState, LUA_REGISTRYINDEX);  // empty stack
+
+        // make sure we're balanced
+        assert(lua_gettop(_luaState) == 0);
+    }
 }
 
 } // namespace tt
