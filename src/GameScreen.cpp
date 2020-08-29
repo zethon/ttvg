@@ -29,7 +29,8 @@ GameScreen* GameScreen::l_get(lua_State * L)
 GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     : Screen(resmgr, target)
 {
-    initLua();
+    _luaState = luaL_newstate();
+    initLua(_luaState, *this);
 
     // the `Player` object is shared among all the `Scene` objects
     auto textptr = _resources.cacheTexture("textures/tommy.png");
@@ -123,38 +124,6 @@ ScreenAction GameScreen::timestep()
 {
     assert(_currentScene);
     return _currentScene->timestep();
-}
-
-void GameScreen::initLua()
-{
-    _luaState = luaL_newstate();
-    luaL_openlibs(_luaState);
-
-    // push a reference to `this` into the registry, it should
-    // always be the 3rd entry
-    lua_pushlightuserdata(_luaState, static_cast<void*>(this));
-    luaL_checktype(_luaState, 1, LUA_TLIGHTUSERDATA);
-    [[maybe_unused]] int reference = luaL_ref(_luaState, LUA_REGISTRYINDEX);
-    assert(GAMESCREEN_LUA_IDX == reference);
-
-    //luaL_newmetatable(_luaState, "GameScreen");
-    //lua_pushstring(_luaState, "__index");
-    //lua_pushvalue(_luaState, -2); // push the metatable
-    //lua_settable(_luaState, -3);  // metatable.__index = metatable
-
-    // create the 'Scene' Lua class
-    {
-        luaL_newmetatable(_luaState, Scene::CLASS_NAME);
-        lua_pushstring(_luaState, "__index");
-        lua_pushvalue(_luaState, -2); // push the metatable
-        lua_settable(_luaState, -3);  // metatable.__index = metatable
-
-        // this creates object-like methods by populating the table
-        // on the stack with the function names/pointers
-        luaL_openlib(_luaState, nullptr, Scene::LuaMethods, 0);
-    }
-
-    lua_settop(_luaState, 0);
 }
 
 } // namespace tt
