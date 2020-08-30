@@ -39,7 +39,7 @@ class NullWindow : public sf::RenderTarget
 public:
     sf::Vector2u getSize() const override
     {
-        return sf::Vector2u{};
+        return sf::Vector2u{4096,4096};
     }
 };
 
