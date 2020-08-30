@@ -43,9 +43,9 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     _scenes.emplace("tucson", std::make_shared<Opening>(resmgr, target, _player, _luaState));
     _scenes.emplace("EuclidHouse", std::make_shared<Scene>("EuclidHouse", resmgr, target, _player, _luaState));
 
-    //_scenes.emplace(
-    //            "Hospital", 
-    //            std::make_shared<Scene>("Hospital", resmgr, target, _player, _luaState));
+    _scenes.emplace(
+                "Hospital", 
+                std::make_shared<Scene>("Hospital", resmgr, target, _player, _luaState));
 
     _scenes.emplace(
                 "CourthouseInterior", 
