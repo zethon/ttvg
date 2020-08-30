@@ -52,16 +52,16 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
                 std::make_shared<Scene>("CourthouseInterior", 
                                         resmgr, 
                                         target, 
-                                        _player)
-    );
+                                        _player,
+                                        _luaState));
 
     _scenes.emplace(
                 "PoliceStationInterior", 
                 std::make_shared<Scene>("PoliceStationInterior", 
                                         resmgr, 
                                         target, 
-                                        _player)
-    );
+                                        _player,
+                                        _luaState));
 
 
     _currentScene = _scenes["tucson"];
