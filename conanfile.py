@@ -1,6 +1,4 @@
-from conans import ConanFile, CMake
-
-class AshConan(ConanFile):
+class TTVGConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
     requires = (

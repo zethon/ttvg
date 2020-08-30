@@ -64,6 +64,8 @@ int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         assert(lua_gettop(L) == 0);
     }
 
+    int idx = 0;
+
     // create a pointer to `this` in the Lua state and register
     // it as a `Scene` class/object/table inside Lua
     {
@@ -75,14 +77,13 @@ int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         // and set the metatable
         luaL_getmetatable(L, SceneT::CLASS_NAME); // -2:ud, -1: mt
         lua_setmetatable(L, -2); // -1: ud
-        auto idx = luaL_ref(L, LUA_REGISTRYINDEX);  // empty stack
+        idx = luaL_ref(L, LUA_REGISTRYINDEX);  // empty stack
 
         // make sure we're balanced
         assert(lua_gettop(L) == 0);
-        return idx;
     }
 
-    return 0;
+    return idx;
 }
 
 class Scene : public Screen

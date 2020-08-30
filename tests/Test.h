@@ -55,10 +55,13 @@ void writeFile(const std::string& file, const std::string& data)
     }
 
     std::ofstream out(file);
-    out << data;
-    out.close();
-}
 
+    if (out.is_open())
+    {
+        out << data;
+        out.close();
+    }
+}
 
 boost::filesystem::path tempFolder()
 {
