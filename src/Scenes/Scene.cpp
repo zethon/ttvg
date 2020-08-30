@@ -232,7 +232,7 @@ PollResult Scene::poll(const sf::Event& e)
                     return { true, {} };
                 }
 
-                _player->setSource(0, 9);
+                _player->setSource(0, 1);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::LEFT);
@@ -247,7 +247,7 @@ PollResult Scene::poll(const sf::Event& e)
                     return { true, {} };
                 }
 
-                _player->setSource(0, 11);
+                _player->setSource(0, 3);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::RIGHT);
@@ -262,7 +262,7 @@ PollResult Scene::poll(const sf::Event& e)
                     return { true, {} };
                 }
 
-                _player->setSource(0, 8);
+                _player->setSource(0, 0);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::UP);
@@ -277,7 +277,7 @@ PollResult Scene::poll(const sf::Event& e)
                     return { true, {} };
                 }
 
-                _player->setSource(0, 10);
+                _player->setSource(0, 2);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::DOWN);
