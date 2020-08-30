@@ -24,9 +24,9 @@ Opening::Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr pl
 {
      initTraffic();
 
-    _pgSoundBuffer = *(resmgr.load<sf::SoundBuffer>("sounds/playground.wav"));
-    _pgSound.setBuffer(_pgSoundBuffer);
-    _pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 140.f, 84.f });
+    //_pgSoundBuffer = *(resmgr.load<sf::SoundBuffer>("sounds/playground.wav"));
+    //_pgSound.setBuffer(_pgSoundBuffer);
+    //_pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 140.f, 84.f });
 
     //_bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
     //_bgsong->setLoop(true);
@@ -230,32 +230,32 @@ void Opening::updateCurrentTile(const TileInfo& info)
 {
     _currentTile = info;
 
-    // TODO: PUT THIS IN A CONFIG FILE
-    // BEGIN MESSY HARCODED PLAYGROUND SOUND CODE TO BE REMOVED
-    auto pgdist = tt::distance(_pgCenter, _player->getGlobalCenter());
-    if (pgdist < 400.0f)
-    {
-        if (_pgSound.getStatus() != sf::SoundSource::Status::Playing)
-        {
-            _pgSound.setVolume(100.0);
-            _pgSound.play();
-        }
-    }
-    else if (pgdist < 900.0f)
-    {
-        float volume = (1.f - ((pgdist - 400.f) / 500.f)) * 100.f;
-        _pgSound.setVolume(volume);
-        if (_pgSound.getStatus() != sf::SoundSource::Status::Playing)
-        {
-            _pgSound.play();
-        }
-    }
-    else
-    {
-        _pgSound.setVolume(0.f);
-        _pgSound.pause();
-    }
-    // END UGLY HARDCOED PLAYGROUND CODE
+    //// TODO: PUT THIS IN A CONFIG FILE
+    //// BEGIN MESSY HARCODED PLAYGROUND SOUND CODE TO BE REMOVED
+    //auto pgdist = tt::distance(_pgCenter, _player->getGlobalCenter());
+    //if (pgdist < 400.0f)
+    //{
+    //    if (_pgSound.getStatus() != sf::SoundSource::Status::Playing)
+    //    {
+    //        _pgSound.setVolume(100.0);
+    //        _pgSound.play();
+    //    }
+    //}
+    //else if (pgdist < 900.0f)
+    //{
+    //    float volume = (1.f - ((pgdist - 400.f) / 500.f)) * 100.f;
+    //    _pgSound.setVolume(volume);
+    //    if (_pgSound.getStatus() != sf::SoundSource::Status::Playing)
+    //    {
+    //        _pgSound.play();
+    //    }
+    //}
+    //else
+    //{
+    //    _pgSound.setVolume(0.f);
+    //    _pgSound.pause();
+    //}
+    //// END UGLY HARDCOED PLAYGROUND CODE
 
     bool handled = false;
     std::for_each(_items.begin(), _items.end(),
