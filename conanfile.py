@@ -1,3 +1,5 @@
+from conans import ConanFile
+
 class TTVGConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
