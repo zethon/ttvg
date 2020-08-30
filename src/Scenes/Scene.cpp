@@ -80,6 +80,10 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
             _luaState = nullptr;
         }
     }
+    else
+    {
+        _luaState = nullptr;
+    }
 
     _lastPlayerPos = _playerAvatarInfo.start;
 
@@ -96,6 +100,7 @@ void Scene::init()
     createItems();
 
     // call onInit from Lua
+    if (_luaState == nullptr) return;
 
     // first get the execution environment and set that
     lua_getglobal(_luaState, _name.c_str()); // 1:env
