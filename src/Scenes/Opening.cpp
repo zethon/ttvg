@@ -14,8 +14,6 @@
 namespace tt
 {
 
-constexpr auto SCENE_NAME = "tucson";
-
 constexpr auto MAX_VEHICLES = 25u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     

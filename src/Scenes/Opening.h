@@ -24,6 +24,7 @@ class Opening : public Scene
 
 public:
     Opening(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player, lua_State* luaState);
+    static constexpr auto SCENE_NAME = "tucson";
 
     PollResult poll(const sf::Event& e) override;
     ScreenAction timestep() override;

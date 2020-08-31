@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Scenes/Scene.h"
+#include "Scenes/SceneFactory.h"
 
 #include "Screen.h"
 #include "AnimatedSprite.h"
@@ -86,6 +87,8 @@ private:
     SceneMap        _scenes;
     PlayerPtr       _player;
     lua_State*      _luaState;
+
+    SceneFactoryPtr _sceneFactory;
 };
 
 } // namespace tt
