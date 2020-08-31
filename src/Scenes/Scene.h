@@ -26,11 +26,19 @@ struct AvatarInfo
     float           stepsize;
 };
 
+struct CallbackInfo
+{
+    std::string onInit = "onInit";
+    std::string onEnter = "onEnter";
+    std::string onExit = "onExit";
+};
+
 class Scene;
 using ScenePtr = std::unique_ptr<Scene>;
 using SceneSharedPtr = std::shared_ptr<Scene>;
 
 void from_json(const nl::json& j, AvatarInfo& av);
+void from_json(const nl::json& j, CallbackInfo& cb);
 
 template<typename SceneT>
 int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
@@ -121,6 +129,7 @@ protected:
     std::string             _name;
     lua_State*              _luaState = nullptr;
     int                     _luaIdx = 0;
+    CallbackInfo            _callbackNames;
 
     Hud                     _hud;
     DescriptionText         _descriptionText;

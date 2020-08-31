@@ -2,6 +2,7 @@
 
 #include <fmt/core.h>
 
+#include "../TTLua.h"
 #include "Scene.h"
 
 namespace tt
@@ -32,6 +33,24 @@ void from_json(const nl::json& j, AvatarInfo& av)
     if (j.contains("stepsize"))
     {
         j.at("stepsize").get_to(av.stepsize);
+    }
+}
+
+void from_json(const nl::json& j, CallbackInfo& cb)
+{
+    if (j.contains("onInit"))
+    {
+        j.at("onInit").get_to(cb.onInit);
+    }
+
+    if (j.contains("onEnter"))
+    {
+        j.at("onEnter").get_to(cb.onEnter);
+    }
+
+    if (j.contains("onExit"))
+    {
+        j.at("onExit").get_to(cb.onExit);
     }
 }
 
@@ -66,6 +85,8 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
         {
             _playerAvatarInfo = json["player"].get<AvatarInfo>();
         }
+
+        _callbackNames = json.get<CallbackInfo>();
     }
 
     if (const auto luafile = _resources.getFilename(fmt::format("lua/{}.lua", _name));
@@ -98,28 +119,7 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
 void Scene::init()
 {
     createItems();
-
-    // call onInit from Lua
-    if (_luaState == nullptr) return;
-
-    // first get the execution environment and set that
-    lua_getglobal(_luaState, _name.c_str()); // 1:env
-    assert(lua_isnil(_luaState, 1) == 0);
-
-    // now load up the init function
-    lua_getfield(_luaState, 1, "onInit"); // 1:env, 2:func
-    assert(lua_isnil(_luaState, 2) == 0);
-    assert(lua_isfunction(_luaState, 2) == 1);
-
-    // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
-    lua_rawgeti(_luaState, LUA_REGISTRYINDEX, _luaIdx); // 1:env, 2:func, 1:ud
-    if (lua_pcall(_luaState, 1, 0, 0) != 0) // 1:env, 2:retval
-    {
-        auto error = lua_tostring(_luaState, -1);
-        throw std::runtime_error(error);
-    }
-
-    lua_settop(_luaState, 0);
+    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, _luaIdx);
 }
 
 void Scene::enter()
@@ -157,6 +157,8 @@ void Scene::enter()
         {
             _hud.setBalance(cash);
         });
+
+    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, _luaIdx);
 }
 
 void Scene::exit()
@@ -164,6 +166,8 @@ void Scene::exit()
     assert(_player);
     _lastPlayerPos = _player->getPosition();
 
+
+    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, _luaIdx);
     removeUpdateable(_player);
     _player.reset();
 }

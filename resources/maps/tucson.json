@@ -1,8 +1,4 @@
 {
-    "onInit": "scene_onInit()",
-    "onEnter": "scene_onEnter()",
-    "onExit": "scene_onExit()",
-
     "background":
     {
         "scale": { "x": 2.25, "y": 2.25 },

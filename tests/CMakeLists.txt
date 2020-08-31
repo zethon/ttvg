@@ -70,6 +70,9 @@ set(LUA_FILES
     ../src/Screen.h
     ../src/Screen.cpp
 
+    ../src/TTLua.h
+    ../src/TTLua.cpp
+
     ../src/Scenes/DebugWindow.h
     ../src/Scenes/DebugWindow.cpp
 
