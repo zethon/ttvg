@@ -1,4 +1,8 @@
 {
+    "onInit": "scene_onInit()",
+    "onEnter": "scene_onEnter()",
+    "onExit": "scene_onExit()",
+
     "background":
     {
         "scale": { "x": 2.25, "y": 2.25 },
@@ -9,12 +13,30 @@
     {
         "start": { "x": 1660, "y": 2855 },
         "scale": { "x": 1.5, "y": 1.5 },
-        "source": { "x": 0, "y": 10 },
+        "source": { "x": 0, "y": 2 },
         "origin": { "x": 0, "y": 0 },
         "stepsize" : 16.0
     },
     "zones":
     [
+        {
+            "id": "1-t1",
+            "name": "Lady Boys Club",
+            "description": "This is a local strip club",
+            "rects": 
+            [
+                "10,60,13,71"
+            ],
+            "onEnter": "Modal.message('This looks like a seedy place')",
+            "onLeave": "Modal.message('Good, do not go back there ever again!')",
+            "transition":
+            {
+                "scene": "StripClub",
+                "enabled": true,
+                "onEnter" : "stripclub_onEnter()"
+            }
+        },
+
         { 
             "name" : "Euclid St",
             "rects" :
@@ -145,7 +167,6 @@
                 "1,60,13,71"
             ]
         },
-
 
         {
             "name": "Spooky Graveyard",

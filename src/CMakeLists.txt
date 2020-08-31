@@ -65,5 +65,6 @@ target_link_libraries(tooter
 PUBLIC
     ${CONAN_LIBS}
     ${SFML_Libraries}
+    ${CONAN_LIBS_FRAMEWORKS_LUADIST}
 )
 

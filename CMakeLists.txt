@@ -11,6 +11,9 @@ conan_basic_setup(NO_OUTPUT_DIRS KEEP_RPATHS)
 # optional configuration
 option(UNIT_TEST "Build unit tests (default OFF)" OFF)
 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
 find_package(Boost COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -47,4 +50,5 @@ add_subdirectory(src)
 if (UNIT_TEST)
     enable_testing()
     add_subdirectory(tests)
+    configure_file(test-config.h.in test-config.h)
 endif (UNIT_TEST)

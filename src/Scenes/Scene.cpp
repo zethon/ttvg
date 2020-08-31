@@ -1,3 +1,5 @@
+#include <lua/lua.hpp>
+
 #include <fmt/core.h>
 
 #include "Scene.h"
@@ -33,9 +35,24 @@ void from_json(const nl::json& j, AvatarInfo& av)
     }
 }
 
-Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& target, PlayerPtr player)
+int Scene_name(lua_State* L)
+{
+    auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
+    auto scene = *temp;
+    lua_pushstring(L, scene->name().c_str());
+    return 1;
+}
+
+const struct luaL_Reg Scene::LuaMethods[] =
+{
+    {"name", Scene_name},
+    {nullptr, nullptr}
+};
+
+Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& target, PlayerPtr player, lua_State* luaState)
     : Screen(res, target),
       _name{ name },
+      _luaState{luaState},
       _hud{ res, target },
       _descriptionText{ res, target },
       _debugWindow{ res, target },
@@ -51,6 +68,23 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
         }
     }
 
+    if (const auto luafile = _resources.getFilename(fmt::format("lua/{}.lua", _name));
+        boost::filesystem::exists(luafile))
+    {
+        if (auto temp = loadSceneLuaFile(*this, luafile, _luaState); temp > 0)
+        {
+            _luaIdx = temp;
+        }
+        else
+        {
+            _luaState = nullptr;
+        }
+    }
+    else
+    {
+        _luaState = nullptr;
+    }
+
     _lastPlayerPos = _playerAvatarInfo.start;
 
     _background = std::make_shared<Background>(_name, _resources, target);
@@ -64,6 +98,28 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
 void Scene::init()
 {
     createItems();
+
+    // call onInit from Lua
+    if (_luaState == nullptr) return;
+
+    // first get the execution environment and set that
+    lua_getglobal(_luaState, _name.c_str()); // 1:env
+    assert(lua_isnil(_luaState, 1) == 0);
+
+    // now load up the init function
+    lua_getfield(_luaState, 1, "onInit"); // 1:env, 2:func
+    assert(lua_isnil(_luaState, 2) == 0);
+    assert(lua_isfunction(_luaState, 2) == 1);
+
+    // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
+    lua_rawgeti(_luaState, LUA_REGISTRYINDEX, _luaIdx); // 1:env, 2:func, 1:ud
+    if (lua_pcall(_luaState, 1, 0, 0) != 0) // 1:env, 2:retval
+    {
+        auto error = lua_tostring(_luaState, -1);
+        throw std::runtime_error(error);
+    }
+
+    lua_settop(_luaState, 0);
 }
 
 void Scene::enter()
@@ -129,7 +185,7 @@ PollResult Scene::poll(const sf::Event& e)
                     return { true, {} };
                 }
 
-                _player->setSource(0, 9);
+                _player->setSource(0, 1);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::LEFT);
@@ -144,7 +200,7 @@ PollResult Scene::poll(const sf::Event& e)
                     return { true, {} };
                 }
 
-                _player->setSource(0, 11);
+                _player->setSource(0, 3);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::RIGHT);
@@ -159,7 +215,7 @@ PollResult Scene::poll(const sf::Event& e)
                     return { true, {} };
                 }
 
-                _player->setSource(0, 8);
+                _player->setSource(0, 0);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::UP);
@@ -174,7 +230,7 @@ PollResult Scene::poll(const sf::Event& e)
                     return { true, {} };
                 }
 
-                _player->setSource(0, 10);
+                _player->setSource(0, 2);
                 _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::DOWN);

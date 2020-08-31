@@ -1,13 +1,14 @@
-from conans import ConanFile, CMake
+from conans import ConanFile
 
-class AshConan(ConanFile):
+class TTVGConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
     requires = (
         "boost/1.71.0@conan/stable",
         "sfml/2.5.1@bincrafters/stable",
         "fmt/5.3.0@bincrafters/stable",
-        "jsonformoderncpp/3.6.0@vthiery/stable"
+        "jsonformoderncpp/3.6.0@vthiery/stable",
+        "luadist/5.2.3@owl/stable",
     )
 
     generators = "cmake"
