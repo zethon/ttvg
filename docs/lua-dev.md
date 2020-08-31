@@ -1,59 +1,71 @@
-## Introduction
+## 0.0. Introduction
 
-Lua support is being added to the Tommy Tooter Video Game to make it easier for the Tommy Tooter community to add content to the game. This document talks about the Lua API and gives examples of how to extend the game using Lua.
+**This feature is a work in process**. The strikethrough text represents design ideas and is not implemented. All other text in this document **is** implemented and should work.
 
--- called for the 
-function stripclub_onenter()
-end
+## 0.1. Lua Support
 
-## Lua Files
+Lua support makes it easier for the community to add content to the game. This document talks about the Lua API and gives examples of how to extend the game using Lua.
 
-Every scene has a *&lt;scene-name&gt;.lua* file which resides in the same folder as the map image and JSON config file. This Lua file contains all functions and code that is used by the scene and the scene's components. 
+Every scene has a *&lt;scene-name&gt;.lua* file which resides in `resources/lua` folder. This Lua file contains all code that is used by the scene and the scene's components. 
 
-In addition to the scene itself, Lua events for zones and items are also supported.
+## 1.0. Scenes Events
 
-### Configuring Functions
-
-Functions are configured in the JSON like so:
+Scenes will emit three events that can be caught in Lua. These are: `onInit`, `onEnter` and `onExit`. These are the default names and will be called automatically when the event is triggered. The names can be override using the JSON configuration like so:
 
 ```json
 {
-    "onInit": "scene_onInit()",
+    "onInit": "scene_onInit",
+    "onEnter": "scene_onEnter",
+    "onExit": "scene_onExit",
 }
 ```
 
-In this case, the scene will look in the corresponding *&lt;scene-name&gt;.lua* file for the functions. 
+Each event is passed a `Scene` object as the first parameter (see `Scene API` below).
 
-For example, if the above JSON was in the *EuclidHouse.json* file, then we could deduct 5% of the player's health every time they entered the scene by defining the following function in the *EuclidHouse.lua* file:
+A *Hello World* example using the configuration about might look like:
 
 ```lua
-function scene_onEnter()
-    local health = Player.getHealth()
-    Player.setHealth(health - (health * 0.05))
+function scene_onInit(scene)
+    print('Hello from '..scene:name..'!')
+end
+
+function scene_onEnter(scene)
+    print('Entering scene '..scene:name..'!')
+end
+
+function scene_onExit(scene)
+    print('Now leaving scene '..scene:name..'!')
 end
 ```
+</s>
 
-It should be noted that the string passed to the callbacks in the JSON is interpreted as Lua, so it is possible to put Lua directly in the JSON file:
-
-```json
-{
-    "onEnter": "local h=Player.getHealth();Player.setHealth(h-(h*0.05))"
-}
-```
-
-## Scenes
+### 1.1. Event Details
 
 There are three callback functions for every scene.
 
-### `onInit()` *[callback]*
+#### `onInit(scene)` *[callback]*
 
-This function is invoked when the scene is first loaded. This should not be confused with when the scene is entered, which can happen multiple times during the game. `onInit` is called only at the start of the game, this can happen when the application is first loaded, or after a game has ended and a new one has begun.
+This function is invoked when the scene is first loaded. This should not be confused with when the scene is entered, which can happen multiple times during the game. `onInit` is called only once when the game starts. Note that if game ends and the user starts a new game, `onInit` **will** be called at the start of that new game.
 
-### `onEnter` *[callback]*
+#### `onEnter(scene)` *[callback]*
 
-### `onExit` *[callback]*
+This function is invoked when the playe first enters the scene. This callback can be called multiple times in a single game since a user can enter and leave scenes multiple times.
 
+#### `onExit(scene)` *[callback]*
 
+This function is invoked when the playe first exist the scene. This callback can be also be called multiple times.
+
+### 1.2. Scene API
+
+#### `Scene.name` *[const]*
+
+No arguments. Returns the name of the current scene.
+
+<!--
+
+<hr/>
+
+<s>
 # Chapter 3. Resources
 
 # Chapter 8. Modal Windows
@@ -92,6 +104,7 @@ on the left hand side of the window, and `string` on the right hand side. The `i
 
 #### **Returns**
 `boolean` - Returns `true` if the user selected "Yes", or `false` if the user selected "No".
+</s>
 
 <hr/>
 
@@ -121,3 +134,4 @@ end
 local window = Modal.new()
 
 ```
+-->
