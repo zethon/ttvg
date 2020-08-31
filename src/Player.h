@@ -14,6 +14,9 @@ using PlayerPtr = std::shared_ptr<Player>;
 class Player : public AnimatedSprite
 {
 public:
+    static constexpr auto CLASS_NAME = "Player";
+    static const struct luaL_Reg LuaMethods[];
+
     using AnimatedSprite::AnimatedSprite;
 
     sf::Vector2f getGlobalCenter() const;

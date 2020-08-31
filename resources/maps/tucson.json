@@ -15,24 +15,21 @@
     },
     "zones":
     [
-        {
-            "id": "1-t1",
-            "name": "Lady Boys Club",
-            "description": "This is a local strip club",
-            "rects": 
-            [
-                "10,60,13,71"
+        { 
+            "name" : "Home",
+            "description": "Press SPACE to enter your filthy apartment",
+            "rects" :
+            [ 
+                "48,77,52,80", 
+                "53,77,54,79"
             ],
-            "onEnter": "Modal.message('This looks like a seedy place')",
-            "onLeave": "Modal.message('Good, do not go back there ever again!')",
             "transition":
             {
-                "scene": "StripClub",
+                "scene": "EuclidHouse",
                 "enabled": true,
-                "onEnter" : "stripclub_onEnter()"
+                "onSelect" : "home_onSelect"
             }
         },
-
         { 
             "name" : "Euclid St",
             "rects" :
@@ -54,20 +51,6 @@
             [
                 "13,9,43,32" 
             ]
-        },
-        { 
-            "name" : "Home",
-            "description": "Press SPACE to enter your filthy apartment",
-            "rects" :
-            [ 
-                "48,77,52,80", 
-                "53,77,54,79"
-            ],
-            "transition":
-            {
-                "scene": "EuclidHouse",
-                "enabled": true
-            }
         },
         { 
             "name" : "Dumpster",

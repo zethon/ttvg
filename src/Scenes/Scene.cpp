@@ -54,6 +54,12 @@ void from_json(const nl::json& j, CallbackInfo& cb)
     }
 }
 
+[[maybe_unused]] Scene* checkSceneObj(lua_State* L, int index = 1)
+{
+    auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
+    return *temp;
+}
+
 int Scene_name(lua_State* L)
 {
     auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
@@ -62,9 +68,26 @@ int Scene_name(lua_State* L)
     return 1;
 }
 
+int Scene_getPlayer(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    
+    // Create a new userdata and set the appropriate metatable. Lua's 
+    // garabage collection will take care of deleting the
+    // pointer-to-a-pointer.    
+    Player** data = (Player**)lua_newuserdata(L, sizeof(Player*));
+    *data = (scene->_player).get();
+
+    luaL_getmetatable(L, Player::CLASS_NAME);
+    lua_setmetatable(L, -2);
+
+    return 1;
+}
+
 const struct luaL_Reg Scene::LuaMethods[] =
 {
     {"name", Scene_name},
+    {"getPlayer", Scene_getPlayer},
     {nullptr, nullptr}
 };
 

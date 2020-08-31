@@ -13,17 +13,8 @@ namespace tt
 
 struct Transition
 {
-    enum class Type
-    {
-        MANUAL,
-        AUTO
-    };
-
-    std::string     id;
-    std::string     description;
     sf::Vector2f    position;
     bool            enabled;
-    Type            type;
     std::string     newscene;
 
     bool operator==(const Transition& other)

@@ -1,7 +1,54 @@
+#include <lua/lua.hpp>
+
 #include "Player.h"
 
 namespace tt
 {
+
+[[maybe_unused]] Player* checkPlayerObj(lua_State* L, int index = 1)
+{
+    auto temp = static_cast<Player**>(luaL_checkudata(L, 1, Player::CLASS_NAME));
+    return *temp;
+}
+
+int Player_health(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    lua_pushnumber(L, player->health());
+    return 1;
+}
+
+int Player_setHealth(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    auto health = lua_tointeger(L, 2);
+    player->setHealth(health);    
+    return 1;
+}
+
+int Player_balance(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    lua_pushnumber(L, player->balance());
+    return 1;
+}
+
+int Player_setBalance(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    auto balance = lua_tointeger(L, 2);
+    player->setBalance(balance);    
+    return 1;
+}
+
+const struct luaL_Reg Player::LuaMethods[] =
+{
+    {"getBalance", Player_balance},
+    {"setBalance", Player_setBalance},
+    {"getHealth", Player_health},
+    {"setHealth", Player_setHealth},
+    {nullptr, nullptr}
+};
 
 sf::Vector2f Player::getGlobalCenter() const
 {

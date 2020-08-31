@@ -1,14 +1,14 @@
-## 0.0. Introduction
+## 0. Introduction
 
 **This feature is a work in process**. The strikethrough text represents design ideas and is not implemented. All other text in this document **is** implemented and should work.
 
-## 0.1. Lua Support
+### 0.1. Lua Support
 
 Lua support makes it easier for the community to add content to the game. This document talks about the Lua API and gives examples of how to extend the game using Lua.
 
 Every scene has a *&lt;scene-name&gt;.lua* file which resides in `resources/lua` folder. This Lua file contains all code that is used by the scene and the scene's components. 
 
-## 1.0. Scenes Events
+## 1. Scenes Events
 
 Scenes will emit three events that can be caught in Lua. These are: `onInit`, `onEnter` and `onExit`. These are the default names and will be called automatically when the event is triggered. The names can be override using the JSON configuration like so:
 
@@ -57,9 +57,44 @@ This function is invoked when the playe first exist the scene. This callback can
 
 ### 1.2. Scene API
 
-#### `Scene.name` *[const]*
+#### `Scene.getPlayer()`
+
+No arguments. Returns a `Player` object. **This object is only valid for the life of the scene.** 
+
+**Example**
+```lua
+function onEnter(scene)
+    local player = scene:getPlayer()
+    local health = player:getHealth() - 2
+    player:setHealth(health)
+end
+```
+
+#### `Scene.name()`
 
 No arguments. Returns the name of the current scene.
+
+## 2. Player
+
+The player object is accessible through `Scene.getPlayer` and offers the following API. As mentioned above, the player object is only valid for the life of the current scene. This is also means that the player object is **not** available during initialization (i.e. `Scene.onInit`) since at that time there is no current scene.
+
+### 2.1 Player API
+
+#### `Player.balance()`
+
+No arguments. Returns the value of the player's current balance.
+
+#### `Player.setBalance(balance)`
+
+Sets the balance of the player to `balance`. This should be a numeric value.
+
+#### `Player.health()`
+
+No arguments. Returns the value of the player's current health.
+
+#### `Player.setHealth(health)`
+
+Sets the health of the player to `health`. This should be an **integer** value.
 
 <!--
 

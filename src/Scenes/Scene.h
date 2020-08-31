@@ -94,12 +94,16 @@ int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
     return idx;
 }
 
+int Scene_getPlayer(lua_State* L);
+
 class Scene : public Screen
 {
 
 public:
     static constexpr auto CLASS_NAME = "Scene";
     static const struct luaL_Reg LuaMethods[];
+
+    friend int Scene_getPlayer(lua_State* L);
 
     Scene(std::string_view name,
         ResourceManager& res,
