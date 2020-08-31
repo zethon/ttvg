@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "TTLua.h"
 
 namespace tt
