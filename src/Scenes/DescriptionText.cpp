@@ -10,11 +10,19 @@ DescriptionText::DescriptionText(ResourceManager & resmgr, sf::RenderTarget & ta
     _background->setFillColor(sf::Color{ 0, 0, 0, 175 });
     addDrawable(_background);
 
-    _font = *(_resources.load<sf::Font>("fonts/mono_bold.ttf"));
-    _text = std::make_shared<sf::Text>("", _font);
-    _text->setFillColor(sf::Color::Yellow);
-    _text->setCharacterSize(25);
-    addDrawable(_text);
+    if (auto temp = _resources.load<sf::Font>("fonts/mono_bold.ttf");
+        temp.has_value())
+    {
+        _font = *temp;
+        _text = std::make_shared<sf::Text>("", _font);
+        _text->setFillColor(sf::Color::Yellow);
+        _text->setCharacterSize(25);
+        addDrawable(_text);
+    }
+    else
+    {
+        // TODO: loggin?!?!
+    }
 }
 
 void DescriptionText::setText(const std::string & text)

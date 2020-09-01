@@ -123,6 +123,8 @@ public:
 
     sf::Vector2f getPlayerTile() const;
 
+    int luaIdx() const { return _luaIdx; }
+
 protected:
     virtual void updateCurrentTile(const TileInfo& info);
     virtual sf::Vector2f animeCallback();

@@ -7,12 +7,15 @@
 
 #include "../src/ResourceManager.h"
 #include "../src/GameScreen.h"
+#include "../src/TTLua.h"
 #include "../src/Scenes/Scene.h"
+#include "../src/Scenes/SceneFactory.h"
 
 #include "Test.h"
 
 namespace tools = boost::test_tools;
 namespace data = boost::unit_test::data;
+namespace fs = boost::filesystem;
 
 BOOST_AUTO_TEST_SUITE(tt)
 BOOST_AUTO_TEST_SUITE(lua)
@@ -54,7 +57,6 @@ function onInit()
 return "mylua2"
 end
 )lua";
-
 
 std::string callFunction(const std::string& funcname, lua_State* L, const std::string& envname, int objIdx)
 {
@@ -103,6 +105,53 @@ BOOST_AUTO_TEST_CASE(loadTestCase)
 
     BOOST_TEST(callFunction("onInit", lua, "scene1", s1idx) == "mylua1");
     BOOST_TEST(callFunction("onInit", lua, "scene2", s2idx) == "mylua2");
+}
+
+constexpr auto playerTestFile = R"lua(
+function doHealth(scene)
+    local player = scene:getPlayer()
+    local health = player:getHealth()
+    player:setHealth(health - 25)
+end
+function doBalance(scene)
+    local player = scene:getPlayer()
+    local b = player:getBalance()
+    player:setBalance(b - 2.50)
+end
+)lua";
+
+BOOST_AUTO_TEST_CASE(luaPlayerTest)
+{
+    const auto path{ tt::tempFolder() };
+    const auto luapath{ path / "resources" / "lua" };
+    const auto mappath{ path / "resources" / "maps" };
+
+    writeFile((luapath / "scene1.lua").string(), playerTestFile);
+    writeFile((mappath / "scene1.json").string(), R"({"background":{"tiles":{ "x": 16, "y": 16 }}})");
+
+    tt::ResourceManager res{ path / "resources" };
+    tt::NullWindow window;
+
+    sf::Texture texture;
+    texture.create(100, 100);
+    auto player = std::make_shared<tt::Player>(texture, sf::Vector2i{ 10,10 });
+
+    lua_State* lua = luaL_newstate();
+
+    GameScreenStub stub;
+    tt::initLua(lua, stub);
+
+    tt::SceneFactory fact{ res, window, player, lua };
+    auto scene = fact.createScene<tt::Scene>("scene1");
+    scene->enter();
+
+    BOOST_TEST(player->health() == 100);
+    tt::CallLuaFunction(lua, "doHealth", "scene1", scene->luaIdx());
+    BOOST_TEST(player->health() == 75);
+
+    BOOST_TEST(player->balance() == 40.00, boost::test_tools::tolerance(0.001));
+    tt::CallLuaFunction(lua, "doBalance", "scene1", scene->luaIdx());
+    BOOST_TEST(player->balance() == 37.50, boost::test_tools::tolerance(0.001));
 }
 
 BOOST_AUTO_TEST_SUITE_END() // lua

@@ -65,7 +65,7 @@ void writeFile(const std::string& file, const std::string& data)
 
 boost::filesystem::path tempFolder()
 {
-    auto temp = boost::filesystem::temp_directory_path();
+    auto temp = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path("ttvg%%%%%%");
     temp /= std::to_string(boost::unit_test::framework::current_test_case().p_id);
     boost::filesystem::create_directories(temp);
     return temp;
