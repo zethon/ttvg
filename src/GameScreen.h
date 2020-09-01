@@ -48,7 +48,7 @@ void initLua(lua_State* L, T& screen)
         lua_settop(L, 0);
     }
 
-    // create the 'Scene' Lua class
+    // create the 'Player' Lua class
     {
         luaL_newmetatable(L, Player::CLASS_NAME);
         lua_pushstring(L, "__index");

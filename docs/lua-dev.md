@@ -1,6 +1,6 @@
 ## 0. Introduction
 
-**This feature is a work in process**. 
+**This feature is a work in progress**. 
 
 Lua support makes it easier for the community to add content to the game. This document talks about the Lua API and gives examples of how to extend the game using Lua.
 

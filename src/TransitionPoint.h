@@ -16,6 +16,7 @@ struct Transition
     sf::Vector2f    position;
     bool            enabled;
     std::string     newscene;
+    std::string     selectEvent;
 
     bool operator==(const Transition& other)
     {
