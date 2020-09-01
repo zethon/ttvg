@@ -1,8 +1,6 @@
 ## 0. Introduction
 
-**This feature is a work in process**. The strikethrough text represents design ideas and is not implemented. All other text in this document **is** implemented and should work.
-
-### 0.1. Lua Support
+**This feature is a work in process**. 
 
 Lua support makes it easier for the community to add content to the game. This document talks about the Lua API and gives examples of how to extend the game using Lua.
 
@@ -10,7 +8,7 @@ Every scene has a *&lt;scene-name&gt;.lua* file which resides in `resources/lua`
 
 ## 1. Scenes Events
 
-Scenes will emit three events that can be caught in Lua. These are: `onInit`, `onEnter` and `onExit`. These are the default names and will be called automatically when the event is triggered. The names can be override using the JSON configuration like so:
+Scenes will emit three events that can be caught in Lua. These are: `onInit`, `onEnter` and `onExit`. These are the default names and will be called automatically when the event is triggered. The names can be overriden using the JSON configuration like so:
 
 ```json
 {
@@ -22,7 +20,7 @@ Scenes will emit three events that can be caught in Lua. These are: `onInit`, `o
 
 Each event is passed a `Scene` object as the first parameter (see `Scene API` below).
 
-A *Hello World* example using the configuration about might look like:
+A *Hello World* example using the configuration above might look like:
 
 ```lua
 function scene_onInit(scene)
@@ -43,17 +41,17 @@ end
 
 There are three callback functions for every scene.
 
-#### `onInit(scene)` *[callback]*
+#### `onInit(scene)`
 
 This function is invoked when the scene is first loaded. This should not be confused with when the scene is entered, which can happen multiple times during the game. `onInit` is called only once when the game starts. Note that if game ends and the user starts a new game, `onInit` **will** be called at the start of that new game.
 
-#### `onEnter(scene)` *[callback]*
+#### `onEnter(scene)`
 
-This function is invoked when the playe first enters the scene. This callback can be called multiple times in a single game since a user can enter and leave scenes multiple times.
+This function is invoked when the player first enters the scene. This callback can be called multiple times in a single game since a user can enter and leave scenes multiple times.
 
-#### `onExit(scene)` *[callback]*
+#### `onExit(scene)`
 
-This function is invoked when the playe first exist the scene. This callback can be also be called multiple times.
+This function is invoked when the playe first exits the scene. This callback can be also be called multiple times.
 
 ### 1.2. Scene API
 
@@ -76,7 +74,7 @@ No arguments. Returns the name of the current scene.
 
 ## 2. Player
 
-The player object is accessible through `Scene.getPlayer` and offers the following API. As mentioned above, the player object is only valid for the life of the current scene. This is also means that the player object is **not** available during initialization (i.e. `Scene.onInit`) since at that time there is no current scene.
+The player object is accessible through `Scene.getPlayer` and offers the following API. As mentioned above, the player object is only valid for the life of the current scene. This means that the player object is **not** available during initialization (i.e. `onInit`) since at that time there is no current scene.
 
 ### 2.1 Player API
 
