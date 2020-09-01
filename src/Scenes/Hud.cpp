@@ -45,6 +45,8 @@ Hud::Hud(ResourceManager & resmgr, sf::RenderTarget & target, bool visible)
 
 void Hud::setZoneText(const std::string & zone)
 {
+    if (!_zoneText) return;
+
     _zoneText->setString(zone);
     auto rect = _zoneText->getGlobalBounds();
 
@@ -78,6 +80,7 @@ void Hud::setHealth(std::uint32_t health)
 void Hud::setBalance(float cash)
 {
     if (!_balanceText) return;
+    
     std::string text = fmt::format("Cash  : ${:.{}f}", cash, 2);
     _balanceText->setString(text);
 }

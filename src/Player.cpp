@@ -23,7 +23,7 @@ int Player_setHealth(lua_State* L)
     auto player = checkPlayerObj(L);
     auto health = lua_tointeger(L, 2);
     player->setHealth(static_cast<std::uint32_t>(health));
-    return 1;
+    return 0;
 }
 
 int Player_balance(lua_State* L)
@@ -38,7 +38,7 @@ int Player_setBalance(lua_State* L)
     auto player = checkPlayerObj(L);
     float balance = static_cast<float>(lua_tonumber(L, 2));
     player->setBalance(balance);    
-    return 1;
+    return 0;
 }
 
 const struct luaL_Reg Player::LuaMethods[] =

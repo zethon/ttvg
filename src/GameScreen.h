@@ -10,6 +10,7 @@
 #include "Screen.h"
 #include "AnimatedSprite.h"
 #include "Player.h"
+#include "TTLua.h"
 
 namespace tt
 {
@@ -33,35 +34,11 @@ void initLua(lua_State* L, T& screen)
     //lua_pushvalue(_luaState, -2); // push the metatable
     //lua_settable(_luaState, -3);  // metatable.__index = metatable
 
-    // create the 'Scene' Lua class
-    {
-        luaL_newmetatable(L, Scene::CLASS_NAME);
-        lua_pushstring(L, "__index");
-        lua_pushvalue(L, -2); // push the metatable
-        lua_settable(L, -3);  // metatable.__index = metatable
+    registerLuaFunctions<Scene>(L);
+    registerLuaFunctions<Player>(L);
+    registerLuaFunctions<DescriptionText>(L);
 
-        // this creates object-like methods by populating the table
-        // on the stack with the function names/pointers
-        luaL_openlib(L, nullptr, Scene::LuaMethods, 0);
-            
-        // clear the stack
-        lua_settop(L, 0);
-    }
-
-    // create the 'Player' Lua class
-    {
-        luaL_newmetatable(L, Player::CLASS_NAME);
-        lua_pushstring(L, "__index");
-        lua_pushvalue(L, -2); // push the metatable
-        lua_settable(L, -3);  // metatable.__index = metatable
-
-        // this creates object-like methods by populating the table
-        // on the stack with the function names/pointers
-        luaL_openlib(L, nullptr, Player::LuaMethods, 0);
-            
-        // clear the stack
-        lua_settop(L, 0);
-    }
+    assert(lua_gettop(L) == 0);
 }
 
 class GameScreen final : public Screen

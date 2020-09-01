@@ -95,6 +95,7 @@ int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
 }
 
 int Scene_getPlayer(lua_State* L);
+int Scene_getDescriptionWindow(lua_State* L);
 
 class Scene : public Screen
 {
@@ -104,6 +105,7 @@ public:
     static const struct luaL_Reg LuaMethods[];
 
     friend int Scene_getPlayer(lua_State* L);
+    friend int Scene_getDescriptionWindow(lua_State* L);
 
     Scene(std::string_view name,
         ResourceManager& res,
@@ -124,6 +126,9 @@ public:
     sf::Vector2f getPlayerTile() const;
 
     int luaIdx() const { return _luaIdx; }
+
+    Hud& hud() { return _hud; }
+    DescriptionText& descriptionText() { return _descriptionText; }
 
 protected:
     virtual void updateCurrentTile(const TileInfo& info);

@@ -84,10 +84,27 @@ int Scene_getPlayer(lua_State* L)
     return 1;
 }
 
+int Scene_getDescriptionWindow(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    
+    // Create a new userdata and set the appropriate metatable. Lua's 
+    // garabage collection will take care of deleting the
+    // pointer-to-a-pointer.    
+    DescriptionText** data = (DescriptionText**)lua_newuserdata(L, sizeof(DescriptionText*));
+    *data = &(scene->descriptionText());
+
+    luaL_getmetatable(L, DescriptionText::CLASS_NAME);
+    lua_setmetatable(L, -2);
+
+    return 1;
+}
+
 const struct luaL_Reg Scene::LuaMethods[] =
 {
     {"name", Scene_name},
     {"getPlayer", Scene_getPlayer},
+    {"getDescriptionWindow", Scene_getDescriptionWindow},
     {nullptr, nullptr}
 };
 
