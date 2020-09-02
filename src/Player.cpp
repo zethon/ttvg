@@ -41,12 +41,30 @@ int Player_setBalance(lua_State* L)
     return 0;
 }
 
+int Player_hasItem(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    const auto itemname = lua_tostring(L, 2);
+    lua_pushboolean(L, player->hasItem(itemname) ? 1 : 0);
+    return 1;
+}
+
+int Player_removeItem(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    const auto itemname = lua_tostring(L, 2);
+    player->removeItem(itemname);
+    return 0;
+}
+
 const struct luaL_Reg Player::LuaMethods[] =
 {
     {"getBalance", Player_balance},
     {"setBalance", Player_setBalance},
     {"getHealth", Player_health},
     {"setHealth", Player_setHealth},
+    {"hasItem", Player_hasItem},
+    {"removeItem", Player_removeItem},
     {nullptr, nullptr}
 };
 

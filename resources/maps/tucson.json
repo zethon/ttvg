@@ -175,124 +175,6 @@
             "rects":[ "131,75,149,94"]
         }
     ],
-    "vehicles":
-    {
-        "assets":
-        [
-            {
-                "name" : "car1",
-                "size" : "77,41",
-                "tiles": "2,4",
-                "scale": "1.4,1.4",
-                "speed": "8.0,20.0",
-                "horn": "carhorn1"
-            },
-            {
-                "name" : "car2",
-                "size" : "96,63",
-                "scale": "1.0,1.0",
-                "speed": "10.0,30.0",
-                "horn": "carhorn2"
-            }
-        ],
-        "edges":
-        [
-            "-1,3,right",
-            "-1,8,right",
-            "-1,41,right",
-            "-1,59,right",
-            "-1,75,right",
-            "-1,143,right",
-
-            "44,-1,down",
-            "93,-1,down",
-            "129,-1,down",
-            
-            "10,150,up",
-            "46,150,up",
-            "94,150,up",
-            "122,150,up",
-
-            "150,7,left",
-            "150,24,left",
-            "150,39,left",
-            "150,73,left",
-            "150,95,left",
-            "150,107,left",
-            "150,129,left"
-        ],
-        "intersections":
-        [
-            "9,124,T270,single,single",
-            "9,142,CROSS,single,single",
-
-            "11,2,L180,single,single",
-            "11,7,CROSS,single,single",
-            "11,39,T180,double,single",
-
-            "14,39,T0,double,single",
-            "14,58,CROSS,single,single",
-            "14,73,CROSS,double,single",
-            "14,95,L0,single,single",
-
-            "44,24,T270,single,double",
-            "44,39,CROSS,double,double",
-            "44,58,CROSS,single,double",
-            "44,73,CROSS,double,double",
-            "44,95,CROSS,single,double",
-            "44,122,T270,single,double",
-            "44,24,T270,single,double",
-            "44,124,T90,single,double",
-            "44,142,CROSS,single,double",
-
-            "93,7,CROSS,single,single",
-            "93,24,CROSS,single,single",
-            "93,39,CROSS,double,single",
-            "93,58,CROSS,single,single",
-            "93,95,T90,single,single",
-            "93,122,T90,single,single",
-            "93,142,CROSS,single,single",
-
-            "121,142,L180,single,single",
-
-            "129,7,CROSS,single,single",
-            "129,24,CROSS,single,single",
-            "129,39,CROSS,double,single",
-            "129,58,T90,single,single",
-            "129,73,CROSS,single,single",
-            "129,95,T270,single,single",
-            "129,107,CROSS,double,single",
-            "129,129,L0,single,single",
-
-            "44,7,CROSS,single,double"
-        ],
-        "turningpoints":
-        [
-            "10,110,right,false",
-            "9,109,right,false",
-            "9,110,down,true",
-            "10,109,down,true",
-
-            "44,107,down,true",
-            "46,106,up,true",
-            "46,109,up,true",
-            "44,110,down,true",
-            "44,122,down,false",
-            "46,122,up,true",
-
-            "93,75,down,false",
-            "93,74,right,true",
-            "94,73,up,true",
-            "93,72,down,true",
-
-            "93,110,down,true",
-            "94,110,up,false",
-            "94,109,right,true",
-            "94,107,up,true",
-            "93,107,left,true",
-            "93,109,right,true"
-        ]
-    },
     "items":
     {
         "sax": 
@@ -434,5 +316,123 @@
             { "x": 145, "y": 123 }
         ]
 
+    },
+    "vehicles":
+    {
+        "assets":
+        [
+            {
+                "name" : "car1",
+                "size" : "77,41",
+                "tiles": "2,4",
+                "scale": "1.4,1.4",
+                "speed": "8.0,20.0",
+                "horn": "carhorn1"
+            },
+            {
+                "name" : "car2",
+                "size" : "96,63",
+                "scale": "1.0,1.0",
+                "speed": "10.0,30.0",
+                "horn": "carhorn2"
+            }
+        ],
+        "edges":
+        [
+            "-1,3,right",
+            "-1,8,right",
+            "-1,41,right",
+            "-1,59,right",
+            "-1,75,right",
+            "-1,143,right",
+
+            "44,-1,down",
+            "93,-1,down",
+            "129,-1,down",
+            
+            "10,150,up",
+            "46,150,up",
+            "94,150,up",
+            "122,150,up",
+
+            "150,7,left",
+            "150,24,left",
+            "150,39,left",
+            "150,73,left",
+            "150,95,left",
+            "150,107,left",
+            "150,129,left"
+        ],
+        "intersections":
+        [
+            "9,124,T270,single,single",
+            "9,142,CROSS,single,single",
+
+            "11,2,L180,single,single",
+            "11,7,CROSS,single,single",
+            "11,39,T180,double,single",
+
+            "14,39,T0,double,single",
+            "14,58,CROSS,single,single",
+            "14,73,CROSS,double,single",
+            "14,95,L0,single,single",
+
+            "44,24,T270,single,double",
+            "44,39,CROSS,double,double",
+            "44,58,CROSS,single,double",
+            "44,73,CROSS,double,double",
+            "44,95,CROSS,single,double",
+            "44,122,T270,single,double",
+            "44,24,T270,single,double",
+            "44,124,T90,single,double",
+            "44,142,CROSS,single,double",
+
+            "93,7,CROSS,single,single",
+            "93,24,CROSS,single,single",
+            "93,39,CROSS,double,single",
+            "93,58,CROSS,single,single",
+            "93,95,T90,single,single",
+            "93,122,T90,single,single",
+            "93,142,CROSS,single,single",
+
+            "121,142,L180,single,single",
+
+            "129,7,CROSS,single,single",
+            "129,24,CROSS,single,single",
+            "129,39,CROSS,double,single",
+            "129,58,T90,single,single",
+            "129,73,CROSS,single,single",
+            "129,95,T270,single,single",
+            "129,107,CROSS,double,single",
+            "129,129,L0,single,single",
+
+            "44,7,CROSS,single,double"
+        ],
+        "turningpoints":
+        [
+            "10,110,right,false",
+            "9,109,right,false",
+            "9,110,down,true",
+            "10,109,down,true",
+
+            "44,107,down,true",
+            "46,106,up,true",
+            "46,109,up,true",
+            "44,110,down,true",
+            "44,122,down,false",
+            "46,122,up,true",
+
+            "93,75,down,false",
+            "93,74,right,true",
+            "94,73,up,true",
+            "93,72,down,true",
+
+            "93,110,down,true",
+            "94,110,up,false",
+            "94,109,right,true",
+            "94,107,up,true",
+            "93,107,left,true",
+            "93,109,right,true"
+        ]
     }
 }
