@@ -27,7 +27,8 @@ GameScreen* GameScreen::l_get(lua_State * L)
 }
 
 GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
-    : Screen(resmgr, target)
+    : Screen(resmgr, target),
+      _itemFactory{std::make_shared<ItemFactory>(resmgr)}
 {
     _luaState = luaL_newstate();
     initLua(_luaState, *this);
@@ -38,7 +39,7 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     textptr->setSmooth(true);
     _player = std::make_shared<Player>(*textptr, sf::Vector2i{ 64, 64 });
 
-    SceneSetup setup{ _resources, _window, _player, _luaState };
+    SceneSetup setup{ _resources, _window, _player, _luaState, _itemFactory };
 
     // TODO: as the game grows these constructions will take longer
     // and should probably be done in parallel and/or with a loading screen

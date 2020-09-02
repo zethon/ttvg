@@ -115,7 +115,8 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
       _hud{ setup.resources, setup.window },
       _descriptionText{ setup.resources, setup.window },
       _debugWindow{ setup.resources, setup.window },
-      _weakPlayer{ setup.player }
+      _weakPlayer{ setup.player },
+      _itemFactory{ *(setup.itemFactory) }
 {
     if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _name)); 
             jsonopt.has_value())
@@ -373,10 +374,9 @@ PollResult Scene::poll(const sf::Event& e)
                                 const auto& providedItem = 
                                                 item->getActionProvidesItem();
 
-                                auto itemFactory = ItemFactory(_resources);
                                 sf::Vector2f position = item->getPosition();
 
-                                ItemPtr p = itemFactory.createItem(
+                                ItemPtr p = _itemFactory.createItem(
                                                             providedItem,
                                                             position);
                                 _items.push_back(p);
@@ -574,11 +574,6 @@ bool Scene::walkPlayer(float stepsize)
 
 void Scene::createItems()
 {
-    //
-    // Create items
-    //
-    auto itemFactory = ItemFactory(_resources);
-
     const auto& config = _background->json();
 
     //
@@ -612,7 +607,7 @@ void Scene::createItems()
                 sf::Vector2f position = 
                     _background->getGlobalFromTile(sf::Vector2f(c["x"].get<float>(), c["y"].get<float>()));
 
-                ItemPtr i = itemFactory.createItem(itemId, position);
+                ItemPtr i = _itemFactory.createItem(itemId, position);
                 _items.push_back(i);
             }
         }

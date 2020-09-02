@@ -39,10 +39,11 @@ using SceneSharedPtr = std::shared_ptr<Scene>;
 
 struct SceneSetup
 {
-    ResourceManager&    resources;
-    sf::RenderTarget&   window;
-    PlayerPtr           player;
-    lua_State*          lua;
+    ResourceManager&                resources;
+    sf::RenderTarget&               window;
+    PlayerPtr                       player;
+    lua_State*                      lua;
+    std::shared_ptr<ItemFactory>    itemFactory;
 };
 
 void from_json(const nl::json& j, AvatarInfo& av);
@@ -159,6 +160,7 @@ protected:
     TileInfo                _currentTile;
 
     std::vector<ItemPtr>    _items;
+    ItemFactory&            _itemFactory;
 
 private:
     void createItems();

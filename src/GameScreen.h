@@ -59,10 +59,11 @@ public:
     const SceneMap& scenes() const { return _scenes; }
 
 private:
-    SceneSharedPtr  _currentScene;
-    SceneMap        _scenes;
-    PlayerPtr       _player;
-    lua_State*      _luaState;
+    SceneSharedPtr                  _currentScene;
+    SceneMap                        _scenes;
+    PlayerPtr                       _player;
+    lua_State*                      _luaState;
+    std::shared_ptr<ItemFactory>    _itemFactory;
 };
 
 } // namespace tt

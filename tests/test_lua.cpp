@@ -140,7 +140,7 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     GameScreenStub stub;
     tt::initLua(lua, stub);
 
-    tt::SceneSetup setup{ res, window, player, lua };
+    tt::SceneSetup setup{ res, window, player, lua, nullptr };
     auto scene = std::make_shared<tt::Scene>("scene1", setup);
     scene->enter();
 
