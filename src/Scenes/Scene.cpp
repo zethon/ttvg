@@ -108,14 +108,14 @@ const struct luaL_Reg Scene::LuaMethods[] =
     {nullptr, nullptr}
 };
 
-Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& target, PlayerPtr player, lua_State* luaState)
-    : Screen(res, target),
+Scene::Scene(std::string_view name, const SceneSetup& setup)
+    : Screen(setup.resources, setup.window),
       _name{ name },
-      _luaState{luaState},
-      _hud{ res, target },
-      _descriptionText{ res, target },
-      _debugWindow{ res, target },
-      _weakPlayer{ player }
+      _luaState{setup.lua},
+      _hud{ setup.resources, setup.window },
+      _descriptionText{ setup.resources, setup.window },
+      _debugWindow{ setup.resources, setup.window },
+      _weakPlayer{ setup.player }
 {
     if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _name)); 
             jsonopt.has_value())
@@ -148,7 +148,7 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
 
     _lastPlayerPos = _playerAvatarInfo.start;
 
-    _background = std::make_shared<Background>(_name, _resources, target);
+    _background = std::make_shared<Background>(_name, _resources, _window);
     addDrawable(_background);
 
     sf::View view(sf::FloatRect(0.f, 0.f,

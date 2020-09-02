@@ -37,6 +37,14 @@ class Scene;
 using ScenePtr = std::unique_ptr<Scene>;
 using SceneSharedPtr = std::shared_ptr<Scene>;
 
+struct SceneSetup
+{
+    ResourceManager&    resources;
+    sf::RenderTarget&   window;
+    PlayerPtr           player;
+    lua_State*          lua;
+};
+
 void from_json(const nl::json& j, AvatarInfo& av);
 void from_json(const nl::json& j, CallbackInfo& cb);
 
@@ -107,11 +115,7 @@ public:
     friend int Scene_getPlayer(lua_State* L);
     friend int Scene_getDescriptionWindow(lua_State* L);
 
-    Scene(std::string_view name,
-        ResourceManager& res,
-        sf::RenderTarget& target,
-        PlayerPtr player,
-        lua_State* luaState);
+    Scene(std::string_view name, const SceneSetup& setup);
 
     std::string name() const { return _name; }
 

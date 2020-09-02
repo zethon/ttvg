@@ -38,7 +38,7 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     textptr->setSmooth(true);
     _player = std::make_shared<Player>(*textptr, sf::Vector2i{ 64, 64 });
 
-    SceneSetup setup{ _resources, _window, _player, _luaState, _itemFactory };
+    SceneSetup setup{ _resources, _window, _player, _luaState };
 
     // TODO: as the game grows these constructions will take longer
     // and should probably be done in parallel and/or with a loading screen

@@ -9,7 +9,6 @@
 #include "../src/GameScreen.h"
 #include "../src/TTLua.h"
 #include "../src/Scenes/Scene.h"
-#include "../src/Scenes/SceneFactory.h"
 
 #include "Test.h"
 
@@ -141,8 +140,8 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     GameScreenStub stub;
     tt::initLua(lua, stub);
 
-    tt::SceneFactory fact{ res, window, player, lua };
-    auto scene = fact.createScene<tt::Scene>("scene1");
+    tt::SceneSetup setup{ res, window, player, lua };
+    auto scene = std::make_shared<tt::Scene>("scene1", setup);
     scene->enter();
 
     BOOST_TEST(player->health() == 100);

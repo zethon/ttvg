@@ -25,7 +25,6 @@ set(SOURCE_FILES
     Scenes/Hud.cpp
     Scenes/Opening.cpp
     Scenes/Scene.cpp
-    Scenes/SceneFactory.cpp
 )
 
 set(HEADER_FILES
@@ -57,7 +56,6 @@ set(HEADER_FILES
     Scenes/Hud.h
     Scenes/Opening.h
     Scenes/Scene.h
-    Scenes/SceneFactory.h
 )
 
 add_executable(tooter
