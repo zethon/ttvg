@@ -28,3 +28,9 @@ void registerLuaFunctions(lua_State* L)
     // clear the stack
     lua_settop(L, 0);
 }
+
+template<typename ClassT>
+int registerStaticLuaType(lua_State* L, std::string_view name)
+{
+
+}

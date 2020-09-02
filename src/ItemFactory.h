@@ -9,18 +9,21 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-    class ItemFactory
-    {
-        ResourceManager&    _resources;
+class ItemFactory
+{
 
-        public:
+ResourceManager&    _resources;
 
-            ItemFactory(ResourceManager& resMgr);
+public:
+    static constexpr auto CLASS_NAME = "ItemFactory";
+    static const struct luaL_Reg LuaMethods[];
     
-            ItemPtr createItem( const std::string&  name,
-                                const sf::Vector2f& position );
+    ItemFactory(ResourceManager& resMgr);
 
-    };
+    ItemPtr createItem( const std::string&  name,
+                        const sf::Vector2f& position );
+
+};
 
 
 } // namespace tt

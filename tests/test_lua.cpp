@@ -153,5 +153,14 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     BOOST_TEST(player->balance() == 37.50, boost::test_tools::tolerance(0.001));
 }
 
+BOOST_AUTO_TEST_CASE(luaItemTest)
+{
+    lua_State* lua = luaL_newstate();
+
+    GameScreenStub stub;
+    tt::initLua(lua, stub);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END() // lua
 BOOST_AUTO_TEST_SUITE_END() // tt
