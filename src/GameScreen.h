@@ -42,6 +42,7 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
     registerLuaFunctions<Scene>(L);
     registerLuaFunctions<Player>(L);
     registerLuaFunctions<DescriptionText>(L);
+    registerLuaFunctions<Item>(L);
    
     {
         lua_newtable(L);

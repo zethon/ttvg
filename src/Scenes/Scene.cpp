@@ -100,11 +100,19 @@ int Scene_getDescriptionWindow(lua_State* L)
     return 1;
 }
 
+int Scene_createItem(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    const auto itemname = lua_tostring(L, -1);
+
+}
+
 const struct luaL_Reg Scene::LuaMethods[] =
 {
     {"name", Scene_name},
     {"getPlayer", Scene_getPlayer},
     {"getDescriptionWindow", Scene_getDescriptionWindow},
+    {"createItem", Scene_createItem},
     {nullptr, nullptr}
 };
 

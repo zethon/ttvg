@@ -115,7 +115,8 @@ public:
 
     friend int Scene_getPlayer(lua_State* L);
     friend int Scene_getDescriptionWindow(lua_State* L);
-
+    friend int Scene_createItem(lua_State* L);
+    
     Scene(std::string_view name, const SceneSetup& setup);
 
     std::string name() const { return _name; }
