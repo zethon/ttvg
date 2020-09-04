@@ -23,6 +23,10 @@ public:
     ItemPtr createItem( const std::string&  name,
                         const sf::Vector2f& position );
 
+    ItemPtr createItem(const std::string& name)
+    {
+        return createItem(name, {});
+    }
 };
 
 

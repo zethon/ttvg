@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+#include <iostream>
+
+#include <fmt/core.h>
 
 #include <lua/lua.hpp>
 
@@ -35,6 +38,34 @@ void registerLuaFunctions(lua_State* L)
         
     // clear the stack
     lua_settop(L, 0);
+}
+
+inline static void dumpstack(lua_State* L) 
+{
+    int top=lua_gettop(L);
+    for (int i=1; i <= top; i++) 
+    {
+        const std::string line = fmt::format("{:3}\t{:4}\t{:15}", i, ((i-top) - 1), luaL_typename(L, i));
+        switch (lua_type(L, i)) 
+        {
+            case LUA_TNUMBER:
+                std::cout << fmt::format("{}\t{}", line, lua_tonumber(L,i));
+            break;
+            case LUA_TSTRING:
+                std::cout << fmt::format("{}\t'{}'", line, lua_tostring(L,i));
+            break;
+            case LUA_TBOOLEAN:
+                std::cout << fmt::format("{}\t{:boolalpha}", line, lua_toboolean(L,i));
+            break;
+            case LUA_TNIL:
+                std::cout << fmt::format("{}\tnil", line);
+            break;
+            default:
+                std::cout << fmt::format("{}\t{}", line, lua_topointer(L,i));
+            break;
+        }
+        std::cout << '\n';
+    }
 }
 
 }

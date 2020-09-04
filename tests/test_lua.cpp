@@ -153,8 +153,14 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     BOOST_TEST(player->balance() == 37.50, boost::test_tools::tolerance(0.001));
 }
 
+// --run_test=tt/lua/luaItemTest
 BOOST_AUTO_TEST_CASE(luaItemTest)
 {
+    constexpr auto testscript = R"lua(
+local item = ItemFactory.createItem('key')
+return item:name()
+)lua";
+
     const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
     tt::ResourceManager resources{ boost::filesystem::path { resfolder } };
 
@@ -165,9 +171,10 @@ BOOST_AUTO_TEST_CASE(luaItemTest)
     GameScreenStub stub;
     tt::initLua(lua, stub, static_cast<void*>(&itemFactory));
 
-    luaL_dostring(lua, "return 'hi there'");
+    // luaL_dostring(lua, "return 'hi there'");
+    luaL_dostring(lua, testscript);
     const auto test = lua_tostring(lua, 1);
-    BOOST_TEST(test == "hi there");
+    BOOST_TEST(test == "Key");
 }
 
 

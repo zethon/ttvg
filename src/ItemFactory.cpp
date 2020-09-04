@@ -6,17 +6,41 @@
 
 #include "Item.h"
 #include "ItemFactory.h"
+#include "TTLua.h"
 
 namespace tt
 {
 
+ItemFactory* checkItemFactory(lua_State* L)
+{
+    lua_rawgeti(L, LUA_REGISTRYINDEX, ITEMFACTORY_LUA_IDX);
+    int type = lua_type(L, -1);
+    if (type != LUA_TLIGHTUSERDATA)
+    {
+        return nullptr;
+    }
+
+    ItemFactory* state = static_cast<ItemFactory*>(lua_touserdata(L, -1));
+    if (!state)
+    {
+        return nullptr;
+    }
+
+    return state;
+}
+
 int ItemFactory_createItem(lua_State* L)
 {
-    //auto gamescreen = GameScreen::l_get(L);
-    //
-    //auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
-    //auto scene = *temp;
-    //lua_pushstring(L, scene->name().c_str());
+    auto fact = checkItemFactory(L);
+
+    tt::dumpstack(L);
+    const std::string itemid = lua_tostring(L, -2);
+
+    std::size_t size = sizeof(ItemPtr);
+    ItemPtr* data = static_cast<ItemPtr*>(lua_newuserdata(L, size));
+    *data = fact->createItem(itemid);
+
+	luaL_setmetatable(L, Item::CLASS_NAME);
     return 1;
 }
 

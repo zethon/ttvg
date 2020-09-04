@@ -10,7 +10,7 @@ namespace tt
 
 GameScreen* GameScreen::l_get(lua_State * L)
 {
-    lua_rawgeti(L, LUA_REGISTRYINDEX, 1);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, GAMESCREEN_LUA_IDX);
     int type = lua_type(L, -1);
     if (type != LUA_TLIGHTUSERDATA)
     {
