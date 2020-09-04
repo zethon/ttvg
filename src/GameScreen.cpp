@@ -45,7 +45,11 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
 
     _scenes.emplace(
                 "Hospital", 
-                std::make_shared<Scene>("Hospital", resmgr, target, _player, _luaState));
+                std::make_shared<Scene>("Hospital", 
+                                        resmgr,
+                                        target,
+                                        _player,
+                                        _luaState));
 
     _scenes.emplace(
                 "CourthouseInterior", 
@@ -58,6 +62,14 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     _scenes.emplace(
                 "PoliceStationInterior", 
                 std::make_shared<Scene>("PoliceStationInterior", 
+                                        resmgr, 
+                                        target, 
+                                        _player,
+                                        _luaState));
+
+    _scenes.emplace(
+                "FireStationInterior", 
+                std::make_shared<Scene>("FireStationInterior", 
                                         resmgr, 
                                         target, 
                                         _player,

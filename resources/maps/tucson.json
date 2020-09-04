@@ -165,7 +165,12 @@
             "rects": 
             [
                 "1,60,13,71"
-            ]
+            ],
+            "transition":
+            {
+                "scene": "FireStationInterior",
+                "enabled": true
+            }
         },
 
         {
