@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(loadTestCase)
     GameScreenStub stub;
     lua_State* lua = luaL_newstate();
 
-    tt::initLua(lua, stub);
+    tt::initLua(lua, stub, nullptr);
     BOOST_TEST_REQUIRE(lua != nullptr);
 
     auto path = tt::tempFolder();
@@ -138,7 +138,7 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     lua_State* lua = luaL_newstate();
 
     GameScreenStub stub;
-    tt::initLua(lua, stub);
+    tt::initLua(lua, stub, nullptr);
 
     tt::SceneSetup setup{ res, window, player, lua, nullptr };
     auto scene = std::make_shared<tt::Scene>("scene1", setup);
@@ -155,10 +155,19 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
 
 BOOST_AUTO_TEST_CASE(luaItemTest)
 {
+    const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
+    tt::ResourceManager resources{ boost::filesystem::path { resfolder } };
+
+    tt::ItemFactory itemFactory{ resources };
+
     lua_State* lua = luaL_newstate();
 
     GameScreenStub stub;
-    tt::initLua(lua, stub);
+    tt::initLua(lua, stub, static_cast<void*>(&itemFactory));
+
+    luaL_dostring(lua, "return 'hi there'");
+    const auto test = lua_tostring(lua, 1);
+    BOOST_TEST(test == "hi there");
 }
 
 

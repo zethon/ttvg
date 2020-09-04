@@ -10,6 +10,22 @@
 namespace tt
 {
 
+int ItemFactory_createItem(lua_State* L)
+{
+    //auto gamescreen = GameScreen::l_get(L);
+    //
+    //auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
+    //auto scene = *temp;
+    //lua_pushstring(L, scene->name().c_str());
+    return 1;
+}
+
+const struct luaL_Reg ItemFactory::LuaMethods[] =
+{
+    {"createItem", ItemFactory_createItem},
+    {nullptr, nullptr}
+};
+
 //
 // Default item size.
 // Might want this to be the same as a "tile size" on the map.

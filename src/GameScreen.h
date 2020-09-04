@@ -14,26 +14,8 @@
 namespace tt
 {
 
-constexpr auto GAMESCREEN_LUA_IDX = 3;
-
-int ItemFactory_createItem(lua_State* L)
-{
-    auto gamescreen = GameScreen::l_get(L);
-    
-    auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
-    auto scene = *temp;
-    lua_pushstring(L, scene->name().c_str());
-    return 1;
-}
-
-const struct luaL_Reg ItemFactory_LuaMethods[] =
-{
-    {"createItem", ItemFactory_createItem},
-    {nullptr, nullptr}
-};
-
 template<typename T>
-void initLua(lua_State* L, T& screen)
+void initLua(lua_State* L, T& screen, void* itemFactory)
 {
     luaL_openlibs(L);
 
@@ -44,6 +26,14 @@ void initLua(lua_State* L, T& screen)
     [[maybe_unused]] int reference = luaL_ref(L, LUA_REGISTRYINDEX);
     assert(GAMESCREEN_LUA_IDX == reference);
 
+    if (itemFactory != nullptr)
+    {
+        lua_pushlightuserdata(L, itemFactory);
+        luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+        reference = luaL_ref(L, LUA_REGISTRYINDEX);
+        assert(ITEMFACTORY_LUA_IDX == reference);
+    }
+
     //luaL_newmetatable(_luaState, "GameScreen");
     //lua_pushstring(_luaState, "__index");
     //lua_pushvalue(_luaState, -2); // push the metatable
@@ -52,18 +42,10 @@ void initLua(lua_State* L, T& screen)
     registerLuaFunctions<Scene>(L);
     registerLuaFunctions<Player>(L);
     registerLuaFunctions<DescriptionText>(L);
-
-    
-    
-    registerStaticLuaType<ItemFactory>(L, "ItemFactory");
+   
     {
-        // this creates class-like (~static) methods for a
-        // "class" named 'detector, of which we don't need any
-        // right now, but I'm putting this here for possible
-        // future reference
-
         lua_newtable(L);
-        luaL_setfuncs(L, ItemFactory_LuaMethods, 0);
+        luaL_setfuncs(L, ItemFactory::LuaMethods, 0);
         lua_setglobal(L, ItemFactory::CLASS_NAME);
     }
 

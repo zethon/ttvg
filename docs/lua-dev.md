@@ -94,6 +94,10 @@ No arguments. Returns the value of the player's current health.
 
 Sets the health of the player to `health`. This should be an **integer** value.
 
+## 3. Items
+
+### 3.1 Item
+
 <!--
 
 <hr/>

@@ -5,13 +5,21 @@
 
 namespace tt
 {
+
+constexpr auto GAMESCREEN_LUA_IDX = 3;
+constexpr auto ITEMFACTORY_LUA_IDX = 4;
+
+template<typename T>
+[[maybe_unused]] T* checkObject(lua_State* L)
+{
+    auto temp = static_cast<T**>(luaL_checkudata(L, 1, T::CLASS_NAME));
+    return *temp;
+}
     
 void CallLuaFunction(lua_State* L, 
     const std::string& funcname, 
     const std::string& envname, 
     int objIdx);
-
-}
 
 template<typename ClassT>
 void registerLuaFunctions(lua_State* L)
@@ -28,9 +36,5 @@ void registerLuaFunctions(lua_State* L)
     // clear the stack
     lua_settop(L, 0);
 }
-
-template<typename ClassT>
-int registerStaticLuaType(lua_State* L, std::string_view name)
-{
 
 }
