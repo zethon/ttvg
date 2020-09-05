@@ -1,15 +1,15 @@
 {
     "background":
     {
-        "scale":    { "x": 1.5, "y": 1.5 },
-        "tiles":    { "x": 50,  "y": 25 },
-        "camera":   "follow" 
+        "scale":    "auto",
+        "tiles":    { "x": 50,  "y": 50 },
+        "camera":   "fixed" 
     },
 
     "player":
     {
-        "start":    { "x": 590, "y": 420 },
-        "scale":    { "x": 3, "y": 3 },
+        "start":    { "x": 782, "y": 590 },
+        "scale":    { "x": 2.5, "y": 2.5 },
         "source":   { "x": 0, "y": 2 },
         "origin":   { "x": 0, "y": 0 },
         "stepsize": 16.0
@@ -27,7 +27,7 @@
             },
             "rects" : 
             [
-                "6,13,9,13"
+                "1,13,12,14"
             ]
         }
     ]
