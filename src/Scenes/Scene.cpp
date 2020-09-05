@@ -105,6 +105,19 @@ int Scene_createItem(lua_State* L)
     auto scene = checkSceneObj(L);
     const auto itemname = lua_tostring(L, -1);
 
+    // the scene owns the item when it is created
+    auto item = scene->_itemFactory.createItem(itemname);
+    scene->_items.push_back(item);
+
+    std::size_t size = sizeof(ItemPtr*);
+    ItemPtr* data = static_cast<ItemPtr*>(lua_newuserdata(L, size));
+    
+    // this creates a copy of the shared_ptr so that Lua
+    // now owns a shared copy of the item
+    *data = item;
+
+    luaL_setmetatable(L, Item::CLASS_NAME);
+    return 1;
 }
 
 const struct luaL_Reg Scene::LuaMethods[] =
@@ -138,19 +151,11 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
         _callbackNames = json.get<CallbackInfo>();
     }
 
+    // the scene must be registered in the Lua registry even
+    // if it has no <scene>.lua file
+    _luaIdx = registerScene(_luaState, *this);
     if (const auto luafile = _resources.getFilename(fmt::format("lua/{}.lua", _name));
-        boost::filesystem::exists(luafile))
-    {
-        if (auto temp = loadSceneLuaFile(*this, luafile, _luaState); temp > 0)
-        {
-            _luaIdx = temp;
-        }
-        else
-        {
-            _luaState = nullptr;
-        }
-    }
-    else
+            !boost::filesystem::exists(luafile) || !loadSceneLuaFile(*this, luafile, _luaState))
     {
         _luaState = nullptr;
     }
@@ -214,7 +219,6 @@ void Scene::exit()
 {
     assert(_player);
     _lastPlayerPos = _player->getPosition();
-
 
     tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, _luaIdx);
     removeUpdateable(_player);

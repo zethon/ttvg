@@ -25,7 +25,7 @@ void from_json(const nl::json& j, Zone& z)
 }
 
 Background::Background(std::string_view name, ResourceManager& resmgr, sf::RenderTarget& target)
-    : Background(name, resmgr, target, sf::Vector2f{})
+    : Background(name, resmgr, target, sf::Vector2f{ 16.f, 16.f })
 {
 }
 

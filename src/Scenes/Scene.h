@@ -50,9 +50,9 @@ void from_json(const nl::json& j, AvatarInfo& av);
 void from_json(const nl::json& j, CallbackInfo& cb);
 
 template<typename SceneT>
-int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
+bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
 {
-    if (!L) return 0;
+    if (!L) return false;
 
     // load the Scene's Lua file into its own sandboxed
     // environment which also contains everything in _G
@@ -60,8 +60,10 @@ int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         lua_newtable(L); // 1:tbl
         if (luaL_loadfile(L, filename.c_str()) != 0) // 1:tbl, 2:chunk
         {
-            auto error = lua_tostring(L, -1);
-            throw std::runtime_error(error);
+            // auto error = lua_tostring(L, -1);
+            // throw std::runtime_error(error);
+            lua_settop(L, 0);
+            return false;
         }
 
         lua_newtable(L); // 1:tbl, 2:chunk, 3:tbl(mt)
@@ -73,14 +75,22 @@ int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         lua_setupvalue(L, -2, 1); // 1:tbl, 2:chunk
         if (lua_pcall(L, 0, 0, 0) != 0) // 1:tbl
         {
-            auto error = lua_tostring(L, -1);
-            throw std::runtime_error(error);
+            // auto error = lua_tostring(L, -1);
+            // throw std::runtime_error(error);
+            lua_settop(L, 0);
+            return false;
         }
 
         lua_setglobal(L, scene.name().c_str()); // empty stack
         assert(lua_gettop(L) == 0);
     }
 
+    return true;
+}
+
+template<typename SceneT>
+int registerScene(lua_State* L, SceneT& scene)
+{
     int idx = 0;
 
     // create a pointer to `this` in the Lua state and register

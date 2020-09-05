@@ -17,3 +17,10 @@ function onExit(scene)
     local health = player:getBalance() - 2
     player:setBalance(health)
 end
+
+function onItem_pickup(scene, item)
+    local player = scene:getPlayer()
+    local item = scene:createItem("vagina")
+    player:addItem(item)
+    scene:removeItem(item)
+    

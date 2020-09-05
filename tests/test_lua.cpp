@@ -81,6 +81,30 @@ std::string callFunction(const std::string& funcname, lua_State* L, const std::s
     return retval;
 }
 
+std::string callGlobalFunction(const std::string& funcname, lua_State* L, const std::string& envname, int objIdx)
+{
+    // first get the execution environment and set that
+    lua_getglobal(L, envname.c_str()); // 1:env
+    BOOST_TEST((lua_isnil(L, 1) == 0));
+
+    // now load up the init function
+    lua_getfield(L, 1, funcname.c_str()); // 1:env, 2:func
+    BOOST_TEST((lua_isnil(L, 2) == 0));
+    BOOST_TEST((lua_isfunction(L, 2) == 1));
+
+    // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
+    lua_rawgeti(L, LUA_REGISTRYINDEX, objIdx); // 1:env, 2:func, 1:ud
+    if (lua_pcall(L, 1, 1, 0) != 0) // 1:env, 2:retval
+    {
+        auto error = lua_tostring(L, -1);
+        BOOST_TEST(false, error);
+    }
+
+    std::string retval = lua_tostring(L, -1);
+    lua_settop(L, 0);
+    return retval;
+}
+
 BOOST_AUTO_TEST_CASE(loadTestCase)
 {
     GameScreenStub stub;
@@ -157,24 +181,47 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
 BOOST_AUTO_TEST_CASE(luaItemTest)
 {
     constexpr auto testscript = R"lua(
-local item = ItemFactory.createItem('key')
-return item:name()
+function testItem(scene)
+    local item = scene:createItem('key')
+    return item:name()
+end
 )lua";
+
+    tt::NullWindow window;
 
     const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
     tt::ResourceManager resources{ boost::filesystem::path { resfolder } };
 
-    tt::ItemFactory itemFactory{ resources };
+    std::shared_ptr<ItemFactory> itemFactory = std::make_shared<ItemFactory>(resources);
 
     lua_State* lua = luaL_newstate();
 
     GameScreenStub stub;
-    tt::initLua(lua, stub, static_cast<void*>(&itemFactory));
+    tt::initLua(lua, stub, static_cast<void*>(itemFactory.get()));
 
-    // luaL_dostring(lua, "return 'hi there'");
+    sf::Texture texture;
+    texture.create(100, 100);
+    auto player = std::make_shared<tt::Player>(texture, sf::Vector2i{ 10,10 });
+
+    tt::SceneSetup setup{ resources, window, player, lua, itemFactory };
+    auto scene = std::make_shared<tt::Scene>("scene1", setup);
+    scene->enter();
+
+    // load the test script
     luaL_dostring(lua, testscript);
-    const auto test = lua_tostring(lua, 1);
-    BOOST_TEST(test == "Key");
+
+    lua_getglobal(lua, "testItem"); // 1:func
+    lua_rawgeti(lua, LUA_REGISTRYINDEX, scene->luaIdx());
+    if (lua_pcall(lua, 1, 1, 0) != 0)
+    {
+        const auto error = lua_tostring(lua, -1);
+        BOOST_TEST(false, error);
+    }
+    else
+    {
+        const auto retval = lua_tostring(lua, -1);
+        BOOST_TEST(retval == "Key");
+    }
 }
 
 
