@@ -18,6 +18,14 @@ template<typename T>
     auto temp = static_cast<T**>(luaL_checkudata(L, 1, T::CLASS_NAME));
     return *temp;
 }
+
+template<typename T>
+[[maybe_unused]] T* checkSharedObject(lua_State* L)
+{
+    using SharedT = std::shared_ptr<T>;
+    auto temp = static_cast<T**>(luaL_checkudata(L, 1, T::CLASS_NAME));
+    return *temp;
+}
     
 void CallLuaFunction(lua_State* L, 
     const std::string& funcname, 
@@ -31,10 +39,12 @@ void registerLuaFunctions(lua_State* L)
     lua_pushstring(L, "__index");
     lua_pushvalue(L, -2); // push the metatable
     lua_settable(L, -3);  // metatable.__index = metatable
+    
 
     // this creates object-like methods by populating the table
     // on the stack with the function names/pointers
-    luaL_openlib(L, nullptr, ClassT::LuaMethods, 0);
+    // luaL_openlib(L, nullptr, ClassT::LuaMethods, 0);
+    luaL_setfuncs(L, ClassT::LuaMethods, 0);
         
     // clear the stack
     lua_settop(L, 0);

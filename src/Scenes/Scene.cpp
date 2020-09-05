@@ -109,13 +109,11 @@ int Scene_createItem(lua_State* L)
     auto item = scene->_itemFactory.createItem(itemname);
     scene->_items.push_back(item);
 
-    std::size_t size = sizeof(ItemPtr*);
-    ItemPtr* data = static_cast<ItemPtr*>(lua_newuserdata(L, size));
-    
-    // this creates a copy of the shared_ptr so that Lua
-    // now owns a shared copy of the item
-    *data = item;
+    std::size_t size = sizeof(ItemPtr);
+    void* userdata = lua_newuserdata(L, size);
 
+    new(userdata) ItemPtr{item};
+    
     luaL_setmetatable(L, Item::CLASS_NAME);
     return 1;
 }

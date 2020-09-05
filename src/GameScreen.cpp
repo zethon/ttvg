@@ -31,7 +31,7 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
       _itemFactory{std::make_shared<ItemFactory>(resmgr)}
 {
     _luaState = luaL_newstate();
-    initLua(_luaState, *this, static_cast<void*>(_itemFactory.get()));
+    initLua(_luaState, *this);
 
     // the `Player` object is shared among all the `Scene` objects
     auto textptr = _resources.cacheTexture("textures/tommy.png");

@@ -19,23 +19,6 @@ namespace fs = boost::filesystem;
 BOOST_AUTO_TEST_SUITE(tt)
 BOOST_AUTO_TEST_SUITE(lua)
 
-//// --run_test=tt/lua/loadTest
-//BOOST_AUTO_TEST_CASE(loadTest)
-//{
-//    tt::NullWindow window;
-//    const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
-//    tt::ResourceManager resources{ boost::filesystem::path { resfolder } };
-//
-//    tt::GameScreen screen{ resources, window };
-//    auto lua = screen.lua();
-//
-//    BOOST_TEST(lua != nullptr);
-//    for (const auto&[name, scene] : screen.scenes())
-//    {
-//
-//    }
-//}
-
 class GameScreenStub{};
 
 struct SceneStub
@@ -110,7 +93,7 @@ BOOST_AUTO_TEST_CASE(loadTestCase)
     GameScreenStub stub;
     lua_State* lua = luaL_newstate();
 
-    tt::initLua(lua, stub, nullptr);
+    tt::initLua(lua, stub);
     BOOST_TEST_REQUIRE(lua != nullptr);
 
     auto path = tt::tempFolder();
@@ -162,7 +145,7 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     lua_State* lua = luaL_newstate();
 
     GameScreenStub stub;
-    tt::initLua(lua, stub, nullptr);
+    tt::initLua(lua, stub);
 
     tt::SceneSetup setup{ res, window, player, lua, nullptr };
     auto scene = std::make_shared<tt::Scene>("scene1", setup);
@@ -177,15 +160,23 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     BOOST_TEST(player->balance() == 37.50, boost::test_tools::tolerance(0.001));
 }
 
-// --run_test=tt/lua/luaItemTest
-BOOST_AUTO_TEST_CASE(luaItemTest)
+const std::tuple<std::string, std::string> itemTestData[] = 
 {
-    constexpr auto testscript = R"lua(
+    { "bag-of-weed", "Bag of Weed" },
+    { "weed-pipe", "Weed Pipe" },
+    { "magnifying-glass", "Magnifying Glass" },
+    { "bag-of-crack", "Bag of Crack"}
+};
+
+// --run_test=tt/lua/luaItemTest
+BOOST_DATA_TEST_CASE(luaItemTest, data::make(itemTestData), id, expected)
+{
+    const auto testscript = fmt::format(R"lua(
 function testItem(scene)
-    local item = scene:createItem('key')
+    local item = scene:createItem('{}')
     return item:name()
 end
-)lua";
+)lua", id);
 
     tt::NullWindow window;
 
@@ -197,7 +188,7 @@ end
     lua_State* lua = luaL_newstate();
 
     GameScreenStub stub;
-    tt::initLua(lua, stub, static_cast<void*>(itemFactory.get()));
+    tt::initLua(lua, stub);
 
     sf::Texture texture;
     texture.create(100, 100);
@@ -208,7 +199,7 @@ end
     scene->enter();
 
     // load the test script
-    luaL_dostring(lua, testscript);
+    luaL_dostring(lua, testscript.c_str());
 
     lua_getglobal(lua, "testItem"); // 1:func
     lua_rawgeti(lua, LUA_REGISTRYINDEX, scene->luaIdx());
@@ -220,7 +211,7 @@ end
     else
     {
         const auto retval = lua_tostring(lua, -1);
-        BOOST_TEST(retval == "Key");
+        BOOST_TEST(retval == expected);
     }
 }
 

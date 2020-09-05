@@ -29,27 +29,6 @@ ItemFactory* checkItemFactory(lua_State* L)
     return state;
 }
 
-int ItemFactory_createItem(lua_State* L)
-{
-    auto fact = checkItemFactory(L);
-
-    tt::dumpstack(L);
-    const std::string itemid = lua_tostring(L, -2);
-
-    std::size_t size = sizeof(ItemPtr);
-    ItemPtr* data = static_cast<ItemPtr*>(lua_newuserdata(L, size));
-    *data = fact->createItem(itemid);
-
-	luaL_setmetatable(L, Item::CLASS_NAME);
-    return 1;
-}
-
-const struct luaL_Reg ItemFactory::LuaMethods[] =
-{
-    {"createItem", ItemFactory_createItem},
-    {nullptr, nullptr}
-};
-
 //
 // Default item size.
 // Might want this to be the same as a "tile size" on the map.
