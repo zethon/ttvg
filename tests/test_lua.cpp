@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE(loadTestCase)
     GameScreenStub stub;
     lua_State* lua = luaL_newstate();
 
-    tt::initLua(lua, stub);
+    tt::initLua(lua, stub, nullptr);
     BOOST_TEST_REQUIRE(lua != nullptr);
 
     auto path = tt::tempFolder();
@@ -145,7 +145,7 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     lua_State* lua = luaL_newstate();
 
     GameScreenStub stub;
-    tt::initLua(lua, stub);
+    tt::initLua(lua, stub, nullptr);
 
     tt::SceneSetup setup{ res, window, player, lua, nullptr };
     auto scene = std::make_shared<tt::Scene>("scene1", setup);
@@ -172,10 +172,8 @@ const std::tuple<std::string, std::string> itemTestData[] =
 BOOST_DATA_TEST_CASE(luaItemTest, data::make(itemTestData), id, expected)
 {
     const auto testscript = fmt::format(R"lua(
-function testItem(scene)
-    local item = scene:createItem('{}')
-    return item:name()
-end
+local item = ItemFactory.createItem('{}')
+return item:name()
 )lua", id);
 
     tt::NullWindow window;
@@ -188,7 +186,7 @@ end
     lua_State* lua = luaL_newstate();
 
     GameScreenStub stub;
-    tt::initLua(lua, stub);
+    tt::initLua(lua, stub, static_cast<void*>(itemFactory.get()));
 
     sf::Texture texture;
     texture.create(100, 100);
@@ -200,19 +198,8 @@ end
 
     // load the test script
     luaL_dostring(lua, testscript.c_str());
-
-    lua_getglobal(lua, "testItem"); // 1:func
-    lua_rawgeti(lua, LUA_REGISTRYINDEX, scene->luaIdx());
-    if (lua_pcall(lua, 1, 1, 0) != 0)
-    {
-        const auto error = lua_tostring(lua, -1);
-        BOOST_TEST(false, error);
-    }
-    else
-    {
-        const auto retval = lua_tostring(lua, -1);
-        BOOST_TEST(retval == expected);
-    }
+    const auto retval = lua_tostring(lua, -1);
+    BOOST_TEST(retval == expected);
 }
 
 

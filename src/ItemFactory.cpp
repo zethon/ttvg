@@ -11,6 +11,9 @@
 namespace tt
 {
 
+namespace
+{
+
 ItemFactory* checkItemFactory(lua_State* L)
 {
     lua_rawgeti(L, LUA_REGISTRYINDEX, ITEMFACTORY_LUA_IDX);
@@ -28,6 +31,31 @@ ItemFactory* checkItemFactory(lua_State* L)
 
     return state;
 }
+
+int ItemFactory_createItem(lua_State* L)
+{
+    auto fact = checkItemFactory(L);
+    const auto itemname = lua_tostring(L, -2);
+
+    std::size_t size = sizeof(ItemPtr);
+    void* userdata = lua_newuserdata(L, size);
+
+    // create a shared_ptr in the space Lua allocated
+    // for us, so if we never assign this to anyone/thing
+    // else it should gt deleted
+    new(userdata) ItemPtr{fact->createItem(itemname)};
+
+	luaL_setmetatable(L, Item::CLASS_NAME);
+    return 1;
+}
+
+}
+
+const struct luaL_Reg ItemFactory::LuaMethods[] =
+{
+    {"createItem", ItemFactory_createItem},
+    {nullptr, nullptr}
+};
 
 //
 // Default item size.

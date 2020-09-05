@@ -15,7 +15,7 @@ namespace tt
 {
 
 template<typename T>
-void initLua(lua_State* L, T& screen)
+void initLua(lua_State* L, T& screen, void* itemFactory)
 {
     luaL_openlibs(L);
 
@@ -26,6 +26,14 @@ void initLua(lua_State* L, T& screen)
     [[maybe_unused]] int reference = luaL_ref(L, LUA_REGISTRYINDEX);
     assert(GAMESCREEN_LUA_IDX == reference);
 
+    if (itemFactory != nullptr)
+    {
+        lua_pushlightuserdata(L, itemFactory);
+        luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+        reference = luaL_ref(L, LUA_REGISTRYINDEX);
+        assert(ITEMFACTORY_LUA_IDX == reference);
+    }
+
     //luaL_newmetatable(_luaState, "GameScreen");
     //lua_pushstring(_luaState, "__index");
     //lua_pushvalue(_luaState, -2); // push the metatable
@@ -35,6 +43,12 @@ void initLua(lua_State* L, T& screen)
     registerLuaFunctions<Player>(L);
     registerLuaFunctions<DescriptionText>(L);
     registerLuaFunctions<Item>(L);
+
+    {
+        lua_newtable(L);
+        luaL_setfuncs(L, ItemFactory::LuaMethods, 0);
+        lua_setglobal(L, ItemFactory::CLASS_NAME);
+    }
    
     assert(lua_gettop(L) == 0);
 }

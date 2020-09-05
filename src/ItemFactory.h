@@ -15,6 +15,9 @@ class ItemFactory
 ResourceManager&    _resources;
 
 public:
+    static constexpr auto CLASS_NAME = "ItemFactory";
+    static const struct luaL_Reg LuaMethods[];
+    
     ItemFactory(ResourceManager& resMgr);
 
     ItemPtr createItem( const std::string&  name,
