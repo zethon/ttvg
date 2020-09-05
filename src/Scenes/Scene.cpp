@@ -100,30 +100,11 @@ int Scene_getDescriptionWindow(lua_State* L)
     return 1;
 }
 
-int Scene_createItem(lua_State* L)
-{
-    auto scene = checkSceneObj(L);
-    const auto itemname = lua_tostring(L, -1);
-
-    // the scene owns the item when it is created
-    auto item = scene->_itemFactory.createItem(itemname);
-    scene->_items.push_back(item);
-
-    std::size_t size = sizeof(ItemPtr);
-    void* userdata = lua_newuserdata(L, size);
-
-    new(userdata) ItemPtr{item};
-    
-    luaL_setmetatable(L, Item::CLASS_NAME);
-    return 1;
-}
-
 const struct luaL_Reg Scene::LuaMethods[] =
 {
     {"name", Scene_name},
     {"getPlayer", Scene_getPlayer},
     {"getDescriptionWindow", Scene_getDescriptionWindow},
-    {"createItem", Scene_createItem},
     {nullptr, nullptr}
 };
 

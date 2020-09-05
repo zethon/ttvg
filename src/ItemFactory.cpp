@@ -49,7 +49,7 @@ int ItemFactory_createItem(lua_State* L)
     return 1;
 }
 
-}
+} // anonymous namespace
 
 const struct luaL_Reg ItemFactory::LuaMethods[] =
 {
