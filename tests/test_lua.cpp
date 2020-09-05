@@ -19,7 +19,42 @@ namespace fs = boost::filesystem;
 BOOST_AUTO_TEST_SUITE(tt)
 BOOST_AUTO_TEST_SUITE(lua)
 
-class GameScreenStub{};
+class GameScreenStub {};
+
+struct TestHarness
+{
+    tt::ResourceManager _resources;
+    tt::NullWindow  _window;
+    tt::PlayerPtr   _player;
+    lua_State* _lua;
+    std::shared_ptr<ItemFactory> _itemFactory;
+
+    TestHarness(const std::string& resfolder)
+        : _resources{ resfolder }
+    {
+        _lua = luaL_newstate();
+
+        sf::Texture texture;
+        texture.create(100, 100);
+        _player = std::make_shared<tt::Player>(texture, sf::Vector2i{ 10,10 });
+
+        _itemFactory = std::make_shared<ItemFactory>(_resources);
+
+        GameScreenStub stub;
+        tt::initLua(_lua, stub, static_cast<void*>(_itemFactory.get()));
+    }
+
+    tt::SceneSetup setup()
+    {
+        return tt::SceneSetup {
+            _resources,
+            _window,
+            _player,
+            _lua,
+            _itemFactory 
+        };
+    }
+};
 
 struct SceneStub
 {
@@ -135,20 +170,11 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     writeFile((luapath / "scene1.lua").string(), playerTestFile);
     writeFile((mappath / "scene1.json").string(), R"({"background":{"tiles":{ "x": 16, "y": 16 }}})");
 
-    tt::ResourceManager res{ path / "resources" };
-    tt::NullWindow window;
+    TestHarness harness{ (path / "resources").string() };
+    auto lua = harness._lua;
+    auto player = harness._player;
 
-    sf::Texture texture;
-    texture.create(100, 100);
-    auto player = std::make_shared<tt::Player>(texture, sf::Vector2i{ 10,10 });
-
-    lua_State* lua = luaL_newstate();
-
-    GameScreenStub stub;
-    tt::initLua(lua, stub, nullptr);
-
-    tt::SceneSetup setup{ res, window, player, lua, nullptr };
-    auto scene = std::make_shared<tt::Scene>("scene1", setup);
+    auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
     scene->enter();
 
     BOOST_TEST(player->health() == 100);
@@ -168,37 +194,24 @@ const std::tuple<std::string, std::string> itemTestData[] =
     { "bag-of-crack", "Bag of Crack"}
 };
 
-// --run_test=tt/lua/luaItemTest
-BOOST_DATA_TEST_CASE(luaItemTest, data::make(itemTestData), id, expected)
+// --run_test=tt/lua/luaItemCreateTest
+BOOST_DATA_TEST_CASE(luaItemCreateTest, data::make(itemTestData), id, expected)
 {
     const auto testscript = fmt::format(R"lua(
 local item = ItemFactory.createItem('{}')
 return item:name()
 )lua", id);
 
-    tt::NullWindow window;
-
     const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
-    tt::ResourceManager resources{ boost::filesystem::path { resfolder } };
+    TestHarness harness{ resfolder };
+    auto L = harness._lua;
 
-    std::shared_ptr<ItemFactory> itemFactory = std::make_shared<ItemFactory>(resources);
-
-    lua_State* lua = luaL_newstate();
-
-    GameScreenStub stub;
-    tt::initLua(lua, stub, static_cast<void*>(itemFactory.get()));
-
-    sf::Texture texture;
-    texture.create(100, 100);
-    auto player = std::make_shared<tt::Player>(texture, sf::Vector2i{ 10,10 });
-
-    tt::SceneSetup setup{ resources, window, player, lua, itemFactory };
-    auto scene = std::make_shared<tt::Scene>("scene1", setup);
+    auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
     scene->enter();
 
     // load the test script
-    luaL_dostring(lua, testscript.c_str());
-    const auto retval = lua_tostring(lua, -1);
+    luaL_dostring(L, testscript.c_str());
+    const auto retval = lua_tostring(L, -1);
     BOOST_TEST(retval == expected);
 }
 
