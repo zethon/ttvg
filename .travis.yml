@@ -1,19 +1,24 @@
 language: cpp
 
 addons:
-  apt_packages:
-    - libgl1-mesa-dev
-    - xorg-dev
-    - libxcb-render-util0-dev
-    - libxcb-xkb-dev
-    - libxcb-icccm4-dev
-    - libudev-dev
-    - libfreetype6-dev
-    - libxcb-image0-dev
-    - libxcb-keysyms1-dev
-    - libxcb-xinerama0-dev
-    - gcc-9
-    - g++-9
+  apt:
+    sources:
+      - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
+        key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+      - sourceline: 'ppa:ubuntu-toolchain-r/test'
+    packages:
+      - libgl1-mesa-dev
+      - xorg-dev
+      - libxcb-render-util0-dev
+      - libxcb-xkb-dev
+      - libxcb-icccm4-dev
+      - libudev-dev
+      - libfreetype6-dev
+      - libxcb-image0-dev
+      - libxcb-keysyms1-dev
+      - libxcb-xinerama0-dev
+      - gcc-9
+      - g++-9
   homebrew:
     packages:
     - llvm@9
@@ -27,13 +32,7 @@ install:
   # /usr/bin/gcc points to an older compiler on both Linux and macOS.
   - if [ "$CXX" = "g++" ]; then export CXX="g++-9" CC="gcc-9"; fi
   # /usr/bin/clang points to an older compiler on both Linux and macOS.
-  #
-  # Homebrew's llvm package doesn't ship a versioned clang++ binary, so the values
-  # below don't work on macOS. Fortunately, the path change above makes the
-  # default values (clang and clang++) resolve to the correct compiler on macOS.
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-      if [ "$CXX" = "clang++" ]; then export CXX="clang++-9" CC="clang-9"; fi;
-    fi
+
   - echo ${CC}
   - echo ${CXX}
   - ${CXX} --version
