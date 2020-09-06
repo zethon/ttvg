@@ -31,9 +31,11 @@ public:
     void setGlobalTop(float top);
     void setGlobalBottom(float bottom);
 
-    void addItem(const ItemPtr item);
+    void addItem(ItemPtr item);
     bool hasItem(const std::string& s);
+    bool hasItem(ItemPtr item);
     void removeItem(const std::string& s);
+    void removeItem(ItemPtr item);
 
     const std::vector<ItemPtr>& getInventory() const;
 

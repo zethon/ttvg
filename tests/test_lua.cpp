@@ -206,8 +206,22 @@ return item:name()
     TestHarness harness{ resfolder };
     auto L = harness._lua;
 
-    auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
-    scene->enter();
+    // load the test script
+    luaL_dostring(L, testscript.c_str());
+    const auto retval = lua_tostring(L, -1);
+    BOOST_TEST(retval == expected);
+}
+
+BOOST_AUTO_TEST_CASE(luaItemPlayerTest)
+{
+    const auto testscript = R"lua(
+local item = ItemFactory.createItem('key')
+return item:name()
+)lua";
+
+    const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
+    TestHarness harness{ resfolder };
+    auto L = harness._lua;
 
     // load the test script
     luaL_dostring(L, testscript.c_str());

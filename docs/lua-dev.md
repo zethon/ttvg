@@ -94,7 +94,16 @@ No arguments. Returns the value of the player's current health.
 
 Sets the health of the player to `health`. This should be an **integer** value.
 
+
 ## 3. Items
+
+### 3.1 ItemFactory
+
+#### `ItemFactory.createItem(itemid)`
+
+Parameter `itemid` is the item's unique key as determined by the filename. 
+
+**Note** The object returned from this function has no default ownership.
 
 ### 3.1 Item
 
