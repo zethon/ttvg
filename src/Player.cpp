@@ -77,10 +77,8 @@ int Player_removeItem(lua_State* L)
 int Player_removeItemByName(lua_State* L)
 {
     auto player = checkPlayerObj(L);
-
-    //auto itemv = static_cast<ItemPtr*>(lua_touserdata(L, -2));
-    //const auto itemname = lua_tostring(L, 2);
-    //player->removeItem(itemname);
+    const auto itemname = lua_tostring(L, 2);
+    player->removeItem(itemname);
     return 0;
 }
 
@@ -199,6 +197,15 @@ void Player::removeItem(ItemPtr item)
     {
         _inventory.erase(it);
     }
+}
+
+ItemPtr Player::getItemByName(const std::string& name)
+{
+    auto it = std::find_if(_inventory.begin(), _inventory.end(),
+        [&name](ItemPtr i) { return i->getID() == name; });
+
+    if (it != _inventory.end()) return *it;
+    return {};
 }
 
 const std::vector<ItemPtr>& Player::getInventory() const

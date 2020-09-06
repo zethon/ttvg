@@ -36,6 +36,7 @@ public:
     bool hasItem(ItemPtr item);
     void removeItem(const std::string& s);
     void removeItem(ItemPtr item);
+    ItemPtr getItemByName(const std::string& name);
 
     const std::vector<ItemPtr>& getInventory() const;
 

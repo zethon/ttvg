@@ -1,3 +1,5 @@
+#include <filesystem>
+
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
 
@@ -212,21 +214,60 @@ return item:name()
     BOOST_TEST(retval == expected);
 }
 
-BOOST_AUTO_TEST_CASE(luaItemPlayerTest)
-{
-    const auto testscript = R"lua(
-local item = ItemFactory.createItem('key')
-return item:name()
+
+const auto luaItemPlayerTestLua = R"lua(
+newitem = nil
+player = nil
+
+function onEnter_addItem(scene)
+    player = scene:getPlayer()
+    newitem = ItemFatory.createItem("key")
+    player:addItem(newitem)
+end
+
 )lua";
 
-    const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
-    TestHarness harness{ resfolder };
-    auto L = harness._lua;
+const auto luaItemPlayerTestJSON = R"lua(
+{
+    "onEnter": "onEnter_addItem",
+    "background":
+    {
+        "tiles": { "x": 16, "y": 16 }
+    }
+}
+)lua";
 
-    // load the test script
-    luaL_dostring(L, testscript.c_str());
-    const auto retval = lua_tostring(L, -1);
-    BOOST_TEST(retval == expected);
+// --run_test=tt/lua/luaItemPlayerTest
+BOOST_AUTO_TEST_CASE(luaItemPlayerTest)
+{
+    const auto path{ tt::tempFolder() };
+    const auto luapath{ path / "resources" / "lua" };
+    const auto mappath{ path / "resources" / "maps" };
+
+    const auto itemsrc { fmt::format("{}/items", TT_SRC_DIRECTORY_) };
+    const auto itemdst { (path / "resources" / "maps").string() };
+
+    // TODO: See about moving away from boost::filesystem and targeting an 
+    // appropriate OSX that will allow us to always use std::filesystem
+    std::filesystem::copy(itemsrc, itemdst, std::filesystem::copy_options::recursive);
+
+    TestHarness harness{ (path / "resources").string() };
+    auto player = harness._player;
+
+    auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
+
+    BOOST_TEST(!player->hasItem("key"));
+    scene->enter();
+    BOOST_TEST(player->hasItem("key"));
+
+    // const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
+    // TestHarness harness{ resfolder };
+    // auto L = harness._lua;
+
+    // // load the test script
+    // luaL_dostring(L, testscript.c_str());
+    // const auto retval = lua_tostring(L, -1);
+    // BOOST_TEST(retval == expected);
 }
 
 
