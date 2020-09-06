@@ -250,16 +250,12 @@ BOOST_AUTO_TEST_CASE(itemPlayerTest)
     writeFile((mappath / "scene1.json").string(), luaItemPlayerTestJSON);
     writeFile((luapath / "scene1.lua").string(), luaItemPlayerTestLua);
 
-    boost::filesystem::create_directories(itemspath);
-
     // TODO: this very hacky, redo once we remove all references to boost::filesystem
     // and use std::filesystem instead
     const auto itemsrc { fmt::format("{}/resources/items", TT_SRC_DIRECTORY_) };
     const auto itemdst { (path / "resources" / "items").string() };
-
-    // TODO: See about moving away from boost::filesystem and targeting an 
-    // appropriate OSX that will allow us to always use std::filesystem
-    std::filesystem::copy(itemsrc, itemdst, std::filesystem::copy_options::recursive);
+   
+    tt::copyDirectory(itemsrc, itemdst);
 
     TestHarness harness{ (path / "resources").string() };
     auto player = harness._player;
