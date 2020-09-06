@@ -44,33 +44,32 @@ int Player_setBalance(lua_State* L)
 int Player_addItem(lua_State* L)
 {
     auto player = checkPlayerObj(L);
-    const auto itemname = lua_tostring(L, 2);
-    lua_pushboolean(L, player->hasItem(itemname) ? 1 : 0);
-    return 1;
+    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    player->addItem(*itemp);
+    return 0;
 }
 
 int Player_hasItem(lua_State* L)
 {
     auto player = checkPlayerObj(L);
-    const auto itemname = lua_tostring(L, 2);
-    lua_pushboolean(L, player->hasItem(itemname) ? 1 : 0);
+    auto itemv = static_cast<ItemPtr*>(lua_touserdata(L, -2));
+    lua_pushboolean(L, player->hasItem(*itemv) ? 1 : 0);
     return 1;
 }
 
 int Player_hasItemByName(lua_State* L)
 {
     auto player = checkPlayerObj(L);
-    auto itemv = static_cast<ItemPtr*>(lua_touserdata(L, -2));
-    
-    lua_pushboolean(L, player->hasItem(*itemv) ? 1 : 0);
+    const auto itemname = lua_tostring(L, 2);
+    lua_pushboolean(L, player->hasItem(itemname) ? 1 : 0);
     return 1;
 }
 
 int Player_removeItem(lua_State* L)
 {
     auto player = checkPlayerObj(L);
-    const auto itemname = lua_tostring(L, 2);
-    player->removeItem(itemname);
+    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    player->removeItem(*itemp);
     return 0;
 }
 

@@ -218,13 +218,15 @@ return item:name()
 const auto luaItemPlayerTestLua = R"lua(
 newitem = nil
 player = nil
-
 function onEnter_addItem(scene)
     player = scene:getPlayer()
-    newitem = ItemFatory.createItem("key")
+    newitem = ItemFactory.createItem("key")
     player:addItem(newitem)
 end
 
+function removeKey()
+    player:removeItem(newitem)
+end
 )lua";
 
 const auto luaItemPlayerTestJSON = R"lua(
@@ -237,15 +239,23 @@ const auto luaItemPlayerTestJSON = R"lua(
 }
 )lua";
 
-// --run_test=tt/lua/luaItemPlayerTest
-BOOST_AUTO_TEST_CASE(luaItemPlayerTest)
+// --run_test=tt/lua/itemPlayerTest
+BOOST_AUTO_TEST_CASE(itemPlayerTest)
 {
     const auto path{ tt::tempFolder() };
     const auto luapath{ path / "resources" / "lua" };
     const auto mappath{ path / "resources" / "maps" };
+    const auto itemspath{ path / "resources" / "items" };
 
-    const auto itemsrc { fmt::format("{}/items", TT_SRC_DIRECTORY_) };
-    const auto itemdst { (path / "resources" / "maps").string() };
+    writeFile((mappath / "scene1.json").string(), luaItemPlayerTestJSON);
+    writeFile((luapath / "scene1.lua").string(), luaItemPlayerTestLua);
+
+    boost::filesystem::create_directories(itemspath);
+
+    // TODO: this very hacky, redo once we remove all references to boost::filesystem
+    // and use std::filesystem instead
+    const auto itemsrc { fmt::format("{}/resources/items", TT_SRC_DIRECTORY_) };
+    const auto itemdst { (path / "resources" / "items").string() };
 
     // TODO: See about moving away from boost::filesystem and targeting an 
     // appropriate OSX that will allow us to always use std::filesystem
@@ -253,6 +263,7 @@ BOOST_AUTO_TEST_CASE(luaItemPlayerTest)
 
     TestHarness harness{ (path / "resources").string() };
     auto player = harness._player;
+    auto L = harness._lua;
 
     auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
 
@@ -260,14 +271,8 @@ BOOST_AUTO_TEST_CASE(luaItemPlayerTest)
     scene->enter();
     BOOST_TEST(player->hasItem("key"));
 
-    // const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
-    // TestHarness harness{ resfolder };
-    // auto L = harness._lua;
-
-    // // load the test script
-    // luaL_dostring(L, testscript.c_str());
-    // const auto retval = lua_tostring(L, -1);
-    // BOOST_TEST(retval == expected);
+    tt::CallLuaFunction(L, "removeKey", "scene1", scene->luaIdx());
+    BOOST_TEST(!player->hasItem("key"));
 }
 
 

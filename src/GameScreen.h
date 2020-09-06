@@ -34,6 +34,13 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
         assert(ITEMFACTORY_LUA_IDX == reference);
     }
 
+    // register static variable methods for `ItemFactory`
+    {
+        lua_newtable(L);
+        luaL_setfuncs(L, ItemFactory::LuaMethods, 0);
+        lua_setglobal(L, ItemFactory::CLASS_NAME);
+    }
+
     //luaL_newmetatable(_luaState, "GameScreen");
     //lua_pushstring(_luaState, "__index");
     //lua_pushvalue(_luaState, -2); // push the metatable
@@ -43,12 +50,6 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
     registerLuaFunctions<Player>(L);
     registerLuaFunctions<DescriptionText>(L);
     registerLuaFunctions<Item>(L);
-
-    {
-        lua_newtable(L);
-        luaL_setfuncs(L, ItemFactory::LuaMethods, 0);
-        lua_setglobal(L, ItemFactory::CLASS_NAME);
-    }
    
     assert(lua_gettop(L) == 0);
 }
