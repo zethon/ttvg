@@ -12,6 +12,32 @@ addons:
     - libxcb-image0-dev
     - libxcb-keysyms1-dev
     - libxcb-xinerama0-dev
+    - gcc-9
+    - g++-9
+  homebrew:
+    packages:
+    - llvm@9
+
+install:
+  # The following Homebrew packages aren't linked by default, and need to be
+  # prepended to the path explicitly.
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+      export PATH="$(brew --prefix llvm)/bin:$PATH";
+    fi
+  # /usr/bin/gcc points to an older compiler on both Linux and macOS.
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-9" CC="gcc-9"; fi
+  # /usr/bin/clang points to an older compiler on both Linux and macOS.
+  #
+  # Homebrew's llvm package doesn't ship a versioned clang++ binary, so the values
+  # below don't work on macOS. Fortunately, the path change above makes the
+  # default values (clang and clang++) resolve to the correct compiler on macOS.
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+      if [ "$CXX" = "clang++" ]; then export CXX="clang++-9" CC="clang-9"; fi;
+    fi
+  - echo ${CC}
+  - echo ${CXX}
+  - ${CXX} --version
+  - cmake --version
 
 before_script:
 - mkdir build && cd build
@@ -30,8 +56,9 @@ matrix:
 
   - name: "macOS Xcode 10 Debug"
     os: osx
-    compiler: clang
+    compiler: clang-9
     osx_image: xcode10
+
     install:
       - pip install conan
     env:
@@ -39,7 +66,7 @@ matrix:
 
   - name: "macOS Xcode 10 Release"
     os: osx
-    compiler: clang
+    compiler: clang-9
     osx_image: xcode10
     install:
       - pip install conan
