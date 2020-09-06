@@ -100,11 +100,29 @@ int Scene_getDescriptionWindow(lua_State* L)
     return 1;
 }
 
+int Scene_addItem(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    scene->addItem(*itemp);
+    return 0;
+}
+
+int Scene_removeItem(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    scene->removeItem(*itemp);
+    return 0;
+}
+
 const struct luaL_Reg Scene::LuaMethods[] =
 {
     {"name", Scene_name},
     {"getPlayer", Scene_getPlayer},
     {"getDescriptionWindow", Scene_getDescriptionWindow},
+    {"addItem", Scene_addItem},
+    {"removeItem", Scene_removeItem},
     {nullptr, nullptr}
 };
 
@@ -152,7 +170,7 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
 void Scene::init()
 {
     createItems();
-    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, _luaIdx);
+    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::enter()
@@ -191,7 +209,7 @@ void Scene::enter()
             _hud.setBalance(cash);
         });
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, _luaIdx);
+    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::exit()
@@ -199,7 +217,7 @@ void Scene::exit()
     assert(_player);
     _lastPlayerPos = _player->getPosition();
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, _luaIdx);
+    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
     removeUpdateable(_player);
     _player.reset();
 }
@@ -453,6 +471,20 @@ sf::Vector2f Scene::getPlayerTile() const
 {
     auto playerxy = _player->getGlobalCenter();
     return _background->getTileFromGlobal(playerxy);
+}
+
+void Scene::addItem(ItemPtr item)
+{
+    _items.push_back(item);
+}
+
+void Scene::removeItem(ItemPtr item)
+{
+    auto it = std::find(_items.begin(), _items.end(), item);
+    if (it != _items.end())
+    {
+        _items.erase(it);
+    }
 }
 
 void Scene::updateCurrentTile(const TileInfo& info)

@@ -1,5 +1,3 @@
-#include <filesystem>
-
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
 
@@ -180,11 +178,11 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     scene->enter();
 
     BOOST_TEST(player->health() == 100);
-    tt::CallLuaFunction(lua, "doHealth", "scene1", scene->luaIdx());
+    tt::CallLuaFunction(lua, "doHealth", "scene1", {{ LUA_REGISTRYINDEX, scene->luaIdx() }});
     BOOST_TEST(player->health() == 75);
 
     BOOST_TEST(player->balance() == 40.00, boost::test_tools::tolerance(0.001));
-    tt::CallLuaFunction(lua, "doBalance", "scene1", scene->luaIdx());
+    tt::CallLuaFunction(lua, "doBalance", "scene1", { { LUA_REGISTRYINDEX, scene->luaIdx() } });
     BOOST_TEST(player->balance() == 37.50, boost::test_tools::tolerance(0.001));
 }
 
@@ -213,7 +211,6 @@ return item:name()
     const auto retval = lua_tostring(L, -1);
     BOOST_TEST(retval == expected);
 }
-
 
 const auto luaItemPlayerTestLua = R"lua(
 newitem = nil
@@ -250,11 +247,9 @@ BOOST_AUTO_TEST_CASE(itemPlayerTest)
     writeFile((mappath / "scene1.json").string(), luaItemPlayerTestJSON);
     writeFile((luapath / "scene1.lua").string(), luaItemPlayerTestLua);
 
-    // TODO: this very hacky, redo once we remove all references to boost::filesystem
-    // and use std::filesystem instead
+    // copy the source's items folder to the test folder
     const auto itemsrc { fmt::format("{}/resources/items", TT_SRC_DIRECTORY_) };
     const auto itemdst { (path / "resources" / "items").string() };
-   
     tt::copyDirectory(itemsrc, itemdst);
 
     TestHarness harness{ (path / "resources").string() };
@@ -267,10 +262,64 @@ BOOST_AUTO_TEST_CASE(itemPlayerTest)
     scene->enter();
     BOOST_TEST(player->hasItem("key"));
 
-    tt::CallLuaFunction(L, "removeKey", "scene1", scene->luaIdx());
+    tt::CallLuaFunction(L, "removeKey", "scene1", { { LUA_REGISTRYINDEX, scene->luaIdx() } });
+
     BOOST_TEST(!player->hasItem("key"));
 }
 
+const auto luaItemSceneTestLua = R"lua(
+newitem = nil
+player = nil
+function onEnter_addItem(scene)
+    player = scene:getPlayer()
+    newitem = ItemFactory.createItem("key")
+    player:addItem(newitem)
+end
+
+function removeKey()
+    player:removeItem(newitem)
+end
+)lua";
+
+const auto luaItemceneTestJSON = R"lua(
+{
+    "onEnter": "onEnter_addItem",
+    "background":
+    {
+        "tiles": { "x": 16, "y": 16 }
+    },
+    "items":
+    {
+        "sax": 
+        [    
+            { "x": 5, "y": 5 }
+        ],
+    }
+}
+)lua";
+
+// --run_test=tt/lua/itemSceneTest
+BOOST_AUTO_TEST_CASE(itemSceneTest)
+{
+    const auto path{ tt::tempFolder() };
+    const auto luapath{ path / "resources" / "lua" };
+    const auto mappath{ path / "resources" / "maps" };
+    const auto itemspath{ path / "resources" / "items" };
+
+    writeFile((mappath / "scene1.json").string(), luaItemPlayerTestJSON);
+    writeFile((luapath / "scene1.lua").string(), luaItemPlayerTestLua);
+
+    // copy the source's items folder to the test folder
+    const auto itemsrc{ fmt::format("{}/resources/items", TT_SRC_DIRECTORY_) };
+    const auto itemdst{ (path / "resources" / "items").string() };
+    tt::copyDirectory(itemsrc, itemdst);
+
+    TestHarness harness{ (path / "resources").string() };
+
+    auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
+    BOOST_TEST(scene->items().size() == 0);
+    scene->enter();
+}
 
 BOOST_AUTO_TEST_SUITE_END() // lua
 BOOST_AUTO_TEST_SUITE_END() // tt

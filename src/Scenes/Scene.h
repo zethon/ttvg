@@ -125,7 +125,6 @@ public:
 
     friend int Scene_getPlayer(lua_State* L);
     friend int Scene_getDescriptionWindow(lua_State* L);
-    friend int Scene_createItem(lua_State* L);
     
     Scene(std::string_view name, const SceneSetup& setup);
 
@@ -145,6 +144,10 @@ public:
 
     Hud& hud() { return _hud; }
     DescriptionText& descriptionText() { return _descriptionText; }
+
+    void addItem(ItemPtr item);
+    void removeItem(ItemPtr item);
+    const std::vector<ItemPtr> items() const { return _items; }
 
 protected:
     virtual void updateCurrentTile(const TileInfo& info);
