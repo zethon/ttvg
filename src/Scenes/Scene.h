@@ -120,6 +120,8 @@ class Scene : public Screen
 {
 
 public:
+    using Items = std::vector<ItemPtr>;
+
     static constexpr auto CLASS_NAME = "Scene";
     static const struct luaL_Reg LuaMethods[];
 
@@ -173,11 +175,12 @@ protected:
     AvatarInfo              _playerAvatarInfo;
     TileInfo                _currentTile;
 
-    std::vector<ItemPtr>    _items;
+    Items                   _items;
     ItemFactory&            _itemFactory;
 
 private:
     void createItems();
+    void pickupItem(Items::iterator itemIt);
 };
 
 } // namespace tt

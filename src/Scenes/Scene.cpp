@@ -316,18 +316,16 @@ PollResult Scene::poll(const sf::Event& e)
             //
             case sf::Keyboard::A:
             {
-                for (auto& item : _items)
+                // TODO: Items should probably be held in a sorted container
+                // so that searching for them is faster than a linear search
+                for(auto it = _items.begin(); it != _items.end(); it++)
                 {
-                    if( item->getGlobalBounds().intersects( 
-                            _player->getGlobalBounds()) )
+                    auto item = *it;
+                    if (item->getGlobalBounds()
+                            .intersects(_player->getGlobalBounds()))
                     {
-                        // tt::CallLuaFunction(_luaState, 
-                        //     item->callbacks.onPickup, 
-                        //     _name, 
-                        //     { 
-                        //         { LUA_REGISTRYINDEX, _luaIdx },
-                        //         { LUA_TLIGHTUSERDATA, static_cast<void*>(&item) } 
-                        //     });
+                        pickupItem(it);
+                        break;
                     }
                 }
             }
@@ -551,6 +549,27 @@ void Scene::createItems()
                 _items.push_back(i);
             }
         }
+    }
+}
+
+void Scene::pickupItem(Items::iterator itemIt)
+{
+    auto item = *itemIt;
+    if (item->callbacks.onPickup.size() > 0)
+    {
+        tt::CallLuaFunction(_luaState, 
+            item->callbacks.onPickup, 
+            _name, 
+            { 
+                { LUA_REGISTRYINDEX, _luaIdx },
+                { LUA_TLIGHTUSERDATA, static_cast<void*>(&item) } 
+            });
+    }
+    else
+    {
+        _player->addItem(item);
+        _items.erase(itemIt);
+        _descriptionText.setText("Picked up " + item->getName());
     }
 }
 

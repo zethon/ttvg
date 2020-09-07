@@ -75,54 +75,6 @@ return "mylua2"
 end
 )lua";
 
-// std::string callFunction(const std::string& funcname, lua_State* L, const std::string& envname, int objIdx)
-// {
-//     // first get the execution environment and set that
-//     lua_getglobal(L, envname.c_str()); // 1:env
-//     BOOST_TEST((lua_isnil(L, 1) == 0));
-
-//     // now load up the init function
-//     lua_getfield(L, 1, funcname.c_str()); // 1:env, 2:func
-//     BOOST_TEST((lua_isnil(L, 2) == 0));
-//     BOOST_TEST((lua_isfunction(L, 2) == 1));
-
-//     // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
-//     lua_rawgeti(L, LUA_REGISTRYINDEX, objIdx); // 1:env, 2:func, 1:ud
-//     if (lua_pcall(L, 1, 1, 0) != 0) // 1:env, 2:retval
-//     {
-//         auto error = lua_tostring(L, -1);
-//         BOOST_TEST(false, error);
-//     }
-
-//     std::string retval = lua_tostring(L, -1);
-//     lua_settop(L, 0);
-//     return retval;
-// }
-
-// std::string callGlobalFunction(const std::string& funcname, lua_State* L, const std::string& envname, int objIdx)
-// {
-//     // first get the execution environment and set that
-//     lua_getglobal(L, envname.c_str()); // 1:env
-//     BOOST_TEST((lua_isnil(L, 1) == 0));
-
-//     // now load up the init function
-//     lua_getfield(L, 1, funcname.c_str()); // 1:env, 2:func
-//     BOOST_TEST((lua_isnil(L, 2) == 0));
-//     BOOST_TEST((lua_isfunction(L, 2) == 1));
-
-//     // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
-//     lua_rawgeti(L, LUA_REGISTRYINDEX, objIdx); // 1:env, 2:func, 1:ud
-//     if (lua_pcall(L, 1, 1, 0) != 0) // 1:env, 2:retval
-//     {
-//         auto error = lua_tostring(L, -1);
-//         BOOST_TEST(false, error);
-//     }
-
-//     std::string retval = lua_tostring(L, -1);
-//     lua_settop(L, 0);
-//     return retval;
-// }
-
 BOOST_AUTO_TEST_CASE(loadTestCase)
 {
     GameScreenStub stub;
@@ -337,6 +289,7 @@ BOOST_AUTO_TEST_CASE(itemSceneTest)
     BOOST_TEST(scene->items().front()->getID() == "key");
 }
 
+// --run_test=tt/lua/itemPickUpTest
 BOOST_AUTO_TEST_CASE(itemPickUpTest)
 {
     const auto path{ tt::tempFolder() };
@@ -351,7 +304,7 @@ BOOST_AUTO_TEST_CASE(itemPickUpTest)
     {
         "sax": 
         [    
-            { "x": 5, "y": 5, "onPickUp": "sax_onPickup" },
+            { "x": 5, "y": 5, "onPickUp": "sax_onPickup" }
         ]
     }
 }
@@ -359,14 +312,46 @@ BOOST_AUTO_TEST_CASE(itemPickUpTest)
 
     writeFile((luapath / "scene1.lua").string(), R"lua(
 function sax_onPickup(scene, item)
+    local player = scene:getPlayer()
+    player:addItem(item)
+    scene:removeItem(item)
 end
 )lua");
 
     // copy the source's items folder to the test folder
-    const auto itemsrc{ fmt::format("{}/resources/items", TT_SRC_DIRECTORY_) };
-    const auto itemdst{ (path / "resources" / "items").string() };
+    const auto itemsrc { fmt::format("{}/resources/items", TT_SRC_DIRECTORY_) };
+    const auto itemdst { (path / "resources" / "items").string() };
     tt::copyDirectory(itemsrc, itemdst);
 
+    TestHarness harness{ (path / "resources").string() };
+    auto player = harness._player;
+    auto L = harness._lua;
+
+    auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
+    scene->init();
+    scene->enter();
+
+    BOOST_TEST(scene->items().size() == 1);
+    BOOST_TEST(scene->items().front()->getID() == "sax");
+    BOOST_TEST(player->getInventory().size() == 0);
+
+    auto sax = scene->items().front();
+    void* saxPtr = static_cast<void*>(sax.get());
+
+    tt::CallLuaFunction(L, "sax_onPickup", "scene1",
+        { 
+            { LUA_REGISTRYINDEX, scene->luaIdx() },
+            { LUA_TLIGHTUSERDATA, static_cast<void*>(&sax) } 
+        });
+
+    BOOST_TEST(scene->items().size() == 0);
+    BOOST_TEST(player->getInventory().size() == 1);
+
+    const auto& newsax = player->getInventory().front();
+    BOOST_TEST(newsax->getID() == "sax");
+
+    // make sure it's the same underlying object
+    BOOST_TEST(static_cast<void*>(newsax.get()) == saxPtr); 
 }
 
 BOOST_AUTO_TEST_SUITE_END() // lua

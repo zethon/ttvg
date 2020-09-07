@@ -68,6 +68,7 @@ std::string GetLuaValue(const LuaArgPair& v)
         assert(lua_isnil(L, 1) == 0);
     }
 
+    // save off the stack so we can get an accurate
     int stack_size = lua_gettop(L);
 
     // now load up the function
@@ -114,7 +115,7 @@ std::string GetLuaValue(const LuaArgPair& v)
         }
     }
 
-    if (lua_pcall(L, argcount, LUA_MULTRET, 0) != 0) // 1:env, 2:retval
+    if (lua_pcall(L, argcount, LUA_MULTRET, 0) != 0)
     {
         auto error = lua_tostring(L, -1);
         throw std::runtime_error(error);
@@ -158,7 +159,7 @@ std::string GetLuaValue(const LuaArgPair& v)
     // since we're processing return values, we can clean
     // up the stack before we leave
     lua_settop(L, 0);
-    
+
     return retval;
 }
 
