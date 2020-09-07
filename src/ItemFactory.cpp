@@ -77,7 +77,8 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
  *
  */
 ItemPtr ItemFactory::createItem(const std::string&  name,
-                                const sf::Vector2f& position)
+                                const sf::Vector2f& position,
+                                const Item::Callbacks& callbacks)
 {
 
     std::string jsonFile =
@@ -180,7 +181,7 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
         item->setActionSuccessMsg(json["action-success-msg"]);
     }
 
-    item->callbacks = json.get<Item::Callbacks>();
+    item->callbacks = callbacks;
 
     return item;
 }

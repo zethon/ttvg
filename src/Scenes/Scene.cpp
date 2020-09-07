@@ -545,7 +545,8 @@ void Scene::createItems()
                 sf::Vector2f position = 
                     _background->getGlobalFromTile(sf::Vector2f(c["x"].get<float>(), c["y"].get<float>()));
 
-                ItemPtr i = _itemFactory.createItem(itemId, position);
+                Item::Callbacks cb = c.get<Item::Callbacks>();
+                ItemPtr i = _itemFactory.createItem(itemId, position, cb);
                 _items.push_back(i);
             }
         }

@@ -20,12 +20,19 @@ public:
     
     ItemFactory(ResourceManager& resMgr);
 
-    ItemPtr createItem( const std::string&  name,
-                        const sf::Vector2f& position );
+    ItemPtr createItem(const std::string&  name,
+                const sf::Vector2f& position,
+                const Item::Callbacks& callbacks);
+
+    ItemPtr createItem(const std::string& name, 
+                sf::Vector2f& position)
+    {
+        return createItem(name, position, Item::Callbacks{});
+    }
 
     ItemPtr createItem(const std::string& name)
     {
-        return createItem(name, {});
+        return createItem(name, sf::Vector2f{}, Item::Callbacks{});
     }
 };
 
