@@ -12,6 +12,7 @@ set(SOURCE_FILES
     ResourceManager.cpp
     Screen.cpp
     TransitionPoint.cpp
+    TTLua.cpp
     TTUtils.cpp
     Vehicle.cpp
     VehicleFactory.cpp
@@ -42,6 +43,7 @@ set(HEADER_FILES
     Screen.h
     Tiles.hpp
     TransitionPoint.h
+    TTLua.h
     TTUtils.h
     Vehicle.h
     VehicleFactory.h

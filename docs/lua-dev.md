@@ -1,123 +1,216 @@
-## Introduction
+<style type='text/css'>
+.api-header 
+{ 
+    display:block; 
+    font-family:"Lucida Console","Courier New";
+    background: #F5F5F5;
+    padding: 5px;
+    border: 1px solid black;
+}
+</style>
 
-Lua support is being added to the Tommy Tooter Video Game to make it easier for the Tommy Tooter community to add content to the game. This document talks about the Lua API and gives examples of how to extend the game using Lua.
+## 0. Introduction
 
--- called for the 
-function stripclub_onenter()
-end
+**This feature is a work in progress**. 
 
-## Lua Files
+Lua support makes it easier for the community to add content to the game. This document talks about the Lua API and gives examples of how to extend the game using Lua.
 
-Every scene has a *&lt;scene-name&gt;.lua* file which resides in the same folder as the map image and JSON config file. This Lua file contains all functions and code that is used by the scene and the scene's components. 
+Every scene has a *&lt;scene-name&gt;.lua* file which resides in `resources/lua` folder. This Lua file contains all code that is used by the scene and the scene's components. 
 
-In addition to the scene itself, Lua events for zones and items are also supported.
+## 1. Scenes Events
 
-### Configuring Functions
-
-Functions are configured in the JSON like so:
+Scenes will emit three events that can be caught in Lua. These are: `onInit`, `onEnter` and `onExit`. These are the default names and will be called automatically when the event is triggered. The names can be overriden using the JSON configuration like so:
 
 ```json
 {
-    "onInit": "scene_onInit()",
+    "onInit": "scene_onInit",
+    "onEnter": "scene_onEnter",
+    "onExit": "scene_onExit",
 }
 ```
 
-In this case, the scene will look in the corresponding *&lt;scene-name&gt;.lua* file for the functions. 
+Each event is passed a `Scene` object as the first parameter (see `Scene API` below).
 
-For example, if the above JSON was in the *EuclidHouse.json* file, then we could deduct 5% of the player's health every time they entered the scene by defining the following function in the *EuclidHouse.lua* file:
+A *Hello World* example using the configuration above might look like:
 
 ```lua
-function scene_onEnter()
-    local health = Player.getHealth()
-    Player.setHealth(health - (health * 0.05))
+function scene_onInit(scene)
+    print('Hello from '..scene:name..'!')
+end
+
+function scene_onEnter(scene)
+    print('Entering scene '..scene:name..'!')
+end
+
+function scene_onExit(scene)
+    print('Now leaving scene '..scene:name..'!')
 end
 ```
+</s>
 
-It should be noted that the string passed to the callbacks in the JSON is interpreted as Lua, so it is possible to put Lua directly in the JSON file:
-
-```json
-{
-    "onEnter": "local h=Player.getHealth();Player.setHealth(h-(h*0.05))"
-}
-```
-
-## Scenes
+### 1.1. Event Details
 
 There are three callback functions for every scene.
 
-### `onInit()` *[callback]*
+<span class="api-header">onInit(scene)</span>
 
-This function is invoked when the scene is first loaded. This should not be confused with when the scene is entered, which can happen multiple times during the game. `onInit` is called only at the start of the game, this can happen when the application is first loaded, or after a game has ended and a new one has begun.
+This function is invoked when the scene is first loaded. This should not be confused with when the scene is entered, which can happen multiple times during the game. `onInit` is called only once when the game starts. Note that if game ends and the user starts a new game, `onInit` **will** be called at the start of that new game.
 
-### `onEnter` *[callback]*
+<span class="api-header">onEnter(scene)</span>
 
-### `onExit` *[callback]*
+This function is invoked when the player first enters the scene. This callback can be called multiple times in a single game since a user can enter and leave scenes multiple times.
 
+<span class="api-header">onExit(scene)</span>
 
-# Chapter 3. Resources
+This function is invoked when the playe first exits the scene. This callback can be also be called multiple times.
 
-# Chapter 8. Modal Windows
+### 1.2. Scene API
 
- This library serves as means to display messages to the player such as dialog, or to prompt the player for questions. Modal Windows capture all input from the game demanding the user either make a choice or dismiss the window before moving on.
+<span class="api-header">[void] Scene.addItem(item)</span>
 
-## 8.1. Static Modal Methods
+The argument `item` is an `Item` object. This function adds an existing `Item` object to the current scene, hence the object must already exist when this function is called. 
 
-Static methods can be used without declaring a `Modal` object, and provide basic functionality for common usages of modal windows.
-
-### **`Modal.message(image,string)`** *[static]*
-
-![](images/modal-dialogue.png)
-
-Displays an image on the left hand side of the widow with a string on the right hand side. This box can be dismissed with the space bar or the escape key.
-
-#### **Arguments**
-
-`image` - A pre-cached image to display on the left hand side. This image will automatically be scaled to 32x32.</br>
-`string` -  The string to display
-
-<hr/>
-
-### **`Modal.yesno(image,string)` &rarr; `bool`** *[static]*
-
-![](images/modal-yesno.png)
-
-Displays an image on the left hand side of the widow with a string on the right hand side. The player is presented with a yes/no selection that can be changed with the up and down arrow keys, and selected with the space bar.
-
-on the left hand side of the window, and `string` on the right hand side. The `image` must have been previously loaded in the [resource cache](#resource-cache).
-
-#### **Arguments**
-
-`image` - A pre-cached image to display on the left hand side. This image will automatically be scaled to 32x32.</br>
-`string` -  The string to display
-
-#### **Returns**
-`boolean` - Returns `true` if the user selected "Yes", or `false` if the user selected "No".
-
-<hr/>
-
-## 8.2. Modal Objects
-
-When more fine grained control is needed, the `Modal` class offers more options. For example:
+For example:
 
 ```lua
-local window = Modal.new(nil, "Please select A, B or C")
-window:addOption(0, "Choice A")
-window:addOption(1, "Choice B")
-window:addOption(2, "Choice C")
-
-local result = window.exec()
-if (result == 0) then
-    Modal.message("You selected A")
-else if (result == 1) then
-    Modal.message("You selected B")
-else if (result == 2) then
-    Modal.message("You selected C")
+function onEnter(scene)
+    local item = ItemFactor.createItem("sax")
+    scene:addItem(item)
 end
 ```
 
-### 11.2.4. `Modal.new(` Class
+<span class="api-header">[DescriptionWindow] Scene.getDescriptionWindow()</span>
+
+Returns a handle to the scene's description window. See "Description Window".
+
+<span class="api-header">[Player] Scene.getPlayer()</span>
+
+No arguments. Returns a `Player` object. **This object is only valid for the life of the scene.** 
+
+**Example**
+```lua
+function onEnter(scene)
+    local player = scene:getPlayer()
+    local health = player:getHealth() - 2
+    player:setHealth(health)
+end
+```
+
+<span class="api-header">[string] Scene.name()</span>
+
+No arguments. Returns the name of the current scene.
+
+<span class="api-header">[void] Scene.removeItem(item)</span>
+
+The argument `item` is an `Item` object. If the scene does not contain the passed in item then nothing happens.
+
+## 2. Player
+
+The player object is accessible through `Scene.getPlayer`. **The player object is only valid for the life of the current scene.** This means that the player object is **not** available during initialization (i.e. `onInit`) since at that time there is no current scene.
+
+This also means that storing the player object in an outer scope will not work. 
+
+For example, **this will not work**:
 
 ```lua
-local window = Modal.new()
+gPlayer = nil
 
+function onInit(scene)
+    gPlayer = scene:getPlayer() -- 'gPlayer' is only valid within 'onInit'
+end
+
+function onEnter(scene)
+    print("Health is "..gPlayer:getHealth()) -- CRASH!
+end
 ```
+
+Instead the player object must be retrieved from the scene object every time.
+
+### 2.1 Player API
+
+<span class="api-header">[void] Player.addItem(item)</span>
+
+Add the `item` object to `Player`'s inventory. `item` is an object and not a string value. 
+
+Example:
+```lua
+-- give the player 'special-coin' when entering the scene
+function scene_onEnter(scene)
+    local item = ItemFactory.createItem('special-coin')
+    player:addItem(item)
+end
+```
+
+See more about "Items".
+</span>
+
+<span class="api-header">[float] Player.getBalance()</span>
+No arguments. Returns the value of the player's current balance.
+
+<span class="api-header">[float] Player.getBalance()</span>
+
+Returns a float value of the player's current balance.
+
+<span class="api-header">[integer] Player.getHealth()</span>
+
+Returns an intenger value of theplayer's current health.
+
+<span class="api-header">[bool] Player.hasItem(item)</span>
+
+The argument `item` is an `Item` object (i.e. the type returned from `ItemFactory.createItem()`). Behind the scenes, `item` holds a pointer to the allocated item and does a raw pointer comparison with all the items contained in player inventory.
+
+<span class="api-header">[bool] Player.hasItemByName(itemid)</span>
+
+The argument `itemid` is the **ID** of the item, which in most cases corresponds to the JSON filename of the item.
+
+<span class="api-header">[void] Player.removeItem(item)</span>
+
+The argument `item` is a pointer to an `Item` object, just like the argument for `Player.hasItem`. 
+
+<span class="api-header">[bool] Player.removeItemByName(itemid)</span>
+
+The argument `itemid` is the **ID** of the item, which in most cases corresponds to the JSON filename of the item.
+
+<span class="api-header">[void] Player.setBalance(balance)</span>
+
+Sets the balance of the player to `balance`. This should be a numeric value.
+
+<span class="api-header">[void] Player.setHealth(health)</span>
+Sets the health of the player to `health`. This should be an **integer** value.
+
+
+## 3. Items
+
+### 3.1 ItemFactory
+
+<span class="api-header">[Item] ItemFactory.createItem(itemid)</span>
+#### `ItemFactory.createItem(itemid)`
+
+Parameter `itemid` is the item's unique key as determined by the filename. This function returns an `Item` object.
+
+### 3.1 Item
+
+<span class="api-header">Item.actionable()</span>
+
+<span class="api-header">Item.description()</span>
+
+<span class="api-header">Item.id()</span>
+
+<span class="api-header">Item.name()</span>
+
+<span class="api-header">Item.obtainable()</span>
+
+<span class="api-header">Item.setActionable()</span>
+
+<span class="api-header">Item.setDescription()</span>
+
+<span class="api-header">Item.setName()</span>
+
+<span class="api-header">Item.setObtainable()</span>
+
+
+## 4. Description Window
+
+<span class="api-header">DescriptionText.getText()</span>
+
+<span class="api-header">DescriptionText.setText()</span>

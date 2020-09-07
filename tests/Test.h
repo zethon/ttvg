@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <boost/test/data/test_case.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include <test-config.h>
 
@@ -63,9 +64,34 @@ void writeFile(const std::string& file, const std::string& data)
     }
 }
 
+namespace fs = boost::filesystem;
+void copyDirectory(const fs::path& sourceDir, const fs::path& destinationDir)
+{
+    if (!fs::exists(sourceDir) || !fs::is_directory(sourceDir))
+    {
+        throw std::runtime_error("Source directory " + sourceDir.string() + " does not exist or is not a directory");
+    }
+    if (fs::exists(destinationDir))
+    {
+        throw std::runtime_error("Destination directory " + destinationDir.string() + " already exists");
+    }
+    if (!fs::create_directory(destinationDir))
+    {
+        throw std::runtime_error("Cannot create destination directory " + destinationDir.string());
+    }
+
+    for (const auto& dirEnt : fs::recursive_directory_iterator{sourceDir})
+    {
+        const auto& path = dirEnt.path();
+        auto relativePathStr = path.string();
+        boost::replace_first(relativePathStr, sourceDir.string(), "");
+        fs::copy(path, destinationDir / relativePathStr);
+    }
+}
+
 boost::filesystem::path tempFolder()
 {
-    auto temp = boost::filesystem::temp_directory_path();
+    auto temp = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path("ttvg%%%%%%");
     temp /= std::to_string(boost::unit_test::framework::current_test_case().p_id);
     boost::filesystem::create_directories(temp);
     return temp;

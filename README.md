@@ -54,7 +54,7 @@ If all goes well you should have a **ttvg.sln** in the `build` folder. This is a
 
 ### Mac
 
-I am using a clang compiler on Mac. Any version of clang that supports C++17 should be fine.
+Development requires OSX 10.15 or higher. A C++ compiler is also required.
 
 #### Instructions
 

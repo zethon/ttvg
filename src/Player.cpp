@@ -1,7 +1,100 @@
+#include <lua/lua.hpp>
+
 #include "Player.h"
 
 namespace tt
 {
+
+[[maybe_unused]] Player* checkPlayerObj(lua_State* L, int index = 1)
+{
+    auto temp = static_cast<Player**>(luaL_checkudata(L, 1, Player::CLASS_NAME));
+    return *temp;
+}
+
+int Player_health(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    lua_pushnumber(L, player->health());
+    return 1;
+}
+
+int Player_setHealth(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    auto health = lua_tointeger(L, 2);
+    player->setHealth(static_cast<std::uint32_t>(health));
+    return 0;
+}
+
+int Player_balance(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    lua_pushnumber(L, player->balance());
+    return 1;
+}
+
+int Player_setBalance(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    float balance = static_cast<float>(lua_tonumber(L, 2));
+    player->setBalance(balance);    
+    return 0;
+}
+
+int Player_addItem(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    player->addItem(*itemp);
+    return 0;
+}
+
+int Player_hasItem(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    auto itemv = static_cast<ItemPtr*>(lua_touserdata(L, -2));
+    lua_pushboolean(L, player->hasItem(*itemv) ? 1 : 0);
+    return 1;
+}
+
+int Player_hasItemByName(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    const auto itemname = lua_tostring(L, 2);
+    lua_pushboolean(L, player->hasItem(itemname) ? 1 : 0);
+    return 1;
+}
+
+int Player_removeItem(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    player->removeItem(*itemp);
+    return 0;
+}
+
+int Player_removeItemByName(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    const auto itemname = lua_tostring(L, 2);
+    player->removeItem(itemname);
+    return 0;
+}
+
+const struct luaL_Reg Player::LuaMethods[] =
+{
+    {"getBalance", Player_balance},
+    {"setBalance", Player_setBalance},
+    {"getHealth", Player_health},
+    {"setHealth", Player_setHealth},
+
+    {"addItem", Player_addItem},
+    {"hasItem", Player_hasItem},
+    {"hasItemByName", Player_hasItemByName},
+    {"removeItem", Player_removeItem},
+    {"removeItemByName", Player_removeItemByName},
+    {nullptr, nullptr}
+};
 
 sf::Vector2f Player::getGlobalCenter() const
 {
@@ -75,6 +168,12 @@ bool Player::hasItem(const std::string& s)
 	return false;
 }
 
+bool Player::hasItem(ItemPtr item)
+{
+    return std::find(
+        _inventory.begin(), _inventory.end(), item) != _inventory.end();
+}
+
 void Player::removeItem(const std::string& s)
 {
     for(auto it = _inventory.begin(); it != _inventory.end(); it++)
@@ -86,6 +185,26 @@ void Player::removeItem(const std::string& s)
             return;
         }
     }
+}
+
+void Player::removeItem(ItemPtr item)
+{
+    auto it = std::find(
+        _inventory.begin(), _inventory.end(), item);
+
+    if (it != _inventory.end())
+    {
+        _inventory.erase(it);
+    }
+}
+
+ItemPtr Player::getItemByName(const std::string& name)
+{
+    auto it = std::find_if(_inventory.begin(), _inventory.end(),
+        [&name](ItemPtr i) { return i->getID() == name; });
+
+    if (it != _inventory.end()) return *it;
+    return {};
 }
 
 const std::vector<ItemPtr>& Player::getInventory() const

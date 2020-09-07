@@ -25,7 +25,7 @@ void from_json(const nl::json& j, Zone& z)
 }
 
 Background::Background(std::string_view name, ResourceManager& resmgr, sf::RenderTarget& target)
-    : Background(name, resmgr, target, sf::Vector2f{})
+    : Background(name, resmgr, target, sf::Vector2f{ 16.f, 16.f })
 {
 }
 
@@ -59,6 +59,7 @@ Background::Background(std::string_view name, ResourceManager& resmgr, sf::Rende
 void Background::initBackground(const sf::RenderTarget& target)
 {
     if (!_json) return;
+    if (!_json->contains("background")) return;
     if (!_json->at("background").is_object()) return;
 
     const auto bg = _json->at("background");
@@ -109,6 +110,7 @@ void Background::initBackground(const sf::RenderTarget& target)
 void Background::initZones()
 {
     if (!_json) return;
+    if (!_json->contains("zones")) return;
     if (!_json->at("zones").is_array()) return;
 
     for (const auto& item : (*_json)["zones"].items())

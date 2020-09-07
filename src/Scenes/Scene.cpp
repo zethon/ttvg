@@ -2,6 +2,7 @@
 
 #include <fmt/core.h>
 
+#include "../TTLua.h"
 #include "Scene.h"
 
 namespace tt
@@ -35,6 +36,30 @@ void from_json(const nl::json& j, AvatarInfo& av)
     }
 }
 
+void from_json(const nl::json& j, CallbackInfo& cb)
+{
+    if (j.contains("onInit"))
+    {
+        j.at("onInit").get_to(cb.onInit);
+    }
+
+    if (j.contains("onEnter"))
+    {
+        j.at("onEnter").get_to(cb.onEnter);
+    }
+
+    if (j.contains("onExit"))
+    {
+        j.at("onExit").get_to(cb.onExit);
+    }
+}
+
+[[maybe_unused]] Scene* checkSceneObj(lua_State* L, int index = 1)
+{
+    auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
+    return *temp;
+}
+
 int Scene_name(lua_State* L)
 {
     auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
@@ -43,20 +68,73 @@ int Scene_name(lua_State* L)
     return 1;
 }
 
+int Scene_getPlayer(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    
+    // Create a new userdata and set the appropriate metatable. Lua's 
+    // garabage collection will take care of deleting the
+    // pointer-to-a-pointer.    
+    Player** data = (Player**)lua_newuserdata(L, sizeof(Player*));
+    *data = (scene->_player).get();
+
+    luaL_getmetatable(L, Player::CLASS_NAME);
+    lua_setmetatable(L, -2);
+
+    return 1;
+}
+
+int Scene_getDescriptionWindow(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    
+    // Create a new userdata and set the appropriate metatable. Lua's 
+    // garabage collection will take care of deleting the
+    // pointer-to-a-pointer.    
+    DescriptionText** data = (DescriptionText**)lua_newuserdata(L, sizeof(DescriptionText*));
+    *data = &(scene->descriptionText());
+
+    luaL_getmetatable(L, DescriptionText::CLASS_NAME);
+    lua_setmetatable(L, -2);
+
+    return 1;
+}
+
+int Scene_addItem(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    scene->addItem(*itemp);
+    return 0;
+}
+
+int Scene_removeItem(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    scene->removeItem(*itemp);
+    return 0;
+}
+
 const struct luaL_Reg Scene::LuaMethods[] =
 {
     {"name", Scene_name},
+    {"getPlayer", Scene_getPlayer},
+    {"getDescriptionWindow", Scene_getDescriptionWindow},
+    {"addItem", Scene_addItem},
+    {"removeItem", Scene_removeItem},
     {nullptr, nullptr}
 };
 
-Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& target, PlayerPtr player, lua_State* luaState)
-    : Screen(res, target),
+Scene::Scene(std::string_view name, const SceneSetup& setup)
+    : Screen(setup.resources, setup.window),
       _name{ name },
-      _luaState{luaState},
-      _hud{ res, target },
-      _descriptionText{ res, target },
-      _debugWindow{ res, target },
-      _weakPlayer{ player }
+      _luaState{setup.lua},
+      _hud{ setup.resources, setup.window },
+      _descriptionText{ setup.resources, setup.window },
+      _debugWindow{ setup.resources, setup.window },
+      _weakPlayer{ setup.player },
+      _itemFactory{ *(setup.itemFactory) }
 {
     if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _name)); 
             jsonopt.has_value())
@@ -66,28 +144,22 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
         {
             _playerAvatarInfo = json["player"].get<AvatarInfo>();
         }
+
+        _callbackNames = json.get<CallbackInfo>();
     }
 
+    // the scene must be registered in the Lua registry even
+    // if it has no <scene>.lua file
+    _luaIdx = registerScene(_luaState, *this);
     if (const auto luafile = _resources.getFilename(fmt::format("lua/{}.lua", _name));
-        boost::filesystem::exists(luafile))
-    {
-        if (auto temp = loadSceneLuaFile(*this, luafile, _luaState); temp > 0)
-        {
-            _luaIdx = temp;
-        }
-        else
-        {
-            _luaState = nullptr;
-        }
-    }
-    else
+            !boost::filesystem::exists(luafile) || !loadSceneLuaFile(*this, luafile, _luaState))
     {
         _luaState = nullptr;
     }
 
     _lastPlayerPos = _playerAvatarInfo.start;
 
-    _background = std::make_shared<Background>(_name, _resources, target);
+    _background = std::make_shared<Background>(_name, _resources, _window);
     addDrawable(_background);
 
     sf::View view(sf::FloatRect(0.f, 0.f,
@@ -98,28 +170,7 @@ Scene::Scene(std::string_view name, ResourceManager& res, sf::RenderTarget& targ
 void Scene::init()
 {
     createItems();
-
-    // call onInit from Lua
-    if (_luaState == nullptr) return;
-
-    // first get the execution environment and set that
-    lua_getglobal(_luaState, _name.c_str()); // 1:env
-    assert(lua_isnil(_luaState, 1) == 0);
-
-    // now load up the init function
-    lua_getfield(_luaState, 1, "onInit"); // 1:env, 2:func
-    assert(lua_isnil(_luaState, 2) == 0);
-    assert(lua_isfunction(_luaState, 2) == 1);
-
-    // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
-    lua_rawgeti(_luaState, LUA_REGISTRYINDEX, _luaIdx); // 1:env, 2:func, 1:ud
-    if (lua_pcall(_luaState, 1, 0, 0) != 0) // 1:env, 2:retval
-    {
-        auto error = lua_tostring(_luaState, -1);
-        throw std::runtime_error(error);
-    }
-
-    lua_settop(_luaState, 0);
+    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::enter()
@@ -157,6 +208,8 @@ void Scene::enter()
         {
             _hud.setBalance(cash);
         });
+
+    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::exit()
@@ -164,6 +217,7 @@ void Scene::exit()
     assert(_player);
     _lastPlayerPos = _player->getPosition();
 
+    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
     removeUpdateable(_player);
     _player.reset();
 }
@@ -262,102 +316,16 @@ PollResult Scene::poll(const sf::Event& e)
             //
             case sf::Keyboard::A:
             {
-                //
-                // Check if player is standing on an item.
-                //
-                // Check if it is obtainable.
-                //      If it is obtainable, remove it from the map's _items 
-                //      and add it to the player's inventory.
-                //
-                // Check if it is actionable.
-                //      If it is actionable, attempt to perform an action 
-                //      on the item.
-                //
+                // TODO: Items should probably be held in a sorted container
+                // so that searching for them is faster than a linear search
                 for(auto it = _items.begin(); it != _items.end(); it++)
                 {
-                    ItemPtr item = *it;
-
-                    if( item->getGlobalBounds().intersects(
-                                                _player->getGlobalBounds()) )
-                    { 
-
-                        if(item->isObtainable())
-                        {
-                            //
-                            // Player obtains the item
-                            //
-                            _player->addItem(item);
-                            _descriptionText.setText(
-                                                "Picked up " + item->getName());
-                            _items.erase(it);
-                            break;
-                        }
-
-                        if(item->isActionable())
-                        {
-
-                            const auto& requiredItem = 
-                                                item->getActionRequiresItem();
-
-                            if(_player->hasItem(requiredItem))
-                            {
-                                //
-                                // Player has the required item in their
-                                // inventory to perform the action.
-                                // It will cost them this item.
-                                // This could also be optional. Not all
-                                // actions should require an item.
-                                //
-                                _player->removeItem(requiredItem);
-                                
-                                //
-                                // Remove the object we are
-                                // operating on from the map.
-                                // This should be optional, or change its
-                                // state to reflect the action was performed.
-                                // E.g. a closed chest might become open, but
-                                // be empty. A locked door might become 
-                                // unlocked or opened.
-                                //
-                                _items.erase(it);
-
-                                //
-                                // "Drop" the new item into place
-                                // This should also be optional.
-                                // Not all actions should result in a drop.
-                                //
-                                const auto& providedItem = 
-                                                item->getActionProvidesItem();
-
-                                auto itemFactory = ItemFactory(_resources);
-                                sf::Vector2f position = item->getPosition();
-
-                                ItemPtr p = itemFactory.createItem(
-                                                            providedItem,
-                                                            position);
-                                _items.push_back(p);
-
-                                //
-                                // Show success message
-                                //
-                                _descriptionText.setText(
-                                    item->getActionSuccessMsg());
-
-                                break;
-
-                            }
-                            else
-                            {
-
-                                //
-                                // Player does not have the required item
-                                //
-                                _descriptionText.setText(
-                                    item->getActionFailureMsg());
-                                break;
-
-                            }
-                        }
+                    auto item = *it;
+                    if (item->getGlobalBounds()
+                            .intersects(_player->getGlobalBounds()))
+                    {
+                        pickupItem(it);
+                        break;
                     }
                 }
             }
@@ -418,6 +386,20 @@ sf::Vector2f Scene::getPlayerTile() const
 {
     auto playerxy = _player->getGlobalCenter();
     return _background->getTileFromGlobal(playerxy);
+}
+
+void Scene::addItem(ItemPtr item)
+{
+    _items.push_back(item);
+}
+
+void Scene::removeItem(ItemPtr item)
+{
+    auto it = std::find(_items.begin(), _items.end(), item);
+    if (it != _items.end())
+    {
+        _items.erase(it);
+    }
 }
 
 void Scene::updateCurrentTile(const TileInfo& info)
@@ -530,11 +512,6 @@ bool Scene::walkPlayer(float stepsize)
 
 void Scene::createItems()
 {
-    //
-    // Create items
-    //
-    auto itemFactory = ItemFactory(_resources);
-
     const auto& config = _background->json();
 
     //
@@ -568,10 +545,32 @@ void Scene::createItems()
                 sf::Vector2f position = 
                     _background->getGlobalFromTile(sf::Vector2f(c["x"].get<float>(), c["y"].get<float>()));
 
-                ItemPtr i = itemFactory.createItem(itemId, position);
+                Item::Callbacks cb = c.get<Item::Callbacks>();
+                ItemPtr i = _itemFactory.createItem(itemId, position, cb);
                 _items.push_back(i);
             }
         }
+    }
+}
+
+void Scene::pickupItem(Items::iterator itemIt)
+{
+    auto item = *itemIt;
+    if (item->callbacks.onPickup.size() > 0)
+    {
+        tt::CallLuaFunction(_luaState, 
+            item->callbacks.onPickup, 
+            _name, 
+            { 
+                { LUA_REGISTRYINDEX, _luaIdx },
+                { LUA_TLIGHTUSERDATA, static_cast<void*>(&item) } 
+            });
+    }
+    else
+    {
+        _player->addItem(item);
+        _items.erase(itemIt);
+        _descriptionText.setText("Picked up " + item->getName());
     }
 }
 

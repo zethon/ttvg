@@ -2,7 +2,7 @@
 
  ## Intro
 
-The game is divided into multiple *screens* that represent different stages in the interaction of the program. For example there is the splash screen, a menu screen and, of course, the game screen. All screens are derived from the `Screen` class, and the `TooterEngine` class is reponsible for loading and unloading scenes. Screens are loaded on an as-needed basis.
+The game is divided into multiple *screens* that represent different stages in the interaction of the program. For example there is the splash screen, a menu screen and, of course, the game screen. All screens are derived from the `Screen` class, and the `TooterEngine` class is reponsible for loading and unloading screens. Screens are loaded on an as-needed basis.
 
 Game play itself is further divided into mutiple *scenes*. Scenes represent different maps or areas within the game. The `GameScreen` class contains all of the scene objects and is responsible for controlling transitions between scenes. All scenes are loaded when control of the game is given to the `GameScreen` class.
 
@@ -21,7 +21,8 @@ The `GameScreen` creates all of the necessary scene objects in its constructor. 
 
 Assume we wish to add a new scene that is the interior of a police station that we will aptly call "PoliceStation". A breakdown of the process to add this scene is as follows:
 
-* Create a settings file for the scene in the *resources/maps* folder (i.e. *resource/maps/PoliceStation.json*). Configure the scene as needed (see **Scene Configuration** below).
+* Create a settings file for the scene in the *resources/maps* folder (i.e. *resource/maps/PoliceStation.json*). 
+* Configure the scene as needed (see **Scene Configuration** below).
 * Create a PNG background image for the scene (i.e. *resources/maps/PoliceStation.png*)
 * Add the scene to `GameScreen`'s constructor like so:
 
@@ -47,11 +48,9 @@ The configuration file defines several things including:
 
 ### Background Image
 
-**NOTE** - Currently the `Scene` class only has support for a fixed viewport. The functionality on the Tucson map which moves the camera with the player is specific to the `Opening` class. This functionality will soon be moved into `Scene` and supported through configuration.
-
 The background image used for a scene is defined by the scene's name. All background images must have the ".png" extension and exist in the "resources/maps" folder. For example, our "PoliceStation" scene has a background image named `resources/maps/PoliceStation.png`.
 
-The background for each scene can have a custom scaling. It is also with the background settings that the tilesize for the scene is defined.
+The background for each scene can have a custom scaling. It is also with the background settings that the tilesize for the scene is defined. (Note: even though custom scaling is supported, 16x16 is used nearly exclusively.)
 
 Example:
 
@@ -69,12 +68,12 @@ Example:
 * `scale` (optional) - Defines the scaling for the background image. Default is `(1,1)`.
 * `tiles` - The tilesize for the map. For compatibility purposes, this should match up with the tilesize defined by in the PNG's corresponding TMX file.
 * `camera` (optional) - Defines the behavior of the viewport. Default is `fixed`.
-    * `fixed` - The viewport will never move. This means that if the image is bigger than the screen then the player can walk off the edge of the screen. Usually "fixed" should be used with a `scale` of "auto".
+    * `fixed` - The viewport will never move. This means that if the image is bigger than the screen then the player can walk off the edge of the screen. Usually "fixed" should be used with a `scale` or `auto`.
     * `follow` - The viewport will follow the player as the avatar moves about the screen if the background is bigger than the window. 
 
 ### Player Information
 
-The player object is shared among all scenes, however each scene can customize how the player is drawn. When a scene is entered (not loaded), the scene's `Scene::enter()` method is called (likewise there is a corresponding `Scene::exit()` method). This allows the scene to change any attributes about the player object. 
+The same player object is shared among all scenes, however each scene can customize how the player is drawn. When a scene is entered (not loaded), the scene's `Scene::enter()` method is called (likewise there is a corresponding `Scene::exit()` method). This allows the scene to change any attributes about the player object. 
 
 A consequence of each scene having its own settings for the player means that **every scene must define these settings**, else settings might propagate across scenes which might result in things looking weird.
 

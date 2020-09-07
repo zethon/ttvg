@@ -12,9 +12,13 @@ class DescriptionText : public Screen
     std::shared_ptr<sf::RectangleShape> _background;
 
 public:
+    static constexpr auto CLASS_NAME = "DescriptionText";
+    static const struct luaL_Reg LuaMethods[];
+
     DescriptionText(ResourceManager& resmgr, sf::RenderTarget& target);
 
     void setText(const std::string& text);
+    std::string text() const;
 };
 
 } // namespace

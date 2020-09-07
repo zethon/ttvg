@@ -26,16 +26,33 @@ struct AvatarInfo
     float           stepsize;
 };
 
+struct CallbackInfo
+{
+    std::string onInit = "onInit";
+    std::string onEnter = "onEnter";
+    std::string onExit = "onExit";
+};
+
 class Scene;
 using ScenePtr = std::unique_ptr<Scene>;
 using SceneSharedPtr = std::shared_ptr<Scene>;
 
+struct SceneSetup
+{
+    ResourceManager&                resources;
+    sf::RenderTarget&               window;
+    PlayerPtr                       player;
+    lua_State*                      lua;
+    std::shared_ptr<ItemFactory>    itemFactory;
+};
+
 void from_json(const nl::json& j, AvatarInfo& av);
+void from_json(const nl::json& j, CallbackInfo& cb);
 
 template<typename SceneT>
-int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
+bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
 {
-    if (!L) return 0;
+    if (!L) return false;
 
     // load the Scene's Lua file into its own sandboxed
     // environment which also contains everything in _G
@@ -43,8 +60,10 @@ int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         lua_newtable(L); // 1:tbl
         if (luaL_loadfile(L, filename.c_str()) != 0) // 1:tbl, 2:chunk
         {
-            auto error = lua_tostring(L, -1);
-            throw std::runtime_error(error);
+            // auto error = lua_tostring(L, -1);
+            // throw std::runtime_error(error);
+            lua_settop(L, 0);
+            return false;
         }
 
         lua_newtable(L); // 1:tbl, 2:chunk, 3:tbl(mt)
@@ -56,14 +75,22 @@ int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         lua_setupvalue(L, -2, 1); // 1:tbl, 2:chunk
         if (lua_pcall(L, 0, 0, 0) != 0) // 1:tbl
         {
-            auto error = lua_tostring(L, -1);
-            throw std::runtime_error(error);
+            // auto error = lua_tostring(L, -1);
+            // throw std::runtime_error(error);
+            lua_settop(L, 0);
+            return false;
         }
 
         lua_setglobal(L, scene.name().c_str()); // empty stack
         assert(lua_gettop(L) == 0);
     }
 
+    return true;
+}
+
+template<typename SceneT>
+int registerScene(lua_State* L, SceneT& scene)
+{
     int idx = 0;
 
     // create a pointer to `this` in the Lua state and register
@@ -86,18 +113,22 @@ int loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
     return idx;
 }
 
+int Scene_getPlayer(lua_State* L);
+int Scene_getDescriptionWindow(lua_State* L);
+
 class Scene : public Screen
 {
 
 public:
+    using Items = std::vector<ItemPtr>;
+
     static constexpr auto CLASS_NAME = "Scene";
     static const struct luaL_Reg LuaMethods[];
 
-    Scene(std::string_view name,
-        ResourceManager& res,
-        sf::RenderTarget& target,
-        PlayerPtr player,
-        lua_State* luaState);
+    friend int Scene_getPlayer(lua_State* L);
+    friend int Scene_getDescriptionWindow(lua_State* L);
+    
+    Scene(std::string_view name, const SceneSetup& setup);
 
     std::string name() const { return _name; }
 
@@ -111,6 +142,15 @@ public:
 
     sf::Vector2f getPlayerTile() const;
 
+    int luaIdx() const { return _luaIdx; }
+
+    Hud& hud() { return _hud; }
+    DescriptionText& descriptionText() { return _descriptionText; }
+
+    void addItem(ItemPtr item);
+    void removeItem(ItemPtr item);
+    const std::vector<ItemPtr> items() const { return _items; }
+
 protected:
     virtual void updateCurrentTile(const TileInfo& info);
     virtual sf::Vector2f animeCallback();
@@ -121,6 +161,7 @@ protected:
     std::string             _name;
     lua_State*              _luaState = nullptr;
     int                     _luaIdx = 0;
+    CallbackInfo            _callbackNames;
 
     Hud                     _hud;
     DescriptionText         _descriptionText;
@@ -134,10 +175,12 @@ protected:
     AvatarInfo              _playerAvatarInfo;
     TileInfo                _currentTile;
 
-    std::vector<ItemPtr>    _items;
+    Items                   _items;
+    ItemFactory&            _itemFactory;
 
 private:
     void createItems();
+    void pickupItem(Items::iterator itemIt);
 };
 
 } // namespace tt

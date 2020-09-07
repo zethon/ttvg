@@ -9,14 +9,13 @@
 #include "Screen.h"
 #include "AnimatedSprite.h"
 #include "Player.h"
+#include "TTLua.h"
 
 namespace tt
 {
 
-constexpr auto GAMESCREEN_LUA_IDX = 3;
-
 template<typename T>
-void initLua(lua_State* L, T& screen)
+void initLua(lua_State* L, T& screen, void* itemFactory)
 {
     luaL_openlibs(L);
 
@@ -27,25 +26,32 @@ void initLua(lua_State* L, T& screen)
     [[maybe_unused]] int reference = luaL_ref(L, LUA_REGISTRYINDEX);
     assert(GAMESCREEN_LUA_IDX == reference);
 
+    if (itemFactory != nullptr)
+    {
+        lua_pushlightuserdata(L, itemFactory);
+        luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+        reference = luaL_ref(L, LUA_REGISTRYINDEX);
+        assert(ITEMFACTORY_LUA_IDX == reference);
+    }
+
+    // register static variable methods for `ItemFactory`
+    {
+        lua_newtable(L);
+        luaL_setfuncs(L, ItemFactory::LuaMethods, 0);
+        lua_setglobal(L, ItemFactory::CLASS_NAME);
+    }
+
     //luaL_newmetatable(_luaState, "GameScreen");
     //lua_pushstring(_luaState, "__index");
     //lua_pushvalue(_luaState, -2); // push the metatable
     //lua_settable(_luaState, -3);  // metatable.__index = metatable
 
-    // create the 'Scene' Lua class
-    {
-        luaL_newmetatable(L, Scene::CLASS_NAME);
-        lua_pushstring(L, "__index");
-        lua_pushvalue(L, -2); // push the metatable
-        lua_settable(L, -3);  // metatable.__index = metatable
-
-        // this creates object-like methods by populating the table
-        // on the stack with the function names/pointers
-        luaL_openlib(L, nullptr, Scene::LuaMethods, 0);
-    }
-
-    // clear the stack
-    lua_settop(L, 0);
+    registerLuaFunctions<Scene>(L);
+    registerLuaFunctions<Player>(L);
+    registerLuaFunctions<DescriptionText>(L);
+    registerLuaFunctions<Item>(L);
+   
+    assert(lua_gettop(L) == 0);
 }
 
 class GameScreen final : public Screen
@@ -67,10 +73,11 @@ public:
     const SceneMap& scenes() const { return _scenes; }
 
 private:
-    SceneSharedPtr  _currentScene;
-    SceneMap        _scenes;
-    PlayerPtr       _player;
-    lua_State*      _luaState;
+    SceneSharedPtr                  _currentScene;
+    SceneMap                        _scenes;
+    PlayerPtr                       _player;
+    lua_State*                      _luaState;
+    std::shared_ptr<ItemFactory>    _itemFactory;
 };
 
 } // namespace tt

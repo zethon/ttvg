@@ -9,13 +9,18 @@ DebugWindow::DebugWindow(ResourceManager & resmgr, sf::RenderTarget & target)
     setVisible(false);
 
     if (auto temp = _resources.load<sf::Font>("fonts/mono_bold.ttf");
-        !temp.has_value())
+        temp.has_value())
     {
-        throw std::runtime_error("could not load resource 'fonts/mono_bold.ttf'");
+        _debugFont = *(temp);
+        _debugText = std::make_shared<sf::Text>("", _debugFont);
+        _debugText->setFillColor(sf::Color::White);
+        _debugText->setPosition(10.f, _window.getSize().y - 35.f);
+        _debugText->setCharacterSize(20);
+        addDrawable(_debugText);
     }
     else
     {
-        _debugFont = *(temp);
+        // TODO: logging?!?!
     }
 
     _background = std::make_shared<sf::RectangleShape>();
@@ -23,12 +28,6 @@ DebugWindow::DebugWindow(ResourceManager & resmgr, sf::RenderTarget & target)
     _background->setPosition(0.f, _window.getSize().y - 40.f);
     _background->setSize(sf::Vector2f{ static_cast<float>(_window.getSize().x), 40.f });
     addDrawable(_background);
-
-    _debugText = std::make_shared<sf::Text>("", _debugFont);
-    _debugText->setFillColor(sf::Color::White);
-    _debugText->setPosition(10.f, _window.getSize().y - 35.f);
-    _debugText->setCharacterSize(20);
-    addDrawable(_debugText);
 }
 
 void DebugWindow::setText(const std::string & text)

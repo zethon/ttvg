@@ -14,6 +14,9 @@ using PlayerPtr = std::shared_ptr<Player>;
 class Player : public AnimatedSprite
 {
 public:
+    static constexpr auto CLASS_NAME = "Player";
+    static const struct luaL_Reg LuaMethods[];
+
     using AnimatedSprite::AnimatedSprite;
 
     sf::Vector2f getGlobalCenter() const;
@@ -28,9 +31,12 @@ public:
     void setGlobalTop(float top);
     void setGlobalBottom(float bottom);
 
-    void addItem(const ItemPtr item);
+    void addItem(ItemPtr item);
     bool hasItem(const std::string& s);
+    bool hasItem(ItemPtr item);
     void removeItem(const std::string& s);
+    void removeItem(ItemPtr item);
+    ItemPtr getItemByName(const std::string& name);
 
     const std::vector<ItemPtr>& getInventory() const;
 
