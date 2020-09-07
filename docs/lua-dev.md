@@ -1,3 +1,14 @@
+<style type='text/css'>
+.api-header 
+{ 
+    display:block; 
+    font-family:"Lucida Console","Courier New";
+    background: #F5F5F5;
+    padding: 5px;
+    border: 1px solid black;
+}
+</style>
+
 ## 0. Introduction
 
 **This feature is a work in progress**. 
@@ -41,21 +52,38 @@ end
 
 There are three callback functions for every scene.
 
-#### `onInit(scene)`
+<span class="api-header">onInit(scene)</span>
 
 This function is invoked when the scene is first loaded. This should not be confused with when the scene is entered, which can happen multiple times during the game. `onInit` is called only once when the game starts. Note that if game ends and the user starts a new game, `onInit` **will** be called at the start of that new game.
 
-#### `onEnter(scene)`
+<span class="api-header">onEnter(scene)</span>
 
 This function is invoked when the player first enters the scene. This callback can be called multiple times in a single game since a user can enter and leave scenes multiple times.
 
-#### `onExit(scene)`
+<span class="api-header">onExit(scene)</span>
 
 This function is invoked when the playe first exits the scene. This callback can be also be called multiple times.
 
 ### 1.2. Scene API
 
-#### `Scene.getPlayer()`
+<span class="api-header">[void] Scene.addItem(item)</span>
+
+The argument `item` is an `Item` object. This function adds an existing `Item` object to the current scene, hence the object must already exist when this function is called. 
+
+For example:
+
+```lua
+function onEnter(scene)
+    local item = ItemFactor.createItem("sax")
+    scene:addItem(item)
+end
+```
+
+<span class="api-header">[DescriptionWindow] Scene.getDescriptionWindow()</span>
+
+Returns a handle to the scene's description window. See "Description Window".
+
+<span class="api-header">[Player] Scene.getPlayer()</span>
 
 No arguments. Returns a `Player` object. **This object is only valid for the life of the scene.** 
 
@@ -68,30 +96,86 @@ function onEnter(scene)
 end
 ```
 
-#### `Scene.name()`
+<span class="api-header">[string] Scene.name()</span>
 
 No arguments. Returns the name of the current scene.
 
+<span class="api-header">[void] Scene.removeItem(item)</span>
+
+The argument `item` is an `Item` object. If the scene does not contain the passed in item then nothing happens.
+
 ## 2. Player
 
-The player object is accessible through `Scene.getPlayer` and offers the following API. As mentioned above, the player object is only valid for the life of the current scene. This means that the player object is **not** available during initialization (i.e. `onInit`) since at that time there is no current scene.
+The player object is accessible through `Scene.getPlayer`. **The player object is only valid for the life of the current scene.** This means that the player object is **not** available during initialization (i.e. `onInit`) since at that time there is no current scene.
+
+This also means that storing the player object in an outer scope will not work. 
+
+For example, **this will not work**:
+
+```lua
+gPlayer = nil
+
+function onInit(scene)
+    gPlayer = scene:getPlayer() -- 'gPlayer' is only valid within 'onInit'
+end
+
+function onEnter(scene)
+    print("Health is "..gPlayer:getHealth()) -- CRASH!
+end
+```
+
+Instead the player object must be retrieved from the scene object every time.
 
 ### 2.1 Player API
 
-#### `Player.balance()`
+<span class="api-header">[void] Player.addItem(item)</span>
 
+Add the `item` object to `Player`'s inventory. `item` is an object and not a string value. 
+
+Example:
+```lua
+-- give the player 'special-coin' when entering the scene
+function scene_onEnter(scene)
+    local item = ItemFactory.createItem('special-coin')
+    player:addItem(item)
+end
+```
+
+See more about "Items".
+</span>
+
+<span class="api-header">[float] Player.getBalance()</span>
 No arguments. Returns the value of the player's current balance.
 
-#### `Player.setBalance(balance)`
+<span class="api-header">[float] Player.getBalance()</span>
+
+Returns a float value of the player's current balance.
+
+<span class="api-header">[integer] Player.getHealth()</span>
+
+Returns an intenger value of theplayer's current health.
+
+<span class="api-header">[bool] Player.hasItem(item)</span>
+
+The argument `item` is an `Item` object (i.e. the type returned from `ItemFactory.createItem()`). Behind the scenes, `item` holds a pointer to the allocated item and does a raw pointer comparison with all the items contained in player inventory.
+
+<span class="api-header">[bool] Player.hasItemByName(itemid)</span>
+
+The argument `itemid` is the **ID** of the item, which in most cases corresponds to the JSON filename of the item.
+
+<span class="api-header">[void] Player.removeItem(item)</span>
+
+The argument `item` is a pointer to an `Item` object, just like the argument for `Player.hasItem`. 
+
+<span class="api-header">[bool] Player.removeItemByName(itemid)</span>
+
+The argument `itemid` is the **ID** of the item, which in most cases corresponds to the JSON filename of the item.
+
+<span class="api-header">[void] Player.setBalance(balance)</span>
 
 Sets the balance of the player to `balance`. This should be a numeric value.
 
-#### `Player.health()`
-
-No arguments. Returns the value of the player's current health.
-
-#### `Player.setHealth(health)`
-
+<span class="api-header">[void] Player.setHealth(health)</span>
 Sets the health of the player to `health`. This should be an **integer** value.
 
 
@@ -99,85 +183,34 @@ Sets the health of the player to `health`. This should be an **integer** value.
 
 ### 3.1 ItemFactory
 
+<span class="api-header">[Item] ItemFactory.createItem(itemid)</span>
 #### `ItemFactory.createItem(itemid)`
 
-Parameter `itemid` is the item's unique key as determined by the filename. 
-
-**Note** The object returned from this function has no default ownership.
+Parameter `itemid` is the item's unique key as determined by the filename. This function returns an `Item` object.
 
 ### 3.1 Item
 
-<!--
+<span class="api-header">Item.actionable()</span>
 
-<hr/>
+<span class="api-header">Item.description()</span>
 
-<s>
-# Chapter 3. Resources
+<span class="api-header">Item.id()</span>
 
-# Chapter 8. Modal Windows
+<span class="api-header">Item.name()</span>
 
- This library serves as means to display messages to the player such as dialog, or to prompt the player for questions. Modal Windows capture all input from the game demanding the user either make a choice or dismiss the window before moving on.
+<span class="api-header">Item.obtainable()</span>
 
-## 8.1. Static Modal Methods
+<span class="api-header">Item.setActionable()</span>
 
-Static methods can be used without declaring a `Modal` object, and provide basic functionality for common usages of modal windows.
+<span class="api-header">Item.setDescription()</span>
 
-### **`Modal.message(image,string)`** *[static]*
+<span class="api-header">Item.setName()</span>
 
-![](images/modal-dialogue.png)
+<span class="api-header">Item.setObtainable()</span>
 
-Displays an image on the left hand side of the widow with a string on the right hand side. This box can be dismissed with the space bar or the escape key.
 
-#### **Arguments**
+## 4. Description Window
 
-`image` - A pre-cached image to display on the left hand side. This image will automatically be scaled to 32x32.</br>
-`string` -  The string to display
+<span class="api-header">DescriptionText.getText()</span>
 
-<hr/>
-
-### **`Modal.yesno(image,string)` &rarr; `bool`** *[static]*
-
-![](images/modal-yesno.png)
-
-Displays an image on the left hand side of the widow with a string on the right hand side. The player is presented with a yes/no selection that can be changed with the up and down arrow keys, and selected with the space bar.
-
-on the left hand side of the window, and `string` on the right hand side. The `image` must have been previously loaded in the [resource cache](#resource-cache).
-
-#### **Arguments**
-
-`image` - A pre-cached image to display on the left hand side. This image will automatically be scaled to 32x32.</br>
-`string` -  The string to display
-
-#### **Returns**
-`boolean` - Returns `true` if the user selected "Yes", or `false` if the user selected "No".
-</s>
-
-<hr/>
-
-## 8.2. Modal Objects
-
-When more fine grained control is needed, the `Modal` class offers more options. For example:
-
-```lua
-local window = Modal.new(nil, "Please select A, B or C")
-window:addOption(0, "Choice A")
-window:addOption(1, "Choice B")
-window:addOption(2, "Choice C")
-
-local result = window.exec()
-if (result == 0) then
-    Modal.message("You selected A")
-else if (result == 1) then
-    Modal.message("You selected B")
-else if (result == 2) then
-    Modal.message("You selected C")
-end
-```
-
-### 11.2.4. `Modal.new(` Class
-
-```lua
-local window = Modal.new()
-
-```
--->
+<span class="api-header">DescriptionText.setText()</span>

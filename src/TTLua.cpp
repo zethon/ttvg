@@ -142,7 +142,7 @@ std::string GetLuaValue(const LuaArgPair& v)
 
             case LUA_TNUMBER:
             {
-                float result = lua_tonumber(L, stack_idx);
+                float result = static_cast<float>(lua_tonumber(L, stack_idx));
                 retval.push_back({ LUA_TNUMBER, result });
             }
             break;
