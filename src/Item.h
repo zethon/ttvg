@@ -20,6 +20,14 @@ public:
     static constexpr auto CLASS_NAME = "Item";
     static const struct luaL_Reg LuaMethods[];
 
+    struct Callbacks
+    {
+        std::string onPickup;
+        std::string onDrop;
+        std::string onUse;
+        std::string onConsume;
+    };
+
     Item(       const std::string&  id,
                 const sf::Texture&  texture, 
                 const sf::Vector2i& size );
@@ -53,6 +61,7 @@ public:
     std::string getActionSuccessMsg();
     void        setActionSuccessMsg(const std::string& s);
 
+    Callbacks   callbacks;
 
 private:
 
@@ -69,5 +78,7 @@ private:
 
 
 };
+
+void from_json(const nl::json& j, Item::Callbacks& i);
 
 } // namespace tt

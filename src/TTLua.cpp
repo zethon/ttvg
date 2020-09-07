@@ -8,17 +8,59 @@
 namespace tt
 {
 
-void CallLuaFunction(lua_State * L, 
+template<>
+bool GetLuaValue(const LuaArgPair& v)
+{
+    const auto& [type, value] = v;
+    if (type != LUA_TBOOLEAN)
+    {
+        throw std::runtime_error("Lua valid is not a boolean");
+    }
+    return std::any_cast<bool>(value);
+}
+
+template<>
+float GetLuaValue(const LuaArgPair& v)
+{
+    const auto& [type, value] = v;
+    if (type != LUA_TNUMBER)
+    {
+        throw std::runtime_error("Lua valid is not a number");
+    }
+    return std::any_cast<float>(value);
+}
+
+template<>
+std::string GetLuaValue(const LuaArgPair& v)
+{
+    const auto& [type, value] = v;
+    if (type != LUA_TSTRING)
+    {
+        throw std::runtime_error("Lua valid is not a string");
+    }
+    return std::any_cast<std::string>(value);
+}
+
+[[maybe_unused]] LuaValues CallLuaFunction(lua_State* L,
+    std::string_view function,
+    std::string_view sandbox,
+    const LuaArgPair& arg)
+{
+    LuaValues args;
+    args.push_back(arg);
+    return CallLuaFunction(L, function, sandbox, args);
+}
+
+[[maybe_unused]] LuaValues CallLuaFunction(lua_State * L, 
     std::string_view function, 
     std::string_view sandbox,
-    const LuaArguments & args,
-    bool clearRetVals)
+    const LuaValues & args)
 {
     if (L == nullptr || function.size() == 0)
     {
-        return;
+        return {};
     }
-
+    
     if (sandbox.size() > 0)
     {
         // first get the execution environment and set that
@@ -26,13 +68,15 @@ void CallLuaFunction(lua_State * L,
         assert(lua_isnil(L, 1) == 0);
     }
 
+    int stack_size = lua_gettop(L);
+
     // now load up the function
     lua_getfield(L, 1, function.data()); // 1:env, 2:func
     if (lua_isnil(L, 2) != 0
         || lua_isfunction(L, 2) == 0)
     {
         lua_settop(L, 0);
-        return;
+        return {};
     }
 
     std::uint32_t argcount = 0;
@@ -76,10 +120,46 @@ void CallLuaFunction(lua_State * L,
         throw std::runtime_error(error);
     }
 
-    if (clearRetVals)
+    LuaValues retval;
+    int num_returns = lua_gettop(L) - stack_size;
+
+    for (int i = 0; i < num_returns; i++)
     {
-        lua_settop(L, 0);
+        int stack_idx = (i - num_returns);
+        int type = lua_type(L, stack_idx);
+        switch (type)
+        {
+            default:
+                throw std::runtime_error("unsupported return type");
+
+            case LUA_TBOOLEAN:
+            {
+                bool result = lua_toboolean(L, stack_idx) == 0 ? false : true;
+                retval.push_back({ LUA_TBOOLEAN, result });
+            }
+            break;
+
+            case LUA_TNUMBER:
+            {
+                float result = lua_tonumber(L, stack_idx);
+                retval.push_back({ LUA_TNUMBER, result });
+            }
+            break;
+
+            case LUA_TSTRING:
+            {
+                const std::string result = lua_tostring(L, stack_idx);
+                retval.push_back({ LUA_TSTRING, result });
+            }
+            break;
+        }
     }
+
+    // since we're processing return values, we can clean
+    // up the stack before we leave
+    lua_settop(L, 0);
+    
+    return retval;
 }
 
 }

@@ -180,6 +180,8 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
         item->setActionSuccessMsg(json["action-success-msg"]);
     }
 
+    item->callbacks = json.get<Item::Callbacks>();
+
     return item;
 }
 

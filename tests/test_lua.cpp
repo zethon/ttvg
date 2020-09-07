@@ -75,53 +75,53 @@ return "mylua2"
 end
 )lua";
 
-std::string callFunction(const std::string& funcname, lua_State* L, const std::string& envname, int objIdx)
-{
-    // first get the execution environment and set that
-    lua_getglobal(L, envname.c_str()); // 1:env
-    BOOST_TEST((lua_isnil(L, 1) == 0));
+// std::string callFunction(const std::string& funcname, lua_State* L, const std::string& envname, int objIdx)
+// {
+//     // first get the execution environment and set that
+//     lua_getglobal(L, envname.c_str()); // 1:env
+//     BOOST_TEST((lua_isnil(L, 1) == 0));
 
-    // now load up the init function
-    lua_getfield(L, 1, funcname.c_str()); // 1:env, 2:func
-    BOOST_TEST((lua_isnil(L, 2) == 0));
-    BOOST_TEST((lua_isfunction(L, 2) == 1));
+//     // now load up the init function
+//     lua_getfield(L, 1, funcname.c_str()); // 1:env, 2:func
+//     BOOST_TEST((lua_isnil(L, 2) == 0));
+//     BOOST_TEST((lua_isfunction(L, 2) == 1));
 
-    // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
-    lua_rawgeti(L, LUA_REGISTRYINDEX, objIdx); // 1:env, 2:func, 1:ud
-    if (lua_pcall(L, 1, 1, 0) != 0) // 1:env, 2:retval
-    {
-        auto error = lua_tostring(L, -1);
-        BOOST_TEST(false, error);
-    }
+//     // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
+//     lua_rawgeti(L, LUA_REGISTRYINDEX, objIdx); // 1:env, 2:func, 1:ud
+//     if (lua_pcall(L, 1, 1, 0) != 0) // 1:env, 2:retval
+//     {
+//         auto error = lua_tostring(L, -1);
+//         BOOST_TEST(false, error);
+//     }
 
-    std::string retval = lua_tostring(L, -1);
-    lua_settop(L, 0);
-    return retval;
-}
+//     std::string retval = lua_tostring(L, -1);
+//     lua_settop(L, 0);
+//     return retval;
+// }
 
-std::string callGlobalFunction(const std::string& funcname, lua_State* L, const std::string& envname, int objIdx)
-{
-    // first get the execution environment and set that
-    lua_getglobal(L, envname.c_str()); // 1:env
-    BOOST_TEST((lua_isnil(L, 1) == 0));
+// std::string callGlobalFunction(const std::string& funcname, lua_State* L, const std::string& envname, int objIdx)
+// {
+//     // first get the execution environment and set that
+//     lua_getglobal(L, envname.c_str()); // 1:env
+//     BOOST_TEST((lua_isnil(L, 1) == 0));
 
-    // now load up the init function
-    lua_getfield(L, 1, funcname.c_str()); // 1:env, 2:func
-    BOOST_TEST((lua_isnil(L, 2) == 0));
-    BOOST_TEST((lua_isfunction(L, 2) == 1));
+//     // now load up the init function
+//     lua_getfield(L, 1, funcname.c_str()); // 1:env, 2:func
+//     BOOST_TEST((lua_isnil(L, 2) == 0));
+//     BOOST_TEST((lua_isfunction(L, 2) == 1));
 
-    // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
-    lua_rawgeti(L, LUA_REGISTRYINDEX, objIdx); // 1:env, 2:func, 1:ud
-    if (lua_pcall(L, 1, 1, 0) != 0) // 1:env, 2:retval
-    {
-        auto error = lua_tostring(L, -1);
-        BOOST_TEST(false, error);
-    }
+//     // now get the parameter we're passing to Lua which is a Scene* (aka `this`)
+//     lua_rawgeti(L, LUA_REGISTRYINDEX, objIdx); // 1:env, 2:func, 1:ud
+//     if (lua_pcall(L, 1, 1, 0) != 0) // 1:env, 2:retval
+//     {
+//         auto error = lua_tostring(L, -1);
+//         BOOST_TEST(false, error);
+//     }
 
-    std::string retval = lua_tostring(L, -1);
-    lua_settop(L, 0);
-    return retval;
-}
+//     std::string retval = lua_tostring(L, -1);
+//     lua_settop(L, 0);
+//     return retval;
+// }
 
 BOOST_AUTO_TEST_CASE(loadTestCase)
 {
@@ -139,13 +139,21 @@ BOOST_AUTO_TEST_CASE(loadTestCase)
     writeFile(luafile2, file2);
 
     SceneStub s1{ "scene1" };
+    auto s1idx = tt::registerScene(lua, s1);
+
     SceneStub s2{ "scene2" };
+    auto s2idx = tt::registerScene(lua, s2);
 
-    auto s1idx = tt::loadSceneLuaFile(s1, luafile1, lua);
-    auto s2idx = tt::loadSceneLuaFile(s2, luafile2, lua);
+    BOOST_TEST(tt::loadSceneLuaFile(s1, luafile1, lua));
+    BOOST_TEST(tt::loadSceneLuaFile(s2, luafile2, lua));
 
-    BOOST_TEST(callFunction("onInit", lua, "scene1", s1idx) == "mylua1");
-    BOOST_TEST(callFunction("onInit", lua, "scene2", s2idx) == "mylua2");
+    auto rv1 = tt::CallLuaFunction(lua, "onInit", "scene1", {{ LUA_REGISTRYINDEX, s1idx}});
+    BOOST_TEST(rv1.size() == 1);
+    BOOST_TEST(tt::GetLuaValue<std::string>(rv1.front()) == "mylua1");
+
+    auto rv2 = tt::CallLuaFunction(lua, "onInit", "scene2", { LUA_REGISTRYINDEX, s2idx});
+    BOOST_TEST(rv2.size() == 1);
+    BOOST_TEST(tt::GetLuaValue<std::string>(rv2.front()) == "mylua2");
 }
 
 constexpr auto playerTestFile = R"lua(
@@ -327,6 +335,38 @@ BOOST_AUTO_TEST_CASE(itemSceneTest)
         });
     BOOST_TEST(scene->items().size() == 1);
     BOOST_TEST(scene->items().front()->getID() == "key");
+}
+
+BOOST_AUTO_TEST_CASE(itemPickUpTest)
+{
+    const auto path{ tt::tempFolder() };
+    const auto luapath{ path / "resources" / "lua" };
+    const auto mappath{ path / "resources" / "maps" };
+    const auto itemspath{ path / "resources" / "items" };
+
+    writeFile((mappath / "scene1.json").string(), R"lua(
+{
+    "background": { "tiles": { "x": 16, "y": 16 } },
+    "items":
+    {
+        "sax": 
+        [    
+            { "x": 5, "y": 5, "onPickUp": "sax_onPickup" },
+        ]
+    }
+}
+)lua");
+
+    writeFile((luapath / "scene1.lua").string(), R"lua(
+function sax_onPickup(scene, item)
+end
+)lua");
+
+    // copy the source's items folder to the test folder
+    const auto itemsrc{ fmt::format("{}/resources/items", TT_SRC_DIRECTORY_) };
+    const auto itemdst{ (path / "resources" / "items").string() };
+    tt::copyDirectory(itemsrc, itemdst);
+
 }
 
 BOOST_AUTO_TEST_SUITE_END() // lua

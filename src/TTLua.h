@@ -77,12 +77,31 @@ void registerLuaFunctions(lua_State* L)
 }
 
 using LuaArgPair = std::tuple<std::int32_t, std::any>;
-using LuaArguments = std::vector<LuaArgPair>;
+using LuaValues = std::vector<LuaArgPair>;
 
-void CallLuaFunction(lua_State* L,
+template<typename ValT>
+ValT GetLuaValue(const LuaArgPair& v)
+{
+    throw std::runtime_error("unsupported Lua value");
+}
+
+template<>
+bool GetLuaValue(const LuaArgPair& v);
+
+template<>
+float GetLuaValue(const LuaArgPair& v);
+
+template<>
+std::string GetLuaValue(const LuaArgPair& v);
+
+[[maybe_unused]] LuaValues CallLuaFunction(lua_State* L,
     std::string_view function,
     std::string_view sandbox,
-    const LuaArguments& args,
-    bool clearRetVals = true);
+    const LuaValues& args);
+
+[[maybe_unused]] LuaValues CallLuaFunction(lua_State* L,
+    std::string_view function,
+    std::string_view sandbox,
+    const LuaArgPair& arg);
 
 }

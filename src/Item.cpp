@@ -8,6 +8,29 @@
 namespace tt
 {
 
+void from_json(const nl::json& j, Item::Callbacks& i)
+{
+    if (j.contains("onPickup")) 
+    {
+        j.at("onPickup").get_to(i.onPickup);
+    }
+
+    if (j.contains("onDrop")) 
+    {
+        j.at("onDrop").get_to(i.onDrop);
+    }
+
+    if (j.contains("onUse")) 
+    {
+        j.at("onUse").get_to(i.onUse);
+    }
+
+    if (j.contains("onConsume")) 
+    {
+        j.at("onConsume").get_to(i.onConsume);
+    }
+}
+
 namespace
 {
 
