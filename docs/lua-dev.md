@@ -51,22 +51,29 @@ end
 ### 1.1. Event Details
 
 There are three callback functions for every scene.
+<hr/>
 
-<span class="api-header">onInit(scene)</span>
+#### `onInit(scene)`
 
 This function is invoked when the scene is first loaded. This should not be confused with when the scene is entered, which can happen multiple times during the game. `onInit` is called only once when the game starts. Note that if game ends and the user starts a new game, `onInit` **will** be called at the start of that new game.
 
-<span class="api-header">onEnter(scene)</span>
+<hr/>
+
+#### `onEnter(scene)`
 
 This function is invoked when the player first enters the scene. This callback can be called multiple times in a single game since a user can enter and leave scenes multiple times.
 
-<span class="api-header">onExit(scene)</span>
+<hr/>
+
+#### `onExit(scene)`
 
 This function is invoked when the playe first exits the scene. This callback can be also be called multiple times.
 
+<hr/>
+
 ### 1.2. Scene API
 
-<span class="api-header">[void] Scene.addItem(item)</span>
+#### `[void] Scene.addItem(item)`
 
 The argument `item` is an `Item` object. This function adds an existing `Item` object to the current scene, hence the object must already exist when this function is called. 
 
@@ -79,11 +86,15 @@ function onEnter(scene)
 end
 ```
 
-<span class="api-header">[DescriptionWindow] Scene.getDescriptionWindow()</span>
+<hr/>
+
+#### `[DescriptionWindow] Scene.getDescriptionWindow()`
 
 Returns a handle to the scene's description window. See "Description Window".
 
-<span class="api-header">[Player] Scene.getPlayer()</span>
+<hr/>
+
+#### `[Player] Scene.getPlayer()`
 
 No arguments. Returns a `Player` object. **This object is only valid for the life of the scene.** 
 
@@ -96,11 +107,15 @@ function onEnter(scene)
 end
 ```
 
-<span class="api-header">[string] Scene.name()</span>
+<hr/>
+
+#### `[string] Scene.name()`
 
 No arguments. Returns the name of the current scene.
 
-<span class="api-header">[void] Scene.removeItem(item)</span>
+<hr/>
+
+#### `[void] Scene.removeItem(item)`
 
 The argument `item` is an `Item` object. If the scene does not contain the passed in item then nothing happens.
 
@@ -128,7 +143,8 @@ Instead the player object must be retrieved from the scene object every time.
 
 ### 2.1 Player API
 
-<span class="api-header">[void] Player.addItem(item)</span>
+
+#### `[void] Player.addItem(item)`
 
 Add the `item` object to `Player`'s inventory. `item` is an object and not a string value. 
 
@@ -144,73 +160,137 @@ end
 See more about "Items".
 </span>
 
-<span class="api-header">[float] Player.getBalance()</span>
+<hr/>
+
+#### `[float] Player.getBalance()`
 No arguments. Returns the value of the player's current balance.
 
-<span class="api-header">[float] Player.getBalance()</span>
+<hr/>
+
+#### `[float] Player.getBalance()`
 
 Returns a float value of the player's current balance.
 
-<span class="api-header">[integer] Player.getHealth()</span>
+<hr/>
+
+#### `[integer] Player.getHealth()`
 
 Returns an intenger value of theplayer's current health.
 
-<span class="api-header">[bool] Player.hasItem(item)</span>
+<hr/>
+
+#### `[bool] Player.hasItem(item)`
 
 The argument `item` is an `Item` object (i.e. the type returned from `ItemFactory.createItem()`). Behind the scenes, `item` holds a pointer to the allocated item and does a raw pointer comparison with all the items contained in player inventory.
 
-<span class="api-header">[bool] Player.hasItemByName(itemid)</span>
+<hr/>
+
+#### `[bool] Player.hasItemByName(itemid)`
 
 The argument `itemid` is the **ID** of the item, which in most cases corresponds to the JSON filename of the item.
 
-<span class="api-header">[void] Player.removeItem(item)</span>
+<hr/>
+
+#### `[void] Player.removeItem(item)`
 
 The argument `item` is a pointer to an `Item` object, just like the argument for `Player.hasItem`. 
 
-<span class="api-header">[bool] Player.removeItemByName(itemid)</span>
+<hr/>
+
+#### `[bool] Player.removeItemByName(itemid)`
 
 The argument `itemid` is the **ID** of the item, which in most cases corresponds to the JSON filename of the item.
 
-<span class="api-header">[void] Player.setBalance(balance)</span>
+<hr/>
+
+#### `[void] Player.setBalance(balance)`
 
 Sets the balance of the player to `balance`. This should be a numeric value.
 
-<span class="api-header">[void] Player.setHealth(health)</span>
+<hr/>
+
+#### `[void] Player.setHealth(health)`
 Sets the health of the player to `health`. This should be an **integer** value.
 
 
 ## 3. Items
 
-### 3.1 ItemFactory
+### 3.1 Item Events
 
-<span class="api-header">[Item] ItemFactory.createItem(itemid)</span>
-#### `ItemFactory.createItem(itemid)`
+Just like scenes, items have cofigurable events. The events are specified in the JSON file where each individual item is configured. 
+
+For example:
+
+```json
+"treasure-chest":
+[
+    { 
+        "x": 37, "y": 31, "onPickup": "treasureChest_onPickup" 
+    }
+],
+```
+
+These are the item events:
+
+#### `[Item] onPickup(scene, item)`
+
+`scene` is the current scene, and `item` is the item object being picked up.
+
+<hr/>
+
+### 3.2 ItemFactory
+
+
+#### `[Item] ItemFactory.createItem(itemid)`
 
 Parameter `itemid` is the item's unique key as determined by the filename. This function returns an `Item` object.
 
-### 3.1 Item
+### 3.3 Item
 
-<span class="api-header">Item.actionable()</span>
+#### `[bool] Item.actionable()`
 
-<span class="api-header">Item.description()</span>
+<hr/>
 
-<span class="api-header">Item.id()</span>
+#### `[string] Item.description()`
 
-<span class="api-header">Item.name()</span>
+<hr/>
 
-<span class="api-header">Item.obtainable()</span>
+#### `[string] Item.id()`
 
-<span class="api-header">Item.setActionable()</span>
+<hr/>
 
-<span class="api-header">Item.setDescription()</span>
+#### `[string] Item.name()`
 
-<span class="api-header">Item.setName()</span>
+<hr/>
 
-<span class="api-header">Item.setObtainable()</span>
+#### `[bool] Item.obtainable()`
 
+<hr/>
+
+#### `[void] Item.setActionable()`
+
+<hr/>
+
+#### `[void] Item.setDescription()`
+
+<hr/>
+
+#### `[void] Item.setName()`
+
+<hr/>
+
+#### `[void] Item.setObtainable()`
+
+<hr/>
 
 ## 4. Description Window
 
-<span class="api-header">DescriptionText.getText()</span>
+<hr/>
 
-<span class="api-header">DescriptionText.setText()</span>
+#### `[string] DescriptionText.getText()`
+
+<hr/>
+
+#### `[void] ]DescriptionText.setText(text)`
+
+<hr/>
