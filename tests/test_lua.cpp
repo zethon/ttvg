@@ -264,26 +264,23 @@ BOOST_AUTO_TEST_CASE(itemPlayerTest)
 
     tt::CallLuaFunction(L, "removeKey", "scene1", { { LUA_REGISTRYINDEX, scene->luaIdx() } });
 
-    BOOST_TEST(!player->hasItem("key"));
+    BOOST_TEST(!player->hasItem("key")); 
 }
 
 const auto luaItemSceneTestLua = R"lua(
-newitem = nil
-player = nil
 function onEnter_addItem(scene)
-    player = scene:getPlayer()
-    newitem = ItemFactory.createItem("key")
-    player:addItem(newitem)
+    local newitem = ItemFactory.createItem("key")
+    scene:addItem(newitem)
 end
 
-function removeKey()
-    player:removeItem(newitem)
+function removeThing(scene, item)
+    scene:removeItem(item)
 end
 )lua";
 
-const auto luaItemceneTestJSON = R"lua(
+const auto luaItemSceneTestJSON = R"lua(
 {
-    "onEnter": "onEnter_addItem",
+    "onEnter" : "onEnter_addItem",
     "background":
     {
         "tiles": { "x": 16, "y": 16 }
@@ -293,21 +290,21 @@ const auto luaItemceneTestJSON = R"lua(
         "sax": 
         [    
             { "x": 5, "y": 5 }
-        ],
+        ]
     }
 }
 )lua";
 
 // --run_test=tt/lua/itemSceneTest
 BOOST_AUTO_TEST_CASE(itemSceneTest)
-{
+{ 
     const auto path{ tt::tempFolder() };
     const auto luapath{ path / "resources" / "lua" };
     const auto mappath{ path / "resources" / "maps" };
     const auto itemspath{ path / "resources" / "items" };
 
-    writeFile((mappath / "scene1.json").string(), luaItemPlayerTestJSON);
-    writeFile((luapath / "scene1.lua").string(), luaItemPlayerTestLua);
+    writeFile((mappath / "scene1.json").string(), luaItemSceneTestJSON);
+    writeFile((luapath / "scene1.lua").string(), luaItemSceneTestLua);
 
     // copy the source's items folder to the test folder
     const auto itemsrc{ fmt::format("{}/resources/items", TT_SRC_DIRECTORY_) };
@@ -317,8 +314,19 @@ BOOST_AUTO_TEST_CASE(itemSceneTest)
     TestHarness harness{ (path / "resources").string() };
 
     auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
-    BOOST_TEST(scene->items().size() == 0);
+    scene->init();
+    BOOST_TEST(scene->items().size() == 1);
     scene->enter();
+    BOOST_TEST(scene->items().size() == 2);
+
+    auto firstItem = scene->items().front();
+    tt::CallLuaFunction(harness._lua, "removeThing", "scene1",
+        { 
+            { LUA_REGISTRYINDEX, scene->luaIdx() },
+            { LUA_TLIGHTUSERDATA, static_cast<void*>(&firstItem) } 
+        });
+    BOOST_TEST(scene->items().size() == 1);
+    BOOST_TEST(scene->items().front()->getID() == "key");
 }
 
 BOOST_AUTO_TEST_SUITE_END() // lua

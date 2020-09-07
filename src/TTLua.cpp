@@ -41,7 +41,7 @@ void CallLuaFunction(lua_State * L,
         switch (type)
         {
             default:
-            break;
+                throw std::runtime_error("unsupported parameter type");
 
             case LUA_TBOOLEAN:
                 lua_pushboolean(L, std::any_cast<bool>(value) ? 1 : 0);
