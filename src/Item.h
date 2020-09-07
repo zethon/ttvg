@@ -52,15 +52,6 @@ public:
     bool        isActionable() const;
     void        setActionable(bool b);
 
-    std::string getActionRequiresItem();
-    void        setActionRequiresItem(const std::string& s);
-    std::string getActionProvidesItem();
-    void        setActionProvidesItem(const std::string& s);
-    std::string getActionFailureMsg();
-    void        setActionFailureMsg(const std::string& s);
-    std::string getActionSuccessMsg();
-    void        setActionSuccessMsg(const std::string& s);
-
     Callbacks   callbacks;
 
 private:
@@ -69,14 +60,7 @@ private:
     std::string _name;
     std::string _description;
     bool        _isObtainable = false;
-
     bool        _isActionable = false;
-    std::string _actionRequiresItem;
-    std::string _actionProvidesItem;
-    std::string _actionFailureMsg;
-    std::string _actionSuccessMsg;
-
-
 };
 
 void from_json(const nl::json& j, Item::Callbacks& i);

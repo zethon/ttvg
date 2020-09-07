@@ -243,7 +243,11 @@
 
         "treasure-chest":
         [
-            { "x": 37, "y": 31 }
+            { 
+                "x": 37, 
+                "y": 31, 
+                "onPickup": "treasureChest_onPickup" 
+            }
         ],
 
         "magnifying-glass":

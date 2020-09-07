@@ -1,26 +1,19 @@
+local gDT = nil
+
 function onInit(scene)
     print("onInit call for '" .. scene:name() .. "'")
+    gDT = scene:getDescriptionWindow()
 end
 
-function onEnter(scene)
-    print("onEnter call for '" .. scene:name() .. "'")
+function treasureChest_onPickup(scene, item)
     local player = scene:getPlayer()
-    if player:getHealth() < 90 then
-        local dt = scene:getDescriptionWindow()
-        dt:setText("OH BOY!!!");
+    if player:hasItemByName("key") then
+        local vagina = ItemFactory.createItem("magic-space-vagina")
+        player:addItem(vagina)
+        player:removeItemByName("key")
+        scene:removeItem(item)
+        gDT:setText("You opened the chest!")
+    else
+        gDT:setText("You can't open this.")
     end
 end
-
-function onExit(scene)
-    print("onExit call for '" .. scene:name() .. "'")
-    local player = scene:getPlayer()
-    local health = player:getBalance() - 2
-    player:setBalance(health)
-end
-
-function onItem_pickup(scene, item)
-    local player = scene:getPlayer()
-    local item = scene:createItem("vagina")
-    player:addItem(item)
-    scene:removeItem(item)
-    

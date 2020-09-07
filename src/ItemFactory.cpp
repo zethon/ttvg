@@ -161,26 +161,6 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
         item->setActionable(json["actionable"]);
     }
 
-    if(json.find("action-requires-item") != json.end())
-    {
-        item->setActionRequiresItem(json["action-requires-item"]);
-    }
-
-    if(json.find("action-provides-item") != json.end())
-    {
-        item->setActionProvidesItem(json["action-provides-item"]);
-    }
-
-    if(json.find("action-failure-msg") != json.end())
-    {
-        item->setActionFailureMsg(json["action-failure-msg"]);
-    }
-
-    if(json.find("action-success-msg") != json.end())
-    {
-        item->setActionSuccessMsg(json["action-success-msg"]);
-    }
-
     item->callbacks = callbacks;
 
     return item;
