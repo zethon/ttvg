@@ -5,6 +5,7 @@
 #include <any>
 #include <vector>
 #include <functional>
+#include <optional>
 
 #include <fmt/core.h>
 
@@ -78,6 +79,7 @@ void registerLuaFunctions(lua_State* L)
 
 using LuaArgPair = std::tuple<std::int32_t, std::any>;
 using LuaValues = std::vector<LuaArgPair>;
+using OptionalLuaValues = std::optional<LuaValues>;
 
 template<typename ValT>
 ValT GetLuaValue(const LuaArgPair& v)
@@ -94,17 +96,17 @@ float GetLuaValue(const LuaArgPair& v);
 template<>
 std::string GetLuaValue(const LuaArgPair& v);
 
-[[maybe_unused]] LuaValues CallLuaFunction(lua_State* L,
+[[maybe_unused]] OptionalLuaValues CallLuaFunction(lua_State* L,
     std::string_view function,
     std::string_view sandbox,
     const LuaValues& args);
 
-[[maybe_unused]] LuaValues CallLuaFunction(lua_State* L,
+[[maybe_unused]] OptionalLuaValues CallLuaFunction(lua_State* L,
     std::string_view function,
     std::string_view sandbox,
     const LuaArgPair& arg);
 
-[[maybe_unused]] LuaValues CallLuaFunction(lua_State* L,
+[[maybe_unused]] OptionalLuaValues CallLuaFunction(lua_State* L,
     std::string_view function,
     std::string_view sandbox);
 

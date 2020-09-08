@@ -10,22 +10,13 @@
 
 #include "TTUtils.h"
 #include "Tiles.hpp"
-#include "TransitionPoint.h"
+#include "Transition.h"
+#include "Zone.h"
 
 namespace nl = nlohmann;
 
 namespace tt
 {
-
-struct Zone
-{
-    std::string                 name;
-    std::string                 description;
-    sf::FloatRect               rect;
-    std::optional<Transition>   transition;
-};
-
-void from_json(const nl::json& j, Zone& z);
 
 class ResourceManager;
 

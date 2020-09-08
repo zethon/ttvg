@@ -50,6 +50,7 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
     registerLuaFunctions<Player>(L);
     registerLuaFunctions<DescriptionText>(L);
     registerLuaFunctions<Item>(L);
+    registerLuaFunctions<Zone>(L);
    
     assert(lua_gettop(L) == 0);
 }

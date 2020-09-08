@@ -6,19 +6,19 @@ set(SOURCE_FILES
     GameScreen.cpp
     Intersection.cpp
     IntroScreen.cpp
+    Item.cpp
+    ItemFactory.cpp
     main.cpp
     PathFactory.cpp
     Player.cpp
     ResourceManager.cpp
     Screen.cpp
-    TransitionPoint.cpp
+    Transition.cpp
     TTLua.cpp
     TTUtils.cpp
     Vehicle.cpp
     VehicleFactory.cpp
-
-    Item.cpp
-    ItemFactory.cpp
+    Zone.cpp
 
     Scenes/DebugWindow.cpp
     Scenes/DescriptionText.cpp
@@ -42,11 +42,12 @@ set(HEADER_FILES
     ResourceManager.h
     Screen.h
     Tiles.hpp
-    TransitionPoint.h
+    Transition.h
     TTLua.h
     TTUtils.h
     Vehicle.h
     VehicleFactory.h
+    Zone.h
     
     Item.h
     ItemFactory.h

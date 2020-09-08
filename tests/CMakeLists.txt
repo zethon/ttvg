@@ -35,8 +35,8 @@ set(PROJECT_FILES
     ../src/ResourceManager.h
     ../src/ResourceManager.cpp
 
-    ../src/TransitionPoint.h
-    ../src/TransitionPoint.cpp
+    ../src/Transition.h
+    ../src/Transition.cpp
 
     ../src/TTUtils.h
     ../src/TTUtils.cpp
@@ -46,6 +46,9 @@ set(PROJECT_FILES
     
     ../src/VehicleFactory.h
     ../src/VehicleFactory.cpp
+
+    ../src/Zone.h
+    ../src/Zone.cpp
 )
 
 create_test("misc" "${PROJECT_FILES}")

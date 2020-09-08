@@ -1,14 +1,3 @@
-<style type='text/css'>
-.api-header 
-{ 
-    display:block; 
-    font-family:"Lucida Console","Courier New";
-    background: #F5F5F5;
-    padding: 5px;
-    border: 1px solid black;
-}
-</style>
-
 ## 0. Introduction
 
 **This feature is a work in progress**. 
@@ -53,19 +42,19 @@ end
 There are three callback functions for every scene.
 <hr/>
 
-#### `onInit(scene)`
+#### `[void] onInit(scene)`
 
 This function is invoked when the scene is first loaded. This should not be confused with when the scene is entered, which can happen multiple times during the game. `onInit` is called only once when the game starts. Note that if game ends and the user starts a new game, `onInit` **will** be called at the start of that new game.
 
 <hr/>
 
-#### `onEnter(scene)`
+#### `[void] onEnter(scene)`
 
 This function is invoked when the player first enters the scene. This callback can be called multiple times in a single game since a user can enter and leave scenes multiple times.
 
 <hr/>
 
-#### `onExit(scene)`
+#### `[void] onExit(scene)`
 
 This function is invoked when the playe first exits the scene. This callback can be also be called multiple times.
 
@@ -145,25 +134,48 @@ Sets the player's current tile to (`x`,`y`). There are no bounds checking done o
 
 ## 2. Player
 
-The player object is accessible through `Scene.getPlayer`. **The player object is only valid for the life of the current scene.** This means that the player object is **not** available during initialization (i.e. `onInit`) since at that time there is no current scene.
+The player object is accessible through `Scene.getPlayer`. **The player object is only valid for the life of the current scene.** 
 
-This also means that storing the player object in an outer scope will not work. 
-
-For example, **this will not work**:
+The lifetime of the player object only lasts for the lifetime of the current scene. This means that if the player object is cached, it should be cached with each call to `onEnter`. For example, this will cause a crash:
 
 ```lua
 gPlayer = nil
 
-function onInit(scene)
-    gPlayer = scene:getPlayer() -- 'gPlayer' is only valid within 'onInit'
+function onEnter(scene)
+    if gPlayer == nil then
+        gPlayer = scene:getPlayer()
+    end
 end
 
-function onEnter(scene)
-    print("Health is "..gPlayer:getHealth()) -- CRASH!
+function someOtherFunction()
+    print("Health is "..gPlayer:getHealth()) -- CRASH! (when scene is entered a second time)
 end
 ```
 
-Instead the player object must be retrieved from the scene object every time.
+The first time the scene is entered this will run. However when the player leaves the scene, the data to which `gPlayer` points is invalidated but the underlying value of `gPlayer` is still non-nil. Hence when the user re-enteres the scene and `someOtherFunction` is invoked, the methos `Player.getHealth()` will be called on corrupted data.
+
+The correct way to do this would be to just set it every time:
+
+```lua
+gPlayer = nil
+
+function onEnter(scene)
+    gPlayer = scene:getPlayer()
+end
+
+function someOtherFunction()
+    print("Health is "..gPlayer:getHealth()) -- OK
+end
+```
+
+This also means that the player object is **not** available during initialization (i.e. `onInit`). 
+
+```lua
+function onInit(scene)
+    local player = scene:getPlayer()
+    print("Health is "..gPlayer:getHealth()) -- CRASH!
+end
+```
 
 ### 2.1 Player API
 
@@ -271,7 +283,7 @@ For example:
 
 These are the item events:
 
-#### `[Item] onPickup(scene, item)`
+#### `[void] onPickup(scene, item)`
 
 `scene` is the current scene, and `item` is the item object being picked up.
 
@@ -328,20 +340,98 @@ Sets the name of the item to `name`. Can be empty.
 
 <hr/>
 
-#### `[void] Item.setObtainable()`
-
-<hr/>
+#### `[bool] Item.setObtainable()`
 
 <br/>
 
 ## 4. Description Window
 
+The description window is the text shown in the center of the HUD. It is safe to cache this in a variable for conviennce. For example the following is safe:
+
+```lua
+local descw = nil
+
+function onInit(scene)
+    descw = scene:getDescriptionWindow()
+end
+
+function someFunction()
+    descw:setText("Invoking some function!")
+end
+```
+
 <hr/>
 
 #### `[string] DescriptionText.getText()`
+
+Returns the current test of description window.
 
 <hr/>
 
 #### `[void] ]DescriptionText.setText(text)`
 
+Sets the text of the description window to `text`.
+
 <hr/>
+<br/>
+
+## 5. Zones
+
+Zones are configured in a scene's JSON file.
+
+### 5.1 Zone Events
+
+Zone events are defined in the zone's JSON configuration like so:
+
+For example:
+
+```json
+"zones":
+[
+    { 
+        "name" : "Home",
+        "description": "Press SPACE to enter your filthy apartment",
+        "rects" :
+        [ 
+            "48,77,52,80", 
+        ],
+        "transition":
+        {
+            "scene": "EuclidHouse",
+        },
+        "onSelect" : "home_onSelect"
+    }
+]
+```
+
+The zone events are:
+
+#### `[bool] onSelect(scene, zone)`
+
+This is event is triggered when the zone has an attached transition and the user triggers the transition (see 'Zones' and 'Transitions' in scenes-dev.md). If there is no transition attached to the zone then this callback is never called.
+
+The event is passed a handle to the current `scene`, and a handle to the `zone` itself. 
+
+This callback must return a boolean where **true** indicates that the transition should continue (i.e. that the new scene should be loaded) or **false** to cancel the transition.
+
+The following example implements a "cover charge" for entering a scene:
+
+```lua
+function club_onSelect(scene, zone)
+    local player = scene:getPlayer()
+    local balance = player:getBalance()
+    if balance > 20 then
+        player:setBalance(balance - 20)
+        return true
+    end
+
+    scene:getDescriptionWindow():setText("Entry costs $20")
+    return false
+end
+```
+
+### 5.1 Zone API
+
+#### `[string] Zone.getName()`
+
+Returns the name of the zone.

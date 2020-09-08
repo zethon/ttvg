@@ -100,12 +100,14 @@ BOOST_AUTO_TEST_CASE(loadTestCase)
     BOOST_TEST(tt::loadSceneLuaFile(s2, luafile2, lua));
 
     auto rv1 = tt::CallLuaFunction(lua, "onInit", "scene1", {{ LUA_REGISTRYINDEX, s1idx}});
-    BOOST_TEST(rv1.size() == 1);
-    BOOST_TEST(tt::GetLuaValue<std::string>(rv1.front()) == "mylua1");
+    BOOST_TEST(rv1.has_value());
+    BOOST_TEST(rv1->size() == 1);
+    BOOST_TEST(tt::GetLuaValue<std::string>(rv1->front()) == "mylua1");
 
     auto rv2 = tt::CallLuaFunction(lua, "onInit", "scene2", { LUA_REGISTRYINDEX, s2idx});
-    BOOST_TEST(rv2.size() == 1);
-    BOOST_TEST(tt::GetLuaValue<std::string>(rv2.front()) == "mylua2");
+    BOOST_TEST(rv2.has_value());
+    BOOST_TEST(rv2->size() == 1);
+    BOOST_TEST(tt::GetLuaValue<std::string>(rv2->front()) == "mylua2");
 }
 
 constexpr auto playerTestFile = R"lua(
@@ -198,15 +200,18 @@ end
     BOOST_TEST((scene->getPlayerTile() == sf::Vector2f{ 2.f, 2.f }));
     
     auto results = tt::CallLuaFunction(L, "global_getter", "scene1");
-    BOOST_TEST(results.size() == 2);
-    BOOST_TEST(tt::GetLuaValue<float>(results.at(0)) == 35.f, boost::test_tools::tolerance(0.001));
-    BOOST_TEST(tt::GetLuaValue<float>(results.at(1)) == 35.f, boost::test_tools::tolerance(0.001));
-    results.clear();
+    BOOST_TEST(results.has_value());
+    BOOST_TEST(results->size() == 2);
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(0)) == 35.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(1)) == 35.f, boost::test_tools::tolerance(0.001));
+    results->clear();
 
     results = tt::CallLuaFunction(L, "tile_getter", "scene1");
-    BOOST_TEST(results.size() == 2);
-    BOOST_TEST(tt::GetLuaValue<float>(results.at(0)) == 2.f, boost::test_tools::tolerance(0.001));
-    BOOST_TEST(tt::GetLuaValue<float>(results.at(1)) == 2.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(results.has_value());
+    BOOST_TEST(results->size() == 2);
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(0)) == 2.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(1)) == 2.f, boost::test_tools::tolerance(0.001));
+    results->clear();
 
     tt::CallLuaFunction(L, "global_setter", "scene1",
         {
@@ -215,9 +220,11 @@ end
         });
 
     results = tt::CallLuaFunction(L, "tile_getter", "scene1");
-    BOOST_TEST(results.size() == 2);
-    BOOST_TEST(tt::GetLuaValue<float>(results.at(0)) == 3.f, boost::test_tools::tolerance(0.001));
-    BOOST_TEST(tt::GetLuaValue<float>(results.at(1)) == 3.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(results.has_value());
+    BOOST_TEST(results->size() == 2);
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(0)) == 3.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(1)) == 3.f, boost::test_tools::tolerance(0.001));
+    results->clear();
 
     tt::CallLuaFunction(L, "tile_setter", "scene1",
         {
@@ -226,9 +233,10 @@ end
         });
 
     results = tt::CallLuaFunction(L, "global_getter", "scene1");
-    BOOST_TEST(results.size() == 2);
-    BOOST_TEST(tt::GetLuaValue<float>(results.at(0)) == 16.f, boost::test_tools::tolerance(0.001));
-    BOOST_TEST(tt::GetLuaValue<float>(results.at(1)) == 16.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(results.has_value());
+    BOOST_TEST(results->size() == 2);
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(0)) == 16.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(1)) == 16.f, boost::test_tools::tolerance(0.001));
 }
 
 const std::tuple<std::string, std::string> itemTestData[] = 
