@@ -54,23 +54,16 @@ void from_json(const nl::json& j, CallbackInfo& cb)
     }
 }
 
-[[maybe_unused]] Scene* checkSceneObj(lua_State* L, int index = 1)
-{
-    auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
-    return *temp;
-}
-
 int Scene_name(lua_State* L)
 {
-    auto temp = static_cast<Scene**>(luaL_checkudata(L, 1, Scene::CLASS_NAME));
-    auto scene = *temp;
+    auto scene = checkObject<Scene>(L);
     lua_pushstring(L, scene->name().c_str());
     return 1;
 }
 
 int Scene_getPlayer(lua_State* L)
 {
-    auto scene = checkSceneObj(L);
+    auto scene = checkObject<Scene>(L);
     
     // Create a new userdata and set the appropriate metatable. Lua's 
     // garabage collection will take care of deleting the
@@ -86,7 +79,7 @@ int Scene_getPlayer(lua_State* L)
 
 int Scene_getDescriptionWindow(lua_State* L)
 {
-    auto scene = checkSceneObj(L);
+    auto scene = checkObject<Scene>(L);
     
     // Create a new userdata and set the appropriate metatable. Lua's 
     // garabage collection will take care of deleting the
@@ -102,7 +95,7 @@ int Scene_getDescriptionWindow(lua_State* L)
 
 int Scene_addItem(lua_State* L)
 {
-    auto scene = checkSceneObj(L);
+    auto scene = checkObject<Scene>(L);
     auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
     scene->addItem(*itemp);
     return 0;
@@ -110,7 +103,7 @@ int Scene_addItem(lua_State* L)
 
 int Scene_removeItem(lua_State* L)
 {
-    auto scene = checkSceneObj(L);
+    auto scene = checkObject<Scene>(L);
     auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
     scene->removeItem(*itemp);
     return 0;
@@ -118,7 +111,7 @@ int Scene_removeItem(lua_State* L)
 
 int Scene_setPlayerTile(lua_State* L)
 {
-    auto scene = checkSceneObj(L);
+    auto scene = checkObject<Scene>(L);
     auto x = static_cast<float>(lua_tonumber(L, 2));
     auto y = static_cast<float>(lua_tonumber(L, 3));
     scene->setPlayerTile(sf::Vector2f{ x,y });
@@ -127,7 +120,7 @@ int Scene_setPlayerTile(lua_State* L)
 
 int Scene_getPlayerTile(lua_State* L)
 {
-    auto scene = checkSceneObj(L);
+    auto scene = checkObject<Scene>(L);
     const auto tile = scene->getPlayerTile();
     lua_pushnumber(L, tile.x);
     lua_pushnumber(L, tile.y);
