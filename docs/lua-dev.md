@@ -109,15 +109,39 @@ end
 
 <hr/>
 
+#### `[number,number] Scene.getPlayerTile()`
+
+No arguments. Returns the (x,y) coordinates of the player's current tile. 
+
+
+**Example**
+```lua
+function onEnter(scene)
+    local x,y = scene:getPlayerTile()
+    print ("The player is at position "..x..','..y)
+end
+```
+
+<hr/>
+
 #### `[string] Scene.name()`
 
 No arguments. Returns the name of the current scene.
 
 <hr/>
 
+
 #### `[void] Scene.removeItem(item)`
 
 The argument `item` is an `Item` object. If the scene does not contain the passed in item then nothing happens.
+
+<hr/>
+
+#### `[void] Scene.setPlayerTile(x,y)`
+
+Sets the player's current tile to (`x`,`y`). There are no bounds checking done on coordinates passed in.
+
+<br/>
 
 ## 2. Player
 
@@ -179,6 +203,14 @@ Returns an intenger value of theplayer's current health.
 
 <hr/>
 
+#### `[float,float] Player.getPosition()`
+
+Returns the (x,y) corrdinates of the player's position **in terms of the display coordinates**. 
+
+See `Scene.getPlayerTile()`
+
+<hr/>
+
 #### `[bool] Player.hasItem(item)`
 
 The argument `item` is an `Item` object (i.e. the type returned from `ItemFactory.createItem()`). Behind the scenes, `item` holds a pointer to the allocated item and does a raw pointer comparison with all the items contained in player inventory.
@@ -212,6 +244,13 @@ Sets the balance of the player to `balance`. This should be a numeric value.
 #### `[void] Player.setHealth(health)`
 Sets the health of the player to `health`. This should be an **integer** value.
 
+#### `[void] Player.setPosition(x,y)`
+
+Sets the player's display position to (`x`,`y`). There are no bounds checking done on coordinates passed in.
+
+See `Scene.getPlayerTile()`
+
+<br/>
 
 ## 3. Items
 
@@ -253,13 +292,19 @@ Parameter `itemid` is the item's unique key as determined by the filename. This 
 
 #### `[string] Item.description()`
 
+Returns the description of the item.
+
 <hr/>
 
 #### `[string] Item.id()`
 
+Returns the id of the item.
+
 <hr/>
 
 #### `[string] Item.name()`
+
+Returns the name of the item.
 
 <hr/>
 
@@ -271,17 +316,23 @@ Parameter `itemid` is the item's unique key as determined by the filename. This 
 
 <hr/>
 
-#### `[void] Item.setDescription()`
+#### `[void] Item.setDescription(text)`
+
+Sets the description of the item to `text`. Can be empty.
 
 <hr/>
 
-#### `[void] Item.setName()`
+#### `[void] Item.setName(name)`
+
+Sets the name of the item to `name`. Can be empty.
 
 <hr/>
 
 #### `[void] Item.setObtainable()`
 
 <hr/>
+
+<br/>
 
 ## 4. Description Window
 

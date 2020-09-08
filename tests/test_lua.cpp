@@ -128,7 +128,8 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     const auto mappath{ path / "resources" / "maps" };
 
     writeFile((luapath / "scene1.lua").string(), playerTestFile);
-    writeFile((mappath / "scene1.json").string(), R"({"background":{"tiles":{ "x": 16, "y": 16 }}})");
+    writeFile((mappath / "scene1.json").string(), 
+        R"({"background":{"tiles":{ "x": 16, "y": 16 }}})");
 
     TestHarness harness{ (path / "resources").string() };
     auto lua = harness._lua;
@@ -144,6 +145,90 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
     BOOST_TEST(player->balance() == 40.00, boost::test_tools::tolerance(0.001));
     tt::CallLuaFunction(lua, "doBalance", "scene1", { { LUA_REGISTRYINDEX, scene->luaIdx() } });
     BOOST_TEST(player->balance() == 37.50, boost::test_tools::tolerance(0.001));
+}
+
+BOOST_AUTO_TEST_CASE(playerPositionTest)
+{
+    const auto path{ tt::tempFolder() };
+    const auto luapath{ path / "resources" / "lua" };
+    const auto mappath{ path / "resources" / "maps" };
+
+    writeFile((mappath / "scene1.json").string(), 
+        R"({"onEnter":"onEnter",
+            "background":{"tiles":{ "x": 16, "y": 16 }},
+            "player":{"start": { "x": 35, "y": 35 }}})");
+
+    writeFile((luapath / "scene1.lua").string(),
+        R"(s = nil
+p=nil
+
+function onEnter(scene)
+    s = scene
+    p = scene:getPlayer()
+end
+
+function tile_setter(x,y)
+    s:setPlayerTile(x,y)
+end
+
+function tile_getter()
+    local x,y = s:getPlayerTile()
+    return x,y
+end
+
+function global_setter(x,y)
+    p:setPosition(x,y)
+end
+
+function global_getter()
+    local x,y = p:getPosition()
+    return x,y
+end
+)");
+
+    TestHarness harness{ (path / "resources").string() };
+    auto L = harness._lua;
+    auto player = harness._player;
+
+    auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
+    scene->init();
+    scene->enter();
+
+    // sanity check
+    BOOST_TEST((scene->getPlayerTile() == sf::Vector2f{ 2.f, 2.f }));
+    
+    auto results = tt::CallLuaFunction(L, "global_getter", "scene1");
+    BOOST_TEST(results.size() == 2);
+    BOOST_TEST(tt::GetLuaValue<float>(results.at(0)) == 35.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results.at(1)) == 35.f, boost::test_tools::tolerance(0.001));
+    results.clear();
+
+    results = tt::CallLuaFunction(L, "tile_getter", "scene1");
+    BOOST_TEST(results.size() == 2);
+    BOOST_TEST(tt::GetLuaValue<float>(results.at(0)) == 2.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results.at(1)) == 2.f, boost::test_tools::tolerance(0.001));
+
+    tt::CallLuaFunction(L, "global_setter", "scene1",
+        {
+            { LUA_TNUMBER, static_cast<lua_Number>(50.f) },
+            { LUA_TNUMBER, static_cast<lua_Number>(50.f) }
+        });
+
+    results = tt::CallLuaFunction(L, "tile_getter", "scene1");
+    BOOST_TEST(results.size() == 2);
+    BOOST_TEST(tt::GetLuaValue<float>(results.at(0)) == 3.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results.at(1)) == 3.f, boost::test_tools::tolerance(0.001));
+
+    tt::CallLuaFunction(L, "tile_setter", "scene1",
+        {
+            { LUA_TNUMBER, static_cast<lua_Number>(1.f) },
+            { LUA_TNUMBER, static_cast<lua_Number>(1.f) }
+        });
+
+    results = tt::CallLuaFunction(L, "global_getter", "scene1");
+    BOOST_TEST(results.size() == 2);
+    BOOST_TEST(tt::GetLuaValue<float>(results.at(0)) == 16.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results.at(1)) == 16.f, boost::test_tools::tolerance(0.001));
 }
 
 const std::tuple<std::string, std::string> itemTestData[] = 

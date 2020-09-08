@@ -104,4 +104,8 @@ std::string GetLuaValue(const LuaArgPair& v);
     std::string_view sandbox,
     const LuaArgPair& arg);
 
+[[maybe_unused]] LuaValues CallLuaFunction(lua_State* L,
+    std::string_view function,
+    std::string_view sandbox);
+
 }

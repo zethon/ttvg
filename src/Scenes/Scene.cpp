@@ -116,6 +116,24 @@ int Scene_removeItem(lua_State* L)
     return 0;
 }
 
+int Scene_setPlayerTile(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    auto x = static_cast<float>(lua_tonumber(L, 2));
+    auto y = static_cast<float>(lua_tonumber(L, 3));
+    scene->setPlayerTile(sf::Vector2f{ x,y });
+    return 0;
+}
+
+int Scene_getPlayerTile(lua_State* L)
+{
+    auto scene = checkSceneObj(L);
+    const auto tile = scene->getPlayerTile();
+    lua_pushnumber(L, tile.x);
+    lua_pushnumber(L, tile.y);
+    return 2;
+}
+
 const struct luaL_Reg Scene::LuaMethods[] =
 {
     {"name", Scene_name},
@@ -123,6 +141,8 @@ const struct luaL_Reg Scene::LuaMethods[] =
     {"getDescriptionWindow", Scene_getDescriptionWindow},
     {"addItem", Scene_addItem},
     {"removeItem", Scene_removeItem},
+    {"setPlayerTile", Scene_setPlayerTile},
+    {"getPlayerTile", Scene_getPlayerTile},
     {nullptr, nullptr}
 };
 
@@ -386,6 +406,12 @@ sf::Vector2f Scene::getPlayerTile() const
 {
     auto playerxy = _player->getGlobalCenter();
     return _background->getTileFromGlobal(playerxy);
+}
+
+void Scene::setPlayerTile(const Tile& tile)
+{
+    const auto global = _background->getGlobalFromTile(tile);
+    _player->setPosition(global);
 }
 
 void Scene::addItem(ItemPtr item)

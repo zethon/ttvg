@@ -141,6 +141,7 @@ public:
     void draw() override;
 
     sf::Vector2f getPlayerTile() const;
+    void setPlayerTile(const Tile& tile);
 
     int luaIdx() const { return _luaIdx; }
 
