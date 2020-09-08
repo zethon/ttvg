@@ -19,11 +19,11 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-class Opening : public Scene
+class Tucson : public Scene
 {
 
 public:
-    Opening(const SceneSetup& setup);
+    Tucson(const SceneSetup& setup);
     static constexpr auto SCENE_NAME = "tucson";
 
     PollResult poll(const sf::Event& e) override;

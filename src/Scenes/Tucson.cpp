@@ -9,7 +9,7 @@
 #include "../Vehicle.h"
 #include "../PathFactory.h"
 
-#include "Opening.h"
+#include "Tucson.h"
 
 namespace tt
 {
@@ -17,7 +17,7 @@ namespace tt
 constexpr auto MAX_VEHICLES = 25u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
-Opening::Opening(const SceneSetup& setup)
+Tucson::Tucson(const SceneSetup& setup)
     : Scene{ SCENE_NAME, setup }
 {
      initTraffic();
@@ -31,7 +31,7 @@ Opening::Opening(const SceneSetup& setup)
     //_bgsong->play();
 }
 
-void Opening::enter()
+void Tucson::enter()
 {
     Scene::enter();
 
@@ -43,7 +43,7 @@ void Opening::enter()
     _hud.setBalance(_player->balance());
 }
 
-void Opening::initTraffic()
+void Tucson::initTraffic()
 {
     // initialize the traffic system
     _vehicleFactory = std::make_unique<VehicleFactory>(_resources, _background);
@@ -94,7 +94,7 @@ void Opening::initTraffic()
     _vehicleFactory->setPathFactory(pathFactory);
 }
 
-PollResult Opening::poll(const sf::Event& e)
+PollResult Tucson::poll(const sf::Event& e)
 {
     auto retval = Scene::poll(e);
     if (retval.handled) return retval;
@@ -136,7 +136,7 @@ PollResult Opening::poll(const sf::Event& e)
     return retval;
 }
 
-ScreenAction Opening::timestep()
+ScreenAction Tucson::timestep()
 {
     timestepTraffic();
 
@@ -151,7 +151,7 @@ ScreenAction Opening::timestep()
     return {};
 }
 
-void Opening::timestepTraffic()
+void Tucson::timestepTraffic()
 {
     if (!_updateTraffic) return;
 
@@ -192,7 +192,7 @@ void Opening::timestepTraffic()
     }
 }
 
-void Opening::draw()
+void Tucson::draw()
 {
     // always adjust the view before drawing
     adjustView();
@@ -224,7 +224,7 @@ void Opening::draw()
     _debugWindow.draw();
 }
 
-void Opening::updateCurrentTile(const TileInfo& info)
+void Tucson::updateCurrentTile(const TileInfo& info)
 {
     _currentTile = info;
 
@@ -300,7 +300,7 @@ void Opening::updateCurrentTile(const TileInfo& info)
     _debugWindow.setText(posText);
 }
 
-void Opening::toggleHighlight()
+void Tucson::toggleHighlight()
 {
     _player->setHighlighted(!_player->highlighted());
     _vehicleFactory->setHighlighted(!_vehicleFactory->highlighted());

@@ -23,7 +23,7 @@ set(SOURCE_FILES
     Scenes/DebugWindow.cpp
     Scenes/DescriptionText.cpp
     Scenes/Hud.cpp
-    Scenes/Opening.cpp
+    Scenes/Tucson.cpp
     Scenes/Scene.cpp
 )
 
@@ -55,7 +55,7 @@ set(HEADER_FILES
     Scenes/DebugWindow.h
     Scenes/DescriptionText.h
     Scenes/Hud.h
-    Scenes/Opening.h
+    Scenes/Tucson.h
     Scenes/Scene.h
 )
 

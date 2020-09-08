@@ -85,8 +85,8 @@ set(LUA_FILES
     ../src/Scenes/Hud.h
     ../src/Scenes/Hud.cpp
 
-    ../src/Scenes/Opening.h
-    ../src/Scenes/Opening.cpp
+    ../src/Scenes/Tucson.h
+    ../src/Scenes/Tucson.cpp
 
     ../src/Scenes/Scene.h
     ../src/Scenes/Scene.cpp

@@ -1,7 +1,7 @@
 #include <lua/lua.hpp>
 
 #include "Scenes/Scene.h"
-#include "Scenes/Opening.h"
+#include "Scenes/Tucson.h"
 
 #include "GameScreen.h"
 
@@ -43,7 +43,7 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
 
     // TODO: as the game grows these constructions will take longer
     // and should probably be done in parallel and/or with a loading screen
-    _scenes.emplace(Opening::SCENE_NAME, std::make_shared<Opening>(setup));
+    _scenes.emplace(Tucson::SCENE_NAME, std::make_shared<Tucson>(setup));
     _scenes.emplace("EuclidHouse", std::make_shared<Scene>("EuclidHouse", setup));
     _scenes.emplace("Hospital", std::make_shared<Scene>("Hospital", setup));
     _scenes.emplace("CourthouseInterior", std::make_shared<Scene>("CourthouseInterior", setup));
