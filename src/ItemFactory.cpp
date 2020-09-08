@@ -29,13 +29,14 @@ ItemFactory* checkItemFactory(lua_State* L)
         return nullptr;
     }
 
+    lua_pop(L, 1);
     return state;
 }
 
 int ItemFactory_createItem(lua_State* L)
 {
     auto fact = checkItemFactory(L);
-    const auto itemname = lua_tostring(L, -2);
+    const auto itemname = lua_tostring(L, 1);
 
     std::size_t size = sizeof(ItemPtr);
     void* userdata = lua_newuserdata(L, size);
