@@ -10,20 +10,6 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-void from_json(const nl::json& j, Zone& z)
-{
-    j.at("name").get_to(z.name);
-    if (j.contains("description"))
-    {
-        j.at("description").get_to(z.description);
-    }
-    
-    if (j.contains("transition"))
-    {
-        z.transition = j["transition"].get<Transition>();
-    }
-}
-
 Background::Background(std::string_view name, ResourceManager& resmgr, sf::RenderTarget& target)
     : Background(name, resmgr, target, sf::Vector2f{ 16.f, 16.f })
 {
