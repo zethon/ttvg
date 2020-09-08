@@ -152,7 +152,7 @@ function someOtherFunction()
 end
 ```
 
-The first time the scene is entered this will run. However when the player leaves the scene, the data to which `gPlayer` points is invalidated but the underlying value of `gPlayer' is still non-nil. Hence when the user re-enteres the scene and `someOtherFunction` is invoked, the methos `Player.getHealth()` will be called on corrupted data.
+The first time the scene is entered this will run. However when the player leaves the scene, the data to which `gPlayer` points is invalidated but the underlying value of `gPlayer` is still non-nil. Hence when the user re-enteres the scene and `someOtherFunction` is invoked, the methos `Player.getHealth()` will be called on corrupted data.
 
 The correct way to do this would be to just set it every time:
 
