@@ -18,14 +18,24 @@ void from_json(const nl::json& j, Zone& z)
     {
         z.transition = j["transition"].get<Transition>();
     }
+
+    if (j.contains("onSelect"))
+    {
+        j.at("onSelect").get_to(z.callbacks.onSelect);
+    }
 }
+
+namespace
+{
 
 int Zone_name(lua_State* L)
 {
     auto zone = checkObject<Zone>(L);
     lua_pushstring(L, zone->name.c_str());
-    return 2;
+    return 1;
 }
+
+} // anonymouse namespace
 
 const struct luaL_Reg Zone::LuaMethods[] =
 {

@@ -41,14 +41,14 @@ std::string GetLuaValue(const LuaArgPair& v)
     return std::any_cast<std::string>(value);
 }
 
-[[maybe_unused]] LuaValues CallLuaFunction(lua_State* L,
+[[maybe_unused]] OptionalLuaValues CallLuaFunction(lua_State* L,
     std::string_view function,
     std::string_view sandbox)
 {
     return CallLuaFunction(L, function, sandbox, LuaValues{});
 }
 
-[[maybe_unused]] LuaValues CallLuaFunction(lua_State* L,
+[[maybe_unused]] OptionalLuaValues CallLuaFunction(lua_State* L,
     std::string_view function,
     std::string_view sandbox,
     const LuaArgPair& arg)
@@ -58,7 +58,7 @@ std::string GetLuaValue(const LuaArgPair& v)
     return CallLuaFunction(L, function, sandbox, args);
 }
 
-[[maybe_unused]] LuaValues CallLuaFunction(lua_State * L, 
+[[maybe_unused]] OptionalLuaValues CallLuaFunction(lua_State * L, 
     std::string_view function, 
     std::string_view sandbox,
     const LuaValues & args)
