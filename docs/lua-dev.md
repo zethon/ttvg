@@ -412,7 +412,7 @@ This is event is triggered when the zone has an attached transition and the user
 
 The event is passed a handle to the current `scene`, and a handle to the `zone` itself. 
 
-This callback must return a boolean where **true** indicates that the transition should continue (i.e. that the new scene should be loaded) or **false** cancels the transition.
+This callback must return a boolean where **true** indicates that the transition should continue (i.e. that the new scene should be loaded) or **false** to cancel the transition.
 
 The following example implements a "cover charge" for entering a scene:
 
@@ -432,4 +432,6 @@ end
 
 ### 5.1 Zone API
 
-#### `[string] DescriptionText.getText()`
+#### `[string] Zone.getName()`
+
+Returns the name of the zone.

@@ -39,7 +39,7 @@ int Zone_name(lua_State* L)
 
 const struct luaL_Reg Zone::LuaMethods[] =
 {
-    {"name", Zone_name},
+    {"getName", Zone_name},
     {nullptr, nullptr}
 };
 
