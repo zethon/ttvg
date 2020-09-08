@@ -81,6 +81,24 @@ int Player_removeItemByName(lua_State* L)
     return 0;
 }
 
+int Player_setPosition(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    auto x = static_cast<float>(lua_tonumber(L, 2));
+    auto y = static_cast<float>(lua_tonumber(L, 3));
+    player->setPosition(sf::Vector2f{ x,y });
+    return 0;
+}
+
+int Player_getPosition(lua_State* L)
+{
+    auto player = checkPlayerObj(L);
+    const auto position = player->getPosition();
+    lua_pushnumber(L, position.x);
+    lua_pushnumber(L, position.y);
+    return 2;
+}
+
 const struct luaL_Reg Player::LuaMethods[] =
 {
     {"getBalance", Player_balance},
@@ -93,6 +111,9 @@ const struct luaL_Reg Player::LuaMethods[] =
     {"hasItemByName", Player_hasItemByName},
     {"removeItem", Player_removeItem},
     {"removeItemByName", Player_removeItemByName},
+
+    {"setPosition", Player_setPosition},
+    {"getPosition", Player_getPosition},
     {nullptr, nullptr}
 };
 
