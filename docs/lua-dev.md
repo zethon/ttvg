@@ -1,14 +1,3 @@
-<style type='text/css'>
-.api-header 
-{ 
-    display:block; 
-    font-family:"Lucida Console","Courier New";
-    background: #F5F5F5;
-    padding: 5px;
-    border: 1px solid black;
-}
-</style>
-
 ## 0. Introduction
 
 **This feature is a work in progress**. 
