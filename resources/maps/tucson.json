@@ -26,8 +26,7 @@
             "transition":
             {
                 "scene": "EuclidHouse",
-                "enabled": true,
-                "onSelect" : "home_onSelect"
+                "enabled": true
             }
         },
         { 
