@@ -1,26 +1,21 @@
 #include <lua/lua.hpp>
 
 #include "Player.h"
+#include "TTLua.h"
 
 namespace tt
 {
 
-[[maybe_unused]] Player* checkPlayerObj(lua_State* L, int index = 1)
-{
-    auto temp = static_cast<Player**>(luaL_checkudata(L, 1, Player::CLASS_NAME));
-    return *temp;
-}
-
 int Player_health(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     lua_pushnumber(L, player->health());
     return 1;
 }
 
 int Player_setHealth(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     auto health = lua_tointeger(L, 2);
     player->setHealth(static_cast<std::uint32_t>(health));
     return 0;
@@ -28,14 +23,14 @@ int Player_setHealth(lua_State* L)
 
 int Player_balance(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     lua_pushnumber(L, player->balance());
     return 1;
 }
 
 int Player_setBalance(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     float balance = static_cast<float>(lua_tonumber(L, 2));
     player->setBalance(balance);    
     return 0;
@@ -43,7 +38,7 @@ int Player_setBalance(lua_State* L)
 
 int Player_addItem(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
     player->addItem(*itemp);
     return 0;
@@ -51,7 +46,7 @@ int Player_addItem(lua_State* L)
 
 int Player_hasItem(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     auto itemv = static_cast<ItemPtr*>(lua_touserdata(L, -2));
     lua_pushboolean(L, player->hasItem(*itemv) ? 1 : 0);
     return 1;
@@ -59,7 +54,7 @@ int Player_hasItem(lua_State* L)
 
 int Player_hasItemByName(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     const auto itemname = lua_tostring(L, 2);
     lua_pushboolean(L, player->hasItem(itemname) ? 1 : 0);
     return 1;
@@ -67,7 +62,7 @@ int Player_hasItemByName(lua_State* L)
 
 int Player_removeItem(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
     player->removeItem(*itemp);
     return 0;
@@ -75,7 +70,7 @@ int Player_removeItem(lua_State* L)
 
 int Player_removeItemByName(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     const auto itemname = lua_tostring(L, 2);
     player->removeItem(itemname);
     return 0;
@@ -83,7 +78,7 @@ int Player_removeItemByName(lua_State* L)
 
 int Player_setPosition(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     auto x = static_cast<float>(lua_tonumber(L, 2));
     auto y = static_cast<float>(lua_tonumber(L, 3));
     player->setPosition(sf::Vector2f{ x,y });
@@ -92,7 +87,7 @@ int Player_setPosition(lua_State* L)
 
 int Player_getPosition(lua_State* L)
 {
-    auto player = checkPlayerObj(L);
+    auto player = checkObject<Player>(L);
     const auto position = player->getPosition();
     lua_pushnumber(L, position.x);
     lua_pushnumber(L, position.y);
