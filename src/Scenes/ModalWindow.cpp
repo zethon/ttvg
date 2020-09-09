@@ -1,3 +1,9 @@
+#include <map>
+
+#include <fmt/core.h>
+
+#include "../Player.h"
+
 #include "ModalWindow.h"
 
 namespace tt
@@ -49,6 +55,7 @@ PollResult ModalWindow::poll(const sf::Event& e)
             default:
             break;
             
+            case sf::Keyboard::Space:
             case sf::Keyboard::Escape:
             {
                 return { true, { ScreenActionType::CLOSE_MODAL, {} }};
@@ -156,5 +163,48 @@ PollResult MessagesWindow::poll(const sf::Event& e)
 
     return PollResult{};
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
+    : ModalWindow(resmgr, target)
+{
+    setAlignment(ModalWindow::Alignment::CENTER);
+    
+    // count and name
+    using InvAgg = std::tuple<std::uint32_t, std::string>;
+    std::map<std::string, InvAgg> aggregate;
+
+    for (const auto& item : player->getInventory())
+    {
+        if (aggregate.find(item->getID()) != aggregate.end())
+        {
+            std::get<0>(aggregate[item->getID()])++;
+        }
+        else
+        {
+            aggregate[item->getID()] = std::make_tuple(1, item->getName());
+        }
+    }
+
+    if (aggregate.size() >= 10)
+    {
+        setHeight(height() + 250.f);
+    }
+    if (aggregate.size() >= 5)
+    {
+        setHeight(height() + 125.f);
+    }
+
+    std::string message = "You are carrying...\n\n";
+    for (const auto& item : aggregate)
+    {
+        const auto& [count, name] = item.second;
+        message += fmt::format("{} x {}\n", name, count);
+    }
+
+    setText(message);
+}
+
 
 } // namespace tt

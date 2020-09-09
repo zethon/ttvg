@@ -696,19 +696,14 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             //
             case sf::Keyboard::I:
             {
-                _modalWindow = std::make_unique<ModalWindow>(_resources, _window);
-                _modalWindow->setAlignment(ModalWindow::Alignment::CENTER);
-                _modalWindow->setHeight(_modalWindow->height() + 500.f);
-                std::string inventory = "You are carrying:\n\n";
-
-                std::cout   << std::endl;
-                for (const auto& item : _player->getInventory())
+                if (_player->getInventory().size() > 0)
                 {
-                    std::cout << item->getName() << '\n';
-                    inventory += item->getName() + "\n"s;
+                    _modalWindow = std::make_unique<InventoryWindow>(_resources, _window, _player);
                 }
-                std::cout   << std::endl;
-                _modalWindow->setText(inventory);
+                else
+                {
+                    _descriptionText.setText("You have no items");
+                }                
             }
             break;
 

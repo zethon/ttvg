@@ -6,6 +6,9 @@
 namespace tt
 {
 
+class Player;
+using PlayerPtr = std::shared_ptr<Player>;
+
 class ModalWindow : public Screen
 {
 
@@ -40,6 +43,8 @@ protected:
     std::shared_ptr<sf::Text>           _text;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 class MessagesWindow : public ModalWindow
 {
     std::deque<std::string>    _messages;
@@ -59,6 +64,17 @@ public:
 
     PollResult poll(const sf::Event& e) override;
     
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+class InventoryWindow : public ModalWindow
+{
+
+public:
+    InventoryWindow(ResourceManager& resmgr, 
+        sf::RenderTarget& target,
+        PlayerPtr player);
 };
 
 } // namespace tt
