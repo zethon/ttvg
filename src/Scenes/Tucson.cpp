@@ -138,6 +138,12 @@ PollResult Tucson::poll(const sf::Event& e)
 
 ScreenAction Tucson::timestep()
 {
+    if (_modalWindow)
+    {
+        _modalWindow->timestep();
+        return {};
+    }
+
     timestepTraffic();
 
     Scene::timestep();
@@ -222,6 +228,11 @@ void Tucson::draw()
     _hud.draw();
     _descriptionText.draw();
     _debugWindow.draw();
+
+    if (_modalWindow)
+    {
+        _modalWindow->draw();
+    }
 }
 
 void Tucson::updateCurrentTile(const TileInfo& info)

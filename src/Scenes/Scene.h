@@ -13,6 +13,7 @@
 #include "Hud.h"
 #include "DescriptionText.h"
 #include "DebugWindow.h"
+#include "ModalWindow.h"
 
 namespace tt
 {
@@ -138,6 +139,7 @@ public:
     virtual void exit();
 
     PollResult poll(const sf::Event& e) override;
+    ScreenAction timestep() override;
     void draw() override;
 
     sf::Vector2f getPlayerTile() const;
@@ -161,14 +163,14 @@ protected:
 
     [[maybe_unused]] bool walkPlayer(float speed);    
 
-    std::string             _name;
-    lua_State*              _luaState = nullptr;
-    int                     _luaIdx = 0;
-    CallbackInfo            _callbackNames;
+    std::string     _name;
+    lua_State*      _luaState = nullptr;
+    int             _luaIdx = 0;
+    CallbackInfo    _callbackNames;
 
-    Hud                     _hud;
-    DescriptionText         _descriptionText;
-    DebugWindow             _debugWindow;
+    Hud             _hud;
+    DescriptionText _descriptionText;
+    DebugWindow     _debugWindow;
 
     BackgroundSharedPtr     _background;
 
@@ -178,8 +180,10 @@ protected:
     AvatarInfo              _playerAvatarInfo;
     TileInfo                _currentTile;
 
-    Items                   _items;
-    ItemFactory&            _itemFactory;
+    Items           _items;
+    ItemFactory&    _itemFactory;
+
+    std::unique_ptr<ModalWindow>    _modalWindow;
 
 private:
     void createItems();

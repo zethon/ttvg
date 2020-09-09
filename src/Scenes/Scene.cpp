@@ -5,6 +5,8 @@
 #include "../TTLua.h"
 #include "Scene.h"
 
+using namespace std::string_literals;
+
 namespace tt
 {
 
@@ -264,158 +266,183 @@ void Scene::exit()
 
 PollResult Scene::poll(const sf::Event& e)
 {
-    if (e.type == sf::Event::KeyPressed)
+    if (_modalWindow)
     {
-        switch (e.key.code)
+        auto result = _modalWindow->poll(e);
+        if (result.handled 
+            && result.action.type == ScreenActionType::CLOSE_MODAL)
         {
-            default:
-            break;
-
-            case sf::Keyboard::Left:
+            _modalWindow.reset();
+        }
+    }
+    else
+    {
+        if (e.type == sf::Event::KeyPressed)
+        {
+            switch (e.key.code)
             {
-                if (_player->state() == AnimatedState::ANIMATED
-                    && _player->direction() == Direction::LEFT)
+                default:
+                break;
+
+                case sf::Keyboard::Left:
                 {
-                    return { true, {} };
-                }
-
-                _player->setSource(0, 1);
-                _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedState::ANIMATED);
-                _player->setDirection(Direction::LEFT);
-                return { true, {} };
-            }
-
-            case sf::Keyboard::Right:
-            {
-                if (_player->state() == AnimatedState::ANIMATED
-                    && _player->direction() == Direction::RIGHT)
-                {
-                    return { true, {} };
-                }
-
-                _player->setSource(0, 3);
-                _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedState::ANIMATED);
-                _player->setDirection(Direction::RIGHT);
-                return { true, {} };
-            }
-
-            case sf::Keyboard::Up:
-            {
-                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
-                    || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
-                {
-                    return { true, {} };
-                }
-
-                _player->setSource(0, 0);
-                _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedState::ANIMATED);
-                _player->setDirection(Direction::UP);
-                return { true, {} };
-            }
-
-            case sf::Keyboard::Down:
-            {
-                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
-                    || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
-                {
-                    return { true, {} };
-                }
-
-                _player->setSource(0, 2);
-                _player->setMaxFramesPerRow(9);
-                _player->setState(AnimatedState::ANIMATED);
-                _player->setDirection(Direction::DOWN);
-                return { true, {} };
-            }
-
-            case sf::Keyboard::Space:
-            {
-                if (_currentTile.type == TileType::ZONE)
-                {
-                    auto& zone = boost::any_cast<Zone&>(_currentTile.data);
-                    if (zone.transition.has_value())
+                    if (_player->state() == AnimatedState::ANIMATED
+                        && _player->direction() == Direction::LEFT)
                     {
-                        bool doContinue = true;
+                        return { true, {} };
+                    }
 
-                        auto resultp = tt::CallLuaFunction(_luaState, 
-                            zone.callbacks.onSelect, 
-                            _name, 
-                            { 
-                                { LUA_REGISTRYINDEX, _luaIdx },
-                                { LUA_TLIGHTUSERDATA, static_cast<void*>(&zone) } 
-                            });
+                    _player->setSource(0, 1);
+                    _player->setMaxFramesPerRow(9);
+                    _player->setState(AnimatedState::ANIMATED);
+                    _player->setDirection(Direction::LEFT);
+                    return { true, {} };
+                }
 
-                        if (resultp.has_value()
-                                && resultp->size() > 0)
-                        {
-                            doContinue = tt::GetLuaValue<bool>(resultp->at(0));                            
-                        }
+                case sf::Keyboard::Right:
+                {
+                    if (_player->state() == AnimatedState::ANIMATED
+                        && _player->direction() == Direction::RIGHT)
+                    {
+                        return { true, {} };
+                    }
 
-                        if (doContinue)
+                    _player->setSource(0, 3);
+                    _player->setMaxFramesPerRow(9);
+                    _player->setState(AnimatedState::ANIMATED);
+                    _player->setDirection(Direction::RIGHT);
+                    return { true, {} };
+                }
+
+                case sf::Keyboard::Up:
+                {
+                    if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
+                        || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+                    {
+                        return { true, {} };
+                    }
+
+                    _player->setSource(0, 0);
+                    _player->setMaxFramesPerRow(9);
+                    _player->setState(AnimatedState::ANIMATED);
+                    _player->setDirection(Direction::UP);
+                    return { true, {} };
+                }
+
+                case sf::Keyboard::Down:
+                {
+                    if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
+                        || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+                    {
+                        return { true, {} };
+                    }
+
+                    _player->setSource(0, 2);
+                    _player->setMaxFramesPerRow(9);
+                    _player->setState(AnimatedState::ANIMATED);
+                    _player->setDirection(Direction::DOWN);
+                    return { true, {} };
+                }
+
+                case sf::Keyboard::Space:
+                {
+                    if (_currentTile.type == TileType::ZONE)
+                    {
+                        auto& zone = boost::any_cast<Zone&>(_currentTile.data);
+                        if (zone.transition.has_value())
                         {
-                            return {true, { ScreenActionType::CHANGE_SCENE, zone.transition->newscene }};
-                        }
-                        else
-                        {
-                            return {};
+                            bool doContinue = true;
+
+                            auto resultp = tt::CallLuaFunction(_luaState, 
+                                zone.callbacks.onSelect, 
+                                _name, 
+                                { 
+                                    { LUA_REGISTRYINDEX, _luaIdx },
+                                    { LUA_TLIGHTUSERDATA, static_cast<void*>(&zone) } 
+                                });
+
+                            if (resultp.has_value()
+                                    && resultp->size() > 0)
+                            {
+                                doContinue = tt::GetLuaValue<bool>(resultp->at(0));                            
+                            }
+
+                            if (doContinue)
+                            {
+                                return {true, { ScreenActionType::CHANGE_SCENE, zone.transition->newscene }};
+                            }
+                            else
+                            {
+                                return {};
+                            }
                         }
                     }
                 }
-            }
-            break;
+                break;
 
-            case sf::Keyboard::Period:
-            {
-                _hud.setVisible(!_hud.visible());
-            }
-            break;
-
-            //
-            // Action. Perform an action. 
-            // E.g. pick up an item or perform an action on an item.
-            //
-            case sf::Keyboard::A:
-            {
-                // TODO: Items should probably be held in a sorted container
-                // so that searching for them is faster than a linear search
-                for(auto it = _items.begin(); it != _items.end(); it++)
+                case sf::Keyboard::Period:
                 {
-                    auto item = *it;
-                    if (item->getGlobalBounds()
-                            .intersects(_player->getGlobalBounds()))
+                    _hud.setVisible(!_hud.visible());
+                }
+                break;
+
+                //
+                // Action. Perform an action. 
+                // E.g. pick up an item or perform an action on an item.
+                //
+                case sf::Keyboard::A:
+                {
+                    // TODO: Items should probably be held in a sorted container
+                    // so that searching for them is faster than a linear search
+                    for(auto it = _items.begin(); it != _items.end(); it++)
                     {
-                        pickupItem(it);
-                        break;
+                        auto item = *it;
+                        if (item->getGlobalBounds()
+                                .intersects(_player->getGlobalBounds()))
+                        {
+                            pickupItem(it);
+                            break;
+                        }
                     }
                 }
-            }
-            break;
+                break;
 
-            //
-            // Inventory. Display inventory.
-            //
-            case sf::Keyboard::I:
-            {
-                std::cout   << std::endl;
-
-                const auto& inv = _player->getInventory();
-
-                for (const auto& item : _player->getInventory())
+                //
+                // Inventory. Display inventory.
+                //
+                case sf::Keyboard::I:
                 {
-                    std::cout << item->getName() << '\n';
-                }
-                std::cout   << std::endl;
-            }
-            break;
+                    _modalWindow = std::make_unique<ModalWindow>(_resources, _window);
+                    std::string inventory = "INVENTORY!!!\n";
 
-            case sf::Keyboard::Num0:
-            {
-                _debugWindow.setVisible(!_debugWindow.visible());
+                    std::cout   << std::endl;
+                    for (const auto& item : _player->getInventory())
+                    {
+                        std::cout << item->getName() << '\n';
+                        inventory += item->getName() + "\n"s;
+                    }
+                    std::cout   << std::endl;
+                    _modalWindow->setText(inventory);
+                }
+                break;
+
+                case sf::Keyboard::D:
+                {
+                    _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
+                    MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
+                    w->pushMessage("Hi there Tommy");
+                    w->pushMessage("Welcome to the world of Tommy Tooter");
+                    w->pushMessage("I hope you enjoy your adventure!!!");
+                    w->pushMessage("dogfucker");
+                }
+                break;
+
+                case sf::Keyboard::Num0:
+                {
+                    _debugWindow.setVisible(!_debugWindow.visible());
+                }
+                break;
             }
-            break;
         }
     }
 
@@ -426,6 +453,16 @@ PollResult Scene::poll(const sf::Event& e)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         _player->setState(AnimatedState::STILL);
+    }
+
+    return {};
+}
+
+ScreenAction Scene::timestep()
+{
+    if (_modalWindow)
+    {
+        _modalWindow->timestep();
     }
 
     return {};
@@ -443,6 +480,11 @@ void Scene::draw()
     _hud.draw();
     _descriptionText.draw();
     _debugWindow.draw();
+
+    if (_modalWindow)
+    {
+        _modalWindow->draw();
+    }
 }
 
 sf::Vector2f Scene::getPlayerTile() const

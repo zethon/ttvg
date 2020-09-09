@@ -24,7 +24,8 @@ enum class ScreenActionType
 {
     NONE = 0,
     CHANGE_SCREEN,
-    CHANGE_SCENE
+    CHANGE_SCENE,
+    CLOSE_MODAL
 };
 
 struct ScreenAction
