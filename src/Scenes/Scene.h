@@ -188,6 +188,7 @@ protected:
 private:
     void createItems();
     void pickupItem(Items::iterator itemIt);
+    PollResult privatePollHandler(const sf::Event& e);
 };
 
 } // namespace tt

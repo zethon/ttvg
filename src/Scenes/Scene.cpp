@@ -273,206 +273,15 @@ PollResult Scene::poll(const sf::Event& e)
             && result.action.type == ScreenActionType::CLOSE_MODAL)
         {
             _modalWindow.reset();
+            return result;
         }
     }
     else
     {
-        if (e.type == sf::Event::KeyPressed)
+        auto result = privatePollHandler(e);
+        if (result.handled)
         {
-            switch (e.key.code)
-            {
-                default:
-                break;
-
-                case sf::Keyboard::Left:
-                {
-                    if (_player->state() == AnimatedState::ANIMATED
-                        && _player->direction() == Direction::LEFT)
-                    {
-                        return { true, {} };
-                    }
-
-                    _player->setSource(0, 1);
-                    _player->setMaxFramesPerRow(9);
-                    _player->setState(AnimatedState::ANIMATED);
-                    _player->setDirection(Direction::LEFT);
-                    return { true, {} };
-                }
-
-                case sf::Keyboard::Right:
-                {
-                    if (_player->state() == AnimatedState::ANIMATED
-                        && _player->direction() == Direction::RIGHT)
-                    {
-                        return { true, {} };
-                    }
-
-                    _player->setSource(0, 3);
-                    _player->setMaxFramesPerRow(9);
-                    _player->setState(AnimatedState::ANIMATED);
-                    _player->setDirection(Direction::RIGHT);
-                    return { true, {} };
-                }
-
-                case sf::Keyboard::Up:
-                {
-                    if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
-                        || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
-                    {
-                        return { true, {} };
-                    }
-
-                    _player->setSource(0, 0);
-                    _player->setMaxFramesPerRow(9);
-                    _player->setState(AnimatedState::ANIMATED);
-                    _player->setDirection(Direction::UP);
-                    return { true, {} };
-                }
-
-                case sf::Keyboard::Down:
-                {
-                    if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
-                        || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
-                    {
-                        return { true, {} };
-                    }
-
-                    _player->setSource(0, 2);
-                    _player->setMaxFramesPerRow(9);
-                    _player->setState(AnimatedState::ANIMATED);
-                    _player->setDirection(Direction::DOWN);
-                    return { true, {} };
-                }
-
-                case sf::Keyboard::Space:
-                {
-                    if (_currentTile.type == TileType::ZONE)
-                    {
-                        auto& zone = boost::any_cast<Zone&>(_currentTile.data);
-                        if (zone.transition.has_value())
-                        {
-                            bool doContinue = true;
-
-                            auto resultp = tt::CallLuaFunction(_luaState, 
-                                zone.callbacks.onSelect, 
-                                _name, 
-                                { 
-                                    { LUA_REGISTRYINDEX, _luaIdx },
-                                    { LUA_TLIGHTUSERDATA, static_cast<void*>(&zone) } 
-                                });
-
-                            if (resultp.has_value()
-                                    && resultp->size() > 0)
-                            {
-                                doContinue = tt::GetLuaValue<bool>(resultp->at(0));                            
-                            }
-
-                            if (doContinue)
-                            {
-                                return {true, { ScreenActionType::CHANGE_SCENE, zone.transition->newscene }};
-                            }
-                            else
-                            {
-                                return {};
-                            }
-                        }
-                    }
-                }
-                break;
-
-                case sf::Keyboard::Period:
-                {
-                    _hud.setVisible(!_hud.visible());
-                }
-                break;
-
-                //
-                // Action. Perform an action. 
-                // E.g. pick up an item or perform an action on an item.
-                //
-                case sf::Keyboard::A:
-                {
-                    // TODO: Items should probably be held in a sorted container
-                    // so that searching for them is faster than a linear search
-                    for(auto it = _items.begin(); it != _items.end(); it++)
-                    {
-                        auto item = *it;
-                        if (item->getGlobalBounds()
-                                .intersects(_player->getGlobalBounds()))
-                        {
-                            pickupItem(it);
-                            break;
-                        }
-                    }
-                }
-                break;
-
-                //
-                // Inventory. Display inventory.
-                //
-                case sf::Keyboard::I:
-                {
-                    _modalWindow = std::make_unique<ModalWindow>(_resources, _window);
-                    _modalWindow->setAlignment(ModalWindow::Alignment::CENTER);
-                    _modalWindow->setHeight(_modalWindow->height() + 500.f);
-                    std::string inventory = "You are carrying:\n\n";
-
-                    std::cout   << std::endl;
-                    for (const auto& item : _player->getInventory())
-                    {
-                        std::cout << item->getName() << '\n';
-                        inventory += item->getName() + "\n"s;
-                    }
-                    std::cout   << std::endl;
-                    _modalWindow->setText(inventory);
-                }
-                break;
-
-                case sf::Keyboard::Num1:
-                {
-                    _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
-                    MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
-                    _modalWindow->setAlignment(ModalWindow::Alignment::TOP);
-                    _modalWindow->setHeight(_modalWindow->height() + 50.f);
-                    w->pushMessage("Hi there Tommy");
-                    w->pushMessage("Welcome to the world of Tommy Tooter");
-                    w->pushMessage("I hope you enjoy your adventure!!!");
-                    w->pushMessage("dogfucker");
-                }
-                break;
-
-                case sf::Keyboard::Num2:
-                {
-                    _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
-                    MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
-                    _modalWindow->setAlignment(ModalWindow::Alignment::CENTER);
-                    _modalWindow->setHeight(_modalWindow->height() + 500.f);
-                    w->pushMessage("Hi there Tommy");
-                    w->pushMessage("Welcome to the world of Tommy Tooter");
-                    w->pushMessage("I hope you enjoy your adventure!!!");
-                    w->pushMessage("dogfucker");
-                }
-                break;
-
-                case sf::Keyboard::Num3:
-                {
-                    _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
-                    MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
-                    _modalWindow->setAlignment(ModalWindow::Alignment::BOTTOM);
-                    _modalWindow->setHeight(_modalWindow->height() + 250.f);
-                    w->pushMessage("Hi there Tommy");
-                    w->pushMessage("Welcome to the world of Tommy Tooter");
-                    w->pushMessage("I hope you enjoy your adventure!!!");
-                    w->pushMessage("dogfucker");
-                }
-                break;
-
-                case sf::Keyboard::Num0:
-                {
-                    _debugWindow.setVisible(!_debugWindow.visible());
-                }
-                break;
-            }
+            return result;
         }
     }
 
@@ -748,6 +557,209 @@ void Scene::adjustView()
 
     view.setCenter(xpos, ypos);
     _window.setView(view);
+}
+
+PollResult Scene::privatePollHandler(const sf::Event& e)
+{
+    if (e.type == sf::Event::KeyPressed)
+    {
+        switch (e.key.code)
+        {
+            default:
+            break;
+
+            case sf::Keyboard::Left:
+            {
+                if (_player->state() == AnimatedState::ANIMATED
+                    && _player->direction() == Direction::LEFT)
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 1);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::LEFT);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Right:
+            {
+                if (_player->state() == AnimatedState::ANIMATED
+                    && _player->direction() == Direction::RIGHT)
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 3);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::RIGHT);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Up:
+            {
+                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
+                    || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 0);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::UP);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Down:
+            {
+                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
+                    || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+                {
+                    return { true, {} };
+                }
+
+                _player->setSource(0, 2);
+                _player->setMaxFramesPerRow(9);
+                _player->setState(AnimatedState::ANIMATED);
+                _player->setDirection(Direction::DOWN);
+                return { true, {} };
+            }
+
+            case sf::Keyboard::Space:
+            {
+                if (_currentTile.type == TileType::ZONE)
+                {
+                    auto& zone = boost::any_cast<Zone&>(_currentTile.data);
+                    if (zone.transition.has_value())
+                    {
+                        bool doContinue = true;
+
+                        auto resultp = tt::CallLuaFunction(_luaState, 
+                            zone.callbacks.onSelect, 
+                            _name, 
+                            { 
+                                { LUA_REGISTRYINDEX, _luaIdx },
+                                { LUA_TLIGHTUSERDATA, static_cast<void*>(&zone) } 
+                            });
+
+                        if (resultp.has_value()
+                                && resultp->size() > 0)
+                        {
+                            doContinue = tt::GetLuaValue<bool>(resultp->at(0));                            
+                        }
+
+                        if (doContinue)
+                        {
+                            return {true, { ScreenActionType::CHANGE_SCENE, zone.transition->newscene }};
+                        }
+                        else
+                        {
+                            return {};
+                        }
+                    }
+                }
+            }
+            break;
+
+            case sf::Keyboard::Period:
+            {
+                _hud.setVisible(!_hud.visible());
+            }
+            break;
+
+            //
+            // Action. Perform an action. 
+            // E.g. pick up an item or perform an action on an item.
+            //
+            case sf::Keyboard::A:
+            {
+                // TODO: Items should probably be held in a sorted container
+                // so that searching for them is faster than a linear search
+                for(auto it = _items.begin(); it != _items.end(); it++)
+                {
+                    auto item = *it;
+                    if (item->getGlobalBounds()
+                            .intersects(_player->getGlobalBounds()))
+                    {
+                        pickupItem(it);
+                        break;
+                    }
+                }
+            }
+            break;
+
+            //
+            // Inventory. Display inventory.
+            //
+            case sf::Keyboard::I:
+            {
+                _modalWindow = std::make_unique<ModalWindow>(_resources, _window);
+                _modalWindow->setAlignment(ModalWindow::Alignment::CENTER);
+                _modalWindow->setHeight(_modalWindow->height() + 500.f);
+                std::string inventory = "You are carrying:\n\n";
+
+                std::cout   << std::endl;
+                for (const auto& item : _player->getInventory())
+                {
+                    std::cout << item->getName() << '\n';
+                    inventory += item->getName() + "\n"s;
+                }
+                std::cout   << std::endl;
+                _modalWindow->setText(inventory);
+            }
+            break;
+
+            case sf::Keyboard::Num1:
+            {
+                _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
+                MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
+                _modalWindow->setAlignment(ModalWindow::Alignment::TOP);
+                _modalWindow->setHeight(_modalWindow->height() + 50.f);
+                w->pushMessage("Hi there Tommy");
+                w->pushMessage("Welcome to the world of Tommy Tooter");
+                w->pushMessage("I hope you enjoy your adventure!!!");
+                w->pushMessage("dogfucker");
+            }
+            break;
+
+            case sf::Keyboard::Num2:
+            {
+                _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
+                MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
+                _modalWindow->setAlignment(ModalWindow::Alignment::CENTER);
+                _modalWindow->setHeight(_modalWindow->height() + 500.f);
+                w->pushMessage("Hi there Tommy");
+                w->pushMessage("Welcome to the world of Tommy Tooter");
+                w->pushMessage("I hope you enjoy your adventure!!!");
+                w->pushMessage("dogfucker");
+            }
+            break;
+
+            case sf::Keyboard::Num3:
+            {
+                _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
+                MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
+                _modalWindow->setAlignment(ModalWindow::Alignment::BOTTOM);
+                _modalWindow->setHeight(_modalWindow->height() + 250.f);
+                w->pushMessage("Hi there Tommy");
+                w->pushMessage("Welcome to the world of Tommy Tooter");
+                w->pushMessage("I hope you enjoy your adventure!!!");
+                w->pushMessage("dogfucker");
+            }
+            break;
+
+            case sf::Keyboard::Num0:
+            {
+                _debugWindow.setVisible(!_debugWindow.visible());
+            }
+            break;
+        }
+    }
+
+    return {};
 }
 
 } // namespace tt
