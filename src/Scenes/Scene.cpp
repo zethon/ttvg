@@ -635,7 +635,7 @@ void Scene::pickupItem(Items::iterator itemIt)
                 { LUA_TLIGHTUSERDATA, static_cast<void*>(&item) } 
             });
     }
-    else
+    else if (item->isObtainable())
     {
         _player->addItem(item);
         _items.erase(itemIt);
