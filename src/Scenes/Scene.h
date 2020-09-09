@@ -152,6 +152,8 @@ public:
     void removeItem(ItemPtr item);
     const std::vector<ItemPtr> items() const { return _items; }
 
+    BackgroundSharedPtr background() const { return _background; }
+
 protected:
     virtual void updateCurrentTile(const TileInfo& info);
     virtual sf::Vector2f animeCallback();

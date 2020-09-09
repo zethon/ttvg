@@ -127,15 +127,42 @@ int Scene_getPlayerTile(lua_State* L)
     return 2;
 }
 
+int Scene_getTileRect(lua_State* L)
+{
+    auto scene = checkObject<Scene>(L);
+    const auto rect = scene->background()->getWorldTileRect();
+    lua_pushnumber(L, rect.left);
+    lua_pushnumber(L, rect.top);
+    lua_pushnumber(L, rect.width);
+    lua_pushnumber(L, rect.height);
+    return 4;
+}
+
+int Scene_getGlobalRect(lua_State* L)
+{
+    auto scene = checkObject<Scene>(L);
+    const auto rect = scene->background()->getGlobalBounds();
+    lua_pushnumber(L, rect.left);
+    lua_pushnumber(L, rect.top);
+    lua_pushnumber(L, rect.width);
+    lua_pushnumber(L, rect.height);
+    return 4;
+}
+
 const struct luaL_Reg Scene::LuaMethods[] =
 {
     {"name", Scene_name},
-    {"getPlayer", Scene_getPlayer},
     {"getDescriptionWindow", Scene_getDescriptionWindow},
-    {"addItem", Scene_addItem},
-    {"removeItem", Scene_removeItem},
+
+    {"getPlayer", Scene_getPlayer},
     {"setPlayerTile", Scene_setPlayerTile},
     {"getPlayerTile", Scene_getPlayerTile},
+    
+    {"addItem", Scene_addItem},
+    {"removeItem", Scene_removeItem},
+
+    {"getWorldTileRect", Scene_getTileRect},
+    {"getGlobalRect", Scene_getGlobalRect},
     {nullptr, nullptr}
 };
 
@@ -228,9 +255,9 @@ void Scene::enter()
 void Scene::exit()
 {
     assert(_player);
-    _lastPlayerPos = _player->getPosition();
-
     tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
+
+    _lastPlayerPos = _player->getPosition();
     removeUpdateable(_player);
     _player.reset();
 }
