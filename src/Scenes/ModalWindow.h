@@ -77,4 +77,13 @@ public:
         PlayerPtr player);
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+class SelectionWindow : public ModalWindow
+{
+
+public:
+    SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& target);
+};
+
 } // namespace tt

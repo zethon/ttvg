@@ -24,7 +24,7 @@ ModalWindow::ModalWindow(ResourceManager& resmgr, sf::RenderTarget& target)
 
     _border = std::make_shared<sf::RectangleShape>();
     _border->setFillColor(sf::Color::Transparent);
-    _border->setOutlineThickness(5);
+    _border->setOutlineThickness(7.5);
     _border->setOutlineColor(sf::Color::Cyan);
 
     _background = std::make_shared<sf::RectangleShape>();
@@ -170,7 +170,7 @@ InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& targ
     : ModalWindow(resmgr, target)
 {
     setAlignment(ModalWindow::Alignment::CENTER);
-    
+
     // count and name
     using InvAgg = std::tuple<std::uint32_t, std::string>;
     std::map<std::string, InvAgg> aggregate;
@@ -204,6 +204,13 @@ InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& targ
     }
 
     setText(message);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+SelectionWindow::SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& target)
+    : ModalWindow(resmgr, target)
+{
 }
 
 

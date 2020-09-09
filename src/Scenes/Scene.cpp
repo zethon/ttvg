@@ -707,38 +707,11 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             }
             break;
 
-            case sf::Keyboard::Num1:
-            {
-                _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
-                MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
-                _modalWindow->setAlignment(ModalWindow::Alignment::TOP);
-                _modalWindow->setHeight(_modalWindow->height() + 50.f);
-                w->pushMessage("Hi there Tommy");
-                w->pushMessage("Welcome to the world of Tommy Tooter");
-                w->pushMessage("I hope you enjoy your adventure!!!");
-                w->pushMessage("dogfucker");
-            }
-            break;
-
-            case sf::Keyboard::Num2:
-            {
-                _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
-                MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
-                _modalWindow->setAlignment(ModalWindow::Alignment::CENTER);
-                _modalWindow->setHeight(_modalWindow->height() + 500.f);
-                w->pushMessage("Hi there Tommy");
-                w->pushMessage("Welcome to the world of Tommy Tooter");
-                w->pushMessage("I hope you enjoy your adventure!!!");
-                w->pushMessage("dogfucker");
-            }
-            break;
-
             case sf::Keyboard::Num3:
             {
                 _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
                 MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
                 _modalWindow->setAlignment(ModalWindow::Alignment::BOTTOM);
-                _modalWindow->setHeight(_modalWindow->height() + 250.f);
                 w->pushMessage("Hi there Tommy");
                 w->pushMessage("Welcome to the world of Tommy Tooter");
                 w->pushMessage("I hope you enjoy your adventure!!!");
