@@ -413,7 +413,9 @@ PollResult Scene::poll(const sf::Event& e)
                 case sf::Keyboard::I:
                 {
                     _modalWindow = std::make_unique<ModalWindow>(_resources, _window);
-                    std::string inventory = "INVENTORY!!!\n";
+                    _modalWindow->setAlignment(ModalWindow::Alignment::CENTER);
+                    _modalWindow->setHeight(_modalWindow->height() + 500.f);
+                    std::string inventory = "You are carrying:\n\n";
 
                     std::cout   << std::endl;
                     for (const auto& item : _player->getInventory())
@@ -426,10 +428,38 @@ PollResult Scene::poll(const sf::Event& e)
                 }
                 break;
 
-                case sf::Keyboard::D:
+                case sf::Keyboard::Num1:
                 {
                     _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
                     MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
+                    _modalWindow->setAlignment(ModalWindow::Alignment::TOP);
+                    _modalWindow->setHeight(_modalWindow->height() + 50.f);
+                    w->pushMessage("Hi there Tommy");
+                    w->pushMessage("Welcome to the world of Tommy Tooter");
+                    w->pushMessage("I hope you enjoy your adventure!!!");
+                    w->pushMessage("dogfucker");
+                }
+                break;
+
+                case sf::Keyboard::Num2:
+                {
+                    _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
+                    MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
+                    _modalWindow->setAlignment(ModalWindow::Alignment::CENTER);
+                    _modalWindow->setHeight(_modalWindow->height() + 500.f);
+                    w->pushMessage("Hi there Tommy");
+                    w->pushMessage("Welcome to the world of Tommy Tooter");
+                    w->pushMessage("I hope you enjoy your adventure!!!");
+                    w->pushMessage("dogfucker");
+                }
+                break;
+
+                case sf::Keyboard::Num3:
+                {
+                    _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
+                    MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
+                    _modalWindow->setAlignment(ModalWindow::Alignment::BOTTOM);
+                    _modalWindow->setHeight(_modalWindow->height() + 250.f);
                     w->pushMessage("Hi there Tommy");
                     w->pushMessage("Welcome to the world of Tommy Tooter");
                     w->pushMessage("I hope you enjoy your adventure!!!");
@@ -463,9 +493,10 @@ ScreenAction Scene::timestep()
     if (_modalWindow)
     {
         _modalWindow->timestep();
+        return {};
     }
 
-    return {};
+    return Screen::timestep();
 }
 
 void Scene::draw()

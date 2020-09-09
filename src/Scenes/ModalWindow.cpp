@@ -16,25 +16,27 @@ ModalWindow::ModalWindow(ResourceManager& resmgr, sf::RenderTarget& target)
         // TODO: logging?!?!
     }
 
-    _background = std::make_shared<sf::RectangleShape>();
+    _border = std::make_shared<sf::RectangleShape>();
+    _border->setFillColor(sf::Color::Transparent);
+    _border->setOutlineThickness(5);
+    _border->setOutlineColor(sf::Color::Cyan);
 
-    float width = _window.getSize().x - (_window.getSize().x * 0.2);
-    float height = _window.getSize().y - (_window.getSize().y * 0.5);
+    _background = std::make_shared<sf::RectangleShape>();
+    _background->setFillColor(sf::Color{ 0, 0, 0 });
+
+    float width = _window.getSize().x - (_window.getSize().x * 0.35);
+    float height = 175.f;
     _background->setSize(sf::Vector2f{ width, height });
 
-    float xpos = 100.f;
-    float ypos = 100.f;
-    _background->setPosition(xpos, ypos);
-    _background->setFillColor(sf::Color{ 255, 255, 255, 104 });
-
     _text = std::make_shared<sf::Text>("", _font);
-    _text->setFillColor(sf::Color::Red);
-    _text->setPosition(xpos, ypos);
-    // _text->setPosition(10.f, _window.getSize().y - 35.f);
-    _text->setCharacterSize(20);
-    
+    _text->setFillColor(sf::Color::White);
+    _text->setCharacterSize(25);
+
+    setAlignment(Alignment::BOTTOM);
+
     // the order of these calls matters
     addDrawable(_background);
+    addDrawable(_border);
     addDrawable(_text);
 }
 
@@ -61,6 +63,57 @@ PollResult ModalWindow::poll(const sf::Event& e)
 void ModalWindow::setText(const std::string & text)
 {
     _text->setString(text);
+}
+
+void ModalWindow::setHeight(float height)
+{
+    _background->setSize(sf::Vector2f{ _background->getSize().x, height });
+    setAlignment(_alignment);
+}
+
+void ModalWindow::setWidth(float width)
+{
+    _background->setSize(sf::Vector2f{ width, _background->getSize().x });
+    setAlignment(_alignment);
+}
+
+void ModalWindow::setAlignment(ModalWindow::Alignment al)
+{
+    _alignment = al;
+    auto [width, height] = _background->getSize();
+
+    switch (_alignment)
+    {
+        case ModalWindow::Alignment::TOP:
+        {
+            float xpos = (_window.getSize().x / 2) - (width / 2);
+            float ypos = 25.f;
+            _background->setPosition(xpos, ypos);
+        }
+        break;
+
+        case ModalWindow::Alignment::CENTER:
+        {
+            float xpos = (_window.getSize().x / 2) - (width / 2);
+            float ypos = (_window.getSize().y / 2) - (height / 2);
+            _background->setPosition(xpos, ypos);
+        }
+        break;
+
+        case ModalWindow::Alignment::BOTTOM:
+        {
+            float xpos = (_window.getSize().x / 2) - (width / 2);
+            float ypos = _window.getSize().y - (height + 25.f);
+            _background->setPosition(xpos, ypos);
+        }
+        break;
+    }
+
+    auto [xpos, ypos] = _background->getPosition();
+    _text->setPosition(xpos + 10, ypos + 5);
+
+    _border->setSize(_background->getSize());
+    _border->setPosition(_background->getPosition());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

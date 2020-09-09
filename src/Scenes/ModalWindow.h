@@ -9,19 +9,35 @@ namespace tt
 class ModalWindow : public Screen
 {
 
-protected:
-    sf::Font    _font;
-
-    std::shared_ptr<sf::RectangleShape> _background;
-    std::shared_ptr<sf::Text>           _text;
-
 public:
+    enum class Alignment
+    {
+        TOP,
+        CENTER,
+        BOTTOM
+    };
+
     ModalWindow(ResourceManager& resmgr, sf::RenderTarget& target);
     virtual ~ModalWindow() override = default;
 
     PollResult poll(const sf::Event& e) override;
     
     void setText(const std::string& text);
+    void setAlignment(ModalWindow::Alignment al);
+
+    float width() const { return _background->getSize().x; }
+    void setWidth(float width);
+
+    float height() const { return _background->getSize().y; }
+    void setHeight(float height);
+    
+protected:
+    sf::Font            _font;
+    Alignment           _alignment = Alignment::BOTTOM;
+
+    std::shared_ptr<sf::RectangleShape> _border;
+    std::shared_ptr<sf::RectangleShape> _background;
+    std::shared_ptr<sf::Text>           _text;
 };
 
 class MessagesWindow : public ModalWindow
