@@ -83,7 +83,32 @@ class SelectionWindow : public ModalWindow
 {
 
 public:
+    using Choices = std::vector<std::string>;
+
     SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& target);
+    
+    void addChoice(const std::string& choice)
+    {
+        _choices.push_back(choice);
+        adjustLayout();
+    }
+
+    void setHeader(const std::string& header)
+    {
+        _header = header;
+        adjustLayout();
+    }
+
+    const Choices& choices() const { return _choices; }
+    std::string header() const { return _header; }
+
+private:
+    void adjustLayout();
+
+    std::string                 _header;
+    std::vector<std::string>    _choices;
+    std::size_t                 _selection;
+
 };
 
 } // namespace tt

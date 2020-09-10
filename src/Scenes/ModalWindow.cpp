@@ -30,7 +30,7 @@ ModalWindow::ModalWindow(ResourceManager& resmgr, sf::RenderTarget& target)
     _background = std::make_shared<sf::RectangleShape>();
     _background->setFillColor(sf::Color{ 0, 0, 0 });
 
-    float width = _window.getSize().x - (_window.getSize().x * 0.35);
+    float width = _window.getSize().x - (_window.getSize().x * 0.35f);
     float height = 175.f;
     _background->setSize(sf::Vector2f{ width, height });
 
@@ -210,7 +210,17 @@ InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& targ
 
 SelectionWindow::SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& target)
     : ModalWindow(resmgr, target)
+{   
+}
+
+void SelectionWindow::adjustLayout()
 {
+    auto[xanchor, yanchor] = _background->getPosition();
+    xanchor += 10;
+    yanchor += 5;
+
+    sf::Text temp(this->_header, this->_font);
+
 }
 
 
