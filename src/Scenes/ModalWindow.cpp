@@ -209,19 +209,112 @@ InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& targ
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 SelectionWindow::SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& target)
-    : ModalWindow(resmgr, target)
+    : ModalWindow(resmgr, target),
+      _indicator("*", _font)
 {   
+    _indicator.setCharacterSize(25);
+    _indicator.setFillColor(sf::Color::Yellow);
+}
+
+PollResult SelectionWindow::poll(const sf::Event& e)
+{
+    if (e.type == sf::Event::KeyPressed)
+    {
+        switch (e.key.code)
+        {
+            default:
+                return ModalWindow::poll(e);
+            
+            case sf::Keyboard::Up:
+            {
+                if (_selection == 0)
+                {
+                    _selection = _choices.size() - 1;
+                }
+                else
+                {
+                    _selection--;
+                }
+            }
+            break;
+
+            case sf::Keyboard::Down:
+            {
+                if (_selection == (_choices.size() - 1))
+                {
+                    _selection = 0;
+                }
+                else
+                {
+                    _selection++;
+                }
+            }
+            break;
+
+            case sf::Keyboard::Escape:
+            case sf::Keyboard::Enter:
+            {
+                return { true, { ScreenActionType::CLOSE_MODAL, _selection}};
+            }
+            break;
+        }
+    }
+
+    return PollResult{};
+}
+
+void SelectionWindow::setText(const std::string& header)
+{
+    ModalWindow::setText(header);
+    adjustLayout();
+}
+
+void SelectionWindow::addChoice(const std::string& choice)
+{
+    auto temptext = fmt::format("  {}", choice);
+    auto temp = std::make_shared<sf::Text>(temptext, _font);
+    temp->setCharacterSize(22);
+
+    _choices.emplace_back(std::move(temp));
+
+    addDrawable(_choices.back());
+    adjustLayout();
 }
 
 void SelectionWindow::adjustLayout()
 {
+    setAlignment(_alignment);
+
     auto[xanchor, yanchor] = _background->getPosition();
     xanchor += 10;
     yanchor += 5;
 
-    sf::Text temp(this->_header, this->_font);
+    _text->setPosition(sf::Vector2f(xanchor, yanchor));
+    yanchor += _text->getGlobalBounds().height + 20;
 
+    for (auto& choice : _choices)
+    {
+        choice->setPosition(xanchor, yanchor);
+        yanchor += choice->getGlobalBounds().height + 7.5;
+    }
 }
 
+void SelectionWindow::draw()
+{
+    std::for_each(_choices.begin(), _choices.end(), 
+        [](auto text)
+        {
+            text->setFillColor(sf::Color::White);
+        });
+
+    _choices.at(_selection)->setFillColor(sf::Color::Yellow);
+
+    ModalWindow::draw();
+
+    auto xpos = _text->getPosition().x;
+    auto ypos = _choices.at(_selection)->getPosition().y;
+    _indicator.setPosition(xpos, ypos);
+    _window.draw(_indicator);
+}
 
 } // namespace tt

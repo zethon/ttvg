@@ -707,6 +707,17 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             }
             break;
 
+            case sf::Keyboard::Num1:
+            {
+                _modalWindow = std::make_unique<SelectionWindow>(_resources, _window);
+                SelectionWindow* w = static_cast<SelectionWindow*>(_modalWindow.get());
+                w->setText("Are you a toothless dogfucker?");
+                w->addChoice("Yes, I am a dogfucker!");
+                w->addChoice("I never fucked a dog");
+                w->addChoice("She had been living among adults since she was 9");
+            }
+            break;
+
             case sf::Keyboard::Num3:
             {
                 _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);

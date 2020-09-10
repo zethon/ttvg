@@ -25,7 +25,7 @@ public:
 
     PollResult poll(const sf::Event& e) override;
     
-    void setText(const std::string& text);
+    virtual void setText(const std::string& text);
     void setAlignment(ModalWindow::Alignment al);
 
     float width() const { return _background->getSize().x; }
@@ -83,31 +83,23 @@ class SelectionWindow : public ModalWindow
 {
 
 public:
-    using Choices = std::vector<std::string>;
+    using TextPtr = std::shared_ptr<sf::Text>;
+    using Choices = std::vector<TextPtr>;
 
     SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& target);
+
+    PollResult poll(const sf::Event& e) override;
+    void setText(const std::string& header) override;
     
-    void addChoice(const std::string& choice)
-    {
-        _choices.push_back(choice);
-        adjustLayout();
-    }
-
-    void setHeader(const std::string& header)
-    {
-        _header = header;
-        adjustLayout();
-    }
-
-    const Choices& choices() const { return _choices; }
-    std::string header() const { return _header; }
+    void addChoice(const std::string& choice);
 
 private:
     void adjustLayout();
+    void draw() override;
 
-    std::string                 _header;
-    std::vector<std::string>    _choices;
-    std::size_t                 _selection;
+    Choices     _choices;
+    sf::Text    _indicator;
+    std::size_t _selection = 0;
 
 };
 
