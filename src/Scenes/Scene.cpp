@@ -272,6 +272,12 @@ PollResult Scene::poll(const sf::Event& e)
         if (result.handled 
             && result.action.type == ScreenActionType::CLOSE_MODAL)
         {
+            if (const auto& func = _modalWindow->closeHandler(); 
+                    result.handled && func)
+            {
+                result = func(result);
+            }
+
             _modalWindow.reset();
             return result;
         }
@@ -628,6 +634,40 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 return { true, {} };
             }
 
+            case sf::Keyboard::Escape:
+            {
+                _modalWindow = std::make_unique<SelectionWindow>(_resources, _window);
+                SelectionWindow* w = static_cast<SelectionWindow*>(_modalWindow.get());
+                w->setAlignment(ModalWindow::Alignment::CENTER);
+                w->setText("Do you want to quit the game like you have\nquit everything in life?");
+                w->addChoice("Fuck you, take me to the main menu");
+                w->addChoice("FUCK OFF!");
+
+                auto responseHandler = 
+                    [this](const PollResult& result) -> PollResult
+                    {
+                        if (!result.action.data.empty())
+                        {
+                            // 0 -> main menu, 1 -> quit game
+                            auto selection = boost::any_cast<std::size_t>(result.action.data);
+                            if (selection == 0)
+                            {
+                                return { true, ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO } };
+                            }
+                            else
+                            {
+                                assert(selection == 1);
+                                return { true, ScreenAction{ ScreenActionType::EXIT_GAME } };
+                            }
+                        }
+
+                        return result;
+                    };
+
+                w->setCloseHandler(std::move(responseHandler));    
+            }
+            break;
+
             case sf::Keyboard::Space:
             {
                 if (_currentTile.type == TileType::ZONE)
@@ -739,6 +779,11 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
     }
 
     return {};
+}
+
+bool Scene::modalPollHandler(const sf::Event& e)
+{
+    return true;
 }
 
 } // namespace tt

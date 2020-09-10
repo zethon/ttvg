@@ -251,8 +251,8 @@ PollResult SelectionWindow::poll(const sf::Event& e)
             }
             break;
 
-            case sf::Keyboard::Escape:
             case sf::Keyboard::Enter:
+            case sf::Keyboard::Space:
             {
                 return { true, { ScreenActionType::CLOSE_MODAL, _selection}};
             }

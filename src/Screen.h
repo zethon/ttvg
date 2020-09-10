@@ -23,6 +23,7 @@ using DrawablePtr = std::shared_ptr<sf::Drawable>;
 enum class ScreenActionType
 {
     NONE = 0,
+    EXIT_GAME,
     CHANGE_SCREEN,
     CHANGE_SCENE,
     CLOSE_MODAL

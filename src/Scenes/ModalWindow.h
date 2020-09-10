@@ -13,6 +13,8 @@ class ModalWindow : public Screen
 {
 
 public:
+    using CloseHandler = std::function<PollResult(const PollResult&)>;
+
     enum class Alignment
     {
         TOP,
@@ -33,10 +35,14 @@ public:
 
     float height() const { return _background->getSize().y; }
     void setHeight(float height);
+
+    const CloseHandler& closeHandler() const { return _handler; }
+    void setCloseHandler(const CloseHandler&& val) { _handler = val; }
     
 protected:
     sf::Font            _font;
     Alignment           _alignment = Alignment::BOTTOM;
+    CloseHandler        _handler;
 
     std::shared_ptr<sf::RectangleShape> _border;
     std::shared_ptr<sf::RectangleShape> _background;
@@ -85,6 +91,7 @@ class SelectionWindow : public ModalWindow
 public:
     using TextPtr = std::shared_ptr<sf::Text>;
     using Choices = std::vector<TextPtr>;
+    
 
     SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& target);
 

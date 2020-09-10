@@ -21,13 +21,19 @@ void TooterEngine::drawScreen()
     }
 }
 
-void TooterEngine::poll(const sf::Event& e)
+PollResult TooterEngine::poll(const sf::Event& e)
 {
     if (auto result = _currentScreen->poll(e); 
         result.action.type == ScreenActionType::CHANGE_SCREEN)
     {
         changeScreen(boost::any_cast<std::uint16_t>(result.action.data));
     }
+    else if (result.action.type == ScreenActionType::EXIT_GAME)
+    {
+        return { true, { ScreenActionType::EXIT_GAME }};
+    }
+
+    return {};
 }
 
 void TooterEngine::timestep()
