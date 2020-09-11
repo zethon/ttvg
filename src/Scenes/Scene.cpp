@@ -151,6 +151,13 @@ int Scene_getGlobalRect(lua_State* L)
     return 4;
 }
 
+int Scene_createModal(lua_State* L)
+{
+    auto scene = checkObject<Scene>(L);
+    ModalType mt = static_cast<ModalType>(lua_tonumber(L, 2));
+    return 0;
+}
+
 const struct luaL_Reg Scene::LuaMethods[] =
 {
     {"name", Scene_name},
@@ -165,6 +172,8 @@ const struct luaL_Reg Scene::LuaMethods[] =
 
     {"getWorldTileRect", Scene_getTileRect},
     {"getGlobalRect", Scene_getGlobalRect},
+
+    {"createModal", Scene_createModal},
     {nullptr, nullptr}
 };
 

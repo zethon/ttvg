@@ -9,6 +9,14 @@ namespace tt
 class Player;
 using PlayerPtr = std::shared_ptr<Player>;
 
+enum class ModalType
+{
+    Default = 0,
+    Messages,
+    Options,
+    Inventory
+};
+
 class ModalWindow : public Screen
 {
 
