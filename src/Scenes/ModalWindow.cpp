@@ -166,7 +166,7 @@ PollResult MessagesWindow::poll(const sf::Event& e)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-SelectionWindow::SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& target)
+OptionsWindow::OptionsWindow(ResourceManager& resmgr, sf::RenderTarget& target)
     : ModalWindow(resmgr, target),
       _indicator("->", _font)
 {   
@@ -174,7 +174,7 @@ SelectionWindow::SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& targ
     _indicator.setFillColor(sf::Color::Yellow);
 }
 
-PollResult SelectionWindow::poll(const sf::Event& e)
+PollResult OptionsWindow::poll(const sf::Event& e)
 {
     if (e.type == sf::Event::KeyPressed)
     {
@@ -207,25 +207,25 @@ PollResult SelectionWindow::poll(const sf::Event& e)
     return PollResult{};
 }
 
-void SelectionWindow::setText(const std::string& header)
+void OptionsWindow::setText(const std::string& header)
 {
     ModalWindow::setText(header);
     adjustLayout();
 }
 
-void SelectionWindow::addChoice(const std::string& choice)
+void OptionsWindow::addOption(const std::string& choice)
 {
     auto temptext = fmt::format("   {}", choice);
     auto temp = std::make_shared<sf::Text>(temptext, _font);
     temp->setCharacterSize(22);
 
-    _choices.emplace_back(std::move(temp));
+    _options.emplace_back(std::move(temp));
 
-    addDrawable(_choices.back());
+    addDrawable(_options.back());
     adjustLayout();
 }
 
-void SelectionWindow::adjustLayout()
+void OptionsWindow::adjustLayout()
 {
     setAlignment(_alignment);
 
@@ -236,7 +236,7 @@ void SelectionWindow::adjustLayout()
     _text->setPosition(sf::Vector2f(xanchor, yanchor));
     yanchor += _text->getGlobalBounds().height + 20.f;
 
-    for (auto& choice : _choices)
+    for (auto& choice : _options)
     {
         choice->setPosition(xanchor, yanchor);
         yanchor += choice->getGlobalBounds().height + 7.5f;
@@ -245,15 +245,15 @@ void SelectionWindow::adjustLayout()
     updateText();
 }
 
-void SelectionWindow::draw()
+void OptionsWindow::draw()
 {
     ModalWindow::draw();
     _window.draw(_indicator);
 }
 
-void SelectionWindow::nextSelection()
+void OptionsWindow::nextSelection()
 {
-    if (_selection == (_choices.size() - 1))
+    if (_selection == (_options.size() - 1))
     {
         _selection = 0;
     }
@@ -265,11 +265,11 @@ void SelectionWindow::nextSelection()
     updateText();
 }
 
-void SelectionWindow::prevSelection()
+void OptionsWindow::prevSelection()
 {
     if (_selection == 0)
     {
-        _selection = _choices.size() - 1;
+        _selection = _options.size() - 1;
     }
     else
     {
@@ -279,32 +279,32 @@ void SelectionWindow::prevSelection()
     updateText();
 }
 
-void SelectionWindow::updateText()
+void OptionsWindow::updateText()
 {
-    if (_choices.size() == 0)
+    if (_options.size() == 0)
     {
         return;
     }
 
-    std::for_each(_choices.begin(), _choices.end(),
+    std::for_each(_options.begin(), _options.end(),
         [](auto text)
         {
             text->setFillColor(sf::Color::White);
             text->setStyle(sf::Text::Regular);
         });
 
-    _choices.at(_selection)->setFillColor(sf::Color::Yellow);
-    _choices.at(_selection)->setStyle(sf::Text::Style::Bold);
+    _options.at(_selection)->setFillColor(sf::Color::Yellow);
+    _options.at(_selection)->setStyle(sf::Text::Style::Bold);
 
     auto xpos = _text->getPosition().x;
-    auto ypos = _choices.at(_selection)->getPosition().y;
+    auto ypos = _options.at(_selection)->getPosition().y;
     _indicator.setPosition(xpos, ypos);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
-    : SelectionWindow(resmgr, target)
+    : OptionsWindow(resmgr, target)
 {
     setAlignment(ModalWindow::Alignment::CENTER);
 
@@ -338,7 +338,7 @@ InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& targ
     for (const auto& item : aggregate)
     {
         const auto&[count, name] = item.second;
-        addChoice(fmt::format("{} x {}", name, count));
+        addOption(fmt::format("{} x {}", name, count));
     }
 }
 

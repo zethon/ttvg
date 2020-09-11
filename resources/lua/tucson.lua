@@ -10,8 +10,14 @@ function onEnter(scene)
     gPlayer = scene:getPlayer()
 end 
 
--- local onclub_handler = function 
+function onclub_enter_callback(scene)
+end
 
+function onclub_enter(scene)
+    local modal = WindowFactory.create(OPTIONS)
+    modal:addOption("yes")
+    modal:addOption("no")
+end
 -- function onclub_enter(scene)
 --     local modal = scene:createModal()
 --     modal:doDisplay("This will show up in the first screen")

@@ -80,20 +80,19 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-class SelectionWindow : public ModalWindow
+class OptionsWindow : public ModalWindow
 {
 
 public:
     using TextPtr = std::shared_ptr<sf::Text>;
-    using Choices = std::vector<TextPtr>;
-    
+    using Options = std::vector<TextPtr>;
 
-    SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& target);
+    OptionsWindow(ResourceManager& resmgr, sf::RenderTarget& target);
 
     PollResult poll(const sf::Event& e) override;
     void setText(const std::string& header) override;
     
-    void addChoice(const std::string& choice);
+    void addOption(const std::string& choice);
 
 private:
     void adjustLayout();
@@ -103,7 +102,7 @@ private:
     void prevSelection();
     void updateText();
 
-    Choices     _choices;
+    Options     _options;
     sf::Text    _indicator;
     std::size_t _selection = 0;
 
@@ -111,7 +110,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-class InventoryWindow : public SelectionWindow
+class InventoryWindow : public OptionsWindow
 {
 
 public:

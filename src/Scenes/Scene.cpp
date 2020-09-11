@@ -642,12 +642,12 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
             case sf::Keyboard::Escape:
             {
-                _modalWindow = std::make_unique<SelectionWindow>(_resources, _window);
-                auto w = _modalWindow->downcast<SelectionWindow*>();
+                _modalWindow = std::make_unique<OptionsWindow>(_resources, _window);
+                auto w = _modalWindow->downcast<OptionsWindow*>();
                 w->setAlignment(ModalWindow::Alignment::CENTER);
                 w->setText("Do you want to quit the game like you have\nquit everything in life?");
-                w->addChoice("Fuck you, take me to the main menu");
-                w->addChoice("FUCk Off! I want to QUIT!!");
+                w->addOption("Fuck you, take me to the main menu");
+                w->addOption("FUCk Off! I want to QUIT!!");
 
                 auto responseHandler = 
                     [this](const PollResult& result) -> PollResult
@@ -755,12 +755,12 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
             case sf::Keyboard::Num1:
             {
-                _modalWindow = std::make_unique<SelectionWindow>(_resources, _window);
-                SelectionWindow* w = static_cast<SelectionWindow*>(_modalWindow.get());
+                _modalWindow = std::make_unique<OptionsWindow>(_resources, _window);
+                OptionsWindow* w = static_cast<OptionsWindow*>(_modalWindow.get());
                 w->setText("Are you a toothless dogfucker?");
-                w->addChoice("Yes, I am a dogfucker!");
-                w->addChoice("I never fucked a dog");
-                w->addChoice("She had been living among adults since she was 9");
+                w->addOption("Yes, I am a dogfucker!");
+                w->addOption("I never fucked a dog");
+                w->addOption("She had been living among adults since she was 9");
             }
             break;
 
