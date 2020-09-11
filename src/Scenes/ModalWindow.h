@@ -38,6 +38,12 @@ public:
 
     const CloseHandler& closeHandler() const { return _handler; }
     void setCloseHandler(const CloseHandler&& val) { _handler = val; }
+
+    template<typename T>
+    T downcast()
+    {
+        return static_cast<T>(this);
+    }
     
 protected:
     sf::Font            _font;

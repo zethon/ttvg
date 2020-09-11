@@ -311,6 +311,12 @@ ScreenAction Scene::timestep()
         return {};
     }
 
+    if (_player->health() <= 0)
+    {
+        //_bgsong->stop();
+        return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
+    }
+
     return Screen::timestep();
 }
 
@@ -637,7 +643,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             case sf::Keyboard::Escape:
             {
                 _modalWindow = std::make_unique<SelectionWindow>(_resources, _window);
-                SelectionWindow* w = static_cast<SelectionWindow*>(_modalWindow.get());
+                auto w = _modalWindow->downcast<SelectionWindow*>();
                 w->setAlignment(ModalWindow::Alignment::CENTER);
                 w->setText("Do you want to quit the game like you have\nquit everything in life?");
                 w->addChoice("Fuck you, take me to the main menu");
@@ -783,6 +789,18 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             case sf::Keyboard::Num0:
             {
                 _debugWindow.setVisible(!_debugWindow.visible());
+            }
+            break;
+
+            case sf::Keyboard::LBracket:
+            {
+                _player->reduceHealth(10);
+            }
+            break;
+
+            case sf::Keyboard::RBracket:
+            {
+                _player->increaseHealth(10);
             }
             break;
         }
