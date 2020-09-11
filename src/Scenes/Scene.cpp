@@ -641,7 +641,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 w->setAlignment(ModalWindow::Alignment::CENTER);
                 w->setText("Do you want to quit the game like you have\nquit everything in life?");
                 w->addChoice("Fuck you, take me to the main menu");
-                w->addChoice("FUCK OFF!");
+                w->addChoice("FUCk Off! I want to QUIT!!");
 
                 auto responseHandler = 
                     [this](const PollResult& result) -> PollResult
@@ -770,6 +770,16 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             }
             break;
 
+            case sf::Keyboard::Num9:
+            {
+                for (const auto& item : _items)
+                {
+                    _player->addItem(item);
+                }
+                _descriptionText.setText("You magically obtained all items!");
+            }
+            break;
+
             case sf::Keyboard::Num0:
             {
                 _debugWindow.setVisible(!_debugWindow.visible());
@@ -779,11 +789,6 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
     }
 
     return {};
-}
-
-bool Scene::modalPollHandler(const sf::Event& e)
-{
-    return true;
 }
 
 } // namespace tt

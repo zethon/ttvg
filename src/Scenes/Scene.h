@@ -190,7 +190,6 @@ private:
     void pickupItem(Items::iterator itemIt);
 
     PollResult privatePollHandler(const sf::Event& e);
-    bool modalPollHandler(const sf::Event& e);
 };
 
 } // namespace tt

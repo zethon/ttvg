@@ -166,51 +166,9 @@ PollResult MessagesWindow::poll(const sf::Event& e)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
-    : ModalWindow(resmgr, target)
-{
-    setAlignment(ModalWindow::Alignment::CENTER);
-
-    // count and name
-    using InvAgg = std::tuple<std::uint32_t, std::string>;
-    std::map<std::string, InvAgg> aggregate;
-
-    for (const auto& item : player->getInventory())
-    {
-        if (aggregate.find(item->getID()) != aggregate.end())
-        {
-            std::get<0>(aggregate[item->getID()])++;
-        }
-        else
-        {
-            aggregate[item->getID()] = std::make_tuple(1, item->getName());
-        }
-    }
-
-    if (aggregate.size() >= 10)
-    {
-        setHeight(height() + 250.f);
-    }
-    if (aggregate.size() >= 5)
-    {
-        setHeight(height() + 125.f);
-    }
-
-    std::string message = "You are carrying...\n\n";
-    for (const auto& item : aggregate)
-    {
-        const auto& [count, name] = item.second;
-        message += fmt::format("{} x {}\n", name, count);
-    }
-
-    setText(message);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-
 SelectionWindow::SelectionWindow(ResourceManager& resmgr, sf::RenderTarget& target)
     : ModalWindow(resmgr, target),
-      _indicator("*", _font)
+      _indicator("->", _font)
 {   
     _indicator.setCharacterSize(25);
     _indicator.setFillColor(sf::Color::Yellow);
@@ -227,27 +185,13 @@ PollResult SelectionWindow::poll(const sf::Event& e)
             
             case sf::Keyboard::Up:
             {
-                if (_selection == 0)
-                {
-                    _selection = _choices.size() - 1;
-                }
-                else
-                {
-                    _selection--;
-                }
+                prevSelection();
             }
             break;
 
             case sf::Keyboard::Down:
             {
-                if (_selection == (_choices.size() - 1))
-                {
-                    _selection = 0;
-                }
-                else
-                {
-                    _selection++;
-                }
+                nextSelection();
             }
             break;
 
@@ -271,7 +215,7 @@ void SelectionWindow::setText(const std::string& header)
 
 void SelectionWindow::addChoice(const std::string& choice)
 {
-    auto temptext = fmt::format("  {}", choice);
+    auto temptext = fmt::format("   {}", choice);
     auto temp = std::make_shared<sf::Text>(temptext, _font);
     temp->setCharacterSize(22);
 
@@ -286,35 +230,116 @@ void SelectionWindow::adjustLayout()
     setAlignment(_alignment);
 
     auto[xanchor, yanchor] = _background->getPosition();
-    xanchor += 10;
-    yanchor += 5;
+    xanchor += _indicator.getGlobalBounds().width + 15.f;
+    yanchor += 5.f;
 
     _text->setPosition(sf::Vector2f(xanchor, yanchor));
-    yanchor += _text->getGlobalBounds().height + 20;
+    yanchor += _text->getGlobalBounds().height + 20.f;
 
     for (auto& choice : _choices)
     {
         choice->setPosition(xanchor, yanchor);
-        yanchor += choice->getGlobalBounds().height + 7.5;
+        yanchor += choice->getGlobalBounds().height + 7.5f;
     }
+
+    updateText();
 }
 
 void SelectionWindow::draw()
 {
-    std::for_each(_choices.begin(), _choices.end(), 
+    ModalWindow::draw();
+    _window.draw(_indicator);
+}
+
+void SelectionWindow::nextSelection()
+{
+    if (_selection == (_choices.size() - 1))
+    {
+        _selection = 0;
+    }
+    else
+    {
+        _selection++;
+    }
+
+    updateText();
+}
+
+void SelectionWindow::prevSelection()
+{
+    if (_selection == 0)
+    {
+        _selection = _choices.size() - 1;
+    }
+    else
+    {
+        _selection--;
+    }
+
+    updateText();
+}
+
+void SelectionWindow::updateText()
+{
+    if (_choices.size() == 0)
+    {
+        return;
+    }
+
+    std::for_each(_choices.begin(), _choices.end(),
         [](auto text)
         {
             text->setFillColor(sf::Color::White);
+            text->setStyle(sf::Text::Regular);
         });
 
     _choices.at(_selection)->setFillColor(sf::Color::Yellow);
-
-    ModalWindow::draw();
+    _choices.at(_selection)->setStyle(sf::Text::Style::Bold);
 
     auto xpos = _text->getPosition().x;
     auto ypos = _choices.at(_selection)->getPosition().y;
     _indicator.setPosition(xpos, ypos);
-    _window.draw(_indicator);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
+    : SelectionWindow(resmgr, target)
+{
+    setAlignment(ModalWindow::Alignment::CENTER);
+
+    // count and name
+    using InvAgg = std::tuple<std::uint32_t, std::string>;
+    std::map<std::string, InvAgg> aggregate;
+
+    for (const auto& item : player->getInventory())
+    {
+        if (aggregate.find(item->getID()) != aggregate.end())
+        {
+            std::get<0>(aggregate[item->getID()])++;
+        }
+        else
+        {
+            aggregate[item->getID()] = std::make_tuple(1, item->getName());
+        }
+    }
+
+    setText("You are carrying...");
+
+    if (aggregate.size() >= 10)
+    {
+        setHeight(height() + 350.f);
+    }
+    if (aggregate.size() >= 5)
+    {
+        setHeight(height() + 175.f);
+    }
+
+    for (const auto& item : aggregate)
+    {
+        const auto&[count, name] = item.second;
+        addChoice(fmt::format("{} x {}", name, count));
+    }
 }
 
 } // namespace tt

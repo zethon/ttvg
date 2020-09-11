@@ -74,17 +74,6 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-class InventoryWindow : public ModalWindow
-{
-
-public:
-    InventoryWindow(ResourceManager& resmgr, 
-        sf::RenderTarget& target,
-        PlayerPtr player);
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-
 class SelectionWindow : public ModalWindow
 {
 
@@ -104,10 +93,25 @@ private:
     void adjustLayout();
     void draw() override;
 
+    void nextSelection();
+    void prevSelection();
+    void updateText();
+
     Choices     _choices;
     sf::Text    _indicator;
     std::size_t _selection = 0;
 
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+class InventoryWindow : public SelectionWindow
+{
+
+public:
+    InventoryWindow(ResourceManager& resmgr,
+        sf::RenderTarget& target,
+        PlayerPtr player);
 };
 
 } // namespace tt
