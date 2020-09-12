@@ -155,7 +155,20 @@ int Scene_createModal(lua_State* L)
 {
     auto scene = checkObject<Scene>(L);
     ModalType mt = static_cast<ModalType>(lua_tointeger(L, 2));
-    return 0;
+    switch (mt)
+    {
+        case ModalType::Default:
+        {
+            std::size_t size = sizeof(std::shared_ptr<ModalWindow>);
+            void* userdata = lua_newuserdata(L, size);
+            auto window = std::make_shared<ModalWindow>(*scene);
+            new(userdata) std::shared_ptr<ModalWindow>{window};
+            luaL_setmetatable(L, ModalWindow::CLASS_NAME);
+        }
+        break;
+
+    }
+    return 1;
 }
 
 const struct luaL_Reg Scene::LuaMethods[] =

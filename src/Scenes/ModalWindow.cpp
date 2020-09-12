@@ -2,14 +2,66 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <lua/lua.hpp>
+
 #include <fmt/core.h>
 
 #include "../Player.h"
+#include "../TTLua.h"
 
 #include "ModalWindow.h"
 
 namespace tt
 {
+
+int Modal_exec(lua_State* L)
+{
+    auto w = checkObject<ModalWindow>(L);
+    w->exec();
+    return 0;
+}
+
+int Modal_setText(lua_State* L)
+{
+    auto w = checkObject<ModalWindow>(L);
+    const auto text = lua_tostring(L, 2);
+    w->setText(text);
+    return 0;
+}
+
+int Modal_setHeight(lua_State* L)
+{
+    auto w = checkObject<ModalWindow>(L);
+    float height = static_cast<float>(lua_tonumber(L, 2));
+    w->setHeight(height);
+    return 0;
+}
+
+int Modal_setWidth(lua_State* L)
+{
+    auto w = checkObject<ModalWindow>(L);
+    float width = static_cast<float>(lua_tonumber(L, 2));
+    w->setWidth(width);
+    return 0;
+}
+
+int Modal_setAlignment(lua_State* L)
+{
+    auto w = checkObject<ModalWindow>(L);
+    ModalWindow::Alignment mt = static_cast<ModalWindow::Alignment>(lua_tointeger(L, 2));
+    w->setAlignment(mt);
+    return 0;
+}
+
+const struct luaL_Reg ModalWindow::LuaMethods[] =
+{
+    {"exec", Modal_exec},
+    {"setText", Modal_setText},
+    {"setHeight", Modal_setHeight},
+    {"setWidth", Modal_setWidth},
+    {"setAlignment", Modal_setAlignment},
+    {nullptr, nullptr}
+};
 
 ModalWindow::ModalWindow(Screen& parent)
     : Screen(parent.resources(), parent.window()),
@@ -152,6 +204,11 @@ void ModalWindow::setAlignment(ModalWindow::Alignment al)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
+const struct luaL_Reg MessagesWindow::LuaMethods[] =
+{
+    {nullptr, nullptr}
+};
+
 MessagesWindow::MessagesWindow(Screen& parent)
     : ModalWindow{ parent }
 {
@@ -192,6 +249,11 @@ PollResult MessagesWindow::poll(const sf::Event& e)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
+
+const struct luaL_Reg OptionsWindow::LuaMethods[] =
+{
+    {nullptr, nullptr}
+};
 
 OptionsWindow::OptionsWindow(Screen& parent)
     : ModalWindow(parent),
@@ -336,6 +398,11 @@ void OptionsWindow::updateText()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
+
+const struct luaL_Reg InventoryWindow::LuaMethods[] =
+{
+    {nullptr, nullptr}
+};
 
 InventoryWindow::InventoryWindow(Screen& parent, PlayerPtr player)
     : OptionsWindow(parent)

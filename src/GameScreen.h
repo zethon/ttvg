@@ -51,6 +51,7 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
     registerLuaFunctions<DescriptionText>(L);
     registerLuaFunctions<Item>(L);
     registerLuaFunctions<Zone>(L);
+    registerLuaFunctions<ModalWindow>(L);
 
     {
         lua_newtable(L);
@@ -66,7 +67,21 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
         lua_pushstring(L, "Inventory");
         lua_pushnumber(L, static_cast<std::uint16_t>(ModalType::Inventory));
         lua_settable(L, -3);
-        lua_setglobal(L, "ModalWindow");
+        lua_setglobal(L, "ModalType");
+    }
+
+    {
+        lua_newtable(L);
+        lua_pushstring(L, "Top");
+        lua_pushnumber(L, static_cast<std::uint16_t>(ModalType::Default));
+        lua_settable(L, -3);
+        lua_pushstring(L, "Center");
+        lua_pushnumber(L, static_cast<std::uint16_t>(ModalType::Messages));
+        lua_settable(L, -3);
+        lua_pushstring(L, "Bottom");
+        lua_pushnumber(L, static_cast<std::uint16_t>(ModalType::Options));
+        lua_settable(L, -3);
+        lua_setglobal(L, "ModalAlignment");
     }
    
     assert(lua_gettop(L) == 0);

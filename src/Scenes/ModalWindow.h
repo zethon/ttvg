@@ -21,14 +21,15 @@ class ModalWindow : public Screen
 {
 
 public:
-    using CloseHandler = std::function<PollResult(const PollResult&)>;
-
     enum class Alignment
     {
         TOP,
         CENTER,
         BOTTOM
     };
+
+    static constexpr auto CLASS_NAME = "ModalWindow";
+    static const struct luaL_Reg LuaMethods[];
 
     ModalWindow(Screen& screen);
     virtual ~ModalWindow() override = default;
@@ -44,9 +45,6 @@ public:
     float height() const { return _background->getSize().y; }
     void setHeight(float height);
 
-    const CloseHandler& closeHandler() const { return _handler; }
-    void setCloseHandler(const CloseHandler&& val) { _handler = val; }
-
     template<typename T>
     T downcast()
     {
@@ -58,7 +56,6 @@ public:
 protected:
     sf::Font            _font;
     Alignment           _alignment = Alignment::BOTTOM;
-    CloseHandler        _handler;
     Screen&             _parent;
 
     std::shared_ptr<sf::RectangleShape> _border;
@@ -73,6 +70,9 @@ class MessagesWindow : public ModalWindow
     std::deque<std::string>    _messages;
 
 public:
+    static constexpr auto CLASS_NAME = "MessagesWindow";
+    static const struct luaL_Reg LuaMethods[];
+
     MessagesWindow(Screen& parent);
 
     void pushMessage(const std::string& message)
@@ -97,6 +97,9 @@ class OptionsWindow : public ModalWindow
 public:
     using TextPtr = std::shared_ptr<sf::Text>;
     using Options = std::vector<TextPtr>;
+
+    static constexpr auto CLASS_NAME = "OptionsWindow";
+    static const struct luaL_Reg LuaMethods[];
 
     OptionsWindow(Screen& parent);
 
@@ -127,6 +130,9 @@ class InventoryWindow : public OptionsWindow
 {
 
 public:
+    static constexpr auto CLASS_NAME = "InventoryWindow";
+    static const struct luaL_Reg LuaMethods[];
+
     InventoryWindow(Screen& parent, PlayerPtr player);
 };
 
