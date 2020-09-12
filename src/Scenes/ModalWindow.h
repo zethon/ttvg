@@ -89,36 +89,38 @@ protected:
 //    
 //};
 //
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//class OptionsWindow : public ModalWindow
-//{
-//
-//public:
-//    using TextPtr = std::shared_ptr<sf::Text>;
-//    using Options = std::vector<TextPtr>;
-//
-//    OptionsWindow(ResourceManager& resmgr, sf::RenderTarget& target);
-//
-//    PollResult poll(const sf::Event& e) override;
-//    void setText(const std::string& header) override;
-//    
-//    void addOption(const std::string& choice);
-//
-//private:
-//    void adjustLayout();
-//    void draw() override;
-//
-//    void nextSelection();
-//    void prevSelection();
-//    void updateText();
-//
-//    Options     _options;
-//    sf::Text    _indicator;
-//    std::size_t _selection = 0;
-//
-//};
-//
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+class OptionsWindow : public ModalWindow
+{
+
+public:
+    using TextPtr = std::shared_ptr<sf::Text>;
+    using Options = std::vector<TextPtr>;
+
+    OptionsWindow(Screen& parent);
+
+    PollResult poll(const sf::Event& e) override;
+
+    void setText(const std::string& header) override;
+    void addOption(const std::string& choice);
+
+    std::optional<std::size_t> selection() const { return _selection; }
+
+private:
+    void adjustLayout();
+    void draw() override;
+
+    void nextSelection();
+    void prevSelection();
+    void updateText();
+
+    Options     _options;
+    sf::Text    _indicator;
+    
+    std::optional<std::size_t>  _selection = 0;
+};
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //class InventoryWindow : public OptionsWindow

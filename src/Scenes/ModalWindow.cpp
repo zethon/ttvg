@@ -191,143 +191,150 @@ void ModalWindow::setAlignment(ModalWindow::Alignment al)
 //    return PollResult{};
 //}
 //
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//OptionsWindow::OptionsWindow(ResourceManager& resmgr, sf::RenderTarget& target)
-//    : ModalWindow(resmgr, target),
-//      _indicator("->", _font)
-//{   
-//    _indicator.setCharacterSize(25);
-//    _indicator.setFillColor(sf::Color::Yellow);
-//}
-//
-//PollResult OptionsWindow::poll(const sf::Event& e)
-//{
-//    if (e.type == sf::Event::KeyPressed)
-//    {
-//        switch (e.key.code)
-//        {
-//            default:
-//                return ModalWindow::poll(e);
-//            
-//            case sf::Keyboard::Up:
-//            {
-//                prevSelection();
-//            }
-//            break;
-//
-//            case sf::Keyboard::Down:
-//            {
-//                nextSelection();
-//            }
-//            break;
-//
-//            case sf::Keyboard::Enter:
-//            case sf::Keyboard::Space:
-//            {
-//                return { true, { ScreenActionType::CLOSE_MODAL, _selection}};
-//            }
-//            break;
-//        }
-//    }
-//
-//    return PollResult{};
-//}
-//
-//void OptionsWindow::setText(const std::string& header)
-//{
-//    ModalWindow::setText(header);
-//    adjustLayout();
-//}
-//
-//void OptionsWindow::addOption(const std::string& choice)
-//{
-//    auto temptext = fmt::format("   {}", choice);
-//    auto temp = std::make_shared<sf::Text>(temptext, _font);
-//    temp->setCharacterSize(22);
-//
-//    _options.emplace_back(std::move(temp));
-//
-//    addDrawable(_options.back());
-//    adjustLayout();
-//}
-//
-//void OptionsWindow::adjustLayout()
-//{
-//    setAlignment(_alignment);
-//
-//    auto[xanchor, yanchor] = _background->getPosition();
-//    xanchor += _indicator.getGlobalBounds().width + 15.f;
-//    yanchor += 5.f;
-//
-//    _text->setPosition(sf::Vector2f(xanchor, yanchor));
-//    yanchor += _text->getGlobalBounds().height + 20.f;
-//
-//    for (auto& choice : _options)
-//    {
-//        choice->setPosition(xanchor, yanchor);
-//        yanchor += choice->getGlobalBounds().height + 7.5f;
-//    }
-//
-//    updateText();
-//}
-//
-//void OptionsWindow::draw()
-//{
-//    ModalWindow::draw();
-//    _window.draw(_indicator);
-//}
-//
-//void OptionsWindow::nextSelection()
-//{
-//    if (_selection == (_options.size() - 1))
-//    {
-//        _selection = 0;
-//    }
-//    else
-//    {
-//        _selection++;
-//    }
-//
-//    updateText();
-//}
-//
-//void OptionsWindow::prevSelection()
-//{
-//    if (_selection == 0)
-//    {
-//        _selection = _options.size() - 1;
-//    }
-//    else
-//    {
-//        _selection--;
-//    }
-//
-//    updateText();
-//}
-//
-//void OptionsWindow::updateText()
-//{
-//    if (_options.size() == 0)
-//    {
-//        return;
-//    }
-//
-//    std::for_each(_options.begin(), _options.end(),
-//        [](auto text)
-//        {
-//            text->setFillColor(sf::Color::White);
-//            text->setStyle(sf::Text::Regular);
-//        });
-//
-//    _options.at(_selection)->setFillColor(sf::Color::Yellow);
-//    _options.at(_selection)->setStyle(sf::Text::Style::Bold);
-//
-//    auto xpos = _text->getPosition().x;
-//    auto ypos = _options.at(_selection)->getPosition().y;
-//    _indicator.setPosition(xpos, ypos);
-//}
-//
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+OptionsWindow::OptionsWindow(Screen& parent)
+    : ModalWindow(parent),
+      _indicator("->", _font)
+{   
+    _indicator.setCharacterSize(25);
+    _indicator.setFillColor(sf::Color::Yellow);
+}
+
+PollResult OptionsWindow::poll(const sf::Event& e)
+{
+    if (e.type == sf::Event::KeyPressed)
+    {
+        switch (e.key.code)
+        {
+            default:
+                return ModalWindow::poll(e);
+            
+            case sf::Keyboard::Up:
+            {
+                prevSelection();
+            }
+            break;
+
+            case sf::Keyboard::Down:
+            {
+                nextSelection();
+            }
+            break;
+
+            case sf::Keyboard::Escape:
+            {
+                _selection.reset();
+                return { true, { ScreenActionType::CLOSE_MODAL } };
+            }                
+
+            case sf::Keyboard::Enter:
+            case sf::Keyboard::Space:
+            {
+                return { true, { ScreenActionType::CLOSE_MODAL }};
+            }
+        }
+    }
+
+    return PollResult{};
+}
+
+void OptionsWindow::setText(const std::string& header)
+{
+    ModalWindow::setText(header);
+    adjustLayout();
+}
+
+void OptionsWindow::addOption(const std::string& choice)
+{
+    auto temptext = fmt::format("   {}", choice);
+    auto temp = std::make_shared<sf::Text>(temptext, _font);
+    temp->setCharacterSize(22);
+
+    _options.emplace_back(std::move(temp));
+
+    addDrawable(_options.back());
+    adjustLayout();
+}
+
+void OptionsWindow::adjustLayout()
+{
+    setAlignment(_alignment);
+
+    auto[xanchor, yanchor] = _background->getPosition();
+    xanchor += _indicator.getGlobalBounds().width + 15.f;
+    yanchor += 5.f;
+
+    _text->setPosition(sf::Vector2f(xanchor, yanchor));
+    yanchor += _text->getGlobalBounds().height + 20.f;
+
+    for (auto& choice : _options)
+    {
+        choice->setPosition(xanchor, yanchor);
+        yanchor += choice->getGlobalBounds().height + 7.5f;
+    }
+
+    updateText();
+}
+
+void OptionsWindow::draw()
+{
+    ModalWindow::draw();
+    _window.draw(_indicator);
+}
+
+void OptionsWindow::nextSelection()
+{
+    if (_selection == (_options.size() - 1))
+    {
+        _selection = 0;
+    }
+    else
+    {
+        assert(_selection.has_value());
+        (*_selection)++;
+    }
+
+    updateText();
+}
+
+void OptionsWindow::prevSelection()
+{
+    if (_selection == 0)
+    {
+        _selection = _options.size() - 1;
+    }
+    else
+    {
+        (*_selection)--;
+    }
+
+    updateText();
+}
+
+void OptionsWindow::updateText()
+{
+    if (_options.size() == 0)
+    {
+        return;
+    }
+
+    std::for_each(_options.begin(), _options.end(),
+        [](auto text)
+        {
+            text->setFillColor(sf::Color::White);
+            text->setStyle(sf::Text::Regular);
+        });
+
+    assert(_selection.has_value());
+    _options.at(*_selection)->setFillColor(sf::Color::Yellow);
+    _options.at(*_selection)->setStyle(sf::Text::Style::Bold);
+
+    auto xpos = _text->getPosition().x;
+    auto ypos = _options.at(*_selection)->getPosition().y;
+    _indicator.setPosition(xpos, ypos);
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)

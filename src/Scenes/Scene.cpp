@@ -651,6 +651,26 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
             case sf::Keyboard::Escape:
             {
+                OptionsWindow win{ *this };
+                win.setAlignment(ModalWindow::Alignment::CENTER);
+                win.setText("Do you want to quit the game like you have\nquit everything in life?");
+                win.addOption("FUck you, take me to the Main Menu");
+                win.addOption("FUCK OFF! I WANT TO QUIT");
+                win.exec();
+
+                if (auto s = win.selection();
+                    s.has_value())
+                {
+                    if (*s == 0)
+                    {
+                        return { true, ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO } };
+                    }
+                    else
+                    {
+                        assert(*s == 1);
+                        return { true, ScreenAction{ ScreenActionType::EXIT_GAME } };
+                    }
+                }
                 //_modalWindow = std::make_unique<OptionsWindow>(_resources, _window);
                 //auto w = _modalWindow->downcast<OptionsWindow*>();
                 //w->setAlignment(ModalWindow::Alignment::CENTER);
