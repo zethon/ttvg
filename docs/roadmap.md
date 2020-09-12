@@ -55,6 +55,10 @@ Right now all items on a given map are in a fixed location. There should be a wa
 ]
 ```
 
+## Mac Installer
+
+Mac users need love too! Like the Windows installer, Mac installers should be automatically deployed with pushes to master.
+
 ## AMB Badges
 
 Acomplishments in the game could be rewarded with badges on AMB. This would require some kind of login in the game.
