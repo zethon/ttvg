@@ -51,4 +51,8 @@ Acomplishments in the game could be rewarded with badges on AMB. This would requ
 
 ## Multiplayer!
 
+Wouldn't it be great if multiple AMBers could wander around the same map and have hobofights?!
+
 ## MicroTransactions! LOL
+
+Wouldn't it also be great to send Max Power money?!
