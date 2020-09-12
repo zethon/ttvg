@@ -43,7 +43,17 @@ Such that picking up the first item would trigger `special_onPickupSax` but pick
 
 ## Random Item Placement
 
-Right now all items on a given map are in a fixed location. There should be a way to configure items such that they are placed randomly on the maps.
+Right now all items on a given map are in a fixed location. There should be a way to configure items such that they are placed randomly on the maps. Maybe this could be done by adding a `random` keyword in the `x`,`y` configuration, such that random items would be easily compatible with *Item General Callbacks*. For example:
+
+```json
+"sax"
+[
+    { "x":"random", "y":"random", "onPickup": "special_onPickupSax" },
+    { "x":10, "y":10},
+    { "x":20, "y":20},
+    "onPickup":"generic_onPickupSax"
+]
+```
 
 ## AMB Badges
 
