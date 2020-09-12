@@ -35,7 +35,7 @@ Instead there should be a way to define a catch-all and define a specific callba
     { "x":1, "y":1, "onPickup": "special_onPickupSax" },
     { "x":10, "y":10},
     { "x":20, "y":20},
-    "onPickup":"generic_onPickupSax"
+    "onPickup": "generic_onPickupSax"
 ]
 ```
 
@@ -51,7 +51,7 @@ Right now all items on a given map are in a fixed location. There should be a wa
     { "x":"random", "y":"random", "onPickup": "special_onPickupSax" },
     { "x":10, "y":10},
     { "x":20, "y":20},
-    "onPickup":"generic_onPickupSax"
+    "onPickup": "generic_onPickupSax"
 ]
 ```
 
