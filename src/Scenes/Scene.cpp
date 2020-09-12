@@ -670,36 +670,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                         assert(*s == 1);
                         return { true, ScreenAction{ ScreenActionType::EXIT_GAME } };
                     }
-                }
-                //_modalWindow = std::make_unique<OptionsWindow>(_resources, _window);
-                //auto w = _modalWindow->downcast<OptionsWindow*>();
-                //w->setAlignment(ModalWindow::Alignment::CENTER);
-                //w->setText("Do you want to quit the game like you have\nquit everything in life?");
-                //w->addOption("Fuck you, take me to the main menu");
-                //w->addOption("FUCk Off! I want to QUIT!!");
-
-                //auto responseHandler = 
-                //    [this](const PollResult& result) -> PollResult
-                //    {
-                //        if (!result.action.data.empty())
-                //        {
-                //            // 0 -> main menu, 1 -> quit game
-                //            auto selection = boost::any_cast<std::size_t>(result.action.data);
-                //            if (selection == 0)
-                //            {
-                //                return { true, ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO } };
-                //            }
-                //            else
-                //            {
-                //                assert(selection == 1);
-                //                return { true, ScreenAction{ ScreenActionType::EXIT_GAME } };
-                //            }
-                //        }
-
-                //        return result;
-                //    };
-
-                //w->setCloseHandler(std::move(responseHandler));    
+                }   
             }
             break;
 
@@ -771,14 +742,15 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             //
             case sf::Keyboard::I:
             {
-                //if (_player->getInventory().size() > 0)
-                //{
-                //    _modalWindow = std::make_unique<InventoryWindow>(_resources, _window, _player);
-                //}
-                //else
-                //{
-                //    _descriptionText.setText("You have no items");
-                //}                
+                if (_player->getInventory().size() > 0)
+                {
+                    InventoryWindow win{ *this, _player };
+                    win.exec();
+                }
+                else
+                {
+                    _descriptionText.setText("You have no items");
+                }                
             }
             break;
 

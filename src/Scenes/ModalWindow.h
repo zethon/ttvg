@@ -122,14 +122,12 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//class InventoryWindow : public OptionsWindow
-//{
-//
-//public:
-//    InventoryWindow(ResourceManager& resmgr,
-//        sf::RenderTarget& target,
-//        PlayerPtr player);
-//};
+
+class InventoryWindow : public OptionsWindow
+{
+
+public:
+    InventoryWindow(Screen& parent, PlayerPtr player);
+};
 
 } // namespace tt

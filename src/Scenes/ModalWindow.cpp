@@ -335,45 +335,45 @@ void OptionsWindow::updateText()
     _indicator.setPosition(xpos, ypos);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//InventoryWindow::InventoryWindow(ResourceManager& resmgr, sf::RenderTarget& target, PlayerPtr player)
-//    : OptionsWindow(resmgr, target)
-//{
-//    setAlignment(ModalWindow::Alignment::CENTER);
-//
-//    // count and name
-//    using InvAgg = std::tuple<std::uint32_t, std::string>;
-//    std::map<std::string, InvAgg> aggregate;
-//
-//    for (const auto& item : player->getInventory())
-//    {
-//        if (aggregate.find(item->getID()) != aggregate.end())
-//        {
-//            std::get<0>(aggregate[item->getID()])++;
-//        }
-//        else
-//        {
-//            aggregate[item->getID()] = std::make_tuple(1, item->getName());
-//        }
-//    }
-//
-//    setText("You are carrying...");
-//
-//    if (aggregate.size() >= 10)
-//    {
-//        setHeight(height() + 350.f);
-//    }
-//    if (aggregate.size() >= 5)
-//    {
-//        setHeight(height() + 175.f);
-//    }
-//
-//    for (const auto& item : aggregate)
-//    {
-//        const auto&[count, name] = item.second;
-//        addOption(fmt::format("{} x {}", name, count));
-//    }
-//}
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+InventoryWindow::InventoryWindow(Screen& parent, PlayerPtr player)
+    : OptionsWindow(parent)
+{
+    setAlignment(ModalWindow::Alignment::CENTER);
+
+    // count and name
+    using InvAgg = std::tuple<std::uint32_t, std::string>;
+    std::map<std::string, InvAgg> aggregate;
+
+    for (const auto& item : player->getInventory())
+    {
+        if (aggregate.find(item->getID()) != aggregate.end())
+        {
+            std::get<0>(aggregate[item->getID()])++;
+        }
+        else
+        {
+            aggregate[item->getID()] = std::make_tuple(1, item->getName());
+        }
+    }
+
+    setText("You are carrying...");
+
+    if (aggregate.size() >= 10)
+    {
+        setHeight(height() + 350.f);
+    }
+    if (aggregate.size() >= 5)
+    {
+        setHeight(height() + 175.f);
+    }
+
+    for (const auto& item : aggregate)
+    {
+        const auto&[count, name] = item.second;
+        addOption(fmt::format("{} x {}", name, count));
+    }
+}
 
 } // namespace tt
