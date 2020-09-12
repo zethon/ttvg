@@ -275,29 +275,11 @@ void Scene::exit()
 
 PollResult Scene::poll(const sf::Event& e)
 {
-    //if (_modalWindow)
-    //{
-    //    auto result = _modalWindow->poll(e);
-    //    if (result.handled 
-    //        && result.action.type == ScreenActionType::CLOSE_MODAL)
-    //    {
-    //        if (const auto& func = _modalWindow->closeHandler(); 
-    //                result.handled && func)
-    //        {
-    //            result = func(result);
-    //        }
 
-    //        _modalWindow.reset();
-    //        return result;
-    //    }
-    //}
-    //else
+    auto result = privatePollHandler(e);
+    if (result.handled)
     {
-        auto result = privatePollHandler(e);
-        if (result.handled)
-        {
-            return result;
-        }
+        return result;
     }
 
     if (_player->state() == AnimatedState::ANIMATED
@@ -314,12 +296,6 @@ PollResult Scene::poll(const sf::Event& e)
 
 ScreenAction Scene::timestep()
 {
-    //if (_modalWindow)
-    //{
-    //    _modalWindow->timestep();
-    //    return {};
-    //}
-
     if (_player->health() <= 0)
     {
         //_bgsong->stop();
@@ -341,11 +317,6 @@ void Scene::draw()
     _hud.draw();
     _descriptionText.draw();
     _debugWindow.draw();
-
-    //if (_modalWindow)
-    //{
-    //    _modalWindow->draw();
-    //}
 }
 
 sf::Vector2f Scene::getPlayerTile() const
@@ -751,17 +722,6 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 {
                     _descriptionText.setText("You have no items");
                 }                
-            }
-            break;
-
-            case sf::Keyboard::Num1:
-            {
-                //_modalWindow = std::make_unique<OptionsWindow>(_resources, _window);
-                //OptionsWindow* w = static_cast<OptionsWindow*>(_modalWindow.get());
-                //w->setText("Are you a toothless dogfucker?");
-                //w->addOption("Yes, I am a dogfucker!");
-                //w->addOption("I never fucked a dog");
-                //w->addOption("She had been living among adults since she was 9");
             }
             break;
 

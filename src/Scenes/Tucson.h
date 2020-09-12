@@ -30,7 +30,6 @@ public:
     ScreenAction timestep() override;
     void draw() override;
 
-    void init() override;
     void enter() override;
 
 protected:

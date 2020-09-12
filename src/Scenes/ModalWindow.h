@@ -66,30 +66,30 @@ protected:
     std::shared_ptr<sf::Text>           _text;
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//class MessagesWindow : public ModalWindow
-//{
-//    std::deque<std::string>    _messages;
-//
-//public:
-//    MessagesWindow(ResourceManager& resmgr, sf::RenderTarget& target);
-//
-//    void pushMessage(const std::string& message)
-//    {
-//        if (_text->getString().getSize() == 0)
-//        {
-//            _text->setString(message);
-//        }
-//
-//        _messages.push_back(message);
-//    }
-//
-//    PollResult poll(const sf::Event& e) override;
-//    
-//};
-//
 ////////////////////////////////////////////////////////////////////////////////////////////////
+
+class MessagesWindow : public ModalWindow
+{
+    std::deque<std::string>    _messages;
+
+public:
+    MessagesWindow(Screen& parent);
+
+    void pushMessage(const std::string& message)
+    {
+        if (_text->getString().getSize() == 0)
+        {
+            _text->setString(message);
+        }
+
+        _messages.push_back(message);
+    }
+
+    PollResult poll(const sf::Event& e) override;
+    
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 class OptionsWindow : public ModalWindow
 {

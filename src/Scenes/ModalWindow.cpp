@@ -150,48 +150,48 @@ void ModalWindow::setAlignment(ModalWindow::Alignment al)
     _border->setPosition(_background->getPosition());
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//MessagesWindow::MessagesWindow(ResourceManager& resmgr, sf::RenderTarget& target)
-//    : ModalWindow(resmgr, target)
-//{
-//}
-//
-//PollResult MessagesWindow::poll(const sf::Event& e)
-//{
-//    if (e.type == sf::Event::KeyPressed)
-//    {
-//        switch (e.key.code)
-//        {
-//            default:
-//            break;
-//
-//            case sf::Keyboard::Space:
-//            {
-//                _messages.pop_front();
-//                if (_messages.size() > 0)
-//                {
-//                    _text->setString(_messages.front());
-//                }
-//                else
-//                {
-//                    return { true, { ScreenActionType::CLOSE_MODAL, {} }};
-//                }
-//            }
-//            break;
-//            
-//            case sf::Keyboard::Escape:
-//            {
-//                return { true, { ScreenActionType::CLOSE_MODAL, {} }};
-//            }
-//            break;
-//        }
-//    }
-//
-//    return PollResult{};
-//}
-//
 ////////////////////////////////////////////////////////////////////////////////////////////////
+
+MessagesWindow::MessagesWindow(Screen& parent)
+    : ModalWindow{ parent }
+{
+}
+
+PollResult MessagesWindow::poll(const sf::Event& e)
+{
+    if (e.type == sf::Event::KeyPressed)
+    {
+        switch (e.key.code)
+        {
+            default:
+            break;
+
+            case sf::Keyboard::Space:
+            {
+                _messages.pop_front();
+                if (_messages.size() > 0)
+                {
+                    _text->setString(_messages.front());
+                }
+                else
+                {
+                    return { true, { ScreenActionType::CLOSE_MODAL, {} }};
+                }
+            }
+            break;
+            
+            case sf::Keyboard::Escape:
+            {
+                return { true, { ScreenActionType::CLOSE_MODAL, {} }};
+            }
+            break;
+        }
+    }
+
+    return PollResult{};
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 OptionsWindow::OptionsWindow(Screen& parent)
     : ModalWindow(parent),
