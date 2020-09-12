@@ -275,23 +275,23 @@ void Scene::exit()
 
 PollResult Scene::poll(const sf::Event& e)
 {
-    if (_modalWindow)
-    {
-        auto result = _modalWindow->poll(e);
-        if (result.handled 
-            && result.action.type == ScreenActionType::CLOSE_MODAL)
-        {
-            if (const auto& func = _modalWindow->closeHandler(); 
-                    result.handled && func)
-            {
-                result = func(result);
-            }
+    //if (_modalWindow)
+    //{
+    //    auto result = _modalWindow->poll(e);
+    //    if (result.handled 
+    //        && result.action.type == ScreenActionType::CLOSE_MODAL)
+    //    {
+    //        if (const auto& func = _modalWindow->closeHandler(); 
+    //                result.handled && func)
+    //        {
+    //            result = func(result);
+    //        }
 
-            _modalWindow.reset();
-            return result;
-        }
-    }
-    else
+    //        _modalWindow.reset();
+    //        return result;
+    //    }
+    //}
+    //else
     {
         auto result = privatePollHandler(e);
         if (result.handled)
@@ -314,11 +314,11 @@ PollResult Scene::poll(const sf::Event& e)
 
 ScreenAction Scene::timestep()
 {
-    if (_modalWindow)
-    {
-        _modalWindow->timestep();
-        return {};
-    }
+    //if (_modalWindow)
+    //{
+    //    _modalWindow->timestep();
+    //    return {};
+    //}
 
     if (_player->health() <= 0)
     {
@@ -342,10 +342,10 @@ void Scene::draw()
     _descriptionText.draw();
     _debugWindow.draw();
 
-    if (_modalWindow)
-    {
-        _modalWindow->draw();
-    }
+    //if (_modalWindow)
+    //{
+    //    _modalWindow->draw();
+    //}
 }
 
 sf::Vector2f Scene::getPlayerTile() const
@@ -651,35 +651,35 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
             case sf::Keyboard::Escape:
             {
-                _modalWindow = std::make_unique<OptionsWindow>(_resources, _window);
-                auto w = _modalWindow->downcast<OptionsWindow*>();
-                w->setAlignment(ModalWindow::Alignment::CENTER);
-                w->setText("Do you want to quit the game like you have\nquit everything in life?");
-                w->addOption("Fuck you, take me to the main menu");
-                w->addOption("FUCk Off! I want to QUIT!!");
+                //_modalWindow = std::make_unique<OptionsWindow>(_resources, _window);
+                //auto w = _modalWindow->downcast<OptionsWindow*>();
+                //w->setAlignment(ModalWindow::Alignment::CENTER);
+                //w->setText("Do you want to quit the game like you have\nquit everything in life?");
+                //w->addOption("Fuck you, take me to the main menu");
+                //w->addOption("FUCk Off! I want to QUIT!!");
 
-                auto responseHandler = 
-                    [this](const PollResult& result) -> PollResult
-                    {
-                        if (!result.action.data.empty())
-                        {
-                            // 0 -> main menu, 1 -> quit game
-                            auto selection = boost::any_cast<std::size_t>(result.action.data);
-                            if (selection == 0)
-                            {
-                                return { true, ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO } };
-                            }
-                            else
-                            {
-                                assert(selection == 1);
-                                return { true, ScreenAction{ ScreenActionType::EXIT_GAME } };
-                            }
-                        }
+                //auto responseHandler = 
+                //    [this](const PollResult& result) -> PollResult
+                //    {
+                //        if (!result.action.data.empty())
+                //        {
+                //            // 0 -> main menu, 1 -> quit game
+                //            auto selection = boost::any_cast<std::size_t>(result.action.data);
+                //            if (selection == 0)
+                //            {
+                //                return { true, ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO } };
+                //            }
+                //            else
+                //            {
+                //                assert(selection == 1);
+                //                return { true, ScreenAction{ ScreenActionType::EXIT_GAME } };
+                //            }
+                //        }
 
-                        return result;
-                    };
+                //        return result;
+                //    };
 
-                w->setCloseHandler(std::move(responseHandler));    
+                //w->setCloseHandler(std::move(responseHandler));    
             }
             break;
 
@@ -751,37 +751,33 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             //
             case sf::Keyboard::I:
             {
-                if (_player->getInventory().size() > 0)
-                {
-                    _modalWindow = std::make_unique<InventoryWindow>(_resources, _window, _player);
-                }
-                else
-                {
-                    _descriptionText.setText("You have no items");
-                }                
+                //if (_player->getInventory().size() > 0)
+                //{
+                //    _modalWindow = std::make_unique<InventoryWindow>(_resources, _window, _player);
+                //}
+                //else
+                //{
+                //    _descriptionText.setText("You have no items");
+                //}                
             }
             break;
 
             case sf::Keyboard::Num1:
             {
-                _modalWindow = std::make_unique<OptionsWindow>(_resources, _window);
-                OptionsWindow* w = static_cast<OptionsWindow*>(_modalWindow.get());
-                w->setText("Are you a toothless dogfucker?");
-                w->addOption("Yes, I am a dogfucker!");
-                w->addOption("I never fucked a dog");
-                w->addOption("She had been living among adults since she was 9");
+                //_modalWindow = std::make_unique<OptionsWindow>(_resources, _window);
+                //OptionsWindow* w = static_cast<OptionsWindow*>(_modalWindow.get());
+                //w->setText("Are you a toothless dogfucker?");
+                //w->addOption("Yes, I am a dogfucker!");
+                //w->addOption("I never fucked a dog");
+                //w->addOption("She had been living among adults since she was 9");
             }
             break;
 
             case sf::Keyboard::Num3:
             {
-                _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
-                MessagesWindow* w = static_cast<MessagesWindow*>(_modalWindow.get());
-                _modalWindow->setAlignment(ModalWindow::Alignment::BOTTOM);
-                w->pushMessage("Hi there Tommy");
-                w->pushMessage("Welcome to the world of Tommy Tooter");
-                w->pushMessage("I hope you enjoy your adventure!!!");
-                w->pushMessage("dogfucker");
+                ModalWindow t{ *this };
+                t.setText("THIS IS A TEST");
+                t.exec();
             }
             break;
 

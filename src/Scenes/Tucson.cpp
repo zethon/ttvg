@@ -35,21 +35,21 @@ void Tucson::init()
 {
     Scene::init();
 
-    _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
-    auto w = _modalWindow->downcast<MessagesWindow*>();
-    /*w->setHeight(250.f);*/
-    w->pushMessage(R"(
-Welcome to the Tommy Tooter Video Game Tutorial!!
-
-Or press SPACE to continue
-Press ESC to skip tutorial. )");
-
-    w->pushMessage("Use the arrow keys to walk around");
-    w->pushMessage("You can enter new areas and explore by\npressing the SPACE bar");
-    w->pushMessage("If you find something interesting you can\npick it up by pressing A");
-    w->pushMessage("You can display your inventory by pressing I");
-    w->pushMessage("And if you're a hobo and want to quit, press ESCAPE!");
-    w->pushMessage("That's it! Namaste motherfucker!");
+//    _modalWindow = std::make_unique<MessagesWindow>(_resources, _window);
+//    auto w = _modalWindow->downcast<MessagesWindow*>();
+//    /*w->setHeight(250.f);*/
+//    w->pushMessage(R"(
+//Welcome to the Tommy Tooter Video Game Tutorial!!
+//
+//Or press SPACE to continue
+//Press ESC to skip tutorial. )");
+//
+//    w->pushMessage("Use the arrow keys to walk around");
+//    w->pushMessage("You can enter new areas and explore by\npressing the SPACE bar");
+//    w->pushMessage("If you find something interesting you can\npick it up by pressing A");
+//    w->pushMessage("You can display your inventory by pressing I");
+//    w->pushMessage("And if you're a hobo and want to quit, press ESCAPE!");
+//    w->pushMessage("That's it! Namaste motherfucker!");
 
 }
 
@@ -147,11 +147,11 @@ PollResult Tucson::poll(const sf::Event& e)
 
 ScreenAction Tucson::timestep()
 {
-    if (_modalWindow)
-    {
-        _modalWindow->timestep();
-        return {};
-    }
+    //if (_modalWindow)
+    //{
+    //    _modalWindow->timestep();
+    //    return {};
+    //}
 
     timestepTraffic();
 
@@ -230,10 +230,10 @@ void Tucson::draw()
     _descriptionText.draw();
     _debugWindow.draw();
 
-    if (_modalWindow)
-    {
-        _modalWindow->draw();
-    }
+    //if (_modalWindow)
+    //{
+    //    _modalWindow->draw();
+    //}
 }
 
 void Tucson::updateCurrentTile(const TileInfo& info)

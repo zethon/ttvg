@@ -183,8 +183,6 @@ protected:
     Items           _items;
     ItemFactory&    _itemFactory;
 
-    std::unique_ptr<ModalWindow>    _modalWindow;
-
 private:
     void createItems();
     void pickupItem(Items::iterator itemIt);

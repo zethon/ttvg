@@ -89,6 +89,9 @@ public:
     void setVisible(bool var) { _visible = var; }
     bool visible() const { return _visible; }
 
+    sf::RenderTarget& window() { return _window; }
+    ResourceManager& resources() { return _resources; }
+
 protected:
     std::vector<DrawablePtr>        _objects;
     std::vector<IUpdateablePtr>     _updateables;
