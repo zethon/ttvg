@@ -154,7 +154,7 @@ int Scene_getGlobalRect(lua_State* L)
 int Scene_createModal(lua_State* L)
 {
     auto scene = checkObject<Scene>(L);
-    ModalType mt = static_cast<ModalType>(lua_tonumber(L, 2));
+    ModalType mt = static_cast<ModalType>(lua_tointeger(L, 2));
     return 0;
 }
 
