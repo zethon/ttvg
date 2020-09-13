@@ -172,7 +172,7 @@ void Tucson::timestepTraffic()
         {
             if (ptr->vehicleState() == Vehicle::MOVING)
             {
-                _player->setHealth(_player->health() - ptr->damage());
+                _player->reduceHealth(ptr->damage());
                 _descriptionText.setText("OUch!!!!!");
             }
 
