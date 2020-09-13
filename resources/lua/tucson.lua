@@ -11,16 +11,17 @@ function onEnter(scene)
 end 
 
 function treasureChest_onPickup(scene, item)
+    local w = scene:createModal(ModalType.Default)
+    
     if gPlayer:hasItemByName("key") then
         local vagina = ItemFactory.createItem("magic-space-vagina")
         gPlayer:addItem(vagina)
         gPlayer:removeItemByName("key")
         scene:removeItem(item)
-        gDT:setText("You opened the chest!")
+        w:setText("You opened the chest!\nNow you have a Magic Space Vagina!")
     else
-        -- gDT:setText("You can't open this.")
-        local w = scene:createModal(ModalType.Default)
-        w:setText("You cannot open this chest! Find the key!")
-        w:exec()
+        w:setText("You cannot open this right now")
     end
+
+    w:exec()
 end

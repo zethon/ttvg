@@ -176,14 +176,6 @@
     ],
     "items":
     {
-        "rpg1": 
-        [    
-            { 
-                "x": 8, "y": 9, 
-                "onPickup": "on_rpg_speak"
-            }
-        ],
-        
         "sax": 
         [    
             { "x": 5, "y": 5 }
