@@ -54,7 +54,7 @@ If all goes well you should have a **ttvg.sln** in the `build` folder. This is a
 
 ### Mac
 
-Development requires OSX 10.15 or higher. A C++ compiler is also required.
+Development requires OSX 10.15 or higher. A C++17 compiler is also required.
 
 #### Instructions
 
@@ -71,7 +71,7 @@ cd build
 ```
 conan install ../ttvg -s build_type=Debug --build mising
 ```
-* Initialize CMake. This will create makefiles. If you want to use Xcode than you should just have to change the generator (the `-G` argument). See the Windows instructions for an example of how to specify the generator.
+* Initialize CMake. This will create makefiles. If you want to use Xcode change the generator (the `-G` argument). See the Windows instructions for an example of how to specify the generator.
 
 ```
 cmake .. -DCMAKE_BUILD_TYPE=Debug

@@ -23,8 +23,10 @@ using DrawablePtr = std::shared_ptr<sf::Drawable>;
 enum class ScreenActionType
 {
     NONE = 0,
+    EXIT_GAME,
     CHANGE_SCREEN,
-    CHANGE_SCENE
+    CHANGE_SCENE,
+    CLOSE_MODAL
 };
 
 struct ScreenAction
@@ -86,6 +88,9 @@ public:
 
     void setVisible(bool var) { _visible = var; }
     bool visible() const { return _visible; }
+
+    sf::RenderTarget& window() { return _window; }
+    ResourceManager& resources() { return _resources; }
 
 protected:
     std::vector<DrawablePtr>        _objects;

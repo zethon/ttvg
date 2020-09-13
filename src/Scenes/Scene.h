@@ -13,6 +13,7 @@
 #include "Hud.h"
 #include "DescriptionText.h"
 #include "DebugWindow.h"
+#include "ModalWindow.h"
 
 namespace tt
 {
@@ -60,8 +61,9 @@ bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         lua_newtable(L); // 1:tbl
         if (luaL_loadfile(L, filename.c_str()) != 0) // 1:tbl, 2:chunk
         {
-            // auto error = lua_tostring(L, -1);
+            auto error = lua_tostring(L, -1);
             // throw std::runtime_error(error);
+            std::cout << "could not load scene lua file: " << error << '\n';
             lua_settop(L, 0);
             return false;
         }
@@ -75,8 +77,9 @@ bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         lua_setupvalue(L, -2, 1); // 1:tbl, 2:chunk
         if (lua_pcall(L, 0, 0, 0) != 0) // 1:tbl
         {
-            // auto error = lua_tostring(L, -1);
-            // throw std::runtime_error(error);
+            auto error = lua_tostring(L, -1);
+            std::cout << "could not load scene lua file: " << error << '\n';
+            //throw std::runtime_error(error);
             lua_settop(L, 0);
             return false;
         }
@@ -138,6 +141,7 @@ public:
     virtual void exit();
 
     PollResult poll(const sf::Event& e) override;
+    ScreenAction timestep() override;
     void draw() override;
 
     sf::Vector2f getPlayerTile() const;
@@ -153,6 +157,7 @@ public:
     const std::vector<ItemPtr> items() const { return _items; }
 
     BackgroundSharedPtr background() const { return _background; }
+    PlayerPtr player() const { return _player; }
 
 protected:
     virtual void updateCurrentTile(const TileInfo& info);
@@ -161,14 +166,14 @@ protected:
 
     [[maybe_unused]] bool walkPlayer(float speed);    
 
-    std::string             _name;
-    lua_State*              _luaState = nullptr;
-    int                     _luaIdx = 0;
-    CallbackInfo            _callbackNames;
+    std::string     _name;
+    lua_State*      _luaState = nullptr;
+    int             _luaIdx = 0;
+    CallbackInfo    _callbackNames;
 
-    Hud                     _hud;
-    DescriptionText         _descriptionText;
-    DebugWindow             _debugWindow;
+    Hud             _hud;
+    DescriptionText _descriptionText;
+    DebugWindow     _debugWindow;
 
     BackgroundSharedPtr     _background;
 
@@ -178,12 +183,14 @@ protected:
     AvatarInfo              _playerAvatarInfo;
     TileInfo                _currentTile;
 
-    Items                   _items;
-    ItemFactory&            _itemFactory;
+    Items           _items;
+    ItemFactory&    _itemFactory;
 
 private:
     void createItems();
     void pickupItem(Items::iterator itemIt);
+
+    PollResult privatePollHandler(const sf::Event& e);
 };
 
 } // namespace tt

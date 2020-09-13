@@ -25,7 +25,7 @@ public:
         RenderTargetPtr render);
     
     void drawScreen();
-    void poll(const sf::Event& e);
+    PollResult poll(const sf::Event& e);
     void timestep();
     void changeScreen(std::uint16_t id);
 

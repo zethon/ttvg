@@ -92,11 +92,20 @@ int main(int argc, char *argv[])
             switch (e.type) 
             {
                 default:
-                    engine.poll(e);
+                {
+                    const auto result = engine.poll(e);
+                    if (result.handled
+                        && result.action.type == tt::ScreenActionType::EXIT_GAME)
+                    {
+                        win->close();
+                    }
+                }
                 break;
 
                 case sf::Event::EventType::Closed:
+                {
                     win->close();
+                }
                 break;
             }
         }

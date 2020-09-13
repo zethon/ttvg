@@ -161,7 +161,9 @@ The item name should be used as the JSON key for the item (in this case "handcuf
 
 ## Subclassing `Scene`
 
-More than likely classes derived from `Scene` will have to implement their own `draw()` method. When doing so it is important that the derived class **does not** call `Scene::draw()`. 
+There are some things that must be considered when subclassing from `Scene` to create a new scene.
+
+* Derived scenes that have their own items will have to implement their own `draw() method **that does not call the base class**. This means that each subclass needs to make sure to draw the HUD, modal windows, etc.
 
 ## TODO
 

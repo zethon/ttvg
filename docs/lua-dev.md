@@ -74,6 +74,13 @@ function onEnter(scene)
     scene:addItem(item)
 end
 ```
+<hr/>
+
+#### `[DescriptionWindow] Scene.createModal(ModalType)`
+
+Creates a new modal window of type `ModalType` for display.
+
+See Modal Window for more details.
 
 <hr/>
 
@@ -429,9 +436,144 @@ function club_onSelect(scene, zone)
     return false
 end
 ```
+<hr/>
+<br/>
 
 ### 5.1 Zone API
 
 #### `[string] Zone.getName()`
 
 Returns the name of the zone.
+
+<hr/>
+<br/>
+
+## 6. Modal Windows
+
+Modal windows stop all processing in the game to display text and get input from the user. Modal windows can be used to simulate dialog from NPCs or ask the user questions.
+
+### 6.1 Creating Modal Windows
+
+Modal windows are created through the `Scene.createModal()` method. There are currently four different types of modal windows.
+
+Example:
+```lua
+function onEnter(scene)
+    local player = scene:getPlayer()
+    if player:getHealth() < 30 then
+        local win = scene:createModal(ModalType.Default)
+        win:setText("This is a dangerous map. Be careful")
+        win:exec()
+    end
+end
+```
+
+In this example we displayng a warning to the player when they enter a level if their health is too low.
+
+The four types of modal windows are:
+
+* `ModalType.Default`
+* `ModalType.Messages`
+* `ModalType.Options`
+* `ModalType.Inventory`
+
+### 6.2 Default Modal Windows
+
+ This modal window is a standard window that displays a message that can be dismissed by pressing Space or Escape. 
+
+ The API for Default Modal Windows is available for all types of modal windows. 
+
+#### `ModalWindow.exec()`
+
+This function displays the window. Without calling this function the modal window will do nothing. **This function is blocking**.
+
+<hr/>
+
+#### `ModalWindow.setAlignment(ModalAlignment)`
+
+There are three ways the window can be vertically aligned:
+
+* `ModalAlignment.Bottom`
+* `ModalAlignment.Center`
+* `ModalAlignment.Top`
+
+The default is `* `ModalAlignment.Bottom`.
+
+<hr/>
+
+#### `ModalWindow.setHeight(height)`
+
+Sets the height of the window to `height` while preserving the vertical alignment.
+
+<hr/>
+
+#### `ModalWindow.setText(text)`
+
+Sets the text to the window to `text`. There is no word-wrap functionality, but `text` can be broken into lines using `\n`.
+
+<hr/>
+
+#### `ModalWindow.setWidth(width)`
+
+Sets the width of the window to `width`.
+
+### 6.3 Messages Modal Windows
+
+The *Messages Modal Window* allows you to display multiple windows of text within the same modal window instances. 
+
+#### `ModalWindow.pushMessage(message)`
+
+Pushes a message into the queue of messages to be displayed. The messages will be shown in the order they're pushed. The player can go to the next messages by pressing the Space bar. Pressing the Escape key will close the window.
+
+Example:
+```lua
+local w = scene:createModal(ModalType.Messages)
+w:pushMessage("This will be shown first")
+w:pushMessage("This will be displayed second")
+w:pushMessage("This will be printed last")
+w:exec()
+```
+
+### 6.4 Options Modal Windows
+
+The *Options Modal Window* displays a list of choices to the user. The user can scroll through the options using the arrow key, and an option can be selected by pressing Space or Enter. If the user closes the window using Escape then the selection is null.
+
+Here is a full example:
+
+```lua
+function home_onSelect(scene, zone)
+    local player = scene:getPlayer()
+    local balance = player:getBalance()
+    if balance < 35 then
+        local er = scene:createModal(ModalType.Default)
+        er:setText("You do not have enough money")
+        er:exec()
+        return false
+    end
+
+    local w = scene:createModal(ModalType.Options)
+    w:setText("There is a $35 cover charge.\nDo you want to enter?")
+    w:addOption("Yes")
+    w:addOption("No")
+    w:exec()
+    local r = w:getSelection()
+    if r == nil or r == 1 then
+        return false
+    end
+    
+    player:setBalance(balance - 35)
+    return true
+end
+```
+
+#### `OptionsWindow.addOption(text)`
+
+Adds the option text. 
+
+### `[selection] OptionsWindow.getSelection()`
+
+Returns the 0-based index of the selected option. This can also be `nil` which means the user dismissed the box with the Escape key (i.e. no selection was made)
+
+### 6.5 Inventory Modal Windows
+
+The *Inventory Modal Window* shows the player's inventory. This window uses the same API of the *Options Modal Window* to get the index of the selection.

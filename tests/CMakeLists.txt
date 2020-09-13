@@ -85,6 +85,9 @@ set(LUA_FILES
     ../src/Scenes/Hud.h
     ../src/Scenes/Hud.cpp
 
+    ../src/Scenes/ModalWindow.h
+    ../src/Scenes/ModalWindow.cpp
+
     ../src/Scenes/Tucson.h
     ../src/Scenes/Tucson.cpp
 

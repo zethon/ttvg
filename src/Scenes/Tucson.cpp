@@ -118,16 +118,22 @@ PollResult Tucson::poll(const sf::Event& e)
             }
             break;
 
-
-            case sf::Keyboard::LBracket:
+            case sf::Keyboard::F1:
             {
-                _player->reduceHealth(10);
-            }
-            break;
+                MessagesWindow w{ *this };
+                w.pushMessage(R"(
+Welcome to the Tommy Tooter Video Game Tutorial!!
 
-            case sf::Keyboard::RBracket:
-            {
-                _player->increaseHealth(10);
+Or press SPACE to continue
+Press ESC to skip tutorial. )");
+
+                w.pushMessage("Use the arrow keys to walk around");
+                w.pushMessage("You can enter new areas and explore by\npressing the SPACE bar");
+                w.pushMessage("If you find something interesting you can\npick it up by pressing A");
+                w.pushMessage("You can display your inventory by pressing I");
+                w.pushMessage("And if you're a hobo and want to quit, press ESCAPE!");
+                w.pushMessage("That's it! Namaste motherfucker!");
+                w.exec();
             }
             break;
         }
@@ -139,16 +145,7 @@ PollResult Tucson::poll(const sf::Event& e)
 ScreenAction Tucson::timestep()
 {
     timestepTraffic();
-
-    Scene::timestep();
-
-    if (_player->health() <= 0)
-    {
-        //_bgsong->stop();
-        return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
-    }
-
-    return {};
+    return Scene::timestep();
 }
 
 void Tucson::timestepTraffic()

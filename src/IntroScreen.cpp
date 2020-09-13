@@ -137,7 +137,7 @@ PollResult IntroScreen::poll(const sf::Event& e)
             _tomWillKillSound.play();
         }
     }
-    else if (e.type == sf::Event::KeyReleased
+    else if (e.type == sf::Event::KeyPressed
         && e.key.code == sf::Keyboard::Space)
     {
         switch (_selected)
