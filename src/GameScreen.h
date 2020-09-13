@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Scenes/Scene.h"
+#include "Scenes/ModalWindow.h"
 
 #include "Screen.h"
 #include "AnimatedSprite.h"
@@ -13,6 +14,27 @@
 
 namespace tt
 {
+
+namespace
+{
+
+int ModalFactory_showDefault(lua_State* L)
+{
+    auto scene = checkObject<Scene>(L);
+    const auto text = lua_tostring(L, 2);
+    ModalWindow mw{ *scene, };
+    mw.setText(text);
+    mw.exec();
+    return 0;
+}
+
+const struct luaL_Reg ModalFactory_LuaMethods[] =
+{
+    {"showDefault", ModalFactory_showDefault},
+    {nullptr, nullptr}
+};
+
+}
 
 template<typename T>
 void initLua(lua_State* L, T& screen, void* itemFactory)
@@ -39,6 +61,13 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
         lua_newtable(L);
         luaL_setfuncs(L, ItemFactory::LuaMethods, 0);
         lua_setglobal(L, ItemFactory::CLASS_NAME);
+    }
+
+    // register static variable methods for `Modal`
+    {
+        lua_newtable(L);
+        luaL_setfuncs(L, ModalFactory_LuaMethods, 0);
+        lua_setglobal(L, "Modal");
     }
 
     //luaL_newmetatable(_luaState, "GameScreen");

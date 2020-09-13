@@ -124,7 +124,9 @@ std::string GetLuaValue(const LuaArgPair& v)
 
     if (lua_pcall(L, argcount, LUA_MULTRET, 0) != 0)
     {
-        auto error = lua_tostring(L, -1);
+        const auto error = fmt::format("error running callback {}: {}",
+            function, lua_tostring(L, -1));
+        std::cout << error << '\n';
         throw std::runtime_error(error);
     }
 

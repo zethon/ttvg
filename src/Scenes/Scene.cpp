@@ -692,17 +692,18 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 if (_currentTile.type == TileType::ZONE)
                 {
                     auto& zone = boost::any_cast<Zone&>(_currentTile.data);
+
+                    auto resultp = tt::CallLuaFunction(_luaState,
+                        zone.callbacks.onSelect,
+                        _name,
+                        {
+                            { LUA_REGISTRYINDEX, _luaIdx },
+                            { LUA_TLIGHTUSERDATA, static_cast<void*>(&zone) }
+                        });
+
                     if (zone.transition.has_value())
                     {
                         bool doContinue = true;
-
-                        auto resultp = tt::CallLuaFunction(_luaState, 
-                            zone.callbacks.onSelect, 
-                            _name, 
-                            { 
-                                { LUA_REGISTRYINDEX, _luaIdx },
-                                { LUA_TLIGHTUSERDATA, static_cast<void*>(&zone) } 
-                            });
 
                         if (resultp.has_value()
                                 && resultp->size() > 0)

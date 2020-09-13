@@ -53,6 +53,8 @@ private:
     sf::Sound                           _pgSound;
     sf::Vector2f                        _pgCenter;
     float                               _pgVolume = 0.f;
+
+    bool    _showVehicleWarning = true;
 };
 
 } // namespace tt

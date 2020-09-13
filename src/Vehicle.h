@@ -63,6 +63,11 @@ public:
         _hornsound.setBuffer(*_hornbuffer);
     }
 
+    void playHornSound()
+    {
+        _hornsound.play();
+    }
+
     void move();
 
 private:

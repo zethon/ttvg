@@ -10,6 +10,10 @@ Modal windows need a way to:
 * get user selections from a list of options
 * be completely accessible through the Lua API
 
+## Logging
+
+There needs to be logging that logs to a file and the console.
+
 ## Windows Installer
 
 The Windows installer should automatically build when code is pushed to master and automatically deploy the installer somewhere for download.
