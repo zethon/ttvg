@@ -266,8 +266,42 @@ PollResult MessagesWindow::poll(const sf::Event& e)
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
+int OptionsWindow_addOption(lua_State* L)
+{
+    auto w = checkObject<OptionsWindow>(L);
+    w->addOption(lua_tostring(L, 2));
+    return 0;
+}
+
+int OptionsWindow_getSelection(lua_State* L)
+{
+    auto w = checkObject<OptionsWindow>(L);
+    auto sel = w->selection();
+
+    if (sel.has_value())
+    {
+        lua_pushinteger(L, *sel);
+    }
+    else
+    { 
+        lua_pushnil(L);
+    }
+
+    return 1;
+}
+
 const struct luaL_Reg OptionsWindow::LuaMethods[] =
 {
+    // inherited
+    {"exec", Modal_exec},
+    {"setText", Modal_setText},
+    {"setHeight", Modal_setHeight},
+    {"setWidth", Modal_setWidth},
+    {"setAlignment", Modal_setAlignment},
+
+    // OptionsWindow
+    {"addOption", OptionsWindow_addOption},
+    {"getSelection", OptionsWindow_getSelection},
     {nullptr, nullptr}
 };
 
