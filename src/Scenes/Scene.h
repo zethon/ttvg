@@ -61,8 +61,9 @@ bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         lua_newtable(L); // 1:tbl
         if (luaL_loadfile(L, filename.c_str()) != 0) // 1:tbl, 2:chunk
         {
-            // auto error = lua_tostring(L, -1);
+            auto error = lua_tostring(L, -1);
             // throw std::runtime_error(error);
+            std::cout << "could not load scene lua file: " << error << '\n';
             lua_settop(L, 0);
             return false;
         }
@@ -76,8 +77,9 @@ bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         lua_setupvalue(L, -2, 1); // 1:tbl, 2:chunk
         if (lua_pcall(L, 0, 0, 0) != 0) // 1:tbl
         {
-            // auto error = lua_tostring(L, -1);
-            // throw std::runtime_error(error);
+            auto error = lua_tostring(L, -1);
+            std::cout << "could not load scene lua file: " << error << '\n';
+            //throw std::runtime_error(error);
             lua_settop(L, 0);
             return false;
         }

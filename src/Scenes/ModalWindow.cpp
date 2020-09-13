@@ -115,7 +115,6 @@ PollResult ModalWindow::poll(const sf::Event& e)
             {
                 return { true, { ScreenActionType::CLOSE_MODAL, {} }};
             }
-            break;
         }
     }
 
@@ -251,13 +250,11 @@ PollResult MessagesWindow::poll(const sf::Event& e)
                     return { true, { ScreenActionType::CLOSE_MODAL, {} }};
                 }
             }
-            break;
             
             case sf::Keyboard::Escape:
             {
                 return { true, { ScreenActionType::CLOSE_MODAL, {} }};
             }
-            break;
         }
     }
 
