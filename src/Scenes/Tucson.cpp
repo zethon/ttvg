@@ -170,6 +170,12 @@ void Tucson::timestepTraffic()
         }
         else if (ptr->isBlocked(playerBounds))
         {
+            if (ptr->vehicleState() == Vehicle::MOVING)
+            {
+                _player->setHealth(_player->health() - ptr->damage());
+                _descriptionText.setText("OUch!!!!!");
+            }
+
             ptr->setVehicleState(Vehicle::STOPPED);
         }
         else if (ptr->vehicleState() == Vehicle::STOPPED)

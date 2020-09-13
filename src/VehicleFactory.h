@@ -27,6 +27,7 @@ struct VehicleInfo
     sf::Vector2f        size;   
     sf::Vector2f        scale;
     sf::Vector2f        speed;  // the car's speed is randomly selected within this range
+    std::uint16_t       damage;
 };
 
 class VehicleFactory
