@@ -50,6 +50,9 @@ public:
     void setSpeed(float v) { _speed = v; }
     float speed() const { return _speed; }
 
+    void setDamage(std::uint16_t v) { _damage = v; }
+    std::uint16_t damage() const { return _damage; }
+
     Direction direction() const { return _direction; }
 
     tt::Tile currentTile() const;
@@ -58,6 +61,11 @@ public:
     { 
         _hornbuffer = v; 
         _hornsound.setBuffer(*_hornbuffer);
+    }
+
+    void playHornSound()
+    {
+        _hornsound.play();
     }
 
     void move();
@@ -73,6 +81,7 @@ private:
     Path                        _path;
     std::vector<sf::Vector2f>   _globalPoints;
     float                       _speed = 10.0f;  // Pixels per timestep
+    std::uint16_t               _damage = 0;
 
     Direction                   _direction = DOWN;  // Current direction of the object
     State                       _state = MOVING;

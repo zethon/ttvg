@@ -23,7 +23,8 @@
             "rects" :
             [
                 "6,16,14,32"
-            ]
+            ],
+            "onSelect": "desk_onSelect"
         },
 
         { 

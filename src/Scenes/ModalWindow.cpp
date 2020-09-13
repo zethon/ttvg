@@ -8,6 +8,7 @@
 
 #include "../Player.h"
 #include "../TTLua.h"
+#include "../Scenes/Scene.h"
 
 #include "ModalWindow.h"
 

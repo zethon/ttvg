@@ -41,7 +41,7 @@ public:
     const std::vector<ItemPtr>& getInventory() const;
 
     std::uint32_t health() const { return _health; }
-    void setHealth(std::uint32_t h);
+    void setHealth(std::int32_t h);
     void reduceHealth(std::uint32_t amount);
     void increaseHealth(std::uint32_t amount);
     boost::signals2::signal<void(std::uint32_t health)> onSetHealth;

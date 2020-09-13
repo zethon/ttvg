@@ -53,6 +53,11 @@ void VehicleFactory::loadVehicles(const nl::json& json)
         temp = item.value().at("speed").get<std::string>();
         phrase_parse(temp.begin(), temp.end(), VectorFloatParser, x3::ascii::space, info.speed);
 
+        if (item.value().contains("damage"))
+        {
+            item.value().at("damage").get_to(info.damage);
+        }
+
         const auto soundname = fmt::format("sounds/{}.wav",
             item.value().at("horn").get<std::string>());
 
@@ -91,6 +96,7 @@ VehiclePtr VehicleFactory::createVehicle()
     vehicle->setPath(path);
 
     vehicle->setHighlighted(_highlighted);
+    vehicle->setDamage(vinfo->damage);
     
     return vehicle;
 }

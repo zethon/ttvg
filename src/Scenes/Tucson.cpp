@@ -170,6 +170,24 @@ void Tucson::timestepTraffic()
         }
         else if (ptr->isBlocked(playerBounds))
         {
+            if (ptr->vehicleState() == Vehicle::MOVING)
+            {
+                _player->reduceHealth(ptr->damage());
+                ptr->playHornSound();
+
+                if (_showVehicleWarning)
+                {
+                    _showVehicleWarning = false;
+                    ModalWindow w{ *this };
+                    w.setText("Be careful! Cars can cause damage and can kill you!\nLook both ways before crossing the street");
+                    w.exec();
+                }
+                else
+                {
+                    _descriptionText.setText("Ouch!!!!");
+                }
+            }
+
             ptr->setVehicleState(Vehicle::STOPPED);
         }
         else if (ptr->vehicleState() == Vehicle::STOPPED)

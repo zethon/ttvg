@@ -155,13 +155,6 @@ bool Vehicle::isBlocked(const sf::FloatRect& test)
 
 void Vehicle::setVehicleState(State val) 
 { 
-    if (_state == Vehicle::MOVING
-        && val == Vehicle::STOPPED
-        && _hornbuffer != nullptr)
-    {
-        _hornsound.play();
-    }
-
     _state = val; 
 }
 

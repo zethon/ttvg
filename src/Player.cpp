@@ -228,13 +228,23 @@ const std::vector<ItemPtr>& Player::getInventory() const
     return _inventory;
 }
 
-void Player::setHealth(std::uint32_t h) 
+void Player::setHealth(std::int32_t h) 
 { 
     if (0 <= h && h <= 100)
     {
         _health = h;
-        onSetHealth(_health);
     }
+    else if (h > 100)
+    {
+        _health = 100;
+    }
+    else
+    {
+        assert(h < 0);
+        _health = 0;
+    }
+
+    onSetHealth(_health);
 }
 
 void Player::reduceHealth(std::uint32_t amount)
