@@ -167,6 +167,16 @@ int Scene_createModal(lua_State* L)
         }
         break;
 
+        case ModalType::Messages:
+        {
+            std::size_t size = sizeof(std::shared_ptr<MessagesWindow>);
+            void* userdata = lua_newuserdata(L, size);
+            auto window = std::make_shared<MessagesWindow>(*scene);
+            new(userdata) std::shared_ptr<MessagesWindow>{window};
+            luaL_setmetatable(L, MessagesWindow::CLASS_NAME);
+        }
+        break;
+
     }
     return 1;
 }

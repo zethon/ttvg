@@ -16,14 +16,14 @@ namespace tt
 
 int Modal_exec(lua_State* L)
 {
-    auto w = checkObject<ModalWindow>(L);
+    auto w = checkModal<ModalWindow>(L);
     w->exec();
     return 0;
 }
 
 int Modal_setText(lua_State* L)
 {
-    auto w = checkObject<ModalWindow>(L);
+    auto w = checkModal<ModalWindow>(L);
     const auto text = lua_tostring(L, 2);
     w->setText(text);
     return 0;
@@ -31,7 +31,7 @@ int Modal_setText(lua_State* L)
 
 int Modal_setHeight(lua_State* L)
 {
-    auto w = checkObject<ModalWindow>(L);
+    auto w = checkModal<ModalWindow>(L);
     float height = static_cast<float>(lua_tonumber(L, 2));
     w->setHeight(height);
     return 0;
@@ -39,7 +39,7 @@ int Modal_setHeight(lua_State* L)
 
 int Modal_setWidth(lua_State* L)
 {
-    auto w = checkObject<ModalWindow>(L);
+    auto w = checkModal<ModalWindow>(L);
     float width = static_cast<float>(lua_tonumber(L, 2));
     w->setWidth(width);
     return 0;
@@ -47,7 +47,7 @@ int Modal_setWidth(lua_State* L)
 
 int Modal_setAlignment(lua_State* L)
 {
-    auto w = checkObject<ModalWindow>(L);
+    auto w = checkModal<ModalWindow>(L);
     ModalWindow::Alignment mt = static_cast<ModalWindow::Alignment>(lua_tointeger(L, 2));
     w->setAlignment(mt);
     return 0;
@@ -204,8 +204,24 @@ void ModalWindow::setAlignment(ModalWindow::Alignment al)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
+int MessagesWindow_pushMessage(lua_State* L)
+{
+    auto w = checkObject<MessagesWindow>(L);
+    w->pushMessage(lua_tostring(L, 2));
+    return 0;
+}
+
 const struct luaL_Reg MessagesWindow::LuaMethods[] =
 {
+    // inherited
+    {"exec", Modal_exec},
+    {"setText", Modal_setText},
+    {"setHeight", Modal_setHeight},
+    {"setWidth", Modal_setWidth},
+    {"setAlignment", Modal_setAlignment},
+
+    // MessagesWindow
+    {"pushMessage", MessagesWindow_pushMessage},
     {nullptr, nullptr}
 };
 

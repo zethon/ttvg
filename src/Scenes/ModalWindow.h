@@ -6,6 +6,26 @@
 namespace tt
 {
 
+class ModalWindow;
+class MessagesWindow;
+
+template<typename WinT>
+WinT* checkModal(lua_State* L)
+{
+    if (luaL_testudata(L, 1, ModalWindow::CLASS_NAME))
+    {
+        auto temp = static_cast<WinT**>(luaL_checkudata(L, 1, ModalWindow::CLASS_NAME));
+        return dynamic_cast<WinT*>(*temp);
+    }
+    else if (luaL_testudata(L, 1, MessagesWindow::CLASS_NAME))
+    {
+        auto temp = static_cast<WinT**>(luaL_checkudata(L, 1, MessagesWindow::CLASS_NAME));
+        return dynamic_cast<WinT*>(*temp);
+    }
+
+    return nullptr;
+}
+
 class Player;
 using PlayerPtr = std::shared_ptr<Player>;
 

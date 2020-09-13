@@ -52,6 +52,7 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
     registerLuaFunctions<Item>(L);
     registerLuaFunctions<Zone>(L);
     registerLuaFunctions<ModalWindow>(L);
+    registerLuaFunctions<MessagesWindow>(L);
 
     {
         lua_newtable(L);
