@@ -21,6 +21,7 @@ function desk_onSelect(scene, zone)
     if result == nil then return end
     if result == 0 then
         player:setHealth(100)
+        player:setBalance(balance - 25)
         Modal.showDefault(scene, "You're all set! Be careful out there!")
     else
         Modal.showDefault(scene, "LOL! Good luck out there hobo!")
