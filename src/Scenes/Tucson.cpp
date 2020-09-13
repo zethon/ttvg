@@ -179,7 +179,7 @@ void Tucson::timestepTraffic()
                 {
                     _showVehicleWarning = false;
                     ModalWindow w{ *this };
-                    w.setText("Be careful! Cars can cause damage and can kill you!\nLook both ways before crossing the street");
+                    w.setText("Be careful! Cars can cause damage and can kill you!\nLook both ways before crossing the street\n\nIf your health is too low then visit a hospital\n(but it ain't free)");
                     w.exec();
                 }
                 else

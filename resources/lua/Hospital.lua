@@ -8,7 +8,7 @@ function desk_onSelect(scene, zone)
 
     local balance = player:getBalance()
     if balance < 25 then
-        Modal.showDefault("No welfare here. No money. No healthcare!")
+        Modal.showDefault(scene, "No welfare here. No money. No healthcare!")
         return
     end
 

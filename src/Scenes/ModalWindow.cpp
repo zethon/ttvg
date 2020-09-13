@@ -148,6 +148,10 @@ void ModalWindow::exec()
             {
                 done = true;
             }
+            else if (e.type == sf::Event::EventType::Closed)
+            {
+                window->close();
+            }
                 
             window->clear();
             _parent.draw();
