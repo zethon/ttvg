@@ -451,6 +451,12 @@ void OptionsWindow::updateText()
 
 const struct luaL_Reg InventoryWindow::LuaMethods[] =
 {
+    // inherited
+    {"exec", Modal_exec},
+    {"setText", Modal_setText},
+    {"setHeight", Modal_setHeight},
+    {"setWidth", Modal_setWidth},
+    {"setAlignment", Modal_setAlignment},
     {nullptr, nullptr}
 };
 

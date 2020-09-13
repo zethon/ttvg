@@ -155,6 +155,7 @@ public:
     const std::vector<ItemPtr> items() const { return _items; }
 
     BackgroundSharedPtr background() const { return _background; }
+    PlayerPtr player() const { return _player; }
 
 protected:
     virtual void updateCurrentTile(const TileInfo& info);

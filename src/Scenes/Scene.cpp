@@ -187,6 +187,15 @@ int Scene_createModal(lua_State* L)
         }
         break;
 
+        case ModalType::Inventory:
+        {
+            std::size_t size = sizeof(std::shared_ptr<InventoryWindow>);
+            void* userdata = lua_newuserdata(L, size);
+            auto window = std::make_shared<InventoryWindow>(*scene, scene->player());
+            new(userdata) std::shared_ptr<InventoryWindow>{window};
+            luaL_setmetatable(L, InventoryWindow::CLASS_NAME);
+        }
+        break;
     }
     return 1;
 }

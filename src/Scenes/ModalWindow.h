@@ -27,6 +27,11 @@ WinT* checkModal(lua_State* L)
         auto temp = static_cast<WinT**>(luaL_checkudata(L, 1, OptionsWindow::CLASS_NAME));
         return dynamic_cast<WinT*>(*temp);
     }
+    else if (luaL_testudata(L, 1, InventoryWindow::CLASS_NAME))
+    {
+        auto temp = static_cast<WinT**>(luaL_checkudata(L, 1, InventoryWindow::CLASS_NAME));
+        return dynamic_cast<WinT*>(*temp);
+    }
 
     return nullptr;
 }
