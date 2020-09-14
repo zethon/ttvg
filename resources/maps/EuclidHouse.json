@@ -21,7 +21,8 @@
             "rects" :
             [
                 "17,12,19,15" 
-            ]
+            ],
+            "onSelect": "computer_onSelect"
         },
         { 
             "name" : "Kitchen Sink",

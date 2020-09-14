@@ -11,6 +11,7 @@
 #include "AnimatedSprite.h"
 #include "Player.h"
 #include "TTLua.h"
+#include "TTUtils.h"
 
 namespace tt
 {
@@ -18,7 +19,14 @@ namespace tt
 namespace
 {
 
-int ModalFactory_showDefault(lua_State* L)
+int Utils_openUrl(lua_State* L)
+{
+    const auto url = lua_tostring(L, 1);
+    tt::openBrowser(url);
+    return 0;
+}
+
+int Utils_showModal(lua_State* L)
 {
     auto scene = checkObject<Scene>(L);
     const auto text = lua_tostring(L, 2);
@@ -28,9 +36,10 @@ int ModalFactory_showDefault(lua_State* L)
     return 0;
 }
 
-const struct luaL_Reg ModalFactory_LuaMethods[] =
+const struct luaL_Reg Utils_LuaMethods[] =
 {
-    {"showDefault", ModalFactory_showDefault},
+    {"openUrl", Utils_openUrl},
+    {"showModal", Utils_showModal},
     {nullptr, nullptr}
 };
 
@@ -66,8 +75,8 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
     // register static variable methods for `Modal`
     {
         lua_newtable(L);
-        luaL_setfuncs(L, ModalFactory_LuaMethods, 0);
-        lua_setglobal(L, "Modal");
+        luaL_setfuncs(L, Utils_LuaMethods, 0);
+        lua_setglobal(L, "Utils");
     }
 
     //luaL_newmetatable(_luaState, "GameScreen");

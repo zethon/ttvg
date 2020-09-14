@@ -126,4 +126,6 @@ inline float distance(const sf::Vector2f& v1, const sf::Vector2f& v2)
     return std::sqrt((x*x) + (y*y));
 }
     
+void openBrowser(const std::string& url_str);
+
 } // namespace tt

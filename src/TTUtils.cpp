@@ -1,3 +1,19 @@
+#ifdef _WINDOWS
+#   include <windows.h>
+#   include <shellapi.h>
+#   include <Shlobj.h>
+#else
+#   include <unistd.h>
+#   include <sys/types.h>
+#   include <pwd.h>
+#   include <boost/process.hpp>
+#endif
+
+#ifdef __APPLE__
+#   include <CoreFoundation/CFBundle.h>
+#   include <ApplicationServices/ApplicationServices.h>
+#endif
+
 #include "TTUtils.h"
 
 #include <boost/filesystem.hpp>
@@ -39,4 +55,39 @@ std::string defaultResourceFolder()
 #endif
 }
 
+void openBrowser(const std::string& url_str)
+{
+    if (url_str.empty()) return;
+
+#ifdef _WINDOWS
+    ShellExecute(0, 0, url_str.c_str(), 0, 0, SW_SHOWNORMAL);
+#elif defined(__APPLE__)
+    // only works with `http://` prepended
+    CFURLRef url = CFURLCreateWithBytes(
+        // allocator
+        nullptr,
+
+        // URLBytes
+        (UInt8*)url_str.c_str(),     // URLBytes
+
+        // length
+        static_cast<std::int32_t>(url_str.length()),
+
+        // encoding
+        kCFStringEncodingASCII,
+
+        // baseURL
+        NULL
+    );
+
+    LSOpenCFURLRef(url, nullptr);
+    CFRelease(url);
+#elif defined(__linux__)
+    boost::process::system("/usr/bin/xdg-open", url_str,
+        boost::process::std_err > boost::process::null,
+        boost::process::std_out > boost::process::null);
+#else
+    throw NotImplementedException("openBrowser");
+#endif
+}
 } // namespace tt
