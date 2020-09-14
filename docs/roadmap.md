@@ -2,13 +2,9 @@
 
 This document discusses long term plans for the game in the order in which I would like to tackle them. Of course these are tentative plans and are subject to change.
 
-## Modal Windows (in progress)
+## Dynamic Bounds Checking
 
-Modal windows need a way to:
-
-* display dialog across multiple scenes
-* get user selections from a list of options
-* be completely accessible through the Lua API
+Collision bounds need to be seperated from sprite bounds in a sprite sheet.
 
 ## Logging
 
