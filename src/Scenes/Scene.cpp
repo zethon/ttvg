@@ -611,7 +611,6 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setSource(0, 1);
-                _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::LEFT);
                 return { true, {} };
@@ -626,7 +625,6 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setSource(0, 3);
-                _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::RIGHT);
                 return { true, {} };
@@ -641,7 +639,6 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setSource(0, 0);
-                _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::UP);
                 return { true, {} };
@@ -656,7 +653,6 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setSource(0, 2);
-                _player->setMaxFramesPerRow(9);
                 _player->setState(AnimatedState::ANIMATED);
                 _player->setDirection(Direction::DOWN);
                 return { true, {} };
@@ -768,21 +764,37 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             }
             break;
 
-            case sf::Keyboard::Num3:
-            {
-                ModalWindow t{ *this };
-                t.setText("THIS IS A TEST");
-                t.exec();
-            }
-            break;
-
             case sf::Keyboard::Num9:
             {
-                for (const auto& item : _items)
+                OptionsWindow w{ *this };
+                w.setText("Which magic cheat would you like?");
+                w.addOption("Obtain all items on the current map");
+                w.addOption("Restore all health");
+                w.exec();
+                const auto result = w.selection();
+                if (!result.has_value()) return { true, {} };
+                switch (*result)
                 {
-                    _player->addItem(item);
+                    default:
+                    break;
+
+                    case 0:
+                    {
+                        for (const auto& item : _items)
+                        {
+                            _player->addItem(item);
+                        }
+                        _descriptionText.setText("You magically obtained all items!");
+                    }
+                    break;
+
+                    case 1:
+                    {
+                        _player->setHealth(100);
+                        _descriptionText.setText("Wow! You feel so much better!");
+                    }
+                    break;
                 }
-                _descriptionText.setText("You magically obtained all items!");
             }
             break;
 

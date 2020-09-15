@@ -51,7 +51,7 @@ std::uint16_t AnimatedSprite::timestep()
         auto textureWidth = _maxFramesPerRow > 0 ?
             _maxFramesPerRow * _size.x : _sprite.getTexture()->getSize().x;
 
-        if (textureWidth <= static_cast<std::uint32_t>(left * _size.x))
+        if (static_cast<std::uint32_t>(left * _size.x) >= textureWidth)
         {
             left = 0;
         }
