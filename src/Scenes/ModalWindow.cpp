@@ -249,6 +249,7 @@ PollResult MessagesWindow::poll(const sf::Event& e)
                 if (_messages.size() > 0)
                 {
                     _text->setString(_messages.front());
+                    return { true, {} };
                 }
                 else
                 {

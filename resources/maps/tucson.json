@@ -181,6 +181,11 @@
             { "x": 5, "y": 5 }
         ],
 
+        "sevan": 
+        [    
+            { "x": 126, "y": 21, "onPickup": "sevan_select" }
+        ],
+
         "plunger": 
         [    
             { "x": 9, "y": 36 }
