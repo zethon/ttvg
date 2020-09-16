@@ -2,6 +2,10 @@
 
 This document discusses long term plans for the game in the order in which I would like to tackle them. Of course these are tentative plans and are subject to change.
 
+## Logging
+
+There needs to be logging that logs to a file and the console.
+
 ## Mission API
 
 Need to a define a mission API.
@@ -9,10 +13,6 @@ Need to a define a mission API.
 ## Dynamic Bounds Checking
 
 Collision bounds need to be seperated from sprite bounds in a sprite sheet.
-
-## Logging
-
-There needs to be logging that logs to a file and the console.
 
 ## Windows Installer
 
