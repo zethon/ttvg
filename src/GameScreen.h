@@ -37,10 +37,32 @@ int Utils_showModal(lua_State* L)
     return 0;
 }
 
+int Utils_showYesNo(lua_State* L)
+{
+    auto scene = checkObject<Scene>(L);
+    const auto text = lua_tostring(L, 2);
+    OptionsWindow mw{ *scene, };
+    mw.setText(text);
+    mw.addOption("Yes");
+    mw.addOption("No");
+    mw.exec();
+    if (auto res = mw.selection();
+        res.has_value() && *res == 0)
+    {
+        lua_pushboolean(L, 1);
+    }
+    else
+    {
+        lua_pushboolean(L, 0);
+    }
+    return 1;
+}
+
 const struct luaL_Reg Utils_LuaMethods[] =
 {
     {"openUrl", Utils_openUrl},
     {"showModal", Utils_showModal},
+    {"showYesNo", Utils_showYesNo},
     {nullptr, nullptr}
 };
 

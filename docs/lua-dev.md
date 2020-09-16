@@ -535,18 +535,6 @@ Sets the text to the window to `text`. There is no word-wrap functionality, but 
 
 Sets the width of the window to `width`.
 
-<hr/>
-
-### `Utils.showModal(scene, text)`
-
-This is a helper function that shows a single message. This is functionality equivalent to:
-
-```lua
-local window = scene:createModal(ModalType.Default)
-window:setText(text)
-window.exec()
-```
-
 <br/>
 
 ## 6.3 Messages Modal Windows
@@ -620,7 +608,7 @@ The *Inventory Modal Window* shows the player's inventory. This window uses the 
 
 <br/>
 
-# 6. Logging Functionality
+# 6. Logging
 
 Lua's logging mechanism hooks into the same logging mechanism as the C++ code, and therefore will use the same settings, logfile, etc.
 
@@ -637,5 +625,58 @@ Example:
 ```lua
 function scene_onInit(scene)
     Log.info("The scene "..scene:name().." has been initialized")
+end
+```
+
+<br/>
+
+# 6. Utilities
+
+The `Utils` offers a group of helper functions.
+
+<br/>
+
+### `[void] Utils.openUrl(url)`
+
+Opens the system's default browser to the passed in `url`.
+
+<hr/>
+
+### `[void] Utils.showModal(scene, text)`
+
+Shows a single message in a modal window. The `scene` argument is the current scene.
+
+For example:
+
+```lua
+function scene_onInit(scene)
+    Utils.showModal(scene, "Welcome to the game!")
+end
+```
+
+is functionally equivalent to:
+
+```lua
+function scene_onInit(scene)
+    local window = scene:createModal(ModalType.Default)
+    window:setText("Welcome to the game!")
+    window.exec()
+end
+```
+
+<hr/>
+
+### `[bool] Utils.showYesNo(scene, text)`
+
+Shows a message in a modal window and gives the user a "Yes" or no "Option".
+
+Example:
+
+```lua
+local res = Utils.showYesNo(scene, "Would you like to continue?")
+if res then
+    -- code to continue
+else
+    -- code not to continue
 end
 ```

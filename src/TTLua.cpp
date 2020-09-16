@@ -134,7 +134,8 @@ std::string GetLuaValue(const LuaArgPair& v)
             function, lua_tostring(L, -1));
         log::initializeLogger("Lua")->error(error);
         lua_settop(L, 0);
-        throw std::runtime_error(error);
+        // throw std::runtime_error(error);
+        return {};
     }
 
     LuaValues retval;
