@@ -1,4 +1,4 @@
-## 0. Introduction
+# 0. Introduction
 
 **This feature is a work in progress**. 
 
@@ -6,7 +6,7 @@ Lua support makes it easier for the community to add content to the game. This d
 
 Every scene has a *&lt;scene-name&gt;.lua* file which resides in `resources/lua` folder. This Lua file contains all code that is used by the scene and the scene's components. 
 
-## 1. Scenes Events
+# 1. Scenes Events
 
 Scenes will emit three events that can be caught in Lua. These are: `onInit`, `onEnter` and `onExit`. These are the default names and will be called automatically when the event is triggered. The names can be overriden using the JSON configuration like so:
 
@@ -37,32 +37,32 @@ end
 ```
 </s>
 
-### 1.1. Event Details
+## 1.1. Event Details
 
 There are three callback functions for every scene.
 <hr/>
 
-#### `[void] onInit(scene)`
+### `[void] onInit(scene)`
 
 This function is invoked when the scene is first loaded. This should not be confused with when the scene is entered, which can happen multiple times during the game. `onInit` is called only once when the game starts. Note that if game ends and the user starts a new game, `onInit` **will** be called at the start of that new game.
 
 <hr/>
 
-#### `[void] onEnter(scene)`
+### `[void] onEnter(scene)`
 
 This function is invoked when the player first enters the scene. This callback can be called multiple times in a single game since a user can enter and leave scenes multiple times.
 
 <hr/>
 
-#### `[void] onExit(scene)`
+### `[void] onExit(scene)`
 
 This function is invoked when the playe first exits the scene. This callback can be also be called multiple times.
 
 <hr/>
 
-### 1.2. Scene API
+## 1.2. Scene API
 
-#### `[void] Scene.addItem(item)`
+### `[void] Scene.addItem(item)`
 
 The argument `item` is an `Item` object. This function adds an existing `Item` object to the current scene, hence the object must already exist when this function is called. 
 
@@ -76,7 +76,7 @@ end
 ```
 <hr/>
 
-#### `[DescriptionWindow] Scene.createModal(ModalType)`
+### `[DescriptionWindow] Scene.createModal(ModalType)`
 
 Creates a new modal window of type `ModalType` for display.
 
@@ -84,13 +84,13 @@ See Modal Window for more details.
 
 <hr/>
 
-#### `[DescriptionWindow] Scene.getDescriptionWindow()`
+### `[DescriptionWindow] Scene.getDescriptionWindow()`
 
 Returns a handle to the scene's description window. See "Description Window".
 
 <hr/>
 
-#### `[Player] Scene.getPlayer()`
+### `[Player] Scene.getPlayer()`
 
 No arguments. Returns a `Player` object. **This object is only valid for the life of the scene.** 
 
@@ -105,7 +105,7 @@ end
 
 <hr/>
 
-#### `[number,number] Scene.getPlayerTile()`
+### `[number,number] Scene.getPlayerTile()`
 
 No arguments. Returns the (x,y) coordinates of the player's current tile. 
 
@@ -120,26 +120,26 @@ end
 
 <hr/>
 
-#### `[string] Scene.name()`
+### `[string] Scene.name()`
 
 No arguments. Returns the name of the current scene.
 
 <hr/>
 
 
-#### `[void] Scene.removeItem(item)`
+### `[void] Scene.removeItem(item)`
 
 The argument `item` is an `Item` object. If the scene does not contain the passed in item then nothing happens.
 
 <hr/>
 
-#### `[void] Scene.setPlayerTile(x,y)`
+### `[void] Scene.setPlayerTile(x,y)`
 
 Sets the player's current tile to (`x`,`y`). There are no bounds checking done on coordinates passed in.
 
 <br/>
 
-## 2. Player
+# 2. Player
 
 The player object is accessible through `Scene.getPlayer`. **The player object is only valid for the life of the current scene.** 
 
@@ -184,10 +184,11 @@ function onInit(scene)
 end
 ```
 
-### 2.1 Player API
+## 2.1 Player API
 
+<hr/>
 
-#### `[void] Player.addItem(item)`
+### `[void] Player.addItem(item)`
 
 Add the `item` object to `Player`'s inventory. `item` is an object and not a string value. 
 
@@ -205,24 +206,24 @@ See more about "Items".
 
 <hr/>
 
-#### `[float] Player.getBalance()`
+### `[float] Player.getBalance()`
 No arguments. Returns the value of the player's current balance.
 
 <hr/>
 
-#### `[float] Player.getBalance()`
+### `[float] Player.getBalance()`
 
 Returns a float value of the player's current balance.
 
 <hr/>
 
-#### `[integer] Player.getHealth()`
+### `[integer] Player.getHealth()`
 
 Returns an intenger value of theplayer's current health.
 
 <hr/>
 
-#### `[float,float] Player.getPosition()`
+### `[float,float] Player.getPosition()`
 
 Returns the (x,y) corrdinates of the player's position **in terms of the display coordinates**. 
 
@@ -230,40 +231,40 @@ See `Scene.getPlayerTile()`
 
 <hr/>
 
-#### `[bool] Player.hasItem(item)`
+### `[bool] Player.hasItem(item)`
 
 The argument `item` is an `Item` object (i.e. the type returned from `ItemFactory.createItem()`). Behind the scenes, `item` holds a pointer to the allocated item and does a raw pointer comparison with all the items contained in player inventory.
 
 <hr/>
 
-#### `[bool] Player.hasItemByName(itemid)`
+### `[bool] Player.hasItemByName(itemid)`
 
 The argument `itemid` is the **ID** of the item, which in most cases corresponds to the JSON filename of the item.
 
 <hr/>
 
-#### `[void] Player.removeItem(item)`
+### `[void] Player.removeItem(item)`
 
 The argument `item` is a pointer to an `Item` object, just like the argument for `Player.hasItem`. 
 
 <hr/>
 
-#### `[bool] Player.removeItemByName(itemid)`
+### `[bool] Player.removeItemByName(itemid)`
 
 The argument `itemid` is the **ID** of the item, which in most cases corresponds to the JSON filename of the item.
 
 <hr/>
 
-#### `[void] Player.setBalance(balance)`
+### `[void] Player.setBalance(balance)`
 
 Sets the balance of the player to `balance`. This should be a numeric value.
 
 <hr/>
 
-#### `[void] Player.setHealth(health)`
+### `[void] Player.setHealth(health)`
 Sets the health of the player to `health`. This should be an **integer** value.
 
-#### `[void] Player.setPosition(x,y)`
+### `[void] Player.setPosition(x,y)`
 
 Sets the player's display position to (`x`,`y`). There are no bounds checking done on coordinates passed in.
 
@@ -271,9 +272,9 @@ See `Scene.getPlayerTile()`
 
 <br/>
 
-## 3. Items
+# 3. Items
 
-### 3.1 Item Events
+## 3.1 Item Events
 
 Just like scenes, items have cofigurable events. The events are specified in the JSON file where each individual item is configured. 
 
@@ -290,68 +291,75 @@ For example:
 
 These are the item events:
 
-#### `[void] onPickup(scene, item)`
+<hr/>
+
+### `[void] onPickup(scene, item)`
 
 `scene` is the current scene, and `item` is the item object being picked up.
 
+<br/>
+
+## 3.2 ItemFactory
+
 <hr/>
-
-### 3.2 ItemFactory
-
 
 #### `[Item] ItemFactory.createItem(itemid)`
 
 Parameter `itemid` is the item's unique key as determined by the filename. This function returns an `Item` object.
 
-### 3.3 Item
+<br/>
 
-#### `[bool] Item.actionable()`
+## 3.3 Item
 
 <hr/>
 
-#### `[string] Item.description()`
+### `[bool] Item.actionable()`
+
+<hr/>
+
+### `[string] Item.description()`
 
 Returns the description of the item.
 
 <hr/>
 
-#### `[string] Item.id()`
+### `[string] Item.id()`
 
 Returns the id of the item.
 
 <hr/>
 
-#### `[string] Item.name()`
+### `[string] Item.name()`
 
 Returns the name of the item.
 
 <hr/>
 
-#### `[bool] Item.obtainable()`
+### `[bool] Item.obtainable()`
 
 <hr/>
 
-#### `[void] Item.setActionable()`
+### `[void] Item.setActionable()`
 
 <hr/>
 
-#### `[void] Item.setDescription(text)`
+### `[void] Item.setDescription(text)`
 
 Sets the description of the item to `text`. Can be empty.
 
 <hr/>
 
-#### `[void] Item.setName(name)`
+### `[void] Item.setName(name)`
 
 Sets the name of the item to `name`. Can be empty.
 
 <hr/>
 
-#### `[bool] Item.setObtainable()`
+### `[bool] Item.setObtainable()`
 
 <br/>
 
-## 4. Description Window
+# 4. Description Window
 
 The description window is the text shown in the center of the HUD. It is safe to cache this in a variable for conviennce. For example the following is safe:
 
@@ -369,24 +377,26 @@ end
 
 <hr/>
 
-#### `[string] DescriptionText.getText()`
+### `[string] DescriptionText.getText()`
 
 Returns the current test of description window.
 
 <hr/>
 
-#### `[void] ]DescriptionText.setText(text)`
+### `[void] ]DescriptionText.setText(text)`
 
 Sets the text of the description window to `text`.
 
-<hr/>
+
 <br/>
 
-## 5. Zones
+# 5. Zones
 
 Zones are configured in a scene's JSON file.
 
-### 5.1 Zone Events
+<br/>
+
+## 5.1 Zone Events
 
 Zone events are defined in the zone's JSON configuration like so:
 
@@ -413,7 +423,9 @@ For example:
 
 The zone events are:
 
-#### `[bool] onSelect(scene, zone)`
+<hr/>
+
+### `[bool] onSelect(scene, zone)`
 
 This is event is triggered when the zone has an attached transition and the user triggers the transition (see 'Zones' and 'Transitions' in scenes-dev.md). If there is no transition attached to the zone then this callback is never called.
 
@@ -436,23 +448,27 @@ function club_onSelect(scene, zone)
     return false
 end
 ```
-<hr/>
+
 <br/>
 
-### 5.1 Zone API
+## 5.1 Zone API
 
-#### `[string] Zone.getName()`
+<hr/>
+
+### `[string] Zone.getName()`
 
 Returns the name of the zone.
 
-<hr/>
+
 <br/>
 
-## 6. Modal Windows
+# 6. Modal Windows
 
 Modal windows stop all processing in the game to display text and get input from the user. Modal windows can be used to simulate dialog from NPCs or ask the user questions.
 
-### 6.1 Creating Modal Windows
+<br/>
+
+## 6.1 Creating Modal Windows
 
 Modal windows are created through the `Scene.createModal()` method. There are currently four different types of modal windows.
 
@@ -477,19 +493,21 @@ The four types of modal windows are:
 * `ModalType.Options`
 * `ModalType.Inventory`
 
-### 6.2 Default Modal Windows
+<br/>
+
+## 6.2 Default Modal Windows
 
  This modal window is a standard window that displays a message that can be dismissed by pressing Space or Escape. 
 
  The API for Default Modal Windows is available for all types of modal windows. 
 
-#### `ModalWindow.exec()`
+### `ModalWindow.exec()`
 
 This function displays the window. Without calling this function the modal window will do nothing. **This function is blocking**.
 
 <hr/>
 
-#### `ModalWindow.setAlignment(ModalAlignment)`
+### `ModalWindow.setAlignment(ModalAlignment)`
 
 There are three ways the window can be vertically aligned:
 
@@ -501,27 +519,41 @@ The default is `ModalAlignment.Bottom`.
 
 <hr/>
 
-#### `ModalWindow.setHeight(height)`
+### `ModalWindow.setHeight(height)`
 
 Sets the height of the window to `height` while preserving the vertical alignment.
 
 <hr/>
 
-#### `ModalWindow.setText(text)`
+### `ModalWindow.setText(text)`
 
 Sets the text to the window to `text`. There is no word-wrap functionality, but `text` can be broken into lines using `\n`.
 
 <hr/>
 
-#### `ModalWindow.setWidth(width)`
+### `ModalWindow.setWidth(width)`
 
 Sets the width of the window to `width`.
 
-### 6.3 Messages Modal Windows
+<hr/>
+
+### `Utils.showModal(scene, text)`
+
+This is a helper function that shows a single message. This is functionality equivalent to:
+
+```lua
+local window = scene:createModal(ModalType.Default)
+window:setText(text)
+window.exec()
+```
+
+<br/>
+
+## 6.3 Messages Modal Windows
 
 The *Messages Modal Window* allows you to display multiple windows of text within the same modal window instances. 
 
-#### `ModalWindow.pushMessage(message)`
+### `ModalWindow.pushMessage(message)`
 
 Pushes a message into the queue of messages to be displayed. The messages will be shown in the order they're pushed. The player can go to the next messages by pressing the Space bar. Pressing the Escape key will close the window.
 
@@ -533,8 +565,9 @@ w:pushMessage("This will be displayed second")
 w:pushMessage("This will be printed last")
 w:exec()
 ```
+<br/>
 
-### 6.4 Options Modal Windows
+## 6.4 Options Modal Windows
 
 The *Options Modal Window* displays a list of choices to the user. The user can scroll through the options using the arrow key, and an option can be selected by pressing Space or Enter. If the user closes the window using Escape then the selection is null.
 
@@ -566,14 +599,20 @@ function home_onSelect(scene, zone)
 end
 ```
 
-#### `OptionsWindow.addOption(text)`
+<hr/>
+
+### `[void] OptionsWindow.addOption(text)`
 
 Adds the option text. 
+
+<hr/>
 
 ### `[selection] OptionsWindow.getSelection()`
 
 Returns the 0-based index of the selected option. This can also be `nil` which means the user dismissed the box with the Escape key (i.e. no selection was made)
 
-### 6.5 Inventory Modal Windows
+<br/>
+
+## 6.5 Inventory Modal Windows
 
 The *Inventory Modal Window* shows the player's inventory. This window uses the same API of the *Options Modal Window* to get the index of the selection.
