@@ -127,5 +127,6 @@ inline float distance(const sf::Vector2f& v1, const sf::Vector2f& v2)
 }
     
 void openBrowser(const std::string& url_str);
+std::string getOsString();
 
 } // namespace tt

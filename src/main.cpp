@@ -9,19 +9,54 @@
 
 #include <fmt/core.h>
 
+#include <spdlog/spdlog.h>
+#include <spdlog/common.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/rotating_file_sink.h>
+
 #include <SFML/Graphics.hpp>
 
 #include "ResourceManager.h"
 #include "TTUtils.h"
 #include "Screen.h"
 #include "Engine.h"
+#include "core.h"
+#include "TooterLogger.h"
 
 namespace po = boost::program_options;
 namespace x3 = boost::spirit::x3;
+namespace fs = boost::filesystem;
 
-constexpr char window_title[] = "Lord of the Dumpsters: A Tommy Tooter Game";
 constexpr std::size_t window_width = 1280;
 constexpr std::size_t window_height = 720;
+
+bool validateResourceFolder(std::string_view folder)
+{
+    fs::path f{ folder.data() };
+    f = f / "images" / "splash.jpg";
+    return fs::exists(f);
+}
+
+void initLogging(std::string_view logfile)
+{
+    // create the root logger
+    spdlog::stdout_color_mt(tt::log::GLOBAL_LOGGER);
+
+#ifdef RELEASE
+    spdlog::set_level(spdlog::level::off);
+#else
+    spdlog::set_level(spdlog::level::trace);
+#endif
+
+    if (logfile.size() > 0)
+    {
+        auto logger = tt::log::rootLogger();
+        auto rotating = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
+            logfile.data(), 1024 * 1024 * 5, 3);
+
+        logger->sinks().push_back(rotating);
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -30,18 +65,61 @@ int main(int argc, char *argv[])
         ("help,?", "print help message")
         ("version,v", "print version string")
         ("resources,r", po::value<std::string>(), "path of resource folder")
+        ("logfile,l", po::value<std::string>(), "path of logfile")
         ("screen,s", po::value<std::uint16_t>(), "start screen id")
         ("window-size,w", po::value<std::string>(), "window size")
+        ("loglevel", po::value<std::string>(), "trace,debug,info,warning,error,critical,off")
         ;
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
 
+    if (vm.count("help"))
+    {
+        std::cout << desc << "\n";
+        return 0;
+    }
+    else if (vm.count("version"))
+    {
+        std::cout << fmt::format("{}\n", APP_TITLE);
+        std::cout << fmt::format("build-date : {}\n", BUILDTIMESTAMP);
+        std::cout << std::endl;
+        return 0;
+    }
+
+    std::string logfile;
+    if (vm.count("logfile"))
+    {
+        logfile = vm["logfile"].as<std::string>();
+
+        // leading spaces can cause problems on macOS
+        boost::algorithm::trim(logfile);
+    }
+    initLogging(logfile);
+    auto logger = tt::log::rootLogger();
+    if (vm.count("loglevel"))
+    {
+        const auto configLevel = spdlog::level::from_str(vm["loglevel"].as<std::string>());
+        logger->set_level(configLevel);
+    }
+    logger->info("Starting {} v{}",APP_NAME_LONG, VERSION);
+    logger->info("built on {} for {}", BUILDTIMESTAMP, tt::getOsString());
+
     std::string resourceFolder = tt::defaultResourceFolder();
     if (vm.count("resources") > 0)
     {
         resourceFolder = vm["resources"].as<std::string>();
+        
+        // leading spaces can cause problems on macOS
+        boost::algorithm::trim(resourceFolder);
+    }
+    logger->debug("resource folder: {}", resourceFolder);
+
+    if (!validateResourceFolder(resourceFolder))
+    {
+        logger->critical("invalid resource folder: {}", resourceFolder);
+        return 1;
     }
 
     std::size_t width   = window_width;
@@ -60,24 +138,22 @@ int main(int argc, char *argv[])
 
         if (!r || width < 480 || height < 320)
         {
-            std::cerr << fmt::format("invalid screen size '{}'\n", windowsize);
+            logger->critical("invalid screen size '{}'\n", windowsize);
             return 1;
         }
     }
+    logger->debug("initializing window size {}x{}", width, height);
 
     auto win = std::make_shared<sf::RenderWindow>( 
         sf::VideoMode(  static_cast<unsigned int>(width), 
                         static_cast<unsigned int>(height) ),
-        window_title, 
+        APP_NAME_LONG,
         sf::Style::Titlebar | sf::Style::Close
     );
 
     win->setFramerateLimit(60);
 
-    // leading spaces can cause problems on macOS
-    boost::algorithm::trim(resourceFolder);
-
-    tt::TooterEngine engine{ boost::filesystem::path{resourceFolder}, win };
+    tt::TooterEngine engine{ fs::path{resourceFolder}, win };
 
     if (vm.count("screen") > 0)
     {
@@ -117,5 +193,6 @@ int main(int argc, char *argv[])
         win->display();
     }
 
+    logger->info("game shut down");
     return 0;
 }

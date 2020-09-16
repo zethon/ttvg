@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "TTLua.h"
 #include "TTUtils.h"
+#include "TooterLogger.h"
 
 namespace tt
 {
@@ -36,10 +37,32 @@ int Utils_showModal(lua_State* L)
     return 0;
 }
 
+int Utils_showYesNo(lua_State* L)
+{
+    auto scene = checkObject<Scene>(L);
+    const auto text = lua_tostring(L, 2);
+    OptionsWindow mw{ *scene, };
+    mw.setText(text);
+    mw.addOption("Yes");
+    mw.addOption("No");
+    mw.exec();
+    if (auto res = mw.selection();
+        res.has_value() && *res == 0)
+    {
+        lua_pushboolean(L, 1);
+    }
+    else
+    {
+        lua_pushboolean(L, 0);
+    }
+    return 1;
+}
+
 const struct luaL_Reg Utils_LuaMethods[] =
 {
     {"openUrl", Utils_openUrl},
     {"showModal", Utils_showModal},
+    {"showYesNo", Utils_showYesNo},
     {nullptr, nullptr}
 };
 
@@ -48,6 +71,9 @@ const struct luaL_Reg Utils_LuaMethods[] =
 template<typename T>
 void initLua(lua_State* L, T& screen, void* itemFactory)
 {
+    auto logger = log::initializeLogger("Lua");
+    logger->info("initializing Lua subsystem");
+
     luaL_openlibs(L);
 
     // push a reference to `this` into the registry, it should
@@ -65,18 +91,25 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
         assert(ITEMFACTORY_LUA_IDX == reference);
     }
 
-    // register static variable methods for `ItemFactory`
+    // register static methods for `ItemFactory`
     {
         lua_newtable(L);
         luaL_setfuncs(L, ItemFactory::LuaMethods, 0);
         lua_setglobal(L, ItemFactory::CLASS_NAME);
     }
 
-    // register static variable methods for `Modal`
+    // register static methods for `Modal`
     {
         lua_newtable(L);
         luaL_setfuncs(L, Utils_LuaMethods, 0);
         lua_setglobal(L, "Utils");
+    }
+
+    // register static methods for `Log`
+    {
+        lua_newtable(L);
+        luaL_setfuncs(L, Logger_LuaMethods, 0);
+        lua_setglobal(L, "Log");
     }
 
     //luaL_newmetatable(_luaState, "GameScreen");

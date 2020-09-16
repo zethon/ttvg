@@ -127,6 +127,16 @@ tooter -r c:\source\ttvg\resources
 
 The path specificied should be the `resources` path in this repo on your local system.
 
+## Command Line Options
+
+The following command line options exist:
+
+* `-r [ --resources ]` - Specifies the name of the resources folder.
+* `-l [ --logfile ]` - The fully qualified pathname of the logfile.
+* `-w [ --window-size]` - Customer window size in the form of `WIDTHxHEIGHT` (i.e. "`-w1024x768`")
+* `-v [ --version ]` - Print version information
+* `--loglevel` - Sets the level of logging. One of: `trace,debug,info,warning,error,critical,off`
+
 ## Licensing
 
 Unless otherwise noted, this code is licensed under the MIT license.

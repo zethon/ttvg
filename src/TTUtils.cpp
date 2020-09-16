@@ -90,4 +90,18 @@ void openBrowser(const std::string& url_str)
     throw NotImplementedException("openBrowser");
 #endif
 }
+
+std::string getOsString()
+{
+#ifdef _WINDOWS
+    return "windows";
+#elif defined(__APPLE__)    
+    return "macos";
+#elif defined(__linux__)
+    return "linux";
+#else
+    return "unknown"
+#endif
+}
+
 } // namespace tt

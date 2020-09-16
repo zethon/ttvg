@@ -101,7 +101,7 @@ std::uint16_t Vehicle::timestep()
 
     if (_path.finished())
     {
-        return TimeStep::DELETE;
+        return TimeStep::DELETE_VEHICLE;
     }
 
     return TimeStep::NOOP;

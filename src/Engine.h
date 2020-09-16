@@ -6,6 +6,7 @@
 
 #include "ResourceManager.h"
 #include "Screen.h"
+#include "TooterLogger.h"
 
 namespace tt
 {
@@ -17,7 +18,8 @@ class TooterEngine
     ResourceManager     _resourceManager;
     RenderTargetPtr     _renderTarget;
 
-    std::shared_ptr<Screen>     _currentScreen;
+    std::shared_ptr<Screen> _currentScreen;
+    log::SpdLogPtr               _logger;
     
 public:
     TooterEngine(
