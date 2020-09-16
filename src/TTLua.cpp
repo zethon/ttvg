@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "TTLua.h"
+#include "TooterLogger.h"
 
 namespace tt
 {
@@ -83,6 +84,9 @@ std::string GetLuaValue(const LuaArgPair& v)
     if (lua_isnil(L, 2) != 0
         || lua_isfunction(L, 2) == 0)
     {
+        log::initializeLogger("Lua")
+            ->warn("sandbox '{}' has no function named '{}'", sandbox, function);
+            
         lua_settop(L, 0);
         return {};
     }
@@ -124,9 +128,10 @@ std::string GetLuaValue(const LuaArgPair& v)
 
     if (lua_pcall(L, argcount, LUA_MULTRET, 0) != 0)
     {
-        const auto error = fmt::format("error running callback {}: {}",
+        const auto error = fmt::format("error running lua function '{}': {}",
             function, lua_tostring(L, -1));
-        std::cout << error << '\n';
+        log::initializeLogger("Lua")->error(error);
+        lua_settop(L, 0);
         throw std::runtime_error(error);
     }
 

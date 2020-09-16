@@ -1,7 +1,10 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "TooterLogger.h"
 
-namespace ttvg
+namespace tt
+{
+
+namespace log
 {
 
 [[maybe_unused]] SpdLogPtr rootLogger()
@@ -36,4 +39,6 @@ SpdLogPtr initializeLogger(const std::string& name)
     return logger;
 }
 
-} // namespace
+} // namespace log
+
+} // namespace tt

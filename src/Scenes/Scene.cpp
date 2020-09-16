@@ -227,8 +227,10 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
       _descriptionText{ setup.resources, setup.window },
       _debugWindow{ setup.resources, setup.window },
       _weakPlayer{ setup.player },
-      _itemFactory{ *(setup.itemFactory) }
+      _itemFactory{ *(setup.itemFactory) },
+      _logger { log::initializeLogger("Scene") }
 {
+    _logger->info("creating scene '{}'", _name);
     if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _name)); 
             jsonopt.has_value())
     {
@@ -262,12 +264,14 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
 
 void Scene::init()
 {
+    _logger->debug("initializing scene '{}'", _name);
     createItems();
     tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::enter()
 {
+    _logger->debug("entering scene '{}'", _name);
     assert(!_player);
     _player = _weakPlayer.lock();
 
@@ -307,6 +311,7 @@ void Scene::enter()
 
 void Scene::exit()
 {
+    _logger->debug("exiting scene '{}'", _name);
     assert(_player);
     tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
 
@@ -317,7 +322,6 @@ void Scene::exit()
 
 PollResult Scene::poll(const sf::Event& e)
 {
-
     auto result = privatePollHandler(e);
     if (result.handled)
     {

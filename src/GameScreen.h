@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "TTLua.h"
 #include "TTUtils.h"
+#include "TooterLogger.h"
 
 namespace tt
 {
@@ -48,6 +49,9 @@ const struct luaL_Reg Utils_LuaMethods[] =
 template<typename T>
 void initLua(lua_State* L, T& screen, void* itemFactory)
 {
+    auto logger = log::initializeLogger("Lua");
+    logger->info("initializing Lua subsystem");
+
     luaL_openlibs(L);
 
     // push a reference to `this` into the registry, it should

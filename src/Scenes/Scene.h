@@ -9,6 +9,7 @@
 #include "../Background.h"
 #include "../Item.h"
 #include "../ItemFactory.h"
+#include "../TooterLogger.h"
 
 #include "Hud.h"
 #include "DescriptionText.h"
@@ -55,6 +56,9 @@ bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
 {
     if (!L) return false;
 
+    auto logger = log::initializeLogger("Lua");
+    logger->debug("loading scene lua file {}", filename);
+
     // load the Scene's Lua file into its own sandboxed
     // environment which also contains everything in _G
     {
@@ -62,8 +66,7 @@ bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         if (luaL_loadfile(L, filename.c_str()) != 0) // 1:tbl, 2:chunk
         {
             auto error = lua_tostring(L, -1);
-            // throw std::runtime_error(error);
-            std::cout << "could not load scene lua file: " << error << '\n';
+            logger->error("could not load scene lua file '{}' because: {}", filename, error);
             lua_settop(L, 0);
             return false;
         }
@@ -78,8 +81,7 @@ bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         if (lua_pcall(L, 0, 0, 0) != 0) // 1:tbl
         {
             auto error = lua_tostring(L, -1);
-            std::cout << "could not load scene lua file: " << error << '\n';
-            //throw std::runtime_error(error);
+            logger->error("could not load scene lua file because: {}", filename, error);
             lua_settop(L, 0);
             return false;
         }
@@ -185,6 +187,8 @@ protected:
 
     Items           _items;
     ItemFactory&    _itemFactory;
+
+    log::SpdLogPtr  _logger;
 
 private:
     void createItems();

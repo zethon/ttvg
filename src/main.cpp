@@ -40,7 +40,7 @@ bool validateResourceFolder(std::string_view folder)
 void initLogging(std::string_view logfile)
 {
     // create the root logger
-    spdlog::stdout_color_mt(ttvg::GLOBAL_LOGGER);
+    spdlog::stdout_color_mt(tt::log::GLOBAL_LOGGER);
 
 #ifdef RELEASE
     spdlog::set_level(spdlog::level::off);
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
         logfile = vm["logfile"].as<std::string>();
     }
     initLogging(logfile);
-    auto logger = ttvg::rootLogger();
+    auto logger = tt::log::rootLogger();
     if (vm.count("loglevel"))
     {
         const auto configLevel = spdlog::level::from_str(vm["loglevel"].as<std::string>());

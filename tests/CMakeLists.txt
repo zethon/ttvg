@@ -35,6 +35,9 @@ set(PROJECT_FILES
     ../src/ResourceManager.h
     ../src/ResourceManager.cpp
 
+    ../src/TooterLogger.h
+    ../src/TooterLogger.cpp
+
     ../src/Transition.h
     ../src/Transition.cpp
 
