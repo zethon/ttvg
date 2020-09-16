@@ -1,15 +1,3 @@
-function onInit(scene)
-    print("onInit call for '" .. scene:name() .. "'")
-end
-
-function onEnter(scene)
-    print("onEnter call for '" .. scene:name() .. "'")
-end
-
-function onExit(scene)
-    print("onExit call for '" .. scene:name() .. "'")
-end
-
 function computer_onSelect(scene, zone)
     local w = scene:createModal(ModalType.Options)
     w:setText("Where would you like to go on the Internet today?")
