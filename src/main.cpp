@@ -68,8 +68,6 @@ int main(int argc, char *argv[])
         ("logfile,l", po::value<std::string>(), "path of logfile")
         ("screen,s", po::value<std::uint16_t>(), "start screen id")
         ("window-size,w", po::value<std::string>(), "window size")
-        
-        ("about", "print about information")
         ("loglevel", po::value<std::string>(), "trace,debug,info,warning,error,critical,off")
         ;
 
@@ -82,7 +80,7 @@ int main(int argc, char *argv[])
         std::cout << desc << "\n";
         return 0;
     }
-    else if (vm.count("about"))
+    else if (vm.count("version"))
     {
         std::cout << fmt::format("{}\n", APP_TITLE);
         std::cout << fmt::format("build-date : {}\n", BUILDTIMESTAMP);
@@ -106,7 +104,7 @@ int main(int argc, char *argv[])
         logger->set_level(configLevel);
     }
     logger->info("Starting {} v{}",APP_NAME_LONG, VERSION);
-    logger->info("build date: {}", BUILDTIMESTAMP);
+    logger->info("built on {} for {}", BUILDTIMESTAMP, tt::getOsString());
 
     std::string resourceFolder = tt::defaultResourceFolder();
     if (vm.count("resources") > 0)
