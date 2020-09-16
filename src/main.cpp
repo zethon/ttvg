@@ -47,6 +47,15 @@ void initLogging(std::string_view logfile)
 #else
     spdlog::set_level(spdlog::level::trace);
 #endif
+
+    if (logfile.size() > 0)
+    {
+        auto logger = tt::log::rootLogger();
+        auto rotating = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
+            logfile.data(), 1024 * 1024 * 5, 3);
+
+        logger->sinks().push_back(rotating);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -57,10 +66,11 @@ int main(int argc, char *argv[])
         ("version,v", "print version string")
         ("resources,r", po::value<std::string>(), "path of resource folder")
         ("logfile,l", po::value<std::string>(), "path of logfile")
-        ("loglevel", po::value<std::string>(), "trace,debug,info,warning,error,critical,off")
         ("screen,s", po::value<std::uint16_t>(), "start screen id")
         ("window-size,w", po::value<std::string>(), "window size")
+        
         ("about", "print about information")
+        ("loglevel", po::value<std::string>(), "trace,debug,info,warning,error,critical,off")
         ;
 
     po::variables_map vm;
@@ -84,6 +94,9 @@ int main(int argc, char *argv[])
     if (vm.count("logfile"))
     {
         logfile = vm["logfile"].as<std::string>();
+
+        // leading spaces can cause problems on macOS
+        boost::algorithm::trim(logfile);
     }
     initLogging(logfile);
     auto logger = tt::log::rootLogger();
@@ -99,10 +112,10 @@ int main(int argc, char *argv[])
     if (vm.count("resources") > 0)
     {
         resourceFolder = vm["resources"].as<std::string>();
+        
+        // leading spaces can cause problems on macOS
+        boost::algorithm::trim(resourceFolder);
     }
-
-    // leading spaces can cause problems on macOS
-    boost::algorithm::trim(resourceFolder);
     logger->debug("resource folder: {}", resourceFolder);
 
     if (!validateResourceFolder(resourceFolder))
@@ -182,5 +195,6 @@ int main(int argc, char *argv[])
         win->display();
     }
 
+    logger->info("game shut down");
     return 0;
 }
