@@ -497,7 +497,7 @@ There are three ways the window can be vertically aligned:
 * `ModalAlignment.Center`
 * `ModalAlignment.Top`
 
-The default is `* `ModalAlignment.Bottom`.
+The default is `ModalAlignment.Bottom`.
 
 <hr/>
 
