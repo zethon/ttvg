@@ -26,7 +26,7 @@ public:
     enum TimeStep
     {
         NOOP = 0,
-        DELETE = 1
+        DELETE_VEHICLE = 1
     };
 
     enum State

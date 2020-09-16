@@ -162,7 +162,7 @@ void Tucson::timestepTraffic()
     {
         auto& ptr = *vi;
         auto result = ptr->timestep();
-        if (result == Vehicle::DELETE)
+        if (result == Vehicle::DELETE_VEHICLE)
         {
             // remove it from our vehicle list
             vi = _vehicles.erase(vi);
