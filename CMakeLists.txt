@@ -11,6 +11,11 @@ conan_basic_setup(NO_OUTPUT_DIRS KEEP_RPATHS)
 # optional configuration
 option(UNIT_TEST "Build unit tests (default OFF)" OFF)
 
+# Add a RELEASE definition that we can count on regardless
+# of platform
+string(APPEND CMAKE_CXX_FLAGS_RELEASE " -DRELEASE")
+string(APPEND CMAKE_CXX_FLAGS_MINSIZEREL " -DRELEASE")
+
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 

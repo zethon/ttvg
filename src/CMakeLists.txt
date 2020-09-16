@@ -13,6 +13,7 @@ set(SOURCE_FILES
     Player.cpp
     ResourceManager.cpp
     Screen.cpp
+    TooterLogger.cpp
     Transition.cpp
     TTLua.cpp
     TTUtils.cpp
@@ -31,6 +32,7 @@ set(SOURCE_FILES
 set(HEADER_FILES
     AnimatedSprite.h
     Background.h
+    core.h
     Engine.h
     GameOverScreen.h
     GameScreen.h
@@ -43,6 +45,7 @@ set(HEADER_FILES
     ResourceManager.h
     Screen.h
     Tiles.hpp
+    TooterLogger.h
     Transition.h
     TTLua.h
     TTUtils.h

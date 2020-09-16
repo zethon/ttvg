@@ -6,6 +6,7 @@ class TTVGConan(ConanFile):
     requires = (
         "boost/1.71.0@conan/stable",
         "sfml/2.5.1@bincrafters/stable",
+        "spdlog/1.4.2@bincrafters/stable",
         "fmt/5.3.0@bincrafters/stable",
         "jsonformoderncpp/3.6.0@vthiery/stable",
         "luadist/5.2.3@owl/stable",
