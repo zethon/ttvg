@@ -17,10 +17,11 @@ All platforms require:
 * [CMake](https://cmake.org/download/)
 * [conan 1.27+](https://conan.io/)
 
-The Conan Bincrafters remote must be in your conan remote cache:
+The two following conan repos must be added:
 
 ```
 conan remote add SFML https://api.bintray.com/conan/bincrafters/public-conan
+conan remote add owl https://api.bintray.com/conan/zethon/owl
 ```
 
 
