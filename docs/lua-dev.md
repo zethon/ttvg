@@ -616,3 +616,26 @@ Returns the 0-based index of the selected option. This can also be `nil` which m
 ## 6.5 Inventory Modal Windows
 
 The *Inventory Modal Window* shows the player's inventory. This window uses the same API of the *Options Modal Window* to get the index of the selection.
+
+
+<br/>
+
+# 6. Logging Functionality
+
+Lua's logging mechanism hooks into the same logging mechanism as the C++ code, and therefore will use the same settings, logfile, etc.
+
+The functions available are:
+
+* `[void] Log.trace(text)`
+* `[void] Log.debug(text)`
+* `[void] Log.info(text)`
+* `[void] Log.warn(text)`
+* `[void] Log.error(text)`
+* `[void] Log.critical(text)`
+
+Example:
+```lua
+function scene_onInit(scene)
+    Log.info("The scene "..scene:name().." has been initialized")
+end
+```

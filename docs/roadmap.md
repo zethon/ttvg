@@ -2,7 +2,7 @@
 
 This document discusses long term plans for the game in the order in which I would like to tackle them. Of course these are tentative plans and are subject to change.
 
-## Logging
+## Logging (in progress)
 
 There needs to be logging that logs to a file and the console.
 

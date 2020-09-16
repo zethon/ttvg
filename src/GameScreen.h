@@ -69,18 +69,25 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
         assert(ITEMFACTORY_LUA_IDX == reference);
     }
 
-    // register static variable methods for `ItemFactory`
+    // register static methods for `ItemFactory`
     {
         lua_newtable(L);
         luaL_setfuncs(L, ItemFactory::LuaMethods, 0);
         lua_setglobal(L, ItemFactory::CLASS_NAME);
     }
 
-    // register static variable methods for `Modal`
+    // register static methods for `Modal`
     {
         lua_newtable(L);
         luaL_setfuncs(L, Utils_LuaMethods, 0);
         lua_setglobal(L, "Utils");
+    }
+
+    // register static methods for `Log`
+    {
+        lua_newtable(L);
+        luaL_setfuncs(L, Logger_LuaMethods, 0);
+        lua_setglobal(L, "Log");
     }
 
     //luaL_newmetatable(_luaState, "GameScreen");

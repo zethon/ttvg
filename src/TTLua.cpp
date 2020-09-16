@@ -84,9 +84,11 @@ std::string GetLuaValue(const LuaArgPair& v)
     if (lua_isnil(L, 2) != 0
         || lua_isfunction(L, 2) == 0)
     {
+        // plenty of scenes lack `onInit` et all callbacks, so this warning
+        // can be pretty noisy
         log::initializeLogger("Lua")
-            ->warn("sandbox '{}' has no function named '{}'", sandbox, function);
-            
+            ->trace("sandbox '{}' has no function named '{}'", sandbox, function);
+
         lua_settop(L, 0);
         return {};
     }
