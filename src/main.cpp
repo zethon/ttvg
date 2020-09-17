@@ -43,7 +43,7 @@ void initLogging(std::string_view logfile)
     spdlog::stdout_color_mt(tt::log::GLOBAL_LOGGER);
 
 #ifdef RELEASE
-    spdlog::set_level(spdlog::level::off);
+    spdlog::set_level(spdlog::level::info);
 #else
     spdlog::set_level(spdlog::level::trace);
 #endif
