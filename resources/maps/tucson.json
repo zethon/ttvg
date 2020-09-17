@@ -105,7 +105,8 @@
             {
                 "scene": "CourthouseInterior",
                 "enabled": true
-            }
+            },
+            "onSelect": "courtHouse_onEnter"
         },
 
         {

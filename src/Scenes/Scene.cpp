@@ -247,8 +247,17 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
     // if it has no <scene>.lua file
     _luaIdx = registerScene(_luaState, *this);
     if (const auto luafile = _resources.getFilename(fmt::format("lua/{}.lua", _name));
-            !boost::filesystem::exists(luafile) || !loadSceneLuaFile(*this, luafile, _luaState))
+            boost::filesystem::exists(luafile))
     {
+         if (!loadSceneLuaFile(*this, luafile, _luaState))
+         {
+            _luaState = nullptr;
+            _logger->warn("Could not load scene luafile {}", luafile);
+         }
+    }
+    else
+    {
+        _logger->debug("No scene luafile found at {}", luafile);
         _luaState = nullptr;
     }
 

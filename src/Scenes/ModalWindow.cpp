@@ -452,6 +452,21 @@ void OptionsWindow::updateText()
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
+int Inventory_setDebug(lua_State* L)
+{
+    auto w = checkObject<InventoryWindow>(L);
+    bool d = lua_toboolean(L, 2) == 0 ? false : true;
+    w->setDebug(d);
+    return 0;
+}
+
+int Inventory_getDebug(lua_State* L)
+{
+    auto w = checkObject<InventoryWindow>(L);
+    lua_pushboolean(L, w->debug());
+    return 1;
+}
+
 const struct luaL_Reg InventoryWindow::LuaMethods[] =
 {
     // inherited
@@ -460,46 +475,67 @@ const struct luaL_Reg InventoryWindow::LuaMethods[] =
     {"setHeight", Modal_setHeight},
     {"setWidth", Modal_setWidth},
     {"setAlignment", Modal_setAlignment},
+
+    // InventoryWindow specific
+    {"setDebug", Inventory_setDebug},
+    {"getDebug", Inventory_getDebug},
     {nullptr, nullptr}
 };
 
-InventoryWindow::InventoryWindow(Screen& parent, PlayerPtr player)
-    : OptionsWindow(parent)
+InventoryWindow::InventoryWindow(Screen& parent, PlayerPtr player, bool debug)
+    : OptionsWindow(parent),
+      _debug { debug }
 {
     setAlignment(ModalWindow::Alignment::CENTER);
 
-    // count and name
-    using InvAgg = std::tuple<std::uint32_t, std::string>;
-    std::map<std::string, InvAgg> aggregate;
+    // default text for inventory windo
+    setText("You are carrying...");
 
     for (const auto& item : player->getInventory())
     {
-        if (aggregate.find(item->getID()) != aggregate.end())
+        if (_aggregate.find(item->getID()) != _aggregate.end())
         {
-            std::get<0>(aggregate[item->getID()])++;
+            std::get<0>(_aggregate[item->getID()])++;
         }
         else
         {
-            aggregate[item->getID()] = std::make_tuple(1, item->getName());
+            _aggregate[item->getID()] = std::make_tuple(1, item);
         }
-    }
+    }    
 
-    setText("You are carrying...");
-
-    if (aggregate.size() >= 10)
+    if (_aggregate.size() >= 10)
     {
         setHeight(height() + 350.f);
     }
-    if (aggregate.size() >= 5)
+    if (_aggregate.size() >= 5)
     {
         setHeight(height() + 175.f);
     }
 
-    for (const auto& item : aggregate)
+    updateOptions();
+}
+
+void InventoryWindow::updateOptions()
+{
+    _options.clear();
+    for (const auto& info : _aggregate)
     {
-        const auto&[count, name] = item.second;
-        addOption(fmt::format("{} x {}", name, count));
+        const auto&[count, item] = info.second;
+        if (_debug)
+        {
+            addOption(fmt::format("{} ({}) x {}", item->getName(), item->getID(), count));
+        }
+        else
+        {
+            addOption(fmt::format("{} x {}", item->getName(), count));
+        }
     }
+}
+
+void InventoryWindow::setDebug(bool v) 
+{ 
+    _debug = v; 
+    updateOptions();
 }
 
 } // namespace tt
