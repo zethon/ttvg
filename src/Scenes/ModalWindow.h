@@ -110,6 +110,9 @@ public:
 
     std::optional<std::size_t> selection() const { return _selection; }
 
+protected:
+    Options     _options;
+
 private:
     void adjustLayout();
     void draw() override;
@@ -118,9 +121,8 @@ private:
     void prevSelection();
     void updateText();
 
-    Options     _options;
     sf::Text    _indicator;
-    
+
     std::optional<std::size_t>  _selection = 0;
 };
 
@@ -128,12 +130,26 @@ private:
 
 class InventoryWindow : public OptionsWindow
 {
+    bool _debug = false;
+
+    // count and name
+    using InvAgg = std::tuple<std::uint32_t, ItemPtr>;
+    std::map<std::string, InvAgg> _aggregate;
+
+    void updateOptions();
 
 public:
     static constexpr auto CLASS_NAME = "InventoryWindow";
     static const struct luaL_Reg LuaMethods[];
 
-    InventoryWindow(Screen& parent, PlayerPtr player);
+    InventoryWindow(Screen& parent, PlayerPtr player)
+        : InventoryWindow(parent, player, false)
+    {}
+    
+    InventoryWindow(Screen& parent, PlayerPtr player, bool);
+
+    void setDebug(bool v);
+    bool debug() const { return _debug; }
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
