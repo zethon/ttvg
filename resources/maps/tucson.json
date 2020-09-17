@@ -152,6 +152,21 @@
         },
 
         {
+            "name": "The Mike Pence Conversion Therapy Death Camp",
+            "description": "Press SPACE to be cured.",
+            "rects": 
+            [
+                "100,36,103,37"
+            ],
+            "transition":
+            {
+                "scene": "DeathCampInterior",
+                "enabled": true
+            }
+        },
+
+
+        {
             "name": "Spooky Graveyard",
             "description": "Mostly your dreams are buried here.",
             "rects": 
