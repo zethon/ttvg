@@ -76,3 +76,51 @@ PUBLIC
     ${CONAN_LIBS_FRAMEWORKS_LUADIST}
 )
 
+message("IH HITER!!")
+
+install(
+    TARGETS tooter 
+    COMPONENT tooter
+    RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+	BUNDLE DESTINATION .
+)
+
+message("LIB: ${CMAKE_CURRENT_SOURCE_DIR}/resources/${RES_FOLDER}")
+
+set(CMAKE_INSTALL_UCRT_LIBRARIES FALSE)
+include(InstallRequiredSystemLibraries)
+INSTALL(PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+        DESTINATION bin
+        COMPONENT tooter)
+
+# foreach(RES_FOLDER fonts images)
+
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/resources/
+        DESTINATION bin/resources
+        COMPONENT tooter
+        PATTERN "src" EXCLUDE
+        )
+# install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} 
+#         DESTINATION ${LIBRARY_OUTPUT_PATH}
+#         FILES_MATCHING PATTERN "*_rdict.pcm"
+# )
+message("LIB: ${CMAKE_CURRENT_SOURCE_DIR}/resources/${RES_FOLDER}")
+# message("$<TARGET_FILE_DIR:tooter>")
+
+# endforeach(RES_FOLDER )
+
+
+# install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} 
+#         DESTINATION ${LIBRARY_OUTPUT_PATH}
+#         FILES_MATCHING PATTERN "*_rdict.pcm"
+# )
+
+foreach(_CONFIG_FILE_ TTVG.CPackConfig.cmake TTVGPackage.cmake)
+    configure_file("CPack/${_CONFIG_FILE_}.in" "${CMAKE_BINARY_DIR}/${_CONFIG_FILE_}" @ONLY)
+endforeach()
+
+set(CPACK_PACKAGE_CONTACT "Support <max@amb.dog>")
+
+include(CPack)
+
