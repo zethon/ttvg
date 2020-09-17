@@ -106,12 +106,6 @@ PollResult Tucson::poll(const sf::Event& e)
             default:
             break;
 
-            case sf::Keyboard::H:
-            {
-                toggleHighlight();
-            }
-            break;
-
             case sf::Keyboard::P:
             {
                 _updateTraffic = !_updateTraffic;
@@ -207,36 +201,14 @@ void Tucson::timestepTraffic()
     }
 }
 
-void Tucson::draw()
+void Tucson::customDraw()
 {
-    // always adjust the view before drawing
-    adjustView();
-
-    // skip `Scene::draw` and instead call `Screen::draw` in
-    // order to draw the background
-    Screen::draw();
-
     // draw the vehicles
     std::for_each(_vehicles.begin(), _vehicles.end(),
-        [this](VehiclePtr v) { _window.draw(*v); });
-
-    //
-    // Draw items
-    //
-    std::for_each(_items.begin(), _items.end(),
-        [this](ItemPtr item) 
+        [this](VehiclePtr v) 
         { 
-            _window.draw(*item); 
+            _window.draw(*v); 
         });
-
-    // the player should always be the last thing on the 
-    // game board to be drawn
-    _window.draw(*_player);
-  
-    _window.setView(_window.getDefaultView());
-    _hud.draw();
-    _descriptionText.draw();
-    _debugWindow.draw();
 }
 
 void Tucson::updateCurrentTile(const TileInfo& info)
@@ -317,17 +289,12 @@ void Tucson::updateCurrentTile(const TileInfo& info)
 
 void Tucson::toggleHighlight()
 {
-    _player->setHighlighted(!_player->highlighted());
+    Scene::toggleHighlight();
     _vehicleFactory->setHighlighted(!_vehicleFactory->highlighted());
 
     for (auto& v : _vehicles)
     {
         v->setHighlighted(!v->highlighted());
-    }
-
-    for (auto& i : _items)
-    {
-        i->setHighlighted(!i->highlighted());
     }
 }
 

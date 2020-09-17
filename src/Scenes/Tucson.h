@@ -28,7 +28,6 @@ public:
 
     PollResult poll(const sf::Event& e) override;
     ScreenAction timestep() override;
-    void draw() override;
 
     void enter() override;
 
@@ -36,9 +35,11 @@ protected:
     void updateCurrentTile(const TileInfo& info) override;
 
 private:
+    void customDraw() override;
+    void toggleHighlight() override;
+
     void initTraffic();
     void timestepTraffic();
-    void toggleHighlight();
 
     sf::Clock                           _globalClock;
     nl::json                            _json;
