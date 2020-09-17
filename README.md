@@ -15,7 +15,7 @@ All platforms require:
 * [Git](https://git-scm.com/downloads)
 * [Git Large File Storage](https://git-lfs.github.com/)
 * [CMake](https://cmake.org/download/)
-* [conan 1.27+](https://conan.io/)
+* [conan 1.29+](https://conan.io/)
 
 The two following conan repos must be added:
 

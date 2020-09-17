@@ -64,7 +64,15 @@ set(HEADER_FILES
     Scenes/Scene.h
 )
 
-add_executable(tooter
+if(WIN32)
+    set(GUI_TYPE WIN32)
+endif()
+
+if(APPLE)
+    SET(GUI_TYPE MACOSX_BUNDLE)
+endif()
+
+add_executable(tooter ${GUI_TYPE}
     ${SOURCE_FILES}
     ${HEADER_FILES}
 )
@@ -76,7 +84,12 @@ PUBLIC
     ${CONAN_LIBS_FRAMEWORKS_LUADIST}
 )
 
-message("IH HITER!!")
+if(WIN32)
+    set_target_properties(tooter PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE")
+    set_target_properties(tooter PROPERTIES COMPILE_DEFINITIONS_DEBUG "_CONSOLE")
+    set_target_properties(tooter PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE")
+    set_target_properties(tooter PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
+endif()
 
 install(
     TARGETS tooter 
