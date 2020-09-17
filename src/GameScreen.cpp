@@ -50,6 +50,13 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     _scenes.emplace("PoliceStationInterior", std::make_shared<Scene>("PoliceStationInterior", setup));
     _scenes.emplace("FireStationInterior", std::make_shared<Scene>("FireStationInterior", setup));
 
+    //
+    // Would be so nice if lines didn't wrap in source code.
+    // I think 80 characters is a fair line size.
+    //
+    _scenes.emplace("DeathCampInterior", 
+                    std::make_shared<Scene>("DeathCampInterior", setup));
+
     _currentScene = _scenes["tucson"];
 
     // make sure all constructors across all scenes

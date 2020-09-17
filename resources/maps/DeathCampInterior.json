@@ -1,0 +1,34 @@
+{
+    "background":
+    {
+        "scale":    "auto",
+        "tiles":    { "x": 50,  "y": 50 },
+        "camera":   "fixed" 
+    },
+
+    "player":
+    {
+        "start":    { "x": 400, "y": 256 },
+        "scale":    { "x": 2.5, "y": 2.5 },
+        "source":   { "x": 0, "y": 2 },
+        "origin":   { "x": 0, "y": 0 },
+        "stepsize": 16.0
+    },
+
+    "zones":
+    [
+        {
+            "name" : "Leave the Death Camp",
+            "description": "Press SPACE to leave the Death Camp",
+            "transition":
+            {
+                "scene": "tucson",
+                "enabled": true
+            },
+            "rects" : 
+            [
+                "1,6,14,9"
+            ]
+        }
+    ]
+}
