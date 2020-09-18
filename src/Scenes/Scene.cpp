@@ -364,10 +364,17 @@ void Scene::draw()
 {
     // always adjust the view 
     adjustView();
-
     Screen::draw();
-    _window.draw(*_player);
 
+    customDraw();
+
+    std::for_each(_items.begin(), _items.end(),
+        [this](ItemPtr item) 
+        { 
+            _window.draw(*item); 
+        });
+
+    _window.draw(*_player);
     _window.setView(_window.getDefaultView());
     _hud.draw();
     _descriptionText.draw();
@@ -760,6 +767,12 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             }
             break;
 
+            case sf::Keyboard::H:
+            {
+                toggleHighlight();
+            }
+            break;
+
             //
             // Inventory. Display inventory.
             //
@@ -832,6 +845,16 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
     }
 
     return {};
+}
+
+void Scene::toggleHighlight()
+{
+    _player->setHighlighted(!_player->highlighted());
+
+    for (auto& i : _items)
+    {
+        i->setHighlighted(!i->highlighted());
+    }
 }
 
 } // namespace tt

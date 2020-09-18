@@ -165,8 +165,11 @@ protected:
     virtual void updateCurrentTile(const TileInfo& info);
     virtual sf::Vector2f animeCallback();
     virtual void adjustView();
+    
+    // subclasses might also have to deal with highlighting
+    virtual void toggleHighlight();
 
-    [[maybe_unused]] bool walkPlayer(float speed);    
+    [[maybe_unused]] bool walkPlayer(float speed);
 
     std::string     _name;
     lua_State*      _luaState = nullptr;
@@ -193,8 +196,11 @@ protected:
 private:
     void createItems();
     void pickupItem(Items::iterator itemIt);
-
+    
     PollResult privatePollHandler(const sf::Event& e);
+
+    // allow subclasses to define any items that get drawn
+    virtual void customDraw() {}
 };
 
 } // namespace tt
