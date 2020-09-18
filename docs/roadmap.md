@@ -2,21 +2,25 @@
 
 This document discusses long term plans for the game in the order in which I would like to tackle them. Of course these are tentative plans and are subject to change.
 
-## Logging (in progress)
-
-There needs to be logging that logs to a file and the console.
+<hr/>
 
 ## Mission API
 
 Need to a define a mission API.
 
+<hr/>
+
 ## Dynamic Bounds Checking
 
 Collision bounds need to be seperated from sprite bounds in a sprite sheet.
 
+<hr/>
+
 ## Windows Installer
 
 The Windows installer should automatically build when code is pushed to master and automatically deploy the installer somewhere for download.
+
+<hr/>
 
 ## Item General Callbacks
 
@@ -45,6 +49,8 @@ Instead there should be a way to define a catch-all and define a specific callba
 
 Such that picking up the first item would trigger `special_onPickupSax` but picking up any other instances would trigger `generic_onPickupSax`.
 
+<hr/>
+
 ## Random Item Placement
 
 Right now all items on a given map are in a fixed location. There should be a way to configure items such that they are placed randomly on the maps. Maybe this could be done by adding a `random` keyword in the `x`,`y` configuration, such that random items would be easily compatible with *Item General Callbacks*. For example:
@@ -55,22 +61,46 @@ Right now all items on a given map are in a fixed location. There should be a wa
     { "x":"random", "y":"random", "onPickup": "special_onPickupSax" },
     { "x":10, "y":10},
     { "x":20, "y":20},
-    "onPickup": "generic_onPickupSax"
-]
+],
+
 ```
+
+<hr/>
+
+## Respawning Items
+
+### Motivation
+
+There is functionality that allows Tommy to sell weed to an NPC. However, there are only two `bag-of-weed` items on the main map. There should be a way for items to respawn on the map either at the same spot or random spots. 
+
+### Requirements
+
+* set if the items should be replenished only after they've been used/picked up
+* limit the number of items that can be on the map
+* limit min number of items (i.e. the `bag-of-weed` might not respawn until Tommy has found them all)
+* support random or static placement on the map
+    * make sure not to place random items on already occupied spaces
+
+<hr>
 
 ## Mac Installer
 
 Mac users need love too! Like the Windows installer, Mac installers should be automatically deployed with pushes to master.
 
+<hr/>
+
 ## AMB Badges
 
 Acomplishments in the game could be rewarded with badges on AMB. This would require some kind of login in the game.
 
-## Multiplayer!
+<hr/>
+
+## Multiplayer! LOL
 
 Wouldn't it be great if multiple AMBers could wander around the same map and have hobofights?!
 
-## MicroTransactions! LOL
+<hr/>
+
+## MicroTransactions! LOLulz!
 
 Wouldn't it also be great to send Max Power money?!
