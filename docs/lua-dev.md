@@ -427,11 +427,11 @@ The zone events are:
 
 ### `[bool] onSelect(scene, zone)`
 
-This is event is triggered when the zone has an attached transition and the user triggers the transition (see 'Zones' and 'Transitions' in scenes-dev.md). If there is no transition attached to the zone then this callback is never called.
+This is event is triggered when the user presses SPACE while on a zone (see 'Zones' and 'Transitions' in scenes-dev.md). 
 
 The event is passed a handle to the current `scene`, and a handle to the `zone` itself. 
 
-This callback must return a boolean where **true** indicates that the transition should continue (i.e. that the new scene should be loaded) or **false** to cancel the transition.
+This callback must return a boolean where **true** indicates that the transition should continue (i.e. that the new scene should be loaded) or **false** to cancel the transition. If there is no transition defined for the zone then the return value is ignored.
 
 The following example implements a "cover charge" for entering a scene:
 
@@ -493,6 +493,8 @@ The four types of modal windows are:
 * `ModalType.Options`
 * `ModalType.Inventory`
 
+*Note*: There are also some helper functions in the `Utils` namespace to make displaying modal windows more programmer-friendly.
+
 <br/>
 
 ## 6.2 Default Modal Windows
@@ -539,7 +541,7 @@ Sets the width of the window to `width`.
 
 ## 6.3 Messages Modal Windows
 
-The *Messages Modal Window* allows you to display multiple windows of text within the same modal window instances. 
+The *Messages Modal Window* allows you to display multiple windows of text within the same modal window instances. The user moves onto the next message by pressing *Space, but can also quit out early by pressing *Escape*.
 
 ### `ModalWindow.pushMessage(message)`
 
@@ -557,21 +559,12 @@ w:exec()
 
 ## 6.4 Options Modal Windows
 
-The *Options Modal Window* displays a list of choices to the user. The user can scroll through the options using the arrow key, and an option can be selected by pressing Space or Enter. If the user closes the window using Escape then the selection is null.
+The *Options Modal Window* displays a list of choices to the user. The user can scroll through the options using the arrow keys, and an option can be selected by pressing Space or Enter. If the user closes the window using Escape then the selection is null.
 
 Here is a full example:
 
 ```lua
 function home_onSelect(scene, zone)
-    local player = scene:getPlayer()
-    local balance = player:getBalance()
-    if balance < 35 then
-        local er = scene:createModal(ModalType.Default)
-        er:setText("You do not have enough money")
-        er:exec()
-        return false
-    end
-
     local w = scene:createModal(ModalType.Options)
     w:setText("There is a $35 cover charge.\nDo you want to enter?")
     w:addOption("Yes")
@@ -581,7 +574,9 @@ function home_onSelect(scene, zone)
     if r == nil or r == 1 then
         return false
     end
-    
+
+    local player = scene:getPlayer()
+    local balance = player:getBalance()
     player:setBalance(balance - 35)
     return true
 end
@@ -632,7 +627,7 @@ end
 
 # 6. Utilities
 
-The `Utils` offers a group of helper functions.
+The `Utils` namespace offers a group of helper functions.
 
 <br/>
 
