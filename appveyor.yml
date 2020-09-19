@@ -25,3 +25,33 @@ build_script:
 
 test_script:
   - ctest -VV -C "%CONFIG%" --output-on-failure
+
+after_test:
+  - if "%configuration%"=="Release" ..\tools\windows\build.cmd
+  - dir /s
+
+artifacts:
+  # References here need to have "build\" prepended since 
+  # the context here is from the original build folder 
+  # before we "cd build" 
+  - path: build\tooter-*.exe
+    name: TTInstaller
+
+deploy:
+  provider: FTP
+  protocol: ftp
+  host: anothermessageboard.com
+  username: ttvg@amb.dog
+  password:
+    secure: MBv+xOC1WiYSLiTScujxSwRqoutcUNt7ec+JxWmtZ04=
+  folder: /downloads
+  on:
+    branch: master
+    configuration: Release
+
+notifications:
+  - provider: Email
+    to:
+      - max@amb.dog
+    on_build_success: false
+    on_build_failure: true
