@@ -27,7 +27,7 @@ test_script:
   - ctest -VV -C "%CONFIG%" --output-on-failure
 
 after_test:
-  - if "%configuration%"=="Release" ..\tools\windows\build.cmd
+  - if "%CONFIG%"=="Release" ..\tools\windows\build.cmd
   - dir /s
 
 artifacts:
