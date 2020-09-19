@@ -41,12 +41,12 @@ deploy:
   provider: FTP
   protocol: ftp
   host: anothermessageboard.com
-  username: ttvg@amb.dog
+  username: builds@anothermessageboard.com
   password:
-    secure: MBv+xOC1WiYSLiTScujxSwRqoutcUNt7ec+JxWmtZ04=
-  folder: /downloads
+    secure: 9Hm8Tj0tt2lXHlXjk3bxyQ==
+  folder: /
   on:
-    branch: master
+    branch: winstaller
     configuration: Release
 
 notifications:
