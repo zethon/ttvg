@@ -31,11 +31,12 @@ void createMenu(TextList& menuItems,
 
     assert(largest != menuItems.end());
 
-    auto xpos = window.getSize().x - ((*largest)->getLocalBounds().width + 100.f);
-    auto ypos = 100.0f;
+    auto xpos = window.getSize().x - ((*largest)->getLocalBounds().width + 250.f);
+    auto ypos = 300.0f;
 
     for (const auto& item : menuItems)
     {
+        item->setCharacterSize(40);
         item->setPosition(xpos, ypos);
         ypos += item->getLocalBounds().height + 20.0f;
     }
@@ -68,9 +69,10 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
         throw std::runtime_error("hobo.ttf could not be loaded!");
     }
 
-    auto textobj = std::make_shared<sf::Text>("Lord of the Dumpsters", _font);
-    textobj->setPosition(690, 10);
+    auto textobj = std::make_shared<sf::Text>("The Tommy Tooter\nVideo Game", _font);
+    textobj->setPosition(730, 10);
     textobj->setFillColor(sf::Color(255, 215, 9));
+    textobj->setCharacterSize(70);
 
     auto bgt = _resources.load<sf::Texture>("images/tommy-1.png");
     if (!bgt)
@@ -96,7 +98,12 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     _bgsong->setLoop(true);
     _bgsong->play();
 
-    createMenu(_menuItems, { "Play Game", "Shart", "Exit Game" }, _window, _font);
+    createMenu(_menuItems, 
+        { 
+            "Play Game", 
+            "Settings", 
+            "Exit Game" 
+        }, _window, _font);
     updateMenu(_selected, _menuItems);
     for (const auto& item : _menuItems)
     {
@@ -138,7 +145,8 @@ PollResult IntroScreen::poll(const sf::Event& e)
         }
     }
     else if (e.type == sf::Event::KeyPressed
-        && e.key.code == sf::Keyboard::Space)
+        && (e.key.code == sf::Keyboard::Space
+            || e.key.code == sf::Keyboard::Enter))
     {
         switch (_selected)
         {
