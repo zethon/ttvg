@@ -1,3 +1,3 @@
 
-cmake --build . --config %configuration% --target install
-cpack -G NSIS64 -C %configuration% --config TTVG.CPackConfig.cmake --verbose
+cmake --build . --config %CONFIG% --target install
+cpack -G NSIS64 -C %CONFIG% --config TTVG.CPackConfig.cmake --verbose
