@@ -66,6 +66,7 @@ set(HEADER_FILES
 
 if(WIN32)
     set(GUI_TYPE WIN32)
+    set (CPACK_NSIS_MODIFY_PATH "ON")
 endif()
 
 if(APPLE)
@@ -112,6 +113,16 @@ install(
     COMPONENT tooter
     PATTERN "src" EXCLUDE
 )
+
+if (WIN32)
+
+install(
+    FILES "${CMAKE_SOURCE_DIR}/tools/windows/oalinst.exe" 
+    DESTINATION redist
+    COMPONENT tooter
+)
+
+endif()
 
 foreach(_CONFIG_FILE_ TTVGCPackConfig.cmake TTVGPackage.cmake)
     configure_file("CPack/${_CONFIG_FILE_}.in" "${CMAKE_BINARY_DIR}/${_CONFIG_FILE_}" @ONLY)
