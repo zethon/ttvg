@@ -7,6 +7,7 @@ environment:
     - CONFIG: Debug
 
 install:
+  - echo "Building %CONFIG% build"
   - echo "Downloading conan..."
   - set PATH=%PATH%;%PYTHON%/Scripts/
   - pip.exe install conan
@@ -28,7 +29,8 @@ test_script:
 
 after_test:
   - if "%CONFIG%"=="Release" ..\tools\windows\build.cmd
-  - dir /s
+  - dir *.exe /s
+  - dir -Recurse *.exe
 
 artifacts:
   # References here need to have "build\" prepended since 
@@ -45,9 +47,9 @@ deploy:
   password:
     secure: 9Hm8Tj0tt2lXHlXjk3bxyQ==
   folder: /
-  on:
-    branch: winstaller
-    configuration: Release
+  # on:
+  #   branch: master
+  #   configuration: Release
 
 notifications:
   - provider: Email
