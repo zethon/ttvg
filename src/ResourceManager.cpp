@@ -72,12 +72,6 @@ sf::SoundBuffer* ResourceManager::getSound(const std::string & name)
     return nullptr;
 }
 
-void ResourceManager::clearCaches()
-{
-    _textcache.clear();
-    _soundcache.clear();
-}
-
 ////////////////////////////////////////////////////////////
 std::string ResourceManager::getFilename(const std::string& name)
 {
