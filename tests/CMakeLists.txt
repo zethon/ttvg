@@ -28,7 +28,13 @@ set(PROJECT_FILES
     
     ../src/Intersection.h
     ../src/Intersection.cpp
-    
+
+    ../src/Item.h
+    ../src/Item.cpp
+
+    ../src/ItemFactory.h
+    ../src/ItemFactory.cpp
+
     ../src/PathFactory.h
     ../src/PathFactory.cpp
 
@@ -57,6 +63,7 @@ set(PROJECT_FILES
 create_test("misc" "${PROJECT_FILES}")
 create_test("background" "${PROJECT_FILES}")
 create_test("vehicle" "${PROJECT_FILES}")
+create_test("item" "${PROJECT_FILES}")
 
 set(LUA_FILES
     ${PROJECT_FILES}
