@@ -29,14 +29,12 @@ test_script:
 
 after_test:
   - if "%CONFIG%"=="Release" ..\tools\windows\build.cmd
-  - dir *.exe /s
-  - dir -Recurse *.exe
 
 artifacts:
   # References here need to have "build\" prepended since 
   # the context here is from the original build folder 
   # before we "cd build" 
-  - path: build\tooter-*.exe
+  - path: tooter-*.exe
     name: TTInstaller
 
 deploy:
