@@ -4,10 +4,6 @@ function onEnter(scene)
     _player = scene:getPlayer()
 end 
 
-function onTileUpdate(scene, x, y)
-    Log.debug("I'm on " .. x .. "," .. y)
-end
-
 function treasureChest_onPickup(scene, item)
     local w = scene:createModal(ModalType.Default)
     
