@@ -47,7 +47,7 @@ deploy:
   folder: /
   on:
     branch: master
-    configuration: Release
+    CONFIG: Release
 
 notifications:
   - provider: Email
