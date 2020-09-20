@@ -39,6 +39,8 @@ if (WIN32)
 ")
 
     list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+        SetShellVarContext current
+        SetOutPath '$INSTDIR\bin'
         CreateShortCut '$DESKTOP\\\\TTVG.lnk' '$INSTDIR\\\\bin\\\\tooter.exe'")
 endif()
 
