@@ -54,6 +54,11 @@ void from_json(const nl::json& j, CallbackInfo& cb)
     {
         j.at("onExit").get_to(cb.onExit);
     }
+
+    if (j.contains("onTileUpdate"))
+    {
+        j.at("onTileUpdate").get_to(cb.onTileUpdate);
+    }
 }
 
 int Scene_name(lua_State* L)
@@ -411,29 +416,56 @@ void Scene::updateCurrentTile(const TileInfo& info)
 {
     _currentTile = info;
 
-    switch (_currentTile.type)
-    {
-        default:
-            _hud.setZoneText({});
-            _descriptionText.setText({});
-        break;
-
-        case TileType::ZONE:
+    bool handled = false;
+    std::for_each(_items.begin(), _items.end(),
+        [this, &handled](ItemPtr item) 
         {
-            const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
-            _hud.setZoneText(zoneinfo.name);
-            if (!zoneinfo.description.empty())
+            if (item->getGlobalBounds().intersects(_player->getGlobalBounds())) 
             {
-                _descriptionText.setText(zoneinfo.description);
+                _descriptionText.setText(
+                    item->getName() + ": " +
+                    item->getDescription());
+
+                handled = true;
             }
         }
-        break;
+    );
+
+    if (!handled)
+    {
+        switch (_currentTile.type)
+        {
+            default:
+                _hud.setZoneText({});
+                _descriptionText.setText({});
+            break;
+
+            case TileType::ZONE:
+            {
+                const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
+                _hud.setZoneText(zoneinfo.name);
+                if (!zoneinfo.description.empty())
+                {
+                    _descriptionText.setText(zoneinfo.description);
+                }
+            }
+            break;
+        }
     }
+
+    customUpdateCurrentTile(info);
+
+    tt::CallLuaFunction(_luaState, _callbackNames.onTileUpdate, _name, 
+        { 
+            { LUA_REGISTRYINDEX, _luaIdx },
+            { LUA_TNUMBER, _currentTile.tile.x },
+            { LUA_TNUMBER, _currentTile.tile.y },
+        });
 
     std::stringstream ss;
     ss << _player->getGlobalCenter();
     std::stringstream ss1;
-    ss1 << getPlayerTile();
+    ss1 << _currentTile.tile;
 
     auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
     _debugWindow.setText(posText);

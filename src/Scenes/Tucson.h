@@ -31,12 +31,13 @@ public:
 
     void enter() override;
 
-protected:
-    void updateCurrentTile(const TileInfo& info) override;
+// protected:
+//     void updateCurrentTile(const TileInfo& info) override;
 
 private:
-    void customDraw() override;
     void toggleHighlight() override;
+    void customDraw() override;
+    void customUpdateCurrentTile(const TileInfo&) override;
 
     void initTraffic();
     void timestepTraffic();

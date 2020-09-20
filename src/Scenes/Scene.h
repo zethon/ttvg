@@ -33,6 +33,7 @@ struct CallbackInfo
     std::string onInit = "onInit";
     std::string onEnter = "onEnter";
     std::string onExit = "onExit";
+    std::string onTileUpdate = "onTileUpdate";
 };
 
 class Scene;
@@ -202,6 +203,9 @@ private:
 
     // allow subclasses to define any items that get drawn
     virtual void customDraw() {}
+
+    // allow subclasses to do custom tile updating
+    virtual void customUpdateCurrentTile(const TileInfo&) { }
 };
 
 } // namespace tt

@@ -211,9 +211,9 @@ void Tucson::customDraw()
         });
 }
 
-void Tucson::updateCurrentTile(const TileInfo& info)
+void Tucson::customUpdateCurrentTile(const TileInfo& info)
 {
-    _currentTile = info;
+    // _currentTile = info;
 
     //// TODO: PUT THIS IN A CONFIG FILE
     //// BEGIN MESSY HARCODED PLAYGROUND SOUND CODE TO BE REMOVED
@@ -242,49 +242,37 @@ void Tucson::updateCurrentTile(const TileInfo& info)
     //}
     //// END UGLY HARDCOED PLAYGROUND CODE
 
-    bool handled = false;
-    std::for_each(_items.begin(), _items.end(),
-        [this, &handled](ItemPtr item) 
-        {
-            if (item->getGlobalBounds().intersects(_player->getGlobalBounds())) 
-            {
-                _descriptionText.setText(
-                    item->getName() + ": " +
-                    item->getDescription());
 
-                handled = true;
-            }
-        }
-    );
 
-    if (handled) return;
+    // return handled;
+    // if (handled) return;
 
-    switch (_currentTile.type)
-    {
-        default:
-            _hud.setZoneText({});
-            _descriptionText.setText({});
-        break;
+    // switch (_currentTile.type)
+    // {
+    //     default:
+    //         _hud.setZoneText({});
+    //         _descriptionText.setText({});
+    //     break;
 
-        case TileType::ZONE:
-        {
-            const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
-            _hud.setZoneText(zoneinfo.name);
-            if (!zoneinfo.description.empty())
-            {
-                _descriptionText.setText(zoneinfo.description);
-            }
-        }
-        break;
-    }
+    //     case TileType::ZONE:
+    //     {
+    //         const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
+    //         _hud.setZoneText(zoneinfo.name);
+    //         if (!zoneinfo.description.empty())
+    //         {
+    //             _descriptionText.setText(zoneinfo.description);
+    //         }
+    //     }
+    //     break;
+    // }
 
-    std::stringstream ss;
-    ss << _player->getGlobalCenter();
-    std::stringstream ss1;
-    ss1 << getPlayerTile();
+    // std::stringstream ss;
+    // ss << _player->getGlobalCenter();
+    // std::stringstream ss1;
+    // ss1 << getPlayerTile();
 
-    auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
-    _debugWindow.setText(posText);
+    // auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
+    // _debugWindow.setText(posText);
 }
 
 void Tucson::toggleHighlight()
