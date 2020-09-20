@@ -24,7 +24,7 @@ class Tucson : public Scene
 
 public:
     Tucson(const SceneSetup& setup);
-    static constexpr auto SCENE_NAME = "tucson";
+    static constexpr auto SCENE_NAME = "Tucson";
 
     PollResult poll(const sf::Event& e) override;
     ScreenAction timestep() override;

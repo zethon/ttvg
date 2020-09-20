@@ -31,7 +31,7 @@
             "description": "Press SPACE to leave the Courthouse",
             "transition":
             {
-                "scene": "tucson",
+                "scene": "Tucson",
                 "enabled": true
             },
             "rects" : 

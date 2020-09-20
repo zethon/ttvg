@@ -41,7 +41,7 @@
             "description": "Press SPACE to leave the hospital",
             "transition":
             {
-                "scene": "tucson",
+                "scene": "Tucson",
                 "enabled": true
             },
             "rects" : 

@@ -22,7 +22,7 @@
             "description": "Press SPACE to leave the Fire Station",
             "transition":
             {
-                "scene": "tucson",
+                "scene": "Tucson",
                 "enabled": true
             },
             "rects" : 
