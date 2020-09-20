@@ -418,8 +418,6 @@ void Scene::removeItem(ItemPtr item)
 
 void Scene::updateCurrentTile(const TileInfo& info)
 {
-    _currentTile = info;
-
     // this means that Items take priority over zones, so if there is an item placed
     // on top of a zone, we will display the item first, giving the user a chance
     // to pick up the item
@@ -436,6 +434,13 @@ void Scene::updateCurrentTile(const TileInfo& info)
             break;
         }
     }
+
+    if (_currentTile.tile == info.tile)
+    {
+        return;
+    }
+
+    _currentTile = info;
 
     if (!handled)
     {
@@ -465,16 +470,13 @@ void Scene::updateCurrentTile(const TileInfo& info)
     tt::CallLuaFunction(_luaState, _callbackNames.onTileUpdate, _name, 
         { 
             { LUA_REGISTRYINDEX, _luaIdx },
-            { LUA_TNUMBER, _currentTile.tile.x },
-            { LUA_TNUMBER, _currentTile.tile.y },
+            MakeLuaArg(_currentTile.tile.x),
+            MakeLuaArg(_currentTile.tile.y)
         });
 
-    std::stringstream ss;
-    ss << _player->getGlobalCenter();
     std::stringstream ss1;
-    ss1 << _currentTile.tile;
-
-    auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
+    ss1 << getPlayerTile();
+    auto posText = fmt::format("P({})", ss1.str());
     _debugWindow.setText(posText);
 }
 

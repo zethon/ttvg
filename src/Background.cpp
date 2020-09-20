@@ -130,6 +130,9 @@ sf::FloatRect Background::getWorldTileRect() const
 
 TileInfo Background::getTileInfo(const sf::Vector2f& v)
 {
+    TileInfo info; 
+    info.tile = v;
+
     // TODO: explore options of adding `RectConains` to 
     // the compare functor so that we can use `std::set::find`
     // to do this search, which should be faster
@@ -137,15 +140,13 @@ TileInfo Background::getTileInfo(const sf::Vector2f& v)
     {
         if (RectContains(zone.rect, v))
         {
-            TileInfo info;
-            info.tile = v;
             info.type = TileType::ZONE;
             info.data = zone;
             return info;
         }
     }
 
-    return {};
+    return info;
 }
 
 } // namespace tt

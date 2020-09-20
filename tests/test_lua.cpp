@@ -215,8 +215,8 @@ end
 
     tt::CallLuaFunction(L, "global_setter", "scene1",
         {
-            { LUA_TNUMBER, static_cast<lua_Number>(50.f) },
-            { LUA_TNUMBER, static_cast<lua_Number>(50.f) }
+            MakeLuaArg(50.f), 
+            MakeLuaArg(50.f)
         });
 
     results = tt::CallLuaFunction(L, "tile_getter", "scene1");
@@ -228,8 +228,8 @@ end
 
     tt::CallLuaFunction(L, "tile_setter", "scene1",
         {
-            { LUA_TNUMBER, static_cast<lua_Number>(1.f) },
-            { LUA_TNUMBER, static_cast<lua_Number>(1.f) }
+            MakeLuaArg(1.f),
+            MakeLuaArg(1.f)
         });
 
     results = tt::CallLuaFunction(L, "global_getter", "scene1");

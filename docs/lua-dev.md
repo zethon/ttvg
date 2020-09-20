@@ -8,13 +8,14 @@ Every scene has a *&lt;scene-name&gt;.lua* file which resides in `resources/lua`
 
 # 1. Scenes Events
 
-Scenes will emit three events that can be caught in Lua. These are: `onInit`, `onEnter` and `onExit`. These are the default names and will be called automatically when the event is triggered. The names can be overriden using the JSON configuration like so:
+Scenes will emit events that can be caught in Lua. The default names and will be called automatically when the event is triggered. However, the names can be overriden using the JSON configuration like so:
 
 ```json
 {
     "onInit": "scene_onInit",
     "onEnter": "scene_onEnter",
     "onExit": "scene_onExit",
+    "onTileupdate": "scene_onTileUpdate"
 }
 ```
 
@@ -33,6 +34,10 @@ end
 
 function scene_onExit(scene)
     print('Now leaving scene '..scene:name..'!')
+end
+
+function scene_onTileUpdate(scene, x, y)
+    print('You are currently on tile ('..x..','..y..')')
 end
 ```
 </s>
@@ -57,6 +62,10 @@ This function is invoked when the player first enters the scene. This callback c
 ### `[void] onExit(scene)`
 
 This function is invoked when the playe first exits the scene. This callback can be also be called multiple times.
+
+### `[void] onTileUpdate(scene, x, y)`
+
+This is called everytime the user walks onto a new tile. The first argument is the current `scene`, and the `x` and `y` arguments are the coordinates of the new tile.
 
 <hr/>
 

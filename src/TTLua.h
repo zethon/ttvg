@@ -81,6 +81,13 @@ using LuaArgPair = std::tuple<std::int32_t, std::any>;
 using LuaValues = std::vector<LuaArgPair>;
 using OptionalLuaValues = std::optional<LuaValues>;
 
+template <typename NumT, 
+    typename std::enable_if<std::is_arithmetic<NumT>::value>::type* = nullptr>
+LuaArgPair MakeLuaArg(NumT x)
+{
+    return { LUA_TNUMBER, static_cast<lua_Number>(x) };
+}
+
 template<typename ValT>
 ValT GetLuaValue(const LuaArgPair& v)
 {
