@@ -44,6 +44,12 @@ Need to a define a mission API.
 
 <hr/>
 
+## Migrate to Github Actions
+
+The Github action system supports CI testing on Windows, macOS and Ubuntu. We should migrate away from Travis-CI and AppVeyor and use the Github Action system.
+
+<hr/>
+
 ## AMB Badges lol
 
 Acomplishments in the game could be rewarded with badges on AMB. This would require some kind of login in the game.
