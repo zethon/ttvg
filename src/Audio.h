@@ -23,14 +23,14 @@ class NullAudio : public Audio
 {
 
 public:
-    void playSound(inst soundID) { /* do nothing */ }
-    void stopSound(inst soundID) { /* do nothing */ }
+    void playSound(int soundID) { /* do nothing */ }
+    void stopSound(int soundID) { /* do nothing */ }
     void stopAllSounds() { /* do nothing */ }
 };
 
-class LoggedAudio : public Audio
-{
+// class LoggedAudio : public Audio
+// {
 
-};
+// };
 
 } // namespace
