@@ -64,7 +64,16 @@ set(HEADER_FILES
     Scenes/Scene.h
 )
 
-add_executable(tooter
+if(WIN32)
+    set(GUI_TYPE WIN32)
+    set (CPACK_NSIS_MODIFY_PATH "ON")
+endif()
+
+if(APPLE)
+    SET(GUI_TYPE MACOSX_BUNDLE)
+endif()
+
+add_executable(tooter ${GUI_TYPE}
     ${SOURCE_FILES}
     ${HEADER_FILES}
 )
@@ -75,4 +84,51 @@ PUBLIC
     ${SFML_Libraries}
     ${CONAN_LIBS_FRAMEWORKS_LUADIST}
 )
+
+if(WIN32)
+    set_target_properties(tooter PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE")
+    set_target_properties(tooter PROPERTIES COMPILE_DEFINITIONS_DEBUG "_CONSOLE")
+    set_target_properties(tooter PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE")
+    set_target_properties(tooter PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
+endif()
+
+install(
+    TARGETS tooter 
+    COMPONENT tooter
+    RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+	BUNDLE DESTINATION .
+)
+set(CMAKE_INSTALL_UCRT_LIBRARIES FALSE)
+include(InstallRequiredSystemLibraries)
+install(
+    PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+    DESTINATION bin
+    COMPONENT tooter
+)
+
+install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/resources/
+    DESTINATION bin/resources
+    COMPONENT tooter
+    PATTERN "src" EXCLUDE
+)
+
+if (WIN32)
+
+install(
+    FILES "${CMAKE_SOURCE_DIR}/tools/windows/oalinst.exe" 
+    DESTINATION redist
+    COMPONENT tooter
+)
+
+endif()
+
+foreach(_CONFIG_FILE_ TTVGCPackConfig.cmake TTVGPackage.cmake)
+    configure_file("CPack/${_CONFIG_FILE_}.in" "${CMAKE_BINARY_DIR}/${_CONFIG_FILE_}" @ONLY)
+endforeach()
+
+set(CPACK_PACKAGE_CONTACT "Support <max@amb.dog>")
+
+include(CPack)
 

@@ -43,9 +43,7 @@ std::string defaultResourceFolder()
 {
     namespace fs = boost::filesystem;
 #ifdef _WINDOWS
-    auto cwd = fs::current_path();
-    cwd /= "resources";
-    return cwd.string();
+    return "resources";
 #elif defined(__APPLE__)    
     return "macos";
 #elif defined(__linux__)

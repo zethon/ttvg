@@ -50,6 +50,28 @@ if (MSVC)
     )
 endif(MSVC)
 
+# TODO: move the version information into a dedicated
+# file *just* for versioning information
+file(READ "src/core.h" filecontent)
+string(REGEX MATCH "#define[ \t]+VERSION_MAJOR[ \t]+([0-9]*)" _ ${filecontent})
+set(APP_VERSION_MAJOR ${CMAKE_MATCH_1})
+string(STRIP ${APP_VERSION_MAJOR} APP_VERSION_MAJOR)
+string(REGEX MATCH "#define[ \t]+VERSION_MINOR[ \t]+([0-9]*)" _ ${filecontent})
+set(APP_VERSION_MINOR ${CMAKE_MATCH_1})
+string(STRIP ${APP_VERSION_MINOR} APP_VERSION_MINOR)
+string(REGEX MATCH "#define[ \t]+VERSION_PATCH[ \t]+([0-9]*)" _ ${filecontent})
+set(APP_VERSION_PATCH ${CMAKE_MATCH_1})
+string(STRIP ${APP_VERSION_PATCH} APP_VERSION_PATCH)
+set(APP_VERSION "${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}.")
+
+if (NOT "$ENV{APPVEYOR_BUILD_NUMBER}" STREQUAL "")
+    set(APP_BUILD_NUMBER "$ENV{APPVEYOR_BUILD_NUMBER}")
+elseif(NOT "$ENV{TRAVIS_BUILD_NUMBER}" STREQUAL "")
+    set(APP_BUILD_NUMBER "$ENV{TRAVIS_BUILD_NUMBER}")
+else()
+    set(APP_BUILD_NUMBER "0")
+endif()
+
 add_subdirectory(src)
 
 if (UNIT_TEST)

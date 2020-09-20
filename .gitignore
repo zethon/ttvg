@@ -3,3 +3,5 @@ build/
 *.tiled-session
 core
 .vscode/settings.json
+bin.minsizerel/
+bin.release/

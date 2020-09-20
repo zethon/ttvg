@@ -1,0 +1,61 @@
+include(TTVGPackage.cmake)
+
+set(PROJECT_NAME "tooter")
+SET(PROJECT_RUNTIME "bin")
+SET(PROJECT_EXTENSION "exe")
+
+string(TOLOWER ${PROJECT_NAME} CPACK_PACKAGE_NAME)
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-@APP_BUILD_NUMBER@-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "tooter CPACK_PACKAGE_DESCRIPTION_SUMMARY")
+set(CPACK_PACKAGE_DESCRIPTION "CPACK_PACKAGE_DESCRIPTION")
+string(TOLOWER ${CPACK_PACKAGE_FILE_NAME} CPACK_PACKAGE_FILE_NAME)
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The Tommy Tooter Video Game")
+set(CPACK_PACKAGE_DESCRIPTION "The Tommy Tooter Video Game (TTVG) is an adventure game 
+much like Quake, Flight Simulator and Grand Theft Auto 
+rolled into the best video game experience available
+on the Internet.")
+
+set(CPACK_INSTALL_CMAKE_PROJECTS "@CMAKE_BINARY_DIR@;tooter;tooter;/")
+
+if (WIN32)
+    # setting this on macOS causes the cpack error: 
+    #   CPack Error: Error adding SLA.
+    #   failed to find CoreServices/CoreServices.r
+    # but NSIS requires this to be defined.
+    set(CPACK_RESOURCE_FILE_LICENSE "@CMAKE_SOURCE_DIR@/src/CPack/license.txt")
+
+    set(CPACK_NSIS_PACKAGE_NAME "The Tommy Tooter Video Game")
+    set(CPACK_NSIS_DISPLAY_NAME "The Tommy Tooter Video Game")
+    set(CPACK_NSIS_INSTALL_ROOT "$ENV{ProgramFiles}\\ttvg")
+
+    SET(CPACK_COMPONENT_OAL_REDISTRIBUTABLE_DESCRIPTION "OpenAL Redistributable Package")
+    SET(CPACK_COMPONENT_OAL_REDISTRIBUTABLE_DISPLAY_NAME "OpenAL")
+    LIST(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+        IfFileExists '$INSTDIR\\\\redist\\\\oalinst.exe' OALSetupExists OALSetupNotExist
+        OALSetupExists:
+            ExecWait '$INSTDIR\\\\redist\\\\oalinst.exe /silent'
+        OALSetupNotExist:
+")
+
+    list(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+        SetShellVarContext current
+        SetOutPath '$INSTDIR\bin'
+        CreateShortCut '$DESKTOP\\\\TTVG.lnk' '$INSTDIR\\\\bin\\\\tooter.exe'")
+endif()
+
+# set(CPACK_BUNDLE_NAME "${PROJECT_NAME}")
+# set(CPACK_BUNDLE_PLIST "@CMAKE_BINARY_DIR@/Info.plist")
+# set(CPACK_BUNDLE_ICON "@CMAKE_SOURCE_DIR@/src/CPack/TTVG.icns")
+
+set (CPACK_CREATE_DESKTOP_LINKS "tooter")
+
+SET(CPACK_COMPONENTS_ALL TOOTER)
+SET(CPACK_COMPONENT_GROUP_TOOTER_EXPANDED TRUE)
+SET(CPACK_COMPONENT_TOOTER_DISPLAY_NAME "TTVG DISPLAY")
+SET(CPACK_COMPONENT_TOOTER_DESCRIPTION "TTVG Utility")
+SET(CPACK_COMPONENT_TOOTER_GROUP TOOTER)
+SET(CPACK_COMPONENT_TOOTER_INSTALL_TYPES Full)
+	
+# Component deps for SDK builds are needed for Windows only
+set(CPACK_COMPONENT_TOOTER_DEPENDS Runtime)
