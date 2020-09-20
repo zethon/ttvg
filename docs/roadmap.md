@@ -1,6 +1,6 @@
 # Road Map
 
-This document discusses long term plans for the game in the order in which I would like to tackle them. Of course these are tentative plans and are subject to change.
+This document discusses long term plans for the game in the rough order in which I would like to tackle them. Of course these are tentative plans and are subject to change.
 
 <hr/>
 
@@ -13,12 +13,6 @@ Need to a define a mission API.
 ## Dynamic Bounds Checking
 
 Collision bounds need to be seperated from sprite bounds in a sprite sheet.
-
-<hr/>
-
-## Windows Installer
-
-The Windows installer should automatically build when code is pushed to master and automatically deploy the installer somewhere for download.
 
 <hr/>
 
@@ -85,22 +79,22 @@ There is functionality that allows Tommy to sell weed to an NPC. However, there 
 
 ## Mac Installer
 
-Mac users need love too! Like the Windows installer, Mac installers should be automatically deployed with pushes to master.
+Like the Windows installer, Mac installers should be automatically deployed with pushes to master.
 
 <hr/>
 
-## AMB Badges
+## AMB Badges lol
 
 Acomplishments in the game could be rewarded with badges on AMB. This would require some kind of login in the game.
 
 <hr/>
 
-## Multiplayer! LOL
+## Multiplayer! LOLLOL
 
 Wouldn't it be great if multiple AMBers could wander around the same map and have hobofights?!
 
 <hr/>
 
-## MicroTransactions! LOLulz!
+## MicroTransactions! LOLLLOLulz!
 
 Wouldn't it also be great to send Max Power money?!

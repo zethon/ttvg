@@ -68,7 +68,7 @@ void DescriptionText::setText(const std::string & text)
     _text->setString(text);
 
     auto rect = _text->getGlobalBounds();
-    _text->setPosition((_window.getSize().x / 2) - (rect.width / 2), 42.5f);
+    _text->setPosition((_window.getSize().x / 2) - (rect.width / 2), 62.5f);
 
     auto[x, y, w, h] = _text->getGlobalBounds();
 
