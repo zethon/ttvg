@@ -63,11 +63,14 @@ This function is invoked when the player first enters the scene. This callback c
 
 This function is invoked when the playe first exits the scene. This callback can be also be called multiple times.
 
+<hr/>
+
 ### `[void] onTileUpdate(scene, x, y)`
 
 This is called everytime the user walks onto a new tile. The first argument is the current `scene`, and the `x` and `y` arguments are the coordinates of the new tile.
 
-<hr/>
+
+<br/>
 
 ## 1.2. Scene API
 
