@@ -70,7 +70,7 @@ if(WIN32)
         "${CMAKE_SOURCE_DIR}/tools/windows/ttvg.rc")
 
     # can this be safely removed? 
-    set (CPACK_NSIS_MODIFY_PATH "ON")
+    set(CPACK_NSIS_MODIFY_PATH "ON")
 endif()
 
 if(APPLE)
@@ -110,6 +110,7 @@ install(
 	LIBRARY DESTINATION lib
 	BUNDLE DESTINATION .
 )
+
 set(CMAKE_INSTALL_UCRT_LIBRARIES FALSE)
 include(InstallRequiredSystemLibraries)
 install(
@@ -127,11 +128,11 @@ install(
 
 if (WIN32)
 
-install(
-    FILES "${CMAKE_SOURCE_DIR}/tools/windows/oalinst.exe" 
-    DESTINATION redist
-    COMPONENT tooter
-)
+    install(
+        FILES "${CMAKE_SOURCE_DIR}/tools/windows/oalinst.exe" 
+        DESTINATION redist
+        COMPONENT tooter
+    )
 
 endif()
 
