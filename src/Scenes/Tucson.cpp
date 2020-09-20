@@ -31,18 +31,6 @@ Tucson::Tucson(const SceneSetup& setup)
     //_bgsong->play();
 }
 
-void Tucson::enter()
-{
-    Scene::enter();
-
-    sf::Vector2f tile{ getPlayerTile() };
-    auto tileinfo = _background->getTileInfo(tile);
-    updateCurrentTile(tileinfo);
-
-    _hud.setHealth(_player->health());
-    _hud.setBalance(_player->balance());
-}
-
 void Tucson::initTraffic()
 {
     // initialize the traffic system

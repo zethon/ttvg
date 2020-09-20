@@ -305,6 +305,10 @@ void Scene::enter()
 
     addUpdateable(_player);
 
+    sf::Vector2f tile{ getPlayerTile() };
+    auto tileinfo = _background->getTileInfo(tile);
+    updateCurrentTile(tileinfo);
+
     _hud.setHealth(_player->health());
     _hud.setBalance(_player->balance());
 
@@ -416,20 +420,22 @@ void Scene::updateCurrentTile(const TileInfo& info)
 {
     _currentTile = info;
 
+    // this means that Items take priority over zones, so if there is an item placed
+    // on top of a zone, we will display the item first, giving the user a chance
+    // to pick up the item
     bool handled = false;
-    std::for_each(_items.begin(), _items.end(),
-        [this, &handled](ItemPtr item) 
+    for (const auto& item : _items)
+    {
+        if (item->getGlobalBounds().intersects(_player->getGlobalBounds())) 
         {
-            if (item->getGlobalBounds().intersects(_player->getGlobalBounds())) 
-            {
-                _descriptionText.setText(
-                    item->getName() + ": " +
-                    item->getDescription());
+            _descriptionText.setText(
+                item->getName() + ": " +
+                item->getDescription());
 
-                handled = true;
-            }
+            handled = true;
+            break;
         }
-    );
+    }
 
     if (!handled)
     {
@@ -453,6 +459,7 @@ void Scene::updateCurrentTile(const TileInfo& info)
         }
     }
 
+    // allow subclasses to do their own handling
     customUpdateCurrentTile(info);
 
     tt::CallLuaFunction(_luaState, _callbackNames.onTileUpdate, _name, 
@@ -750,9 +757,9 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                     {
                         return { true, ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO } };
                     }
-                    else if (*s == 2)
+                    else
                     {
-                        assert(*s == 1);
+                        assert(*s == 2);
                         return { true, ScreenAction{ ScreenActionType::EXIT_GAME } };
                     }
                 }   

@@ -163,7 +163,6 @@ public:
     PlayerPtr player() const { return _player; }
 
 protected:
-    virtual void updateCurrentTile(const TileInfo& info);
     virtual sf::Vector2f animeCallback();
     virtual void adjustView();
     
@@ -198,6 +197,7 @@ protected:
 private:
     void createItems();
     void pickupItem(Items::iterator itemIt);
+    virtual void updateCurrentTile(const TileInfo& info);
     
     PollResult privatePollHandler(const sf::Event& e);
 

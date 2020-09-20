@@ -29,11 +29,6 @@ public:
     PollResult poll(const sf::Event& e) override;
     ScreenAction timestep() override;
 
-    void enter() override;
-
-// protected:
-//     void updateCurrentTile(const TileInfo& info) override;
-
 private:
     void toggleHighlight() override;
     void customDraw() override;
