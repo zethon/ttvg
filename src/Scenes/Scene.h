@@ -170,6 +170,7 @@ protected:
     virtual void toggleHighlight();
 
     [[maybe_unused]] bool walkPlayer(float speed);
+    void showHelp();
 
     std::string     _name;
     lua_State*      _luaState = nullptr;

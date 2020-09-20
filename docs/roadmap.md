@@ -4,6 +4,10 @@ This document discusses long term plans for the game in the rough order in which
 
 <hr/>
 
+## Audio System Refactor
+
+The system to play audio needs to be abstracted away from the SFML implementation. This will allow for things like log decoration, and a null audio system.
+
 ## Mission API
 
 Need to a define a mission API.

@@ -515,6 +515,25 @@ bool Scene::walkPlayer(float stepsize)
     return moved;
 }
 
+void Scene::showHelp()
+{
+    ModalWindow w{ *this };
+    w.setText(R"x(Here's some help old man..
+
+SPACE - Enter into new areas!
+A - PIck up Items and talk to NPCs
+I - Show inventory
+Arrows - Walk
+SHIFT + Arrows - Run
+
+Walk around and enjoy Tucson!
+)x");
+
+    w.setAlignment(ModalWindow::Alignment::CENTER);
+    w.setHeight(250.f);
+    w.exec();
+}
+
 void Scene::createItems()
 {
     const auto& config = _background->json();
@@ -683,6 +702,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 OptionsWindow win{ *this };
                 win.setAlignment(ModalWindow::Alignment::CENTER);
                 win.setText("Do you want to quit the game like you have\nquit everything in life?");
+                win.addOption("Give me some help man!");
                 win.addOption("FUck you, take me to the Main Menu");
                 win.addOption("FUCK OFF! I WANT TO QUIT");
                 win.exec();
@@ -692,9 +712,13 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 {
                     if (*s == 0)
                     {
+                        showHelp();
+                    }
+                    else if (*s == 1)
+                    {
                         return { true, ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO } };
                     }
-                    else
+                    else if (*s == 2)
                     {
                         assert(*s == 1);
                         return { true, ScreenAction{ ScreenActionType::EXIT_GAME } };
