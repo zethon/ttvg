@@ -2,14 +2,14 @@
 
 define("PRODUCTION", 1);
 
-define("DOWNLOAD_PATH", "./downloads/");
-
 if (PRODUCTION == 1)
 {
+    define("DOWNLOAD_PATH", "./downloads/");
     define('LOCAL_PATH_PREFIX', "/amb/public_html/");
 }
 else
 {
+    define("DOWNLOAD_PATH", "./");
     define('LOCAL_PATH_PREFIX', "");
 }
 
@@ -36,35 +36,6 @@ function getWindowsDownloadFilename()
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-      .ribbon-wrapper {
-        width: 190px;
-        height: 190px;
-        overflow: hidden;
-        position: absolute;
-        top: -3px;
-        left: -3px;
-        margin-left: 15px;
-      }
-
-      .ribbon {
-          color: #333;
-          text-align: center;
-          -webkit-transform: rotate(-45deg);
-          -moz-transform:    rotate(-45deg);
-          -ms-transform:     rotate(-45deg);
-          -o-transform:      rotate(-45deg);
-          position: relative;
-          padding: 7px 0;
-          top: 45px;
-          left: -125px;
-          width: 400px;
-          background-color: #999;
-          color: #fff;
-      }
-      .ribbon a {
-        color: #fff;
-      }
-
       @font-face {
         font-family: 'Open Sans';
         font-style: normal;
@@ -83,43 +54,63 @@ function getWindowsDownloadFilename()
       {
         font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
         font-weight: 300;
-        margin: 0;
-        padding: 0;
+        margin: 5px;
+        padding: 5px;
       }
     </style>
   
   </head>
   <body>
 
-<h1>The Tommy Tooter Video Game</h1>
+<center>
+    <h1>The Tommy Tooter Video Game</h1>
+    <br/>
+    <a href="#about">About</a>&nbsp;&nbsp;&nbsp;
+    <a href="https://github.com/zethon/ttvg/wiki" target="_blank">Wiki</a>&nbsp;&nbsp;&nbsp;
+    <a href="https://github.com/zethon/ttvg" target="_blank">GitHub</a>&nbsp;&nbsp;&nbsp;
+    <a href="#downloads">Download</a>&nbsp;&nbsp;&nbsp;
+    <a href="https://www.youtube.com/channel/UC817umzuXFvE18cnsVx9JuA/videos" target="_blank">Videos</a>
+    <br/>
+    <br/>
+    <img src="https://github.com/zethon/ttvg/raw/master/docs/images/screenshot1.png"/ width="55%">
+</center>
 
-<br/><br/>
+<br/></br>
+
+<a id="about"/><h2>About</h2>
+
+<p>The Tommy Tooter Video Game is an open source role-playing game based on the fictional character Tommy Tooter. All characters and events in this video game, even those based on real people, are entirely fictional. This video game contains coarse language and due to its content it should not be played by anyone.</p>
+
+<br/>
+
+<a id="downloads"/><h2>Downloads</h2>
 
 <h3>Windows</h3>
 
 <!-- Download Path: <?php echo DOWNLOAD_PATH; ?> -->
 <!-- Prefix Path  : <?php echo LOCAL_PATH_PREFIX; ?> -->
 
-<br/>
-<b>Link:</b>&nbsp; 
+<p> 
 <?php 
     $filename = getWindowsDownloadFilename();
     echo '<a href="http://amb.la/' . DOWNLOAD_PATH . $filename . '">' . $filename . '</a>';
-    $filetime = date("F d Y", filemtime(LOCAL_PATH_PREFIX . DOWNLOAD_PATH . $filename));
-    echo '&nbsp;(' . $filetime . ')';
-?> 
+    $filetime = date("d F Y H:i", filemtime(LOCAL_PATH_PREFIX . DOWNLOAD_PATH . $filename));
+    echo '&nbsp;(' . $filetime . ' GMT)';
+?></p>
 
-<br/><br/>
-
-<h3>macOS</h3>
-Coming soon...
-
-<br/><br/>
-<h3>Ubuntu</h3>
-Coming soon...
 <br/>
 
-  </body>
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+<h3>macOS</h3>
+<p>Coming soon...</p>
+
+<br/>
+<h3>Ubuntu</h3>
+<p>Coming soon...</p>
+<br/>
+
+</body>
+
+<script src="https://code.jquery.com/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
 </html>
