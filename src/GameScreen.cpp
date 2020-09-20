@@ -57,7 +57,7 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     _scenes.emplace("DeathCampInterior", 
                     std::make_shared<Scene>("DeathCampInterior", setup));
 
-    _currentScene = _scenes["tucson"];
+    _currentScene = _scenes["Tucson"];
 
     // make sure all constructors across all scenes
     // have been run BEFORE init()'ing the scenes

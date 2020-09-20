@@ -45,9 +45,9 @@ deploy:
   password:
     secure: 9Hm8Tj0tt2lXHlXjk3bxyQ==
   folder: /
-  # on:
-  #   branch: master
-  #   configuration: Release
+  on:
+    branch: master
+    configuration: Release
 
 notifications:
   - provider: Email

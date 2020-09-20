@@ -1,6 +1,10 @@
 # Road Map
 
-This document discusses long term plans for the game in the rough order in which I would like to tackle them. Of course these are tentative plans and are subject to change.
+This document discusses long term plans for the game. 
+
+These items are in a **rough order** in which I would like to tackle them. 
+
+**All plans are tentative and subject to change.**
 
 <hr/>
 
@@ -8,11 +12,25 @@ This document discusses long term plans for the game in the rough order in which
 
 The system to play audio needs to be abstracted away from the SFML implementation. This will allow for things like log decoration, and a null audio system.
 
-## Mission API
+<hr/>
 
-Need to a define a mission API.
+## Mac Installer
+
+Like the Windows installer, Mac installers should be automatically deployed with pushes to master.
 
 <hr/>
+
+## Item System Enhancements
+
+The Item sysmte should be enhanced to support the following:
+
+* [Default Item Callbacks](https://github.com/zethon/ttvg/issues/81)
+* [Random Item Placement](https://github.com/zethon/ttvg/issues/80)
+* [Respawning Items] (https://github.com/zethon/ttvg/issues/79)
+
+This work is being tracked here: [https://github.com/zethon/ttvg/projects/4](https://github.com/zethon/ttvg/projects/4)
+
+<hr>
 
 ## Dynamic Bounds Checking
 
@@ -20,70 +38,15 @@ Collision bounds need to be seperated from sprite bounds in a sprite sheet.
 
 <hr/>
 
-## Item General Callbacks
+## Mission API
 
-To hook into an Item event, the calback must be defined on every item configured in the scene's JSON file. For example:
-
-```json
-"sax"
-[
-    { "x":1, "y":1, "onPickup": "on_pickupSax" },
-    { "x":10, "y":10, "onPickup": "on_pickupSax" },
-    { "x":20, "y":20, "onPickup": "on_pickupSax" },
-]
-```
-
-Instead there should be a way to define a catch-all and define a specific callback if needed. Something like:
-
-```json
-"sax"
-[
-    { "x":1, "y":1, "onPickup": "special_onPickupSax" },
-    { "x":10, "y":10},
-    { "x":20, "y":20},
-    "onPickup": "generic_onPickupSax"
-]
-```
-
-Such that picking up the first item would trigger `special_onPickupSax` but picking up any other instances would trigger `generic_onPickupSax`.
+Need to a define a mission API.
 
 <hr/>
 
-## Random Item Placement
+## Migrate to Github Actions
 
-Right now all items on a given map are in a fixed location. There should be a way to configure items such that they are placed randomly on the maps. Maybe this could be done by adding a `random` keyword in the `x`,`y` configuration, such that random items would be easily compatible with *Item General Callbacks*. For example:
-
-```json
-"sax"
-[
-    { "x":"random", "y":"random", "onPickup": "special_onPickupSax" },
-    { "x":10, "y":10},
-    { "x":20, "y":20},
-],
-
-```
-
-<hr/>
-
-## Respawning Items
-
-### Motivation
-
-There is functionality that allows Tommy to sell weed to an NPC. However, there are only two `bag-of-weed` items on the main map. There should be a way for items to respawn on the map either at the same spot or random spots. 
-
-### Requirements
-
-* set if the items should be replenished only after they've been used/picked up
-* limit the number of items that can be on the map
-* limit min number of items (i.e. the `bag-of-weed` might not respawn until Tommy has found them all)
-* support random or static placement on the map
-    * make sure not to place random items on already occupied spaces
-
-<hr>
-
-## Mac Installer
-
-Like the Windows installer, Mac installers should be automatically deployed with pushes to master.
+The Github action system supports CI testing on Windows, macOS and Ubuntu. We should migrate away from Travis-CI and AppVeyor and use the Github Action system.
 
 <hr/>
 

@@ -4,9 +4,15 @@
 
 This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs on Windows, Mac and Linux.
 
-## How to Install
+## Downloads
 
-Currently there is no installer, so the game must be built manually. An installer for both Windows and Mac will be created as the game matures and nears a releaseable state.
+### Windows
+
+[Download Windows Installer](https://anothermessageboard.com/downloads/)
+
+### Mac and Ubuntu
+
+Currently there is no installer for Mac or Ubuntu.
 
 ## How to Build
 

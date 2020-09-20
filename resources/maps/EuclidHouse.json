@@ -61,7 +61,7 @@
             "description": "Press SPACE to leave your rat infested apartment",
             "transition":
             {
-                "scene": "tucson",
+                "scene": "Tucson",
                 "enabled": true
             },
             "rects" : 

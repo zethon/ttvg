@@ -27,7 +27,7 @@ Assume we wish to add a new scene that is the interior of a police station that 
 * Add the scene to `GameScreen`'s constructor like so:
 
 ```
-_scenes.emplace("tucson", std::make_shared<Tucson>(resmgr, target, _player));
+_scenes.emplace("Tucson", std::make_shared<Tucson>(resmgr, target, _player));
 _scenes.emplace("EuclidHouse", std::make_shared<Scene>("EuclidHouse", resmgr, target, _player));
 _scenes.emplace("PoliceStation", std::make_shared<Scene>("PoliceStation", resmgr, target, _player)); // new scene!
 ```

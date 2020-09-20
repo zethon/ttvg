@@ -22,7 +22,7 @@
             "description": "Press SPACE to leave the Death Camp",
             "transition":
             {
-                "scene": "tucson",
+                "scene": "Tucson",
                 "enabled": true
             },
             "rects" : 

@@ -33,6 +33,7 @@ struct CallbackInfo
     std::string onInit = "onInit";
     std::string onEnter = "onEnter";
     std::string onExit = "onExit";
+    std::string onTileUpdate = "onTileUpdate";
 };
 
 class Scene;
@@ -162,7 +163,6 @@ public:
     PlayerPtr player() const { return _player; }
 
 protected:
-    virtual void updateCurrentTile(const TileInfo& info);
     virtual sf::Vector2f animeCallback();
     virtual void adjustView();
     
@@ -197,11 +197,15 @@ protected:
 private:
     void createItems();
     void pickupItem(Items::iterator itemIt);
+    virtual void updateCurrentTile(const TileInfo& info);
     
     PollResult privatePollHandler(const sf::Event& e);
 
     // allow subclasses to define any items that get drawn
     virtual void customDraw() {}
+
+    // allow subclasses to do custom tile updating
+    virtual void customUpdateCurrentTile(const TileInfo&) { }
 };
 
 } // namespace tt

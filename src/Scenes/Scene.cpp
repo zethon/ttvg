@@ -54,6 +54,11 @@ void from_json(const nl::json& j, CallbackInfo& cb)
     {
         j.at("onExit").get_to(cb.onExit);
     }
+
+    if (j.contains("onTileUpdate"))
+    {
+        j.at("onTileUpdate").get_to(cb.onTileUpdate);
+    }
 }
 
 int Scene_name(lua_State* L)
@@ -300,6 +305,10 @@ void Scene::enter()
 
     addUpdateable(_player);
 
+    sf::Vector2f tile{ getPlayerTile() };
+    auto tileinfo = _background->getTileInfo(tile);
+    updateCurrentTile(tileinfo);
+
     _hud.setHealth(_player->health());
     _hud.setBalance(_player->balance());
 
@@ -409,33 +418,65 @@ void Scene::removeItem(ItemPtr item)
 
 void Scene::updateCurrentTile(const TileInfo& info)
 {
-    _currentTile = info;
-
-    switch (_currentTile.type)
+    // this means that Items take priority over zones, so if there is an item placed
+    // on top of a zone, we will display the item first, giving the user a chance
+    // to pick up the item
+    bool handled = false;
+    for (const auto& item : _items)
     {
-        default:
-            _hud.setZoneText({});
-            _descriptionText.setText({});
-        break;
-
-        case TileType::ZONE:
+        if (item->getGlobalBounds().intersects(_player->getGlobalBounds())) 
         {
-            const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
-            _hud.setZoneText(zoneinfo.name);
-            if (!zoneinfo.description.empty())
-            {
-                _descriptionText.setText(zoneinfo.description);
-            }
+            _descriptionText.setText(
+                item->getName() + ": " +
+                item->getDescription());
+
+            handled = true;
+            break;
         }
-        break;
     }
 
-    std::stringstream ss;
-    ss << _player->getGlobalCenter();
+    if (_currentTile.tile == info.tile)
+    {
+        return;
+    }
+
+    _currentTile = info;
+
+    if (!handled)
+    {
+        switch (_currentTile.type)
+        {
+            default:
+                _hud.setZoneText({});
+                _descriptionText.setText({});
+            break;
+
+            case TileType::ZONE:
+            {
+                const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
+                _hud.setZoneText(zoneinfo.name);
+                if (!zoneinfo.description.empty())
+                {
+                    _descriptionText.setText(zoneinfo.description);
+                }
+            }
+            break;
+        }
+    }
+
+    // allow subclasses to do their own handling
+    customUpdateCurrentTile(info);
+
+    tt::CallLuaFunction(_luaState, _callbackNames.onTileUpdate, _name, 
+        { 
+            { LUA_REGISTRYINDEX, _luaIdx },
+            MakeLuaArg(_currentTile.tile.x),
+            MakeLuaArg(_currentTile.tile.y)
+        });
+
     std::stringstream ss1;
     ss1 << getPlayerTile();
-
-    auto posText = fmt::format("P({},{})", ss.str(), ss1.str());
+    auto posText = fmt::format("P({})", ss1.str());
     _debugWindow.setText(posText);
 }
 
@@ -718,9 +759,9 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                     {
                         return { true, ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO } };
                     }
-                    else if (*s == 2)
+                    else
                     {
-                        assert(*s == 1);
+                        assert(*s == 2);
                         return { true, ScreenAction{ ScreenActionType::EXIT_GAME } };
                     }
                 }   
