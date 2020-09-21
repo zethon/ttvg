@@ -111,13 +111,12 @@ install(
 	BUNDLE DESTINATION .
 )
 
-set(CMAKE_INSTALL_UCRT_LIBRARIES FALSE)
-include(InstallRequiredSystemLibraries)
-install(
-    PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
-    DESTINATION bin
-    COMPONENT tooter
-)
+# Note Mac specific extension .app
+set(APPS "\${CMAKE_INSTALL_PREFIX}/${APP_NAME}.app")
+set(DIRS ${CMAKE_BINARY_DIR})
+
+# install(CODE "include(BundleUtilities)
+#     fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")")
 
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/resources/
@@ -127,6 +126,14 @@ install(
 )
 
 if (WIN32)
+
+    set(CMAKE_INSTALL_UCRT_LIBRARIES FALSE)
+    include(InstallRequiredSystemLibraries)
+    install(
+        PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+        DESTINATION bin
+        COMPONENT tooter
+    )
 
     install(
         FILES "${CMAKE_SOURCE_DIR}/tools/windows/oalinst.exe" 
