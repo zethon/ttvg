@@ -8,6 +8,12 @@ These items are in a **rough order** in which I would like to tackle them.
 
 <hr/>
 
+## Configurable Animation
+
+Currently only the `Player` and `Vehicle` objects supported animation in a convoluted manner. This functionality should be refactored to allow for configurable animated states of all kinds of objects.
+
+<hr/>
+
 ## Audio System Refactor
 
 The system to play audio needs to be abstracted away from the SFML implementation. This will allow for things like log decoration, and a null audio system.
@@ -43,6 +49,10 @@ Collision bounds need to be seperated from sprite bounds in a sprite sheet.
 Need to a define a mission API.
 
 <hr/>
+
+## Integrate GUI Library
+
+Explore GUI/Widget libraries that support SFLM. This will be useful for things like a Settings page where widgets (e.g. checkboxes, dropdowns) would be useful.
 
 ## Migrate to Github Actions
 
