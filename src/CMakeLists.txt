@@ -66,6 +66,10 @@ set(HEADER_FILES
 
 if(WIN32)
     set(GUI_TYPE WIN32)
+    set(RESOURCE_FILES 
+        "${CMAKE_SOURCE_DIR}/tools/windows/ttvg.rc")
+
+    # can this be safely removed? 
     set (CPACK_NSIS_MODIFY_PATH "ON")
 endif()
 
@@ -73,9 +77,16 @@ if(APPLE)
     SET(GUI_TYPE MACOSX_BUNDLE)
 endif()
 
+SET_SOURCE_FILES_PROPERTIES(
+    ${RESOURCE_FILES}
+    PROPERTIES
+        MACOSX_PACKAGE_LOCATION Resources
+)
+
 add_executable(tooter ${GUI_TYPE}
     ${SOURCE_FILES}
     ${HEADER_FILES}
+    ${RESOURCE_FILES}
 )
 
 target_link_libraries(tooter
