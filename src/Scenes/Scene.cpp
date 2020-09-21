@@ -832,12 +832,6 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             }
             break;
 
-            case sf::Keyboard::H:
-            {
-                toggleHighlight();
-            }
-            break;
-
             //
             // Inventory. Display inventory.
             //
@@ -852,6 +846,12 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 {
                     _descriptionText.setText("You have no items");
                 }                
+            }
+            break;
+
+            case sf::Keyboard::H:
+            {
+                toggleHighlight();
             }
             break;
 
