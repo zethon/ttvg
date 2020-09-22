@@ -607,8 +607,8 @@ void Scene::createItems()
             for (auto& coords : list.items())
             {
                 const auto& c = coords.value();
-                float xpos = 0;
-                float ypos = 0;
+                float xpos = 0.f;
+                float ypos = 0.f;
 
                 if (c["x"].is_number())
                 {
@@ -633,7 +633,7 @@ void Scene::createItems()
                     && c["y"].get<std::string>() == "random")
                 {
                     const auto bounds = _background->getWorldTileRect();
-                    ypos = tt::RandomNumber<float>(0, bounds.height);
+                    ypos = tt::RandomNumber<float>(0.f, bounds.height);
                 }
                 else
                 {
