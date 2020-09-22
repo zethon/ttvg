@@ -6,6 +6,9 @@
 namespace tt
 {
 
+namespace
+{
+
 int Player_health(lua_State* L)
 {
     auto player = checkObject<Player>(L);
@@ -92,6 +95,8 @@ int Player_getPosition(lua_State* L)
     lua_pushnumber(L, position.x);
     lua_pushnumber(L, position.y);
     return 2;
+}
+
 }
 
 const struct luaL_Reg Player::LuaMethods[] =
