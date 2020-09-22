@@ -118,7 +118,7 @@ NumT RandomNumber(NumT min, NumT max)
     static std::random_device rd;
     static std::mt19937 gen(rd());
 
-    std::uniform_int_distribution<> dis(min, max);
+    std::uniform_int_distribution<> dis(static_cast<int>(min), static_cast<int>(max));
     return static_cast<NumT>(dis(gen));
 }
 
