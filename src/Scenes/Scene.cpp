@@ -618,7 +618,7 @@ void Scene::createItems()
                     && c["x"].get<std::string>() == "random")
                 {
                     const auto bounds = _background->getWorldTileRect();
-                    xpos = tt::RandomNumber<float>(0, bounds.width);
+                    xpos = tt::RandomNumber<float>(0.f, bounds.width);
                 }
                 else
                 {
