@@ -194,7 +194,8 @@
     {
         "sax": 
         [    
-            { "x": 5, "y": 5 }
+            { "x": 5, "y": 5 },
+            { "x":"random", "y":"random"}
         ],
 
         "zyklon-b": 
@@ -203,7 +204,6 @@
             { "x": 22, "y": 56 },
             { "x": 19, "y": 92 }
         ],
-
 
         "sevan": 
         [    
@@ -328,7 +328,12 @@
         "bag-of-weed":
         [
             { "x": 234, "y": 82 },
-            { "x": 91, "y": 104 }
+            { "x": 91, "y": 104 },
+            { "x": "random", "y": "random" },
+            { "x": "random", "y": "random" },
+            { "x": "random", "y": "random" },
+            { "x": "random", "y": "random" },
+            { "x": "random", "y": "random" }
         ],
 
         "bag-of-crack":
