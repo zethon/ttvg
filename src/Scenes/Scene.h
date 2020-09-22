@@ -170,6 +170,7 @@ protected:
     virtual void toggleHighlight();
 
     [[maybe_unused]] bool walkPlayer(float speed);
+    void movePlayer(Direction direction, bool running);
     void showHelp();
 
     std::string     _name;

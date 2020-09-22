@@ -556,6 +556,33 @@ bool Scene::walkPlayer(float stepsize)
     return moved;
 }
 
+void Scene::movePlayer(Direction direction, bool running)
+{
+    bool moved = false;
+    const auto stepSize = _playerAvatarInfo.stepsize + (running ? 20.f : 0.f);
+
+    _logger->debug("movePlayer");
+
+    switch (direction)
+    {
+        case Direction::RIGHT:
+        {
+            const auto boundaryRight = _background->getGlobalBounds().width;
+
+            auto x = _player->getGlobalRight();
+            assert(x <= boundaryRight);
+            if (x == boundaryRight) return;
+
+            x += stepSize;
+            if (x > boundaryRight) x = boundaryRight;
+            _logger->debug("moving to {}", x);
+            _player->setGlobalRight(x);
+            moved = true;
+        }
+        break;
+    }
+}
+
 void Scene::showHelp()
 {
     ModalWindow w{ *this };
@@ -733,16 +760,32 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
             case sf::Keyboard::Right:
             {
-                if (_player->state() == AnimatedState::ANIMATED
-                    && _player->direction() == Direction::RIGHT)
+                if (_player->state() != AnimatedState::ANIMATED
+                    || _player->direction() != Direction::RIGHT)
                 {
-                    return { true, {} };
+                    // player->setState("walk-right");
+                    _player->setSource(0, 3);
+                    _player->setState(AnimatedState::ANIMATED);
+                    _player->setDirection(Direction::RIGHT);
                 }
 
-                _player->setSource(0, 3);
-                _player->setState(AnimatedState::ANIMATED);
-                _player->setDirection(Direction::RIGHT);
+                movePlayer(Direction::RIGHT, 
+                    sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) 
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift));
+
                 return { true, {} };
+                
+
+                //if (_player->state() == AnimatedState::ANIMATED
+                //    && _player->direction() == Direction::RIGHT)
+                //{
+                //    return { true, {} };
+                //}
+
+                //_player->setSource(0, 3);
+                //_player->setState(AnimatedState::ANIMATED);
+                //_player->setDirection(Direction::RIGHT);
+                //return { true, {} };
             }
 
             case sf::Keyboard::Up:
