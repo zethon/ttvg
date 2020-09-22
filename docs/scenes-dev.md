@@ -144,7 +144,7 @@ Items can be placed anywhere on a scene/map using the JSON configuration. For ex
 * Create a configuration item for the item (i.e. *resources/items/handcuff.json*). 
 * Add the item to the PoliceStation's configuration
 
-```
+```json
 "items":
 {
     "handcuffs": 
@@ -156,6 +156,21 @@ Items can be placed anywhere on a scene/map using the JSON configuration. For ex
 ```
 
 The item name should be used as the JSON key for the item (in this case "handcuffs"). For each pair of coordinates in the array, and item will be placed at that location. The coordinates are defined in terms of tile coordinates.
+
+Items can be randomly placed on a map by using the `random` keywork in the configuration. For example:
+
+```json
+"items":
+{
+    "handcuffs": 
+    [    
+        { "x": "random", "y": "random" }
+        { "x": 24, "y": 32 }
+    ]
+}
+```
+
+The `random` keyword can be used on both the `x` and `y` coordinates, or just one.
 
 (More documentation needs to be written on the Item functionality. It is probably dsserving of its own doc file, but I will leave that to the author of the functionality.)
 
