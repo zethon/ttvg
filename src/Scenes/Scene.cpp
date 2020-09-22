@@ -607,11 +607,46 @@ void Scene::createItems()
             for (auto& coords : list.items())
             {
                 const auto& c = coords.value();
+                float xpos = 0;
+                float ypos = 0;
+
+                if (c["x"].is_number())
+                {
+                    xpos = c["x"].get<float>();
+                }
+                else if (c["x"].is_string() 
+                    && c["x"].get<std::string>() == "random")
+                {
+                    const auto bounds = _background->getWorldTileRect();
+                    xpos = tt::RandomNumber<float>(0, bounds.width);
+                }
+                else
+                {
+                    _logger->warn("unknown x-coordinate for item '{}', no iteam created", itemId);
+                }
+
+                if (c["y"].is_number())
+                {
+                    ypos = c["y"].get<float>();
+                }
+                else if (c["y"].is_string() 
+                    && c["y"].get<std::string>() == "random")
+                {
+                    const auto bounds = _background->getWorldTileRect();
+                    ypos = tt::RandomNumber<float>(0, bounds.height);
+                }
+                else
+                {
+                    _logger->warn("unknown y-coordinate for item '{}', no item created", itemId);
+                    continue;
+                }
+
                 sf::Vector2f position = 
-                    _background->getGlobalFromTile(sf::Vector2f(c["x"].get<float>(), c["y"].get<float>()));
+                    _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
 
                 Item::Callbacks cb = c.get<Item::Callbacks>();
-                ItemPtr i = _itemFactory.createItem(itemId, position, cb);
+                ItemPtr i = _itemFactory.createItem(itemId, cb);
+                i->setPosition(position);
                 _items.push_back(i);
             }
         }

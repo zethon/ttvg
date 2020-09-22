@@ -112,6 +112,16 @@ auto select_randomly(const T& container)
     return start;
 }
 
+template<typename NumT>
+NumT RandomNumber(NumT min, NumT max)
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+
+    std::uniform_int_distribution<> dis(min, max);
+    return static_cast<NumT>(dis(gen));
+}
+
 template <typename T,
     typename = typename std::enable_if<(std::is_integral<T>::value )>::type>
 inline bool exactly_one_bit_set(T n)

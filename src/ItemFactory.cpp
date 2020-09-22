@@ -78,7 +78,6 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
  *
  */
 ItemPtr ItemFactory::createItem(const std::string&  name,
-                                const sf::Vector2f& position,
                                 const Item::Callbacks& callbacks)
 {
 
@@ -137,7 +136,6 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
                                     sf::Vector2i{ width, height } );
 
     item->setScale(scaleX, scaleY);
-    item->setPosition(position);
 
     if(json.find("name") != json.end())
     {
