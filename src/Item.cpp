@@ -86,21 +86,6 @@ int Item_setObtainable(lua_State* L)
     return 0;
 }
 
-int Item_isActionable(lua_State* L)
-{
-    auto item = tt::checkObject<Item>(L);
-    lua_pushboolean(L, item->isActionable() ? 1 : 0);
-    return 1;
-}
-
-int Item_setActionable(lua_State* L)
-{
-    auto item = tt::checkObject<Item>(L);
-    const auto val = lua_toboolean(L, 2);
-    item->setActionable(val);
-    return 0;
-}
-
 }
 
 const struct luaL_Reg Item::LuaMethods[] =
@@ -112,8 +97,6 @@ const struct luaL_Reg Item::LuaMethods[] =
     {"setDescription", Item_setDescription},
     {"obtainable", Item_isObtainable},
     {"setObtainable", Item_setObtainable},
-    {"actionable", Item_isActionable},
-    {"setActionable", Item_setActionable},
     {nullptr, nullptr}
 };
 
@@ -158,17 +141,6 @@ void Item::setObtainable(bool b)
 bool Item::isObtainable() const
 {
     return _isObtainable;
-}
-
-
-bool Item::isActionable() const
-{
-    return _isActionable;
-}
-
-void Item::setActionable(bool b)
-{
-    _isActionable = b;
 }
  
 }

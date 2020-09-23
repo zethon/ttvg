@@ -152,17 +152,15 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
         item->setObtainable(json["obtainable"]);
     }
 
-    //
-    // Set actionable attributes
-    //
-    if(json.find("actionable") != json.end())
-    {
-        item->setActionable(json["actionable"]);
-    }
-
     item->callbacks = callbacks;
 
     return item;
+}
+
+ItemPtr ItemFactory::createSceneItem(const std::string& id, const nl::json& sceneEl)
+{
+    auto retval = createItem(id);
+    return retval;
 }
 
 } // namespace tt

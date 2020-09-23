@@ -13,6 +13,14 @@ namespace tt
 class Item;
 using ItemPtr = std::shared_ptr<Item>;
 
+enum class ItemFlags : std::uint16_t
+{
+    NONE        = 0x0000,
+    CONSUMABLE  = 0x0001,
+    WEAPON      = 0x0002,
+    INSTRUMENT  = 0x0004,       // can be used for busking
+};
+
 class Item : public AnimatedSprite
 {
 
@@ -46,21 +54,17 @@ public:
     bool    isObtainable() const;
     void    setObtainable(bool b);
 
-    //
-    // Check if an action can be performed on this item.
-    //
-    bool        isActionable() const;
-    void        setActionable(bool b);
-
     Callbacks   callbacks;
 
 private:
 
-    std::string _id;
-    std::string _name;
-    std::string _description;
+    std::string     _id;
+    std::string     _name;
+    std::string     _description;
+
+    std::uint32_t   _flags = 0;
+
     bool        _isObtainable = false;
-    bool        _isActionable = false;
 };
 
 void from_json(const nl::json& j, Item::Callbacks& i);

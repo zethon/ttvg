@@ -75,7 +75,7 @@ void copyDirectory(const fs::path& sourceDir, const fs::path& destinationDir)
     {
         throw std::runtime_error("Destination directory " + destinationDir.string() + " already exists");
     }
-    if (!fs::create_directory(destinationDir))
+    if (!fs::create_directories(destinationDir))
     {
         throw std::runtime_error("Cannot create destination directory " + destinationDir.string());
     }
@@ -87,6 +87,21 @@ void copyDirectory(const fs::path& sourceDir, const fs::path& destinationDir)
         boost::replace_first(relativePathStr, sourceDir.string(), "");
         fs::copy(path, destinationDir / relativePathStr);
     }
+}
+
+void copyFile(const fs::path& srcFile, const fs::path& dstFile)
+{
+    if (!fs::exists(srcFile) || !fs::is_regular_file(srcFile))
+    {
+        throw std::runtime_error("Source file " + srcFile.string() + " does not exist or it not a regular file");
+    }
+
+    if (!fs::create_directories(dstFile.parent_path()))
+    {
+        throw std::runtime_error("Cannot create destination directory " + dstFile.string());
+    }
+
+    fs::copy(srcFile, dstFile);
 }
 
 boost::filesystem::path tempFolder()

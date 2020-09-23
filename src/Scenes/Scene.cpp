@@ -579,76 +579,67 @@ void Scene::createItems()
 {
     const auto& config = _background->json();
 
-    //
-    // Check if items are present in the map .json
-    //
     if (config.find("items") != config.end())
     {
-        // std::cout << "DEBUG found map items." << std::endl;
-
-        //
-        // Iterate over all item names.
-        //
         for (auto& el : config["items"].items())
         {
             const auto& itemId = el.key();
-
-            //
-            // The associated value is a list of objects representing
-            // coordinate pairs.
-            //
-            const auto& list = el.value();
-
-            //
-            // For each coordinate pair, create an item of this type
-            // at the specified location on the map and add it to the 
-            // _items vector.
-            //
-            for (auto& coords : list.items())
+            auto item = _itemFactory.createSceneItem(itemId, el.value());
+            if (_item)
             {
-                const auto& c = coords.value();
-                float xpos = 0.f;
-                float ypos = 0.f;
-
-                if (c["x"].is_number())
-                {
-                    xpos = c["x"].get<float>();
-                }
-                else if (c["x"].is_string() 
-                    && c["x"].get<std::string>() == "random")
-                {
-                    const auto bounds = _background->getWorldTileRect();
-                    xpos = tt::RandomNumber<float>(0.f, bounds.width);
-                }
-                else
-                {
-                    _logger->warn("unknown x-coordinate for item '{}', no iteam created", itemId);
-                }
-
-                if (c["y"].is_number())
-                {
-                    ypos = c["y"].get<float>();
-                }
-                else if (c["y"].is_string() 
-                    && c["y"].get<std::string>() == "random")
-                {
-                    const auto bounds = _background->getWorldTileRect();
-                    ypos = tt::RandomNumber<float>(0.f, bounds.height);
-                }
-                else
-                {
-                    _logger->warn("unknown y-coordinate for item '{}', no item created", itemId);
-                    continue;
-                }
-
-                sf::Vector2f position = 
-                    _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
-
-                Item::Callbacks cb = c.get<Item::Callbacks>();
-                ItemPtr i = _itemFactory.createItem(itemId, cb);
-                i->setPosition(position);
                 _items.push_back(i);
             }
+
+            // //
+            // // For each coordinate pair, create an item of this type
+            // // at the specified location on the map and add it to the 
+            // // _items vector.
+            // //
+            // for (auto& coords : list.items())
+            // {
+            //     const auto& c = coords.value();
+            //     float xpos = 0.f;
+            //     float ypos = 0.f;
+
+            //     if (c["x"].is_number())
+            //     {
+            //         xpos = c["x"].get<float>();
+            //     }
+            //     else if (c["x"].is_string() 
+            //         && c["x"].get<std::string>() == "random")
+            //     {
+            //         const auto bounds = _background->getWorldTileRect();
+            //         xpos = tt::RandomNumber<float>(0.f, bounds.width);
+            //     }
+            //     else
+            //     {
+            //         _logger->warn("unknown x-coordinate for item '{}', no iteam created", itemId);
+            //     }
+
+            //     if (c["y"].is_number())
+            //     {
+            //         ypos = c["y"].get<float>();
+            //     }
+            //     else if (c["y"].is_string() 
+            //         && c["y"].get<std::string>() == "random")
+            //     {
+            //         const auto bounds = _background->getWorldTileRect();
+            //         ypos = tt::RandomNumber<float>(0.f, bounds.height);
+            //     }
+            //     else
+            //     {
+            //         _logger->warn("unknown y-coordinate for item '{}', no item created", itemId);
+            //         continue;
+            //     }
+
+            //     sf::Vector2f position = 
+            //         _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
+
+            //     Item::Callbacks cb = c.get<Item::Callbacks>();
+            //     ItemPtr i = _itemFactory.createItem(itemId, cb);
+            //     i->setPosition(position);
+            //     _items.push_back(i);
+            // }
         }
     }
 }
