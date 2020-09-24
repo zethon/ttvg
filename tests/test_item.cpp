@@ -44,9 +44,20 @@ const auto bagjson = R"x({
     "attributes":   { }
 })x";
 
-const auto bagscenejson = R"x(
-
-)x";
+const auto bagscenejson = R"x({
+"background":{"tiles":{ "x": 16, "y": 16 }},
+"player":{"start": { "x": 35, "y": 35 }},
+"items":
+{
+    "bag": 
+    {
+        "instances":
+        [    
+            { "x": 5, "y": 5 },
+            { "x":"random", "y":"random"}
+        ]
+    }
+}})x";
 
 // --run_test=tt/items/itemFlagsTest
 BOOST_AUTO_TEST_CASE(itemFlagsTest)
@@ -61,6 +72,7 @@ BOOST_AUTO_TEST_CASE(itemFlagsTest)
     // we will use the bag json file for testing
     copyFile((fs::path{itemsrc} / "bag.png"), itemspath / "bag.png");
     writeFile((fs::path{itemspath} / "bag.json").string(), bagjson);
+    writeFile((fs::path{ itemspath } / "bag.json").string(), bagjson);
 
     tt::ResourceManager resmgr{ resfolder };
     tt::ItemFactory itemf{ resmgr };

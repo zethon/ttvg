@@ -575,20 +575,47 @@ Walk around and enjoy Tucson!
     w.exec();
 }
 
+//struct coord_visitor
+//{
+//    float operator()(float x) { return x; }
+//    float operator()(const std::string&)
+//    {
+//
+//    }
+//};
+
 void Scene::createItems()
 {
     const auto& config = _background->json();
 
-    if (config.find("items") != config.end())
+    if (config.contains("items"))
     {
         for (auto& el : config["items"].items())
         {
-            const auto& itemId = el.key();
-            auto item = _itemFactory.createSceneItem(itemId, el.value());
-            if (_item)
+            const auto& data = el.value();
+            if (!data.contains("instances")
+                || !data["instances"].is_array())
             {
-                _items.push_back(i);
+                continue;
             }
+
+            // default info for the item
+            ItemInfo info = data.get<ItemInfo>();
+            
+            for (const auto& instance : data["instances"])
+            {
+                //auto customInfo
+
+            }
+            
+            //const auto& itemId = el.key();
+            //auto item = _itemFactory.createItem(itemId);
+            //if (item)
+            //{
+            //    *item = 
+            //    float x = coord_
+            //    _items.push_back(item);
+            //}
 
             // //
             // // For each coordinate pair, create an item of this type

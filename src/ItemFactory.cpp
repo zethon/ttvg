@@ -78,7 +78,7 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
  *
  */
 ItemPtr ItemFactory::createItem(const std::string&  name,
-                                const Item::Callbacks& callbacks)
+                                const ItemCallbacks& callbacks)
 {
 
     std::string jsonFile =
@@ -157,9 +157,14 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
     return item;
 }
 
-ItemPtr ItemFactory::createSceneItem(const std::string& id, const nl::json& sceneEl)
+ItemPtr ItemFactory::createSceneItems(const std::string& id, const nl::json& el)
 {
     auto retval = createItem(id);
+    if (!el.contains("instances"))
+    {
+        return nullptr;
+    }
+
     return retval;
 }
 

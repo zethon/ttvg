@@ -46,6 +46,44 @@ public:
     }
 };
 
+class GameScreenStub {};
+
+struct TestHarness
+{
+    tt::ResourceManager _resources;
+    tt::NullWindow  _window;
+    tt::PlayerPtr   _player;
+    lua_State* _lua;
+    std::shared_ptr<ItemFactory> _itemFactory;
+
+    TestHarness(const std::string& resfolder)
+        : _resources{ resfolder }
+    {
+        _lua = luaL_newstate();
+
+        sf::Texture texture;
+        texture.create(100, 100);
+        _player = std::make_shared<tt::Player>(texture, sf::Vector2i{ 10,10 });
+
+        _itemFactory = std::make_shared<ItemFactory>(_resources);
+
+        GameScreenStub stub;
+        tt::initLua(_lua, stub, static_cast<void*>(_itemFactory.get()));
+    }
+
+    tt::SceneSetup setup()
+    {
+        return tt::SceneSetup 
+        {
+            _resources,
+            _window,
+            _player,
+            _lua,
+            _itemFactory 
+        };
+    }
+};
+
 void writeFile(const std::string& file, const std::string& data)
 {
     boost::filesystem::path filepath{ file };

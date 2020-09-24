@@ -8,7 +8,7 @@
 namespace tt
 {
 
-void from_json(const nl::json& j, Item::Callbacks& i)
+void from_json(const nl::json& j, ItemCallbacks& i)
 {
     if (j.contains("onPickup")) 
     {
@@ -29,6 +29,35 @@ void from_json(const nl::json& j, Item::Callbacks& i)
     {
         j.at("onConsume").get_to(i.onConsume);
     }
+}
+
+void from_json(const nl::json& j, ItemInfo& info)
+{
+    if (j.contains("x"))
+    {
+        if (j.at("x").is_number())
+        {
+            info.x = j["x"].get<float>();
+        }
+        else if (j.at("x").is_string())
+        {
+            info.x = std::make_tuple(Coordinates::X, j["x"].get<std::string>());
+        }
+    }
+
+    if (j.contains("y"))
+    {
+        if (j.at("y").is_number())
+        {
+            info.y = j["y"].get<float>();
+        }
+        else if (j.at("y").is_string())
+        {
+            //info.x = j["y"].get<std::string>();
+        }
+    }
+
+    info.callbacks = j.get<ItemCallbacks>();
 }
 
 namespace

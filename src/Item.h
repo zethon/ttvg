@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <variant>
+
 #include <SFML/Graphics.hpp>
 #include <nlohmann/json.hpp>
 
@@ -13,12 +15,29 @@ namespace tt
 class Item;
 using ItemPtr = std::shared_ptr<Item>;
 
+struct ItemCallbacks
+{
+    std::string onPickup;
+    std::string onDrop;
+    std::string onUse;
+    std::string onConsume;
+};
+
 enum class ItemFlags : std::uint16_t
 {
-    NONE        = 0x0000,
-    CONSUMABLE  = 0x0001,
-    WEAPON      = 0x0002,
-    INSTRUMENT  = 0x0004,       // can be used for busking
+    NONE = 0x0000,
+    CONSUMABLE = 0x0001,
+    WEAPON = 0x0002,
+    INSTRUMENT = 0x0004,       // can be used for busking
+};
+
+enum Coordinates { X, Y };
+using ItemCoordinate = std::variant<float, std::tuple<Coordinates, std::string>>;
+struct ItemInfo
+{
+    ItemCoordinate  x;
+    ItemCoordinate  y;
+    ItemCallbacks   callbacks;
 };
 
 class Item : public AnimatedSprite
@@ -27,14 +46,6 @@ class Item : public AnimatedSprite
 public:
     static constexpr auto CLASS_NAME = "Item";
     static const struct luaL_Reg LuaMethods[];
-
-    struct Callbacks
-    {
-        std::string onPickup;
-        std::string onDrop;
-        std::string onUse;
-        std::string onConsume;
-    };
 
     Item(       const std::string&  id,
                 const sf::Texture&  texture, 
@@ -54,7 +65,7 @@ public:
     bool    isObtainable() const;
     void    setObtainable(bool b);
 
-    Callbacks   callbacks;
+    ItemCallbacks   callbacks;
 
 private:
 
@@ -67,6 +78,7 @@ private:
     bool        _isObtainable = false;
 };
 
-void from_json(const nl::json& j, Item::Callbacks& i);
+void from_json(const nl::json& j, ItemCallbacks& i);
+void from_json(const nl::json& j, ItemInfo& i);
 
 } // namespace tt

@@ -21,14 +21,14 @@ public:
     ItemFactory(ResourceManager& resMgr);
 
     ItemPtr createItem(const std::string&  name,
-                const Item::Callbacks& callbacks);
+                const ItemCallbacks& callbacks);
 
     ItemPtr createItem(const std::string& name)
     {
-        return createItem(name, Item::Callbacks{});
+        return createItem(name, ItemCallbacks{});
     }
 
-    ItemPtr createSceneItem(const std::string& id, const nl::json& sceneEl);
+    ItemPtr createSceneItems(const std::string& id, const nl::json& sceneEl);
 };
 
 
