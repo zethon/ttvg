@@ -136,7 +136,7 @@ Transitions allow users to navigate from one scene to another by pressing the SP
 * `scene` - The name of the scene to be entered.
 * `enabled` - **Currently not supported**
 
-## Inventory
+## Items
 
 Items can be placed anywhere on a scene/map using the JSON configuration. For example, say we want to add a pair of handcuffs inside our police station that the player can pickup. To add the "handcuffs" we:
 
@@ -147,32 +147,62 @@ Items can be placed anywhere on a scene/map using the JSON configuration. For ex
 ```json
 "items":
 {
-    "handcuffs": 
-    [    
-        { "x": 5, "y": 5 }
-        { "x": 24, "y": 32 }
-    ]
+    "handcuffs":
+    {
+        "instances":
+        [    
+            { "x": 5, "y": 5 }
+            { "x": 24, "y": 32 }
+        ]
+    }
 }
 ```
 
 The item name should be used as the JSON key for the item (in this case "handcuffs"). For each pair of coordinates in the array, and item will be placed at that location. The coordinates are defined in terms of tile coordinates.
 
-Items can be randomly placed on a map by using the `random` keywork in the configuration. For example:
+### Randomizing Item Location
+
+Items can be randomly placed on a map by using the `random` keyword in the configuration. For example:
 
 ```json
 "items":
 {
     "handcuffs": 
-    [    
-        { "x": "random", "y": "random" }
-        { "x": 24, "y": 32 }
-    ]
+    {
+        "instances":
+        [    
+            { "x": "random", "y": "random" }
+            { "x": 24, "y": 32 }
+        ]
+    }
 }
 ```
 
 The `random` keyword can be used on both the `x` and `y` coordinates, or just one.
 
-(More documentation needs to be written on the Item functionality. It is probably dsserving of its own doc file, but I will leave that to the author of the functionality.)
+### Item Defaults
+
+Items can have default settings that apply to each instance of the item in the scene. The default settings can also be overridden by a specifc instance. For example:
+
+```json
+"items":
+{
+    "handcuffs": 
+    {
+        "onPickup": "handcuff_pickup",
+        "instances":
+        [    
+            { "x": "random", "y": "random" },
+            { "x": "random", "y": "random" },
+            { "x": "random", "y": "random" },
+            { "x": 24, "y": 32, "onPickup": "special_handcuffs" }
+        ]
+    }
+}
+```
+
+In the above example, each instance of `handcuffs` will call `handcuff_pickup` in the Lua system when the item is picked up by the player, except for the last instance which will instead call `special_handcuffs`. A specific instance can also override the callback to a null action by doing `"onPickup": ""`.
+
 
 ## Subclassing `Scene`
 
