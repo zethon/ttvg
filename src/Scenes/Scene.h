@@ -157,7 +157,7 @@ public:
 
     void addItem(ItemPtr item);
     void removeItem(ItemPtr item);
-    const std::vector<ItemPtr> items() const { return _items; }
+    const std::vector<ItemPtr>& items() const { return _items; }
 
     BackgroundSharedPtr background() const { return _background; }
     PlayerPtr player() const { return _player; }
