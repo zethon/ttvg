@@ -15,12 +15,22 @@ namespace tt
 class Item;
 using ItemPtr = std::shared_ptr<Item>;
 
+// Item callbacks can be null or non-null and empty. 
+// If the callback is null, then it was not defined.
+// If it is empty, then this denotes a configuration
+// like: `"onPickup": ""` which might be used to 
+// override a default action with an empty action
 struct ItemCallbacks
 {
-    std::string onPickup;
-    std::string onDrop;
-    std::string onUse;
-    std::string onConsume;
+    // used when the item is picked up from the map
+    std::optional<std::string> onPickup;
+
+    // // used when a weapon is yielded or an instrument
+    // // is played
+    // std::optional<std::string> onUse;
+
+    // // used when somethin is eaten, smoked, etc
+    // std::optional<std::string> onConsume;
 };
 
 enum class ItemFlags : std::uint16_t
@@ -31,13 +41,13 @@ enum class ItemFlags : std::uint16_t
     INSTRUMENT = 0x0004,       // can be used for busking
 };
 
-enum Coordinates { X, Y };
-using ItemCoordinate = std::variant<float, std::tuple<Coordinates, std::string>>;
 struct ItemInfo
 {
-    ItemCoordinate  x;
-    ItemCoordinate  y;
-    ItemCallbacks   callbacks;
+    // a null x,y means that the coordinate was not specified, 
+    // and a value of -1 means it should be picked randomly
+    std::optional<float>    x;
+    std::optional<float>    y;
+    ItemCallbacks           callbacks;
 };
 
 class Item : public AnimatedSprite

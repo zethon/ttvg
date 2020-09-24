@@ -57,9 +57,19 @@ public:
         return tiles::getTileFromGlobal(global, tilesize(), getScale());
     }
 
+    tt::Tile getTileFromGlobal(float x, float y)
+    {
+        return this->getTileFromGlobal(sf::Vector2f{x,y});
+    }
+
     sf::Vector2f getGlobalFromTile(const tt::Tile& tile) const
     {
         return tiles::getGlobalFromTile(tile, tilesize(), getScale());
+    }
+
+    tt::Tile getGlobalFromTile(float x, float y)
+    {
+        return this->getGlobalFromTile(sf::Vector2f{x,y});
     }
 
     sf::Vector2f getGlobalCenterFromTile(const sf::Vector2f& tile) const

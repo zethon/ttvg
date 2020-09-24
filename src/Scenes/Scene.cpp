@@ -236,6 +236,7 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
       _logger { log::initializeLogger("Scene") }
 {
     _logger->info("creating scene '{}'", _name);
+
     if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _name)); 
             jsonopt.has_value())
     {
@@ -246,6 +247,11 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
         }
 
         _callbackNames = json.get<CallbackInfo>();
+        _logger->debug("loaded json file for scene '{}'", _name);
+    }
+    else
+    {
+        _logger->warn("no json file loaded for scene '{}'", _name);
     }
 
     // the scene must be registered in the Lua registry even
@@ -575,23 +581,52 @@ Walk around and enjoy Tucson!
     w.exec();
 }
 
-//struct coord_visitor
-//{
-//    float operator()(float x) { return x; }
-//    float operator()(const std::string&)
-//    {
-//
-//    }
-//};
+void Scene::setItemInstance(Item& item, const ItemInfo& groupInfo, const ItemInfo& instanceInfo)
+{
+    auto x = instanceInfo.x.has_value() ? instanceInfo.x : groupInfo.x;
+    if (!x.has_value())
+    {
+        throw std::runtime_error(fmt::format(
+            "scene '{}' with item '{}' has an invalid 'x' coordinate", _name, item.getID()));
+    }
+
+    auto y = instanceInfo.y.has_value() ? instanceInfo.y : groupInfo.y;
+    if (!y.has_value())
+    {
+        throw std::runtime_error(fmt::format(
+            "scene '{}' with item '{}' has an invalid 'y' coordinate", _name, item.getID()));
+    }
+
+    if (*x == -1)
+    {
+        const auto bounds = _background->getWorldTileRect();
+        *x = tt::RandomNumber<float>(0.f, bounds.width);
+    }
+
+    if (*y == -1)
+    {
+        const auto bounds = _background->getWorldTileRect();
+        *y = tt::RandomNumber<float>(0.f, bounds.height);
+    }
+
+    const auto position = _background->getGlobalFromTile(sf::Vector2f(*x, *y));
+    item.setPosition(position);
+
+    item.callbacks.onPickup = instanceInfo.callbacks.onPickup.has_value() ?
+        instanceInfo.callbacks.onPickup : groupInfo.callbacks.onPickup;
+}
 
 void Scene::createItems()
 {
+    _logger->debug("scene {} loading items", _name);
+
     const auto& config = _background->json();
 
     if (config.contains("items"))
     {
         for (auto& el : config["items"].items())
         {
+            const auto& itemId = el.key();
             const auto& data = el.value();
             if (!data.contains("instances")
                 || !data["instances"].is_array())
@@ -600,84 +635,32 @@ void Scene::createItems()
             }
 
             // default info for the item
-            ItemInfo info = data.get<ItemInfo>();
+            ItemInfo groupinfo = data.get<ItemInfo>();
             
             for (const auto& instance : data["instances"])
             {
-                //auto customInfo
-
+                auto item = _itemFactory.createItem(itemId);
+                if (item)
+                {
+                    ItemInfo thisinfo = instance.get<ItemInfo>();
+                    setItemInstance(*item, groupinfo, thisinfo);
+                    _items.push_back(item);
+                }
             }
-            
-            //const auto& itemId = el.key();
-            //auto item = _itemFactory.createItem(itemId);
-            //if (item)
-            //{
-            //    *item = 
-            //    float x = coord_
-            //    _items.push_back(item);
-            //}
-
-            // //
-            // // For each coordinate pair, create an item of this type
-            // // at the specified location on the map and add it to the 
-            // // _items vector.
-            // //
-            // for (auto& coords : list.items())
-            // {
-            //     const auto& c = coords.value();
-            //     float xpos = 0.f;
-            //     float ypos = 0.f;
-
-            //     if (c["x"].is_number())
-            //     {
-            //         xpos = c["x"].get<float>();
-            //     }
-            //     else if (c["x"].is_string() 
-            //         && c["x"].get<std::string>() == "random")
-            //     {
-            //         const auto bounds = _background->getWorldTileRect();
-            //         xpos = tt::RandomNumber<float>(0.f, bounds.width);
-            //     }
-            //     else
-            //     {
-            //         _logger->warn("unknown x-coordinate for item '{}', no iteam created", itemId);
-            //     }
-
-            //     if (c["y"].is_number())
-            //     {
-            //         ypos = c["y"].get<float>();
-            //     }
-            //     else if (c["y"].is_string() 
-            //         && c["y"].get<std::string>() == "random")
-            //     {
-            //         const auto bounds = _background->getWorldTileRect();
-            //         ypos = tt::RandomNumber<float>(0.f, bounds.height);
-            //     }
-            //     else
-            //     {
-            //         _logger->warn("unknown y-coordinate for item '{}', no item created", itemId);
-            //         continue;
-            //     }
-
-            //     sf::Vector2f position = 
-            //         _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
-
-            //     Item::Callbacks cb = c.get<Item::Callbacks>();
-            //     ItemPtr i = _itemFactory.createItem(itemId, cb);
-            //     i->setPosition(position);
-            //     _items.push_back(i);
-            // }
         }
     }
+
+    _logger->debug("scene '{}' loaded {} items", _name, _items.size());
 }
 
 void Scene::pickupItem(Items::iterator itemIt)
 {
     auto item = *itemIt;
-    if (item->callbacks.onPickup.size() > 0)
+    if (item->callbacks.onPickup.has_value() 
+        && item->callbacks.onPickup->size() > 0)
     {
         tt::CallLuaFunction(_luaState, 
-            item->callbacks.onPickup, 
+            *(item->callbacks.onPickup), 
             _name, 
             { 
                 { LUA_REGISTRYINDEX, _luaIdx },

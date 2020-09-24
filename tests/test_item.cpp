@@ -24,6 +24,9 @@ BOOST_AUTO_TEST_SUITE(items)
 
 class GameScreenStub {};
 
+// TODO: there were problems taking this out of test_lua.cpp and putting
+// it into a shared header. Problems I don't feel like dealing with right
+// now at 5:30am, so I'm going to dupliacte this helper class here
 struct TestHarness
 {
     tt::ResourceManager _resources;
@@ -93,31 +96,53 @@ const auto bagscenejson = R"x({
 {
     "bag": 
     {
+        "onPickup": "bag_onPickup",
         "instances":
         [    
             { "x": 5, "y": 5 },
-            { "x":"random", "y":"random"}
+            { "x":"random", "y":"random", "onPickup": "special_bagPickup" },
+            { "x":"random", "y":"random", "onPickup": "" }
         ]
     }
 }})x";
 
-// --run_test=tt/items/itemFlagsTest
-BOOST_AUTO_TEST_CASE(itemFlagsTest)
+// --run_test=tt/items/itemRandomPlacementTest
+BOOST_AUTO_TEST_CASE(itemRandomPlacementTest)
 {
     const auto path{ tt::tempFolder() };
     const auto resfolder{ path / "resources" };
     const auto itemspath{ resfolder / "items" };
+    const auto mappath{ resfolder / "maps" };
 
     // copy the source's items folder to the test folder
     const auto itemsrc{ fmt::format("{}/resources/items", TT_SRC_DIRECTORY_) };
 
     // we will use the bag json file for testing
     copyFile((fs::path{itemsrc} / "bag.png"), itemspath / "bag.png");
-    writeFile((fs::path{itemspath} / "bag.json").string(), bagjson);
-    writeFile((fs::path{ itemspath } / "bag.json").string(), bagjson);
+    writeFile((itemspath / "bag.json").string(), bagjson);
+    writeFile((mappath / "scene1.json").string(), bagscenejson);
 
-    TestHarness harness{ (path / "resources").string() };
+    TestHarness harness{ resfolder.string() };
+    auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
+    scene->init();
 
+    BOOST_TEST(scene->items().size() == 3);
+
+    const auto expxy = scene->background()->getGlobalFromTile(5.f, 5.f);
+    
+    const auto& firstItem = scene->items().at(0);
+    BOOST_TEST(firstItem->getPosition().x == expxy.x, tools::tolerance(0.001));
+    BOOST_TEST(firstItem->getPosition().y == expxy.y, tools::tolerance(0.001));
+    BOOST_TEST(firstItem->callbacks.onPickup.has_value());
+    BOOST_TEST(*(firstItem->callbacks.onPickup) == "bag_onPickup");
+
+    const auto& seconditem = scene->items().at(1);
+    BOOST_TEST(seconditem->callbacks.onPickup.has_value());
+    BOOST_TEST(*(seconditem->callbacks.onPickup) == "special_bagPickup");
+
+    const auto& thirditem = scene->items().at(2);
+    BOOST_TEST(thirditem->callbacks.onPickup.has_value());
+    BOOST_TEST(thirditem->callbacks.onPickup->empty());
 }
 
 BOOST_AUTO_TEST_SUITE_END() // items

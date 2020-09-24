@@ -12,48 +12,58 @@ void from_json(const nl::json& j, ItemCallbacks& i)
 {
     if (j.contains("onPickup")) 
     {
-        j.at("onPickup").get_to(i.onPickup);
+        i.onPickup = j["onPickup"].get<std::string>();
     }
 
-    if (j.contains("onDrop")) 
-    {
-        j.at("onDrop").get_to(i.onDrop);
-    }
+    // if (j.contains("onDrop")) 
+    // {
+    //     j.at("onDrop").get_to(i.onDrop);
+    // }
 
-    if (j.contains("onUse")) 
-    {
-        j.at("onUse").get_to(i.onUse);
-    }
+    // if (j.contains("onUse")) 
+    // {
+    //     j.at("onUse").get_to(i.onUse);
+    // }
 
-    if (j.contains("onConsume")) 
-    {
-        j.at("onConsume").get_to(i.onConsume);
-    }
+    // if (j.contains("onConsume")) 
+    // {
+    //     j.at("onConsume").get_to(i.onConsume);
+    // }
 }
 
 void from_json(const nl::json& j, ItemInfo& info)
 {
     if (j.contains("x"))
     {
-        if (j.at("x").is_number())
+        if (j["x"].is_number())
         {
             info.x = j["x"].get<float>();
         }
-        else if (j.at("x").is_string())
+        else if (j["x"].is_string()
+            && j["x"].get<std::string>() == "random")
         {
-            info.x = std::make_tuple(Coordinates::X, j["x"].get<std::string>());
+            info.x = -1.f;
+        }
+        else
+        {
+            throw std::runtime_error("invalid item coordinate");
         }
     }
 
     if (j.contains("y"))
     {
-        if (j.at("y").is_number())
+        if (j["y"].is_number())
         {
             info.y = j["y"].get<float>();
         }
-        else if (j.at("y").is_string())
+        else if (j["y"].is_string()
+            && j["y"].get<std::string>() == "random")
         {
-            //info.x = j["y"].get<std::string>();
+            info.y = -1.f;
+        }
+        else
+        {
+            throw std::runtime_error("invalid item coordinate");
         }
     }
 

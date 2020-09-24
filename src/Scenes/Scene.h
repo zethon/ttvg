@@ -206,6 +206,9 @@ private:
 
     // allow subclasses to do custom tile updating
     virtual void customUpdateCurrentTile(const TileInfo&) { }
+
+    // setup an item's info based on the map and item info
+    void setItemInstance(Item& item, const ItemInfo& groupInfo, const ItemInfo& instanceInfo);
 };
 
 } // namespace tt
