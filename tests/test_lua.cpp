@@ -341,10 +341,13 @@ const auto luaItemSceneTestJSON = R"lua(
     },
     "items":
     {
-        "sax": 
-        [    
-            { "x": 5, "y": 5 }
-        ]
+        "sax":
+        {
+            "instances":
+            [    
+                { "x": 5, "y": 5 }
+            ]
+        }
     }
 }
 )lua";
@@ -396,10 +399,13 @@ BOOST_AUTO_TEST_CASE(itemPickUpTest)
     "background": { "tiles": { "x": 16, "y": 16 } },
     "items":
     {
-        "sax": 
-        [    
-            { "x": 5, "y": 5, "onPickUp": "sax_onPickup" }
-        ]
+        "sax":
+        {
+            "instances":
+            [    
+                { "x": 5, "y": 5, "onPickUp": "sax_onPickup" }
+            ]
+        }
     }
 }
 )lua");
