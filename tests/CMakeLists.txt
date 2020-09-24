@@ -63,9 +63,8 @@ set(PROJECT_FILES
 create_test("misc" "${PROJECT_FILES}")
 create_test("background" "${PROJECT_FILES}")
 create_test("vehicle" "${PROJECT_FILES}")
-create_test("item" "${PROJECT_FILES}")
 
-set(LUA_FILES
+set(HARNESS_FILES
     ${PROJECT_FILES}
 
     ../src/GameScreen.h
@@ -105,4 +104,5 @@ set(LUA_FILES
     ../src/Scenes/Scene.cpp
 )
 
-create_test("lua" "${LUA_FILES}")
+create_test("lua" "${HARNESS_FILES}")
+create_test("item" "${HARNESS_FILES}")
