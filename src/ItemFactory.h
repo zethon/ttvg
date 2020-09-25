@@ -27,8 +27,6 @@ public:
     {
         return createItem(name, ItemCallbacks{});
     }
-
-    ItemPtr createSceneItems(const std::string& id, const nl::json& sceneEl);
 };
 
 

@@ -157,15 +157,4 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
     return item;
 }
 
-ItemPtr ItemFactory::createSceneItems(const std::string& id, const nl::json& el)
-{
-    auto retval = createItem(id);
-    if (!el.contains("instances"))
-    {
-        return nullptr;
-    }
-
-    return retval;
-}
-
 } // namespace tt
