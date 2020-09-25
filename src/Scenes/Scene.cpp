@@ -364,13 +364,18 @@ PollResult Scene::poll(const sf::Event& e)
     return {};
 }
 
-ScreenAction Scene::timestep()
+ScreenAction Scene::update(sf::Time elapsed)
 {
     if (_player->health() <= 0)
     {
         //_bgsong->stop();
         return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
     }
+
+    std::stringstream ss1;
+    ss1 << getPlayerTile();
+    auto posText = fmt::format("P({})", ss1.str());
+    _debugWindow.setText(posText);
 
     return Screen::timestep();
 }
@@ -479,11 +484,6 @@ void Scene::updateCurrentTile(const TileInfo& info)
             MakeLuaArg(_currentTile.tile.x),
             MakeLuaArg(_currentTile.tile.y)
         });
-
-    std::stringstream ss1;
-    ss1 << getPlayerTile();
-    auto posText = fmt::format("P({})", ss1.str());
-    _debugWindow.setText(posText);
 }
 
 sf::Vector2f Scene::animeCallback()

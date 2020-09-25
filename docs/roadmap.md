@@ -24,18 +24,6 @@ The system to play audio needs to be abstracted away from the SFML implementatio
 
 Like the Windows installer, Mac installers should be automatically deployed with pushes to master.
 
-<hr/>
-
-## Item System Enhancements
-
-The Item sysmte should be enhanced to support the following:
-
-* [Default Item Callbacks](https://github.com/zethon/ttvg/issues/81)
-* [Random Item Placement](https://github.com/zethon/ttvg/issues/80)
-* [Respawning Items] (https://github.com/zethon/ttvg/issues/79)
-
-This work is being tracked here: [https://github.com/zethon/ttvg/projects/4](https://github.com/zethon/ttvg/projects/4)
-
 <hr>
 
 ## Dynamic Bounds Checking

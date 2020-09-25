@@ -144,8 +144,9 @@ public:
     virtual void exit();
 
     PollResult poll(const sf::Event& e) override;
-    ScreenAction timestep() override;
+    // ScreenAction timestep() override;
     void draw() override;
+    ScreenAction update(sf::Time elapsed);
 
     sf::Vector2f getPlayerTile() const;
     void setPlayerTile(const Tile& tile);

@@ -185,6 +185,7 @@ private:
     PlayerPtr                       _player;
     lua_State*                      _luaState;
     std::shared_ptr<ItemFactory>    _itemFactory;
+    sf::Clock                       _gameClock;
 };
 
 } // namespace tt
