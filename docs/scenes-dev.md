@@ -26,7 +26,7 @@ Assume we wish to add a new scene that is the interior of a police station that 
 * Create a PNG background image for the scene (i.e. *resources/maps/PoliceStation.png*)
 * Add the scene to `GameScreen`'s constructor like so:
 
-```
+```c++
 _scenes.emplace("Tucson", std::make_shared<Tucson>(resmgr, target, _player));
 _scenes.emplace("EuclidHouse", std::make_shared<Scene>("EuclidHouse", resmgr, target, _player));
 _scenes.emplace("PoliceStation", std::make_shared<Scene>("PoliceStation", resmgr, target, _player)); // new scene!
@@ -54,7 +54,7 @@ The background for each scene can have a custom scaling. It is also with the bac
 
 Example:
 
-```
+```json
 "background":
 {
     "position": { "x": 0, "y": 0 },
@@ -77,7 +77,7 @@ The same player object is shared among all scenes, however each scene can custom
 
 A consequence of each scene having its own settings for the player means that **every scene must define these settings**, else settings might propagate across scenes which might result in things looking weird.
 
-```
+```json
 "player":
 {
     "start": { "x": 1660, "y": 2855 },
@@ -98,7 +98,7 @@ A consequence of each scene having its own settings for the player means that **
 
 The zones define rectangles that when entered can trigger certain actions. For example, when a player enters a zone the "name" and "description" are shown in the HUD.
 
-```
+```json
 { 
     "name" : "Iron Horse Park",
     "rects" :
@@ -117,7 +117,7 @@ The zones define rectangles that when entered can trigger certain actions. For e
 
 Transitions allow users to navigate from one scene to another by pressing the SPACE bar. Transitions are defined as part of a zone. 
 
-```
+```json
 { 
     "name" : "Home",
     "description": "Press SPACE to enter your filthy apartment",
