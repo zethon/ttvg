@@ -78,7 +78,7 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
  *
  */
 ItemPtr ItemFactory::createItem(const std::string&  name,
-                                const Item::Callbacks& callbacks)
+                                const ItemCallbacks& callbacks)
 {
 
     std::string jsonFile =
@@ -152,17 +152,20 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
         item->setObtainable(json["obtainable"]);
     }
 
-    //
-    // Set actionable attributes
-    //
-    if(json.find("actionable") != json.end())
-    {
-        item->setActionable(json["actionable"]);
-    }
-
     item->callbacks = callbacks;
 
     return item;
+}
+
+ItemPtr ItemFactory::createSceneItems(const std::string& id, const nl::json& el)
+{
+    auto retval = createItem(id);
+    if (!el.contains("instances"))
+    {
+        return nullptr;
+    }
+
+    return retval;
 }
 
 } // namespace tt

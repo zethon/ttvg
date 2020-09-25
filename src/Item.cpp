@@ -8,27 +8,66 @@
 namespace tt
 {
 
-void from_json(const nl::json& j, Item::Callbacks& i)
+void from_json(const nl::json& j, ItemCallbacks& i)
 {
     if (j.contains("onPickup")) 
     {
-        j.at("onPickup").get_to(i.onPickup);
+        i.onPickup = j["onPickup"].get<std::string>();
     }
 
-    if (j.contains("onDrop")) 
+    // if (j.contains("onDrop")) 
+    // {
+    //     j.at("onDrop").get_to(i.onDrop);
+    // }
+
+    // if (j.contains("onUse")) 
+    // {
+    //     j.at("onUse").get_to(i.onUse);
+    // }
+
+    // if (j.contains("onConsume")) 
+    // {
+    //     j.at("onConsume").get_to(i.onConsume);
+    // }
+}
+
+void from_json(const nl::json& j, ItemInfo& info)
+{
+    if (j.contains("x"))
     {
-        j.at("onDrop").get_to(i.onDrop);
+        if (j["x"].is_number())
+        {
+            info.x = j["x"].get<float>();
+        }
+        else if (j["x"].is_string()
+            && j["x"].get<std::string>() == "random")
+        {
+            info.x = -1.f;
+        }
+        else
+        {
+            throw std::runtime_error("invalid item coordinate");
+        }
     }
 
-    if (j.contains("onUse")) 
+    if (j.contains("y"))
     {
-        j.at("onUse").get_to(i.onUse);
+        if (j["y"].is_number())
+        {
+            info.y = j["y"].get<float>();
+        }
+        else if (j["y"].is_string()
+            && j["y"].get<std::string>() == "random")
+        {
+            info.y = -1.f;
+        }
+        else
+        {
+            throw std::runtime_error("invalid item coordinate");
+        }
     }
 
-    if (j.contains("onConsume")) 
-    {
-        j.at("onConsume").get_to(i.onConsume);
-    }
+    info.callbacks = j.get<ItemCallbacks>();
 }
 
 namespace
@@ -86,21 +125,6 @@ int Item_setObtainable(lua_State* L)
     return 0;
 }
 
-int Item_isActionable(lua_State* L)
-{
-    auto item = tt::checkObject<Item>(L);
-    lua_pushboolean(L, item->isActionable() ? 1 : 0);
-    return 1;
-}
-
-int Item_setActionable(lua_State* L)
-{
-    auto item = tt::checkObject<Item>(L);
-    const auto val = lua_toboolean(L, 2);
-    item->setActionable(val);
-    return 0;
-}
-
 }
 
 const struct luaL_Reg Item::LuaMethods[] =
@@ -112,8 +136,6 @@ const struct luaL_Reg Item::LuaMethods[] =
     {"setDescription", Item_setDescription},
     {"obtainable", Item_isObtainable},
     {"setObtainable", Item_setObtainable},
-    {"actionable", Item_isActionable},
-    {"setActionable", Item_setActionable},
     {nullptr, nullptr}
 };
 
@@ -158,17 +180,6 @@ void Item::setObtainable(bool b)
 bool Item::isObtainable() const
 {
     return _isObtainable;
-}
-
-
-bool Item::isActionable() const
-{
-    return _isActionable;
-}
-
-void Item::setActionable(bool b)
-{
-    _isActionable = b;
 }
  
 }

@@ -325,10 +325,6 @@ Parameter `itemid` is the item's unique key as determined by the filename. This 
 
 <hr/>
 
-### `[bool] Item.actionable()`
-
-<hr/>
-
 ### `[string] Item.description()`
 
 Returns the description of the item.
@@ -348,10 +344,6 @@ Returns the name of the item.
 <hr/>
 
 ### `[bool] Item.obtainable()`
-
-<hr/>
-
-### `[void] Item.setActionable()`
 
 <hr/>
 
