@@ -127,7 +127,7 @@ Press ESC to skip tutorial. )");
 ScreenAction Tucson::update(sf::Time elapsed)
 {
     timestepTraffic(elapsed);
-    return Scene::timestep();
+    return Scene::update(elapsed);
 }
 
 void Tucson::timestepTraffic(sf::Time elapsed)

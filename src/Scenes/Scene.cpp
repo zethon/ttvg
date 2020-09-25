@@ -286,7 +286,9 @@ void Scene::init()
 {
     _logger->debug("initializing scene '{}'", _name);
     createItems();
-    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
+
+    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, 
+        { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::enter()
@@ -330,14 +332,16 @@ void Scene::enter()
             _hud.setBalance(cash);
         });
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
+    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, 
+        { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::exit()
 {
     _logger->debug("exiting scene '{}'", _name);
     assert(_player);
-    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
+    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, 
+        { { LUA_REGISTRYINDEX, _luaIdx } });
 
     _lastPlayerPos = _player->getPosition();
     removeUpdateable(_player);
@@ -374,7 +378,7 @@ ScreenAction Scene::update(sf::Time elapsed)
 
     std::stringstream ss1;
     ss1 << getPlayerTile();
-    auto posText = fmt::format("P({})", ss1.str());
+    auto posText = fmt::format("P({}) T({})", ss1.str(), elapsed.asSeconds());
     _debugWindow.setText(posText);
 
     return Screen::timestep();
@@ -609,11 +613,16 @@ void Scene::setItemInstance(Item& item, const ItemInfo& groupInfo, const ItemInf
         *y = tt::RandomNumber<float>(0.f, bounds.height);
     }
 
+    auto respawn = instanceInfo.respawn.has_value() ?
+        instanceInfo.respawn : groupInfo.respawn;
+
     const auto position = _background->getGlobalFromTile(sf::Vector2f(*x, *y));
     item.setPosition(position);
 
     item.callbacks.onPickup = instanceInfo.callbacks.onPickup.has_value() ?
         instanceInfo.callbacks.onPickup : groupInfo.callbacks.onPickup;
+
+    item.setInfo(ItemInfo{x, y, callback, })
 }
 
 void Scene::createItems()
