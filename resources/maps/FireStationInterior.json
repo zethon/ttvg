@@ -17,6 +17,27 @@
 
     "zones":
     [
+
+        {
+            "name" : "Fire Pole",
+            "description": "Get your fat ass up that pole.",
+            "rects" :
+            [
+                "7,11,7,12"
+            ],
+            "onSelect": "pole_onSelect"
+        },
+
+        {
+            "name" : "Locker",
+            "description": "Locker",
+            "rects" :
+            [
+                "10,5,10,5"
+            ],
+            "onSelect": "locker_onSelect"
+        },
+
         {
             "name" : "Leave the Fire Station",
             "description": "Press SPACE to leave the Fire Station",
