@@ -103,29 +103,37 @@ if(WIN32)
     set_target_properties(tooter PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
 endif()
 
-install(
-    TARGETS tooter 
-    COMPONENT tooter
-    RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib
-	BUNDLE DESTINATION .
-)
+### INSTALL
 
-# Note Mac specific extension .app
-set(APPS "\${CMAKE_INSTALL_PREFIX}/${APP_NAME}.app")
-set(DIRS ${CMAKE_BINARY_DIR})
+if (APPLE)
+    configure_file("${CMAKE_SOURCE_DIR}/tools/macos/Info.plist.in" "${CMAKE_BINARY_DIR}/Info.plist" @ONLY)
 
-# install(CODE "include(BundleUtilities)
-#     fixup_bundle(\"${APPS}\" \"\" \"${DIRS}\")")
+    install(
+        TARGETS tooter 
+        COMPONENT tooter
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        BUNDLE DESTINATION ${CMAKE_BINARY_DIR}/installer
+    )
 
-install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/resources/
-    DESTINATION bin/resources
-    COMPONENT tooter
-    PATTERN "src" EXCLUDE
-)
+    install(
+        DIRECTORY ${CMAKE_SOURCE_DIR}/resources/
+        DESTINATION ${CMAKE_BINARY_DIR}/installer/tooter.app/Contents/Resources
+        COMPONENT tooter
+        PATTERN "src" EXCLUDE
+    )
+
+endif(APPLE)
 
 if (WIN32)
+
+    install(
+        TARGETS tooter 
+        COMPONENT tooter
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        BUNDLE DESTINATION .
+    )
 
     set(CMAKE_INSTALL_UCRT_LIBRARIES FALSE)
     include(InstallRequiredSystemLibraries)
@@ -133,6 +141,13 @@ if (WIN32)
         PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
         DESTINATION bin
         COMPONENT tooter
+    )
+
+    install(
+        DIRECTORY ${CMAKE_SOURCE_DIR}/resources/
+        DESTINATION bin/resources
+        COMPONENT tooter
+        PATTERN "src" EXCLUDE
     )
 
     install(
