@@ -37,7 +37,7 @@ after_success:
 # only deploy master branch packages
 # For now, disable deployment of artifacts for Ubuntu. 
 # See: https://blog.travis-ci.com/2018-07-23-the-tale-of-ftp-at-travis-ci
-    - |
+    - | 
     if [ "$CONFIG" == "Release" ]; then
         if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
             find . -maxdepth 1 -name "*.zip" -exec curl -T "{}" ftp://anothermessageboard.com/ --user "${SFTP_USER}:${SFTP_PASSWORD}" --insecure \;
