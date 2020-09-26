@@ -43,10 +43,9 @@ deploy:
   host: anothermessageboard.com
   username: builds@anothermessageboard.com
   password:
-    secure: 9Hm8Tj0tt2lXHlXjk3bxyQ==
+    secure: Z8TCCFSNy4pV7j9dkEPfHA==
   folder: /
   on:
-    branch: master
     CONFIG: Release
 
 notifications:
