@@ -34,12 +34,6 @@ after_success:
         fi
       fi
 
-      - |
-      if [ "$CONFIG" == "Release" ]; then
-        if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-          find . -maxdepth 1 -name "*.zip" -exec curl -T "{}" ftp://anothermessageboard.com/ --user "${SFTP_USER}:${SFTP_PASSWORD}" --ftp-create-dirs --insecure \;
-        fi
-      fi
 
 matrix:
   include:
