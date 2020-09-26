@@ -444,7 +444,7 @@
                 "scale": "1.4,1.4",
                 "speed": "8.0,20.0",
                 "horn": "carhorn1",
-                "damage": 2
+                "damage": 5
             },
             {
                 "name" : "car2",
@@ -452,7 +452,7 @@
                 "scale": "1.0,1.0",
                 "speed": "10.0,30.0",
                 "horn": "carhorn2",
-                "damage": 20
+                "damage": 10
             }
         ],
         "edges":
