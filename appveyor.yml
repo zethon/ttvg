@@ -43,7 +43,7 @@ deploy:
   host: anothermessageboard.com
   username: builds@anothermessageboard.com
   password:
-    secure: Z8TCCFSNy4pV7j9dkEPfHA==
+    secure: lK+6d4h54YxVL5Ai3UJLnA==
   folder: /
   on:
     CONFIG: Release
