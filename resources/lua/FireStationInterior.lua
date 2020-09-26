@@ -12,12 +12,13 @@ function locker_onSelect(scene, zone)
     local player    = scene:getPlayer()
     local m         = scene:createModal(ModalType.Default)
 
-    if player:hasItemByName("key") then
+    if player:hasItemByName("locker-key") then
         m:setText(  "You opened the locker.\n" .. 
                     "It is empty.")
     else
         m:setText(  "You cannot open this locker.\n" .. 
-                    "It is locked.")
+                    "It is locked.\n" ..
+                    "That's why it's called a locker.")
     end
 
     m:exec()
