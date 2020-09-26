@@ -74,7 +74,6 @@ private:
     void setDirection(std::uint32_t dir);
 
     sf::Clock                   _movementClock;
-    sf::Clock                   _lifeClock;
 
     BackgroundSharedPtr         _bg;
 

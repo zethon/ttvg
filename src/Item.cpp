@@ -67,6 +67,11 @@ void from_json(const nl::json& j, ItemInfo& info)
         }
     }
 
+    if (j.contains("respawn-delay"))
+    {
+        info.respawn = j["respawn-delay"].get<float>();
+    }
+
     info.callbacks = j.get<ItemCallbacks>();
 }
 

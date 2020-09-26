@@ -372,7 +372,7 @@
         {
             "instances":
             [
-                { "x": 34, "y": 85 },
+                { "x": 34, "y": 85, "respawn-delay": 10 },
                 { "x": 91, "y": 77 },
                 { "x": 91, "y": 92 }
             ]
@@ -393,6 +393,7 @@
         
         "bag-of-weed":
         {
+            "respawn-delay": 60,
             "instances":
             [
                 { "x": 234, "y": 82 },

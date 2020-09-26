@@ -307,7 +307,25 @@ These are the item events:
 
 ### `[void] onPickup(scene, item)`
 
-`scene` is the current scene, and `item` is the item object being picked up.
+`scene` is the current scene, and `item` is the item object being picked up. If the item is to be picked up and this callback is defined, then picking up the item **must be handled** inside the callback. 
+
+For example:
+
+```lua
+function treasureChest_onPickup(scene, item)
+    if _player:hasItemByName("key") then
+        local vagina = ItemFactory.createItem("magic-space-vagina")
+        _player:addItem(vagina)
+        _player:removeItemByName("key")
+        scene:removeItem(item)
+        Utils.showModal("You opened the chest!\nNow you have a Magic Space Vagina!")
+    else
+        Utils.showModal("You cannot open this right now")
+    end
+end
+```
+
+Here 
 
 <br/>
 

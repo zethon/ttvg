@@ -42,12 +42,17 @@ enum class ItemFlags : std::uint16_t
     INSTRUMENT = 0x0004,       // can be used for busking
 };
 
+
 struct ItemInfo
 {
+    std::string             id;
+
     // a null x,y means that the coordinate was not specified, 
     // and a value of -1 means it should be picked randomly
     std::optional<float>    x;
     std::optional<float>    y;
+    std::optional<float>    respawn;
+
     ItemCallbacks           callbacks;
 };
 
@@ -70,13 +75,13 @@ public:
     std::string getDescription() const;
     void        setDescription(const std::string& s);
 
-    //
-    // Check if an item can be picked up.
-    //
     bool    isObtainable() const;
     void    setObtainable(bool b);
 
     ItemCallbacks   callbacks;
+
+    void setInfo(const ItemInfo& info) { _itemInfo = info; }
+    ItemInfo info() const { return _itemInfo; }
 
 private:
 
@@ -85,8 +90,9 @@ private:
     std::string     _description;
 
     std::uint32_t   _flags = 0;
+    bool            _isObtainable = false;
 
-    bool        _isObtainable = false;
+    ItemInfo        _itemInfo;
 };
 
 void from_json(const nl::json& j, ItemCallbacks& i);
