@@ -75,6 +75,8 @@ endif()
 
 if(APPLE)
     SET(GUI_TYPE MACOSX_BUNDLE)
+    set(RESOURCE_FILES 
+        "${CMAKE_SOURCE_DIR}/tools/macos/ttvg.icns")
 endif()
 
 SET_SOURCE_FILES_PROPERTIES(
