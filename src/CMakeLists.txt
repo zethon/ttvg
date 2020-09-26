@@ -70,11 +70,13 @@ if(WIN32)
         "${CMAKE_SOURCE_DIR}/tools/windows/ttvg.rc")
 
     # can this be safely removed? 
-    set (CPACK_NSIS_MODIFY_PATH "ON")
+    set(CPACK_NSIS_MODIFY_PATH "ON")
 endif()
 
 if(APPLE)
     SET(GUI_TYPE MACOSX_BUNDLE)
+    set(RESOURCE_FILES 
+        "${CMAKE_SOURCE_DIR}/tools/macos/ttvg.icns")
 endif()
 
 SET_SOURCE_FILES_PROPERTIES(
@@ -103,35 +105,61 @@ if(WIN32)
     set_target_properties(tooter PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
 endif()
 
-install(
-    TARGETS tooter 
-    COMPONENT tooter
-    RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib
-	BUNDLE DESTINATION .
-)
-set(CMAKE_INSTALL_UCRT_LIBRARIES FALSE)
-include(InstallRequiredSystemLibraries)
-install(
-    PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
-    DESTINATION bin
-    COMPONENT tooter
-)
+### INSTALL
 
-install(
-    DIRECTORY ${CMAKE_SOURCE_DIR}/resources/
-    DESTINATION bin/resources
-    COMPONENT tooter
-    PATTERN "src" EXCLUDE
-)
+# Destination paths below are relative to ${CMAKE_INSTALL_PREFIX}
+
+if (APPLE)
+    configure_file("${CMAKE_SOURCE_DIR}/tools/macos/Info.plist.in" 
+        "${CMAKE_BINARY_DIR}/Info.plist" @ONLY)
+
+    install(
+        TARGETS tooter 
+        COMPONENT tooter
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        BUNDLE DESTINATION .
+    )
+
+    install(
+        DIRECTORY ${CMAKE_SOURCE_DIR}/resources/
+        DESTINATION ./tooter.app/Contents/Resources
+        COMPONENT tooter
+        PATTERN "src" EXCLUDE
+    )
+
+endif(APPLE)
 
 if (WIN32)
 
-install(
-    FILES "${CMAKE_SOURCE_DIR}/tools/windows/oalinst.exe" 
-    DESTINATION redist
-    COMPONENT tooter
-)
+    install(
+        TARGETS tooter 
+        COMPONENT tooter
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        BUNDLE DESTINATION .
+    )
+
+    set(CMAKE_INSTALL_UCRT_LIBRARIES FALSE)
+    include(InstallRequiredSystemLibraries)
+    install(
+        PROGRAMS ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+        DESTINATION bin
+        COMPONENT tooter
+    )
+
+    install(
+        DIRECTORY ${CMAKE_SOURCE_DIR}/resources/
+        DESTINATION bin/resources
+        COMPONENT tooter
+        PATTERN "src" EXCLUDE
+    )
+
+    install(
+        FILES "${CMAKE_SOURCE_DIR}/tools/windows/oalinst.exe" 
+        DESTINATION redist
+        COMPONENT tooter
+    )
 
 endif()
 

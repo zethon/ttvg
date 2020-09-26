@@ -19,11 +19,27 @@ before_script:
 - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 - conan remote add owl https://api.bintray.com/conan/zethon/owl
 - conan install .. -s build_type=${CONFIG} --build missing
-- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON
+- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/build
 
 script:
 - cmake --build .
 - ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
+
+after_success:
+    - |
+      if [ "$CONFIG" == "Release" ]; then
+        if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+            cmake --build . --config ${CONFIG} --target install
+            cpack -G ZIP -C ${CONFIG} --config TTVGCPackConfig.cmake --verbose
+        fi
+      fi
+
+      - |
+      if [ "$TRAVIS_BRANCH" == "master" ] && [ "$CONFIG" == "Release" ]; then
+        if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+          find . -maxdepth 1 -name "*.zip" -exec curl -T "{}" ftp://anothermessageboard.com/ --user "${SFTP_USER}:${SFTP_PASSWORD}" --insecure \;
+        fi
+      fi
 
 matrix:
   include:
@@ -70,6 +86,10 @@ matrix:
     env:
       - CONFIG=Release
 
-notifications:
-  email: false
+notifactions:
+  email:
+    recipients:
+      - max@amb.dog
+    on_success: never
+    on_failure: always
 

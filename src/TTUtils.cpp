@@ -12,11 +12,14 @@
 #ifdef __APPLE__
 #   include <CoreFoundation/CFBundle.h>
 #   include <ApplicationServices/ApplicationServices.h>
+#   include <boost/dll.hpp>
 #endif
 
 #include "TTUtils.h"
 
 #include <boost/filesystem.hpp>
+
+#include <fmt/core.h>
 
 namespace sf
 {
@@ -44,8 +47,9 @@ std::string defaultResourceFolder()
     namespace fs = boost::filesystem;
 #ifdef _WINDOWS
     return "resources";
-#elif defined(__APPLE__)    
-    return "macos";
+#elif defined(__APPLE__)
+    auto exepath = boost::dll::program_location().parent_path();
+    return fmt::format("{}/../Resources", exepath.string());
 #elif defined(__linux__)
     return "linux";
 #else

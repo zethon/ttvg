@@ -25,6 +25,18 @@ function getWindowsDownloadFilename()
     return '';
 }
 
+function getMacDownloadFilename()
+{
+    $dir = glob(LOCAL_PATH_PREFIX . DOWNLOAD_PATH . 'tooter-*-darwin*.zip');
+    usort($dir, create_function('$a,$b', 'return filemtime($b) - filemtime($a);'));
+    if (count($dir) > 0)
+    {
+        return basename($dir[0]);
+    }
+
+    return '';
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -96,12 +108,20 @@ function getWindowsDownloadFilename()
     echo '<a href="http://amb.la/' . DOWNLOAD_PATH . $filename . '">' . $filename . '</a>';
     $filetime = date("d F Y H:i", filemtime(LOCAL_PATH_PREFIX . DOWNLOAD_PATH . $filename));
     echo '&nbsp;(' . $filetime . ' GMT)';
-?></p>
+?>
+</p>
 
 <br/>
 
 <h3>macOS</h3>
-<p>Coming soon...</p>
+<p> 
+<?php 
+    $filename = getMacDownloadFilename();
+    echo '<a href="http://amb.la/' . DOWNLOAD_PATH . $filename . '">' . $filename . '</a>';
+    $filetime = date("d F Y H:i", filemtime(LOCAL_PATH_PREFIX . DOWNLOAD_PATH . $filename));
+    echo '&nbsp;(' . $filetime . ' GMT)';
+?>
+</p>
 
 <br/>
 <h3>Ubuntu</h3>

@@ -72,8 +72,16 @@ int main(int argc, char *argv[])
         ;
 
     po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, desc), vm);
-    po::notify(vm);
+
+    try
+    {
+        po::store(po::parse_command_line(argc, argv, desc), vm);
+        po::notify(vm);
+    }
+    catch(const po::error& e)
+    {
+        std::cerr << e.what();
+    }
 
     if (vm.count("help"))
     {

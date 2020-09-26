@@ -44,9 +44,12 @@ if (WIN32)
         CreateShortCut '$DESKTOP\\\\TTVG.lnk' '$INSTDIR\\\\bin\\\\tooter.exe'")
 endif()
 
-# set(CPACK_BUNDLE_NAME "${PROJECT_NAME}")
-# set(CPACK_BUNDLE_PLIST "@CMAKE_BINARY_DIR@/Info.plist")
-# set(CPACK_BUNDLE_ICON "@CMAKE_SOURCE_DIR@/src/CPack/TTVG.icns")
+if (APPLE)
+    set(CPACK_BUNDLE_NAME "Tommy Tooter Video Game")
+    set(CPACK_BUNDLE_PLIST "@CMAKE_BINARY_DIR@/Info.plist")
+    set(CPACK_BUNDLE_ICON "@CMAKE_SOURCE_DIR@/tools/macos/ttvg.icns")
+endif()
+
 
 set (CPACK_CREATE_DESKTOP_LINKS "tooter")
 
