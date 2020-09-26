@@ -27,7 +27,7 @@ public:
     static constexpr auto SCENE_NAME = "Tucson";
 
     PollResult poll(const sf::Event& e) override;
-    ScreenAction update(sf::Time elapsed);
+    ScreenAction update(sf::Time elapsed) override;
 
 private:
     void toggleHighlight() override;
