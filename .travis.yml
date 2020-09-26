@@ -35,7 +35,7 @@ after_success:
       fi
 
       - |
-      if [ "$TRAVIS_BRANCH" == "master" ] && [ "$CONFIG" == "Release" ] && [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+      if [ "$TRAVIS_BRANCH" == "master" ] && [ "$CONFIG" == "Release" ]; then
         if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
           find . -maxdepth 1 -name "*.zip" -exec curl -T "{}" ftp://anothermessageboard.com/ --user "${SFTP_USER}:${SFTP_PASSWORD}" --insecure \;
         fi
