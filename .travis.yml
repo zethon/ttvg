@@ -19,11 +19,11 @@ before_script:
 - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 - conan remote add owl https://api.bintray.com/conan/zethon/owl
 - conan install .. -s build_type=${CONFIG} --build missing
-- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/build
+- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=OFF -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/build
 
 script:
 - cmake --build .
-- ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
+# - ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
 
 after_success:
     - |
@@ -44,23 +44,23 @@ after_success:
 matrix:
   include:
 
-  - name: "macOS Xcode 10 Debug"
-    os: osx
-    compiler: clang
-    osx_image: xcode11.4
-    install:
-      - pip install conan
-    env:
-      - CONFIG=Debug
-
-#   - name: "macOS Xcode 10 Release"
+#   - name: "macOS Xcode 10 Debug"
 #     os: osx
 #     compiler: clang
 #     osx_image: xcode11.4
 #     install:
 #       - pip install conan
 #     env:
-#       - CONFIG=Release
+#       - CONFIG=Debug
+
+  - name: "macOS Xcode 10 Release"
+    os: osx
+    compiler: clang
+    osx_image: xcode11.4
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Release
 
 #   - name: "Linux gcc Debug"
 #     os: linux
