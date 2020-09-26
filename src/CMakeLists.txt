@@ -107,20 +107,23 @@ endif()
 
 ### INSTALL
 
+# Destination paths below are relative to ${CMAKE_INSTALL_PREFIX}
+
 if (APPLE)
-    configure_file("${CMAKE_SOURCE_DIR}/tools/macos/Info.plist.in" "${CMAKE_BINARY_DIR}/Info.plist" @ONLY)
+    configure_file("${CMAKE_SOURCE_DIR}/tools/macos/Info.plist.in" 
+        "${CMAKE_BINARY_DIR}/Info.plist" @ONLY)
 
     install(
         TARGETS tooter 
         COMPONENT tooter
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
-        BUNDLE DESTINATION ${CMAKE_BINARY_DIR}/installer
+        BUNDLE DESTINATION .
     )
 
     install(
         DIRECTORY ${CMAKE_SOURCE_DIR}/resources/
-        DESTINATION ${CMAKE_BINARY_DIR}/installer/tooter.app/Contents/Resources
+        DESTINATION ./tooter.app/Contents/Resources
         COMPONENT tooter
         PATTERN "src" EXCLUDE
     )
