@@ -122,14 +122,12 @@ int registerScene(lua_State* L, SceneT& scene)
 int Scene_getPlayer(lua_State* L);
 int Scene_getDescriptionWindow(lua_State* L);
 
-
-
 class Scene : public Screen
 {
 
 public:
     using Items = std::vector<ItemPtr>;
-    using ItemTasks = std::map<float, ItemInfo>;
+    using ItemTasks = std::map<sf::Time, ItemInfo>;
 
     static constexpr auto CLASS_NAME = "Scene";
     static const struct luaL_Reg LuaMethods[];
@@ -193,10 +191,13 @@ protected:
     AvatarInfo              _playerAvatarInfo;
     TileInfo                _currentTile;
 
+    ItemTasks       _itemTasks;
     Items           _items;
     ItemFactory&    _itemFactory;
 
     log::SpdLogPtr  _logger;
+
+    sf::Time        _gameTime;
 
 private:
     void createItems();

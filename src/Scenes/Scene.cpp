@@ -370,10 +370,26 @@ PollResult Scene::poll(const sf::Event& e)
 
 ScreenAction Scene::update(sf::Time elapsed)
 {
+    _gameTime = elapsed;
+
     if (_player->health() <= 0)
     {
         //_bgsong->stop();
         return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
+    }
+
+    const auto taskIt = _itemTasks.lower_bound(elapsed);
+    if (taskIt != _itemTasks.begin())
+    {
+        auto current = _itemTasks.begin();
+        while (current != taskIt)
+        {
+            auto item = _itemFactory.createItem(current->second.id);
+            setItemInstance(*item, {}, current->second);
+            _items.push_back(item);
+            current = _itemTasks.erase(current);
+        }
+        
     }
 
     std::stringstream ss1;
@@ -601,28 +617,32 @@ void Scene::setItemInstance(Item& item, const ItemInfo& groupInfo, const ItemInf
             "scene '{}' with item '{}' has an invalid 'y' coordinate", _name, item.getID()));
     }
 
+    float xpos = *x;
     if (*x == -1)
     {
         const auto bounds = _background->getWorldTileRect();
-        *x = tt::RandomNumber<float>(0.f, bounds.width);
+        xpos = tt::RandomNumber<float>(0.f, bounds.width);
     }
 
+    float ypos = *y;
     if (*y == -1)
     {
         const auto bounds = _background->getWorldTileRect();
-        *y = tt::RandomNumber<float>(0.f, bounds.height);
+        ypos = tt::RandomNumber<float>(0.f, bounds.height);
     }
 
     auto respawn = instanceInfo.respawn.has_value() ?
         instanceInfo.respawn : groupInfo.respawn;
 
-    const auto position = _background->getGlobalFromTile(sf::Vector2f(*x, *y));
+    const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
     item.setPosition(position);
 
     item.callbacks.onPickup = instanceInfo.callbacks.onPickup.has_value() ?
         instanceInfo.callbacks.onPickup : groupInfo.callbacks.onPickup;
 
-    item.setInfo(ItemInfo{x, y, callback, })
+    // TODO: this feels weird to use the item to get its own 
+    // info, but it will do for now
+    item.setInfo(ItemInfo{ item.getID(), x, y, respawn, item.callbacks });
 }
 
 void Scene::createItems()
@@ -680,6 +700,14 @@ void Scene::pickupItem(Items::iterator itemIt)
     {
         _player->addItem(item);
         _items.erase(itemIt);
+
+        if (const auto info = item->info();
+            info.respawn.has_value() && *(info.respawn) > 0)
+        {
+            const auto newtime = _gameTime + sf::seconds(*(info.respawn));
+            _itemTasks.insert({ newtime, std::move(info) });
+        }
+        
         _descriptionText.setText("Picked up " + item->getName());
     }
 }

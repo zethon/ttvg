@@ -42,8 +42,11 @@ enum class ItemFlags : std::uint16_t
     INSTRUMENT = 0x0004,       // can be used for busking
 };
 
+
 struct ItemInfo
 {
+    std::string             id;
+
     // a null x,y means that the coordinate was not specified, 
     // and a value of -1 means it should be picked randomly
     std::optional<float>    x;
