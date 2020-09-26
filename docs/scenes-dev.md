@@ -160,26 +160,6 @@ Items can be placed anywhere on a scene/map using the JSON configuration. For ex
 
 The item name should be used as the JSON key for the item (in this case "handcuffs"). For each pair of coordinates in the array, and item will be placed at that location. The coordinates are defined in terms of tile coordinates.
 
-### Randomizing Item Location
-
-Items can be randomly placed on a map by using the `random` keyword in the configuration. For example:
-
-```json
-"items":
-{
-    "handcuffs": 
-    {
-        "instances":
-        [    
-            { "x": "random", "y": "random" }
-            { "x": 24, "y": 32 }
-        ]
-    }
-}
-```
-
-The `random` keyword can be used on both the `x` and `y` coordinates, or just one.
-
 ### Item Defaults
 
 Items can have default settings that apply to each instance of the item in the scene. The default settings can also be overridden by a specifc instance. For example:
@@ -203,6 +183,45 @@ Items can have default settings that apply to each instance of the item in the s
 
 In the above example, each instance of `handcuffs` will call `handcuff_pickup` in the Lua system when the item is picked up by the player, except for the last instance which will instead call `special_handcuffs`. A specific instance can also override the callback to a null action by doing `"onPickup": ""`.
 
+### Randomizing Item Location
+
+Items can be randomly placed on a map by using the `random` keyword in the configuration. For example:
+
+```json
+"items":
+{
+    "handcuffs": 
+    {
+        "instances":
+        [    
+            { "x": "random", "y": "random" }
+            { "x": 24, "y": 32 }
+        ]
+    }
+}
+```
+
+The `random` keyword can be used on both the `x` and `y` coordinates, or just one.
+
+### Respawning Items
+
+Items can be set to respawn a specific amount of time after the player has picked it up.
+
+```json
+"items":
+{
+    "handcuffs": 
+    {
+        "respawn-delay": 60,
+        "instances":
+        [    
+            { "x": "random", "y": "random" }
+        ]
+    }
+}
+```
+
+Here we have configured the set of handcuffs to respawn 60 seconds after the user has picked it up. Note that a random location for the handcuffs will be chosen every time the item spawns.
 
 ## Subclassing `Scene`
 
