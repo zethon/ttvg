@@ -19,11 +19,11 @@ before_script:
 - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 - conan remote add owl https://api.bintray.com/conan/zethon/owl
 - conan install .. -s build_type=${CONFIG} --build missing
-- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=OFF -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/build
+- cmake .. -DCMAKE_BUILD_TYPE=${CONFIG} -DUNIT_TEST=ON -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/build
 
 script:
 - cmake --build .
-# - ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
+- ctest -VV -C ${CONFIG} --schedule-random --output-on-failure
 
 after_success:
     - |
@@ -35,7 +35,7 @@ after_success:
       fi
 
       - |
-      if [ "$CONFIG" == "Release" ]; then
+      if [ "$TRAVIS_BRANCH" == "master" ] && [ "$CONFIG" == "Release" ]; then
         if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
           find . -maxdepth 1 -name "*.zip" -exec curl -T "{}" ftp://anothermessageboard.com/ --user "${SFTP_USER}:${SFTP_PASSWORD}" --insecure \;
         fi
@@ -44,14 +44,14 @@ after_success:
 matrix:
   include:
 
-#   - name: "macOS Xcode 10 Debug"
-#     os: osx
-#     compiler: clang
-#     osx_image: xcode11.4
-#     install:
-#       - pip install conan
-#     env:
-#       - CONFIG=Debug
+  - name: "macOS Xcode 10 Debug"
+    os: osx
+    compiler: clang
+    osx_image: xcode11.4
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Debug
 
   - name: "macOS Xcode 10 Release"
     os: osx
@@ -62,30 +62,34 @@ matrix:
     env:
       - CONFIG=Release
 
-#   - name: "Linux gcc Debug"
-#     os: linux
-#     dist: bionic
-#     compiler: gcc
-#     services: xvfb
-#     before_install:
-#       - "export DISPLAY=:99.0"
-#     install:
-#       - pip install conan
-#     env:
-#       - CONFIG=Debug
+  - name: "Linux gcc Debug"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    services: xvfb
+    before_install:
+      - "export DISPLAY=:99.0"
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Debug
 
-#   - name: "Linux gcc Release"
-#     os: linux
-#     dist: bionic
-#     compiler: gcc
-#     services: xvfb
-#     before_install:
-#       - "export DISPLAY=:99.0"
-#     install:
-#       - pip install conan
-#     env:
-#       - CONFIG=Release
+  - name: "Linux gcc Release"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    services: xvfb
+    before_install:
+      - "export DISPLAY=:99.0"
+    install:
+      - pip install conan
+    env:
+      - CONFIG=Release
 
-notifications:
-  email: false
+notifactions:
+  email:
+    recipients:
+      - max@amb.dog
+    on_success: never
+    on_failure: always
 

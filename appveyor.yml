@@ -46,6 +46,7 @@ deploy:
     secure: lK+6d4h54YxVL5Ai3UJLnA==
   folder: /
   on:
+    branch: master
     CONFIG: Release
 
 notifications:
