@@ -1,4 +1,4 @@
-# The Tommy Tooter Video Game
+# The Adventures in Tucson
 
 ![](docs/images/screenshot1.png)
 

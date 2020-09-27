@@ -14,7 +14,7 @@
 #define VERSION					__EXPAND__(VERSION_MAJOR) "." __EXPAND__(VERSION_MINOR) "." __EXPAND__(VERSION_PATCH)
 #define BUILDTIMESTAMP	        __DATE__ " " __TIME__
 
-#define APP_NAME_LONG           "Tommy Tooter Video Game"
+#define APP_NAME_LONG           "Adventures in Tucson"
 #define APP_DOMAIN              "ttvg"
 #define APP_TITLE               APP_NAME_LONG " " VERSION
 

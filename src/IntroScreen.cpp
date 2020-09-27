@@ -69,7 +69,7 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
         throw std::runtime_error("hobo.ttf could not be loaded!");
     }
 
-    auto textobj = std::make_shared<sf::Text>("The Tommy Tooter\nVideo Game", _font);
+    auto textobj = std::make_shared<sf::Text>("Adventures in\nTucson", _font);
     textobj->setPosition(730, 10);
     textobj->setFillColor(sf::Color(255, 215, 9));
     textobj->setCharacterSize(70);
