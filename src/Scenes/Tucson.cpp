@@ -104,7 +104,7 @@ PollResult Tucson::poll(const sf::Event& e)
             {
                 MessagesWindow w{ *this };
                 w.pushMessage(R"(
-Welcome to the Adventures in Tucson Video Game Tutorial!!
+Welcome to the Tommy Tooter Video Game Tutorial!!
 
 Or press SPACE to continue
 Press ESC to skip tutorial. )");
