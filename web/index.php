@@ -41,7 +41,7 @@ function getMacDownloadFilename()
 <!DOCTYPE html>
 <html>
   <head>
-    <title>The Tommy Tooter Video Game</title>
+    <title>The Tommy Tucson Video Game</title>
     <!-- <link rel="icon" type="img/png" href="images/owl_32.png" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -75,7 +75,7 @@ function getMacDownloadFilename()
   <body>
 
 <center>
-    <h1>The Tommy Tooter Video Game</h1>
+    <h1>The Tommy Tucson Video Game</h1>
     <br/>
     <a href="#about">About</a>&nbsp;&nbsp;&nbsp;
     <a href="https://github.com/zethon/ttvg/wiki" target="_blank">Wiki</a>&nbsp;&nbsp;&nbsp;
@@ -91,7 +91,7 @@ function getMacDownloadFilename()
 
 <a id="about"/><h2>About</h2>
 
-<p>The Tommy Tooter Video Game is an open source role-playing game based on the fictional character Tommy Tooter. All characters and events in this video game, even those based on real people, are entirely fictional. This video game contains coarse language and due to its content it should not be played by anyone.</p>
+<p>The Tommy Tucson Video Game is an open source role-playing game based on the fictional character Tommy Tucson. All characters and events in this video game, even those based on real people, are entirely fictional. This video game contains coarse language and due to its content it should not be played by anyone.</p>
 
 <br/>
 

@@ -10,8 +10,8 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "tooter CPACK_PACKAGE_DESCRIPTION_SUMMARY"
 set(CPACK_PACKAGE_DESCRIPTION "CPACK_PACKAGE_DESCRIPTION")
 string(TOLOWER ${CPACK_PACKAGE_FILE_NAME} CPACK_PACKAGE_FILE_NAME)
 
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The Tommy Tooter Video Game")
-set(CPACK_PACKAGE_DESCRIPTION "The Tommy Tooter Video Game (TTVG) is an adventure game 
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The Tommy Tucson Video Game")
+set(CPACK_PACKAGE_DESCRIPTION "The Tommy Tucson Video Game (TTVG) is an adventure game 
 much like Quake, Flight Simulator and Grand Theft Auto 
 rolled into the best video game experience available
 on the Internet.")
@@ -25,8 +25,8 @@ if (WIN32)
     # but NSIS requires this to be defined.
     set(CPACK_RESOURCE_FILE_LICENSE "@CMAKE_SOURCE_DIR@/src/CPack/license.txt")
 
-    set(CPACK_NSIS_PACKAGE_NAME "The Tommy Tooter Video Game")
-    set(CPACK_NSIS_DISPLAY_NAME "The Tommy Tooter Video Game")
+    set(CPACK_NSIS_PACKAGE_NAME "The Tommy Tucson Video Game")
+    set(CPACK_NSIS_DISPLAY_NAME "The Tommy Tucson Video Game")
     set(CPACK_NSIS_INSTALL_ROOT "$ENV{ProgramFiles}\\ttvg")
 
     SET(CPACK_COMPONENT_OAL_REDISTRIBUTABLE_DESCRIPTION "OpenAL Redistributable Package")
@@ -45,7 +45,7 @@ if (WIN32)
 endif()
 
 if (APPLE)
-    set(CPACK_BUNDLE_NAME "Tommy Tooter Video Game")
+    set(CPACK_BUNDLE_NAME "Tommy Tucson Video Game")
     set(CPACK_BUNDLE_PLIST "@CMAKE_BINARY_DIR@/Info.plist")
     set(CPACK_BUNDLE_ICON "@CMAKE_SOURCE_DIR@/tools/macos/ttvg.icns")
 endif()
