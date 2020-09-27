@@ -685,18 +685,27 @@ void Scene::createItems()
 void Scene::pickupItem(Items::iterator itemIt)
 {
     auto item = *itemIt;
+
+    bool removeItem = item->isObtainable();
+
     if (item->callbacks.onPickup.has_value() 
         && item->callbacks.onPickup->size() > 0)
     {
-        tt::CallLuaFunction(_luaState, 
+        const auto results = tt::CallLuaFunction(_luaState, 
             *(item->callbacks.onPickup), 
             _name, 
             { 
                 { LUA_REGISTRYINDEX, _luaIdx },
                 { LUA_TLIGHTUSERDATA, static_cast<void*>(&item) } 
             });
+
+        if (results.has_value() && results->size() > 0)
+        {
+            removeItem = tt::GetLuaValue<bool>(results->at(0));
+        }
     }
-    else if (item->isObtainable())
+
+    if (removeItem)
     {
         _player->addItem(item);
         _items.erase(itemIt);
