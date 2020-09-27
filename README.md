@@ -1,4 +1,4 @@
-# The Tommy Tooter Video Game
+# The Tommy Tucson Video Game
 
 ![](docs/images/screenshot1.png)
 
