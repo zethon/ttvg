@@ -1,0 +1,6 @@
+{
+    "name":         "Locker Key",
+    "description":  "Opens a locker.",
+    "obtainable":   true,
+    "attributes":   { }
+}
