@@ -127,6 +127,7 @@ class Scene : public Screen
 
 public:
     using Items = std::vector<ItemPtr>;
+    using ItemTasks = std::map<sf::Time, ItemInfo>;
 
     static constexpr auto CLASS_NAME = "Scene";
     static const struct luaL_Reg LuaMethods[];
@@ -144,8 +145,9 @@ public:
     virtual void exit();
 
     PollResult poll(const sf::Event& e) override;
-    ScreenAction timestep() override;
+    // ScreenAction timestep() override;
     void draw() override;
+    virtual ScreenAction update(sf::Time elapsed);
 
     sf::Vector2f getPlayerTile() const;
     void setPlayerTile(const Tile& tile);
@@ -189,10 +191,13 @@ protected:
     AvatarInfo              _playerAvatarInfo;
     TileInfo                _currentTile;
 
+    ItemTasks       _itemTasks;
     Items           _items;
     ItemFactory&    _itemFactory;
 
     log::SpdLogPtr  _logger;
+
+    sf::Time        _gameTime;
 
 private:
     void createItems();

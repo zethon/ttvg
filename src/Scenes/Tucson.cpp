@@ -104,7 +104,7 @@ PollResult Tucson::poll(const sf::Event& e)
             {
                 MessagesWindow w{ *this };
                 w.pushMessage(R"(
-Welcome to the Tommy Tooter Video Game Tutorial!!
+Welcome to the Tommy Tucson Video Game Tutorial!!
 
 Or press SPACE to continue
 Press ESC to skip tutorial. )");
@@ -124,13 +124,13 @@ Press ESC to skip tutorial. )");
     return retval;
 }
 
-ScreenAction Tucson::timestep()
+ScreenAction Tucson::update(sf::Time elapsed)
 {
-    timestepTraffic();
-    return Scene::timestep();
+    timestepTraffic(elapsed);
+    return Scene::update(elapsed);
 }
 
-void Tucson::timestepTraffic()
+void Tucson::timestepTraffic(sf::Time elapsed)
 {
     if (!_updateTraffic) return;
 
@@ -180,7 +180,7 @@ void Tucson::timestepTraffic()
         vi++;
     }
 
-    auto runSeconds = static_cast<std::uint32_t>(_globalClock.getElapsedTime().asSeconds());
+    auto runSeconds = static_cast<std::uint32_t>(elapsed.asSeconds());
     if (_vehicles.size() < MAX_VEHICLES
         && ((runSeconds % VEHICLE_SPAWN_RATE) == 0) && runSeconds != 0)
     {

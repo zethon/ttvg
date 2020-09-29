@@ -43,7 +43,7 @@ deploy:
   host: anothermessageboard.com
   username: builds@anothermessageboard.com
   password:
-    secure: 9Hm8Tj0tt2lXHlXjk3bxyQ==
+    secure: lK+6d4h54YxVL5Ai3UJLnA==
   folder: /
   on:
     branch: master

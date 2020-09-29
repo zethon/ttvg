@@ -305,9 +305,28 @@ These are the item events:
 
 <hr/>
 
-### `[void] onPickup(scene, item)`
+### `[bool] onPickup(scene, item)`
 
-`scene` is the current scene, and `item` is the item object being picked up.
+`scene` is the current scene, and `item` is the item object being picked up. Returns `true` if the player was successful in picking up the item, returns `false` if the player was unsuccessful and the item is to remain in the scene. **The return value overrides the `isObtainable` attribute of the item.**
+
+For example:
+
+```lua
+function treasureChest_onPickup(scene, item)
+    if _player:hasItemByName("key") then
+        local vagina = ItemFactory.createItem("magic-space-vagina")
+        _player:addItem(vagina)
+        _player:removeItemByName("key")
+        Utils.showModal("You opened the chest!\nNow you have a Magic Space Vagina!")
+        return true
+    else
+        Utils.showModal("You cannot open this right now")
+    end
+    return false
+end
+```
+
+Here we check the player's inventory to see if they have a `key` to the `treasure-chest`. If so, then we remove the `key` manually and give the player a `magic-space-vagina`, and we also return `true` so that the `treasure-chest` is removed from the scene. If the player does not have the required `key` then we return `false` so that the `treasure-chest` is not removed.
 
 <br/>
 

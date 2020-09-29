@@ -25,11 +25,23 @@ function getWindowsDownloadFilename()
     return '';
 }
 
+function getMacDownloadFilename()
+{
+    $dir = glob(LOCAL_PATH_PREFIX . DOWNLOAD_PATH . 'tooter-*-darwin*.zip');
+    usort($dir, create_function('$a,$b', 'return filemtime($b) - filemtime($a);'));
+    if (count($dir) > 0)
+    {
+        return basename($dir[0]);
+    }
+
+    return '';
+}
+
 ?>
 <!DOCTYPE html>
 <html>
   <head>
-    <title>The Tommy Tooter Video Game</title>
+    <title>The Tommy Tucson Video Game</title>
     <!-- <link rel="icon" type="img/png" href="images/owl_32.png" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -63,7 +75,7 @@ function getWindowsDownloadFilename()
   <body>
 
 <center>
-    <h1>The Tommy Tooter Video Game</h1>
+    <h1>The Tommy Tucson Video Game</h1>
     <br/>
     <a href="#about">About</a>&nbsp;&nbsp;&nbsp;
     <a href="https://github.com/zethon/ttvg/wiki" target="_blank">Wiki</a>&nbsp;&nbsp;&nbsp;
@@ -79,7 +91,7 @@ function getWindowsDownloadFilename()
 
 <a id="about"/><h2>About</h2>
 
-<p>The Tommy Tooter Video Game is an open source role-playing game based on the fictional character Tommy Tooter. All characters and events in this video game, even those based on real people, are entirely fictional. This video game contains coarse language and due to its content it should not be played by anyone.</p>
+<p>The Tommy Tucson Video Game is an open source role-playing game based on the fictional character Tommy Tucson. All characters and events in this video game, even those based on real people, are entirely fictional. This video game contains coarse language and due to its content it should not be played by anyone.</p>
 
 <br/>
 
@@ -96,12 +108,20 @@ function getWindowsDownloadFilename()
     echo '<a href="http://amb.la/' . DOWNLOAD_PATH . $filename . '">' . $filename . '</a>';
     $filetime = date("d F Y H:i", filemtime(LOCAL_PATH_PREFIX . DOWNLOAD_PATH . $filename));
     echo '&nbsp;(' . $filetime . ' GMT)';
-?></p>
+?>
+</p>
 
 <br/>
 
 <h3>macOS</h3>
-<p>Coming soon...</p>
+<p> 
+<?php 
+    $filename = getMacDownloadFilename();
+    echo '<a href="http://amb.la/' . DOWNLOAD_PATH . $filename . '">' . $filename . '</a>';
+    $filetime = date("d F Y H:i", filemtime(LOCAL_PATH_PREFIX . DOWNLOAD_PATH . $filename));
+    echo '&nbsp;(' . $filetime . ' GMT)';
+?>
+</p>
 
 <br/>
 <h3>Ubuntu</h3>

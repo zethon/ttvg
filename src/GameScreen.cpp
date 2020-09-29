@@ -116,7 +116,7 @@ PollResult GameScreen::poll(const sf::Event& e)
 ScreenAction GameScreen::timestep()
 {
     assert(_currentScene);
-    return _currentScene->timestep();
+    return _currentScene->update(_gameClock.getElapsedTime());
 }
 
 } // namespace tt

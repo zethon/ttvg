@@ -286,7 +286,9 @@ void Scene::init()
 {
     _logger->debug("initializing scene '{}'", _name);
     createItems();
-    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
+
+    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, 
+        { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::enter()
@@ -330,14 +332,16 @@ void Scene::enter()
             _hud.setBalance(cash);
         });
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
+    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, 
+        { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::exit()
 {
     _logger->debug("exiting scene '{}'", _name);
     assert(_player);
-    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, { { LUA_REGISTRYINDEX, _luaIdx } });
+    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, 
+        { { LUA_REGISTRYINDEX, _luaIdx } });
 
     _lastPlayerPos = _player->getPosition();
     removeUpdateable(_player);
@@ -364,13 +368,34 @@ PollResult Scene::poll(const sf::Event& e)
     return {};
 }
 
-ScreenAction Scene::timestep()
+ScreenAction Scene::update(sf::Time elapsed)
 {
+    _gameTime = elapsed;
+
     if (_player->health() <= 0)
     {
         //_bgsong->stop();
         return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
     }
+
+    const auto taskIt = _itemTasks.lower_bound(elapsed);
+    if (taskIt != _itemTasks.begin())
+    {
+        auto current = _itemTasks.begin();
+        while (current != taskIt)
+        {
+            auto item = _itemFactory.createItem(current->second.id);
+            setItemInstance(*item, {}, current->second);
+            _items.push_back(item);
+            current = _itemTasks.erase(current);
+        }
+        
+    }
+
+    std::stringstream ss1;
+    ss1 << getPlayerTile();
+    auto posText = fmt::format("P({}) T({})", ss1.str(), elapsed.asSeconds());
+    _debugWindow.setText(posText);
 
     return Screen::timestep();
 }
@@ -479,11 +504,6 @@ void Scene::updateCurrentTile(const TileInfo& info)
             MakeLuaArg(_currentTile.tile.x),
             MakeLuaArg(_currentTile.tile.y)
         });
-
-    std::stringstream ss1;
-    ss1 << getPlayerTile();
-    auto posText = fmt::format("P({})", ss1.str());
-    _debugWindow.setText(posText);
 }
 
 sf::Vector2f Scene::animeCallback()
@@ -597,23 +617,32 @@ void Scene::setItemInstance(Item& item, const ItemInfo& groupInfo, const ItemInf
             "scene '{}' with item '{}' has an invalid 'y' coordinate", _name, item.getID()));
     }
 
+    float xpos = *x;
     if (*x == -1)
     {
         const auto bounds = _background->getWorldTileRect();
-        *x = tt::RandomNumber<float>(0.f, bounds.width);
+        xpos = tt::RandomNumber<float>(0.f, bounds.width);
     }
 
+    float ypos = *y;
     if (*y == -1)
     {
         const auto bounds = _background->getWorldTileRect();
-        *y = tt::RandomNumber<float>(0.f, bounds.height);
+        ypos = tt::RandomNumber<float>(0.f, bounds.height);
     }
 
-    const auto position = _background->getGlobalFromTile(sf::Vector2f(*x, *y));
+    auto respawn = instanceInfo.respawn.has_value() ?
+        instanceInfo.respawn : groupInfo.respawn;
+
+    const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
     item.setPosition(position);
 
     item.callbacks.onPickup = instanceInfo.callbacks.onPickup.has_value() ?
         instanceInfo.callbacks.onPickup : groupInfo.callbacks.onPickup;
+
+    // TODO: this feels weird to use the item to get its own 
+    // info, but it will do for now
+    item.setInfo(ItemInfo{ item.getID(), x, y, respawn, item.callbacks });
 }
 
 void Scene::createItems()
@@ -656,21 +685,38 @@ void Scene::createItems()
 void Scene::pickupItem(Items::iterator itemIt)
 {
     auto item = *itemIt;
+
+    bool removeItem = item->isObtainable();
+
     if (item->callbacks.onPickup.has_value() 
         && item->callbacks.onPickup->size() > 0)
     {
-        tt::CallLuaFunction(_luaState, 
+        const auto results = tt::CallLuaFunction(_luaState, 
             *(item->callbacks.onPickup), 
             _name, 
             { 
                 { LUA_REGISTRYINDEX, _luaIdx },
                 { LUA_TLIGHTUSERDATA, static_cast<void*>(&item) } 
             });
+
+        if (results.has_value() && results->size() > 0)
+        {
+            removeItem = tt::GetLuaValue<bool>(results->at(0));
+        }
     }
-    else if (item->isObtainable())
+
+    if (removeItem)
     {
         _player->addItem(item);
         _items.erase(itemIt);
+
+        if (const auto info = item->info();
+            info.respawn.has_value() && *(info.respawn) > 0)
+        {
+            const auto newtime = _gameTime + sf::seconds(*(info.respawn));
+            _itemTasks.insert({ newtime, std::move(info) });
+        }
+        
         _descriptionText.setText("Picked up " + item->getName());
     }
 }

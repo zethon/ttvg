@@ -8,16 +8,20 @@ function treasureChest_onPickup(scene, item)
     local w = scene:createModal(ModalType.Default)
     
     if _player:hasItemByName("key") then
+        -- create the 'magic-space-vagina' and manually remove
+        -- the key from the player's inventory. returning 
+        -- true will tell the engine to remove 'treasure-chest'
+        -- (aka `item`) from the scene
         local vagina = ItemFactory.createItem("magic-space-vagina")
         _player:addItem(vagina)
         _player:removeItemByName("key")
-        scene:removeItem(item)
-        w:setText("You opened the chest!\nNow you have a Magic Space Vagina!")
+        Utils.showModal(scene, "You opened the chest!\nNow you have a Magic Space Vagina!")
+        return true
     else
-        w:setText("You cannot open this right now")
+        Utils.showModal(scene, "You cannot open this right now")
     end
 
-    w:exec()
+    return false
 end
 
 local firstTimeSevan = true

@@ -27,7 +27,7 @@ public:
     static constexpr auto SCENE_NAME = "Tucson";
 
     PollResult poll(const sf::Event& e) override;
-    ScreenAction timestep() override;
+    ScreenAction update(sf::Time elapsed) override;
 
 private:
     void toggleHighlight() override;
@@ -35,9 +35,8 @@ private:
     void customUpdateCurrentTile(const TileInfo&) override;
 
     void initTraffic();
-    void timestepTraffic();
+    void timestepTraffic(sf::Time elapsed);
 
-    sf::Clock                           _globalClock;
     nl::json                            _json;
 
     std::unique_ptr<VehicleFactory>     _vehicleFactory;

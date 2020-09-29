@@ -372,7 +372,7 @@
         {
             "instances":
             [
-                { "x": 34, "y": 85 },
+                { "x": 34, "y": 85, "respawn-delay": 10 },
                 { "x": 91, "y": 77 },
                 { "x": 91, "y": 92 }
             ]
@@ -393,6 +393,7 @@
         
         "bag-of-weed":
         {
+            "respawn-delay": 60,
             "instances":
             [
                 { "x": 234, "y": 82 },
@@ -443,7 +444,7 @@
                 "scale": "1.4,1.4",
                 "speed": "8.0,20.0",
                 "horn": "carhorn1",
-                "damage": 2
+                "damage": 5
             },
             {
                 "name" : "car2",
@@ -451,7 +452,7 @@
                 "scale": "1.0,1.0",
                 "speed": "10.0,30.0",
                 "horn": "carhorn2",
-                "damage": 20
+                "damage": 10
             }
         ],
         "edges":
