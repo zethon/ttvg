@@ -22,13 +22,15 @@ Tucson::Tucson(const SceneSetup& setup)
 {
      initTraffic();
 
-    //_pgSoundBuffer = *(resmgr.load<sf::SoundBuffer>("sounds/playground.wav"));
-    //_pgSound.setBuffer(_pgSoundBuffer);
-    //_pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 140.f, 84.f });
+    _pgSoundBuffer = *(_resources.load<sf::SoundBuffer>("sounds/playground.wav"));
+    _pgSound.setBuffer(_pgSoundBuffer);
+    _pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 140.f, 84.f });
 
-    //_bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
-    //_bgsong->setLoop(true);
-    //_bgsong->play();
+#ifdef RELEASE
+    _bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
+    _bgsong->setLoop(true);
+    _bgsong->play();
+#endif
 }
 
 void Tucson::initTraffic()

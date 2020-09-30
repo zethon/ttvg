@@ -43,7 +43,7 @@ private:
     std::vector<VehiclePtr>             _vehicles;
     bool                                _updateTraffic = true;
 
-    //std::unique_ptr<sf::Music>          _bgsong;
+    std::unique_ptr<sf::Music>          _bgsong;
 
     sf::SoundBuffer                     _pgSoundBuffer;
     sf::Sound                           _pgSound;
