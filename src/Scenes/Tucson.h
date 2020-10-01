@@ -43,12 +43,14 @@ private:
     std::vector<VehiclePtr>             _vehicles;
     bool                                _updateTraffic = true;
 
+#ifdef RELEASE
     std::unique_ptr<sf::Music>          _bgsong;
 
     sf::SoundBuffer                     _pgSoundBuffer;
     sf::Sound                           _pgSound;
     sf::Vector2f                        _pgCenter;
     float                               _pgVolume = 0.f;
+#endif
 
     bool    _showVehicleWarning = true;
 };
