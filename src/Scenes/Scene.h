@@ -201,6 +201,7 @@ protected:
     sf::Time        _gameTime;
 
     DelayedSoundPtr _walkSound;
+    DelayedSoundPtr _pickupSound;
 
 private:
     void createItems();

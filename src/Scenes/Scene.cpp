@@ -282,6 +282,7 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
     _window.setView(view);
 
     _walkSound = DelayedSound::create("sounds/walking.wav", 275.f, _resources);
+    _pickupSound = DelayedSound::create("sounds/pickup.wav", 1000.f, _resources);
 }
 
 void Scene::init()
@@ -721,6 +722,7 @@ void Scene::pickupItem(Items::iterator itemIt)
             _itemTasks.insert({ newtime, std::move(info) });
         }
         
+        _pickupSound->play();
         _descriptionText.setText("Picked up " + item->getName());
     }
 }

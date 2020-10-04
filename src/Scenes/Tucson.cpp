@@ -22,15 +22,17 @@ Tucson::Tucson(const SceneSetup& setup)
 {
      initTraffic();
 
-#ifdef RELEASE
     _pgSoundBuffer = *(_resources.load<sf::SoundBuffer>("sounds/playground.wav"));
     _pgSound.setBuffer(_pgSoundBuffer);
     _pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 140.f, 84.f });
 
     _bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
     _bgsong->setLoop(true);
-    _bgsong->setVolume(25);
+    _bgsong->setVolume(30);
     _bgsong->play();
+
+#ifndef RELEASE
+    _bgsong->setVolume(0);
 #endif
 }
 
@@ -216,7 +218,6 @@ void Tucson::customDraw()
 
 void Tucson::customUpdateCurrentTile(const TileInfo& info)
 {
-#ifdef RELEASE
     // TODO: PUT THIS IN A CONFIG FILE
     // BEGIN MESSY HARCODED PLAYGROUND SOUND CODE TO BE REMOVED
     auto pgdist = tt::distance(_pgCenter, _player->getGlobalCenter());
@@ -243,7 +244,6 @@ void Tucson::customUpdateCurrentTile(const TileInfo& info)
         _pgSound.pause();
     }
     // END UGLY HARDCOED PLAYGROUND CODE
-#endif
 }
 
 void Tucson::toggleHighlight()
