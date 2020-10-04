@@ -10,6 +10,7 @@
 #include "../Item.h"
 #include "../ItemFactory.h"
 #include "../TooterLogger.h"
+#include "../DelayedSound.h"
 
 #include "Hud.h"
 #include "DescriptionText.h"
@@ -198,6 +199,8 @@ protected:
     log::SpdLogPtr  _logger;
 
     sf::Time        _gameTime;
+
+    DelayedSoundPtr _walkSound;
 
 private:
     void createItems();

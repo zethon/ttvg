@@ -29,6 +29,7 @@ Tucson::Tucson(const SceneSetup& setup)
 
     _bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
     _bgsong->setLoop(true);
+    _bgsong->setVolume(25);
     _bgsong->play();
 #endif
 }
@@ -130,6 +131,18 @@ ScreenAction Tucson::update(sf::Time elapsed)
 {
     timestepTraffic(elapsed);
     return Scene::update(elapsed);
+}
+
+void Tucson::enter()
+{
+    Scene::enter();
+    _bgsong->play();
+}
+
+void Tucson::exit()
+{
+    Scene::exit();
+    _bgsong->pause();
 }
 
 void Tucson::timestepTraffic(sf::Time elapsed)

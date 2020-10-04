@@ -29,6 +29,9 @@ public:
     PollResult poll(const sf::Event& e) override;
     ScreenAction update(sf::Time elapsed) override;
 
+    void enter() override;
+    void exit() override;
+
 private:
     void toggleHighlight() override;
     void customDraw() override;

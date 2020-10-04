@@ -1,6 +1,7 @@
 set(SOURCE_FILES
     AnimatedSprite.cpp
     Background.cpp
+    DelayedSound.cpp
     Engine.cpp
     GameOverScreen.cpp
     GameScreen.cpp
@@ -33,6 +34,7 @@ set(HEADER_FILES
     AnimatedSprite.h
     Background.h
     core.h
+    DelayedSound.h
     Engine.h
     GameOverScreen.h
     GameScreen.h

@@ -280,6 +280,8 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
     sf::View view(sf::FloatRect(0.f, 0.f,
     static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
+
+    _walkSound = DelayedSound::create("sounds/walking.wav", 275.f, _resources);
 }
 
 void Scene::init()
@@ -514,6 +516,8 @@ sf::Vector2f Scene::animeCallback()
         auto tileinfo = _background->getTileInfo(tile);
         updateCurrentTile(tileinfo);
     }
+
+    _walkSound->play();
 
     return _player->getPosition();
 }
