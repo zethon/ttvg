@@ -61,6 +61,19 @@ void from_json(const nl::json& j, CallbackInfo& cb)
     }
 }
 
+void from_json(const nl::json& j, BackgroundMusic& bm)
+{
+    if (j.contains("file"))
+    {
+        j.at("file").get_to(bm.file);
+    }
+
+    if (j.contains("volume"))
+    {
+        j.at("volume").get_to(bm.volume);
+    }
+}
+
 int Scene_name(lua_State* L)
 {
     auto scene = checkObject<Scene>(L);
@@ -247,6 +260,23 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
         }
 
         _callbackNames = json.get<CallbackInfo>();
+
+        if (json.contains("background-music"))
+        {
+            BackgroundMusic bgmusic = json["background-music"].get<BackgroundMusic>();
+            if (!bgmusic.file.empty())
+            {
+                _bgmusic = _resources.openUniquePtr<sf::Music>(bgmusic.file);
+                _bgmusic->setLoop(true);
+                _bgmusic->setVolume(bgmusic.volume);
+
+#               ifndef RELEASE
+                _bgmusic->setVolume(0);
+#               endif
+
+            }
+        }
+
         _logger->debug("loaded json file for scene '{}'", _name);
     }
     else
@@ -280,6 +310,9 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
     sf::View view(sf::FloatRect(0.f, 0.f,
     static_cast<float>(_window.getSize().x), static_cast<float>(_window.getSize().y)));
     _window.setView(view);
+
+    _walkSound = DelayedSound::create("sounds/walking.wav", 275.f, _resources);
+    _pickupSound = DelayedSound::create("sounds/pickup.wav", 250.f, _resources);
 }
 
 void Scene::init()
@@ -332,6 +365,8 @@ void Scene::enter()
             _hud.setBalance(cash);
         });
 
+    if (_bgmusic) _bgmusic->play();
+
     tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, 
         { { LUA_REGISTRYINDEX, _luaIdx } });
 }
@@ -346,6 +381,8 @@ void Scene::exit()
     _lastPlayerPos = _player->getPosition();
     removeUpdateable(_player);
     _player.reset();
+
+    if (_bgmusic) _bgmusic->pause();
 }
 
 PollResult Scene::poll(const sf::Event& e)
@@ -514,6 +551,8 @@ sf::Vector2f Scene::animeCallback()
         auto tileinfo = _background->getTileInfo(tile);
         updateCurrentTile(tileinfo);
     }
+
+    _walkSound->play();
 
     return _player->getPosition();
 }
@@ -717,6 +756,7 @@ void Scene::pickupItem(Items::iterator itemIt)
             _itemTasks.insert({ newtime, std::move(info) });
         }
         
+        _pickupSound->play();
         _descriptionText.setText("Picked up " + item->getName());
     }
 }

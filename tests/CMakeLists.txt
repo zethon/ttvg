@@ -25,6 +25,9 @@ set(PROJECT_FILES
     
     ../src/Background.h
     ../src/Background.cpp
+
+    ../src/DelayedSound.h
+    ../src/DelayedSound.cpp
     
     ../src/Intersection.h
     ../src/Intersection.cpp

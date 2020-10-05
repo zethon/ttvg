@@ -6,7 +6,7 @@ end
 
 function computer_onSelect(scene, zone)
     local w = scene:createModal(ModalType.Options)
-    w:setText("Where would you like to go on the Internet today?")
+    w:setText("Internet Explorer Bookmarks")
     w:addOption("AMB")
     w:addOption("KiwiFarms")
     w:addOption("Young girls in comprimising positions")

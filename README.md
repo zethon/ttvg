@@ -151,4 +151,8 @@ Artwork and audio files are all either public domain, GPL or used under fair use
 
 ## Links
 
+Tools used to make this game were:
+* [bfxr](https://www.bfxr.net/)
+* [Bosca Ceoil](https://boscaceoil.net/)
+
 For more information visit [Dog Finger Studios](https://dogfinger.com).

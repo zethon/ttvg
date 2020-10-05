@@ -5,6 +5,11 @@
         "tiles": { "x": 16, "y": 16 },
         "camera": "fixed" 
     },
+    "background-music":
+    {
+        "file": "music/EuclidHouse.wav",
+        "volume": 80
+    },
     "player":
     {
         "start": { "x": 600, "y": 560 },

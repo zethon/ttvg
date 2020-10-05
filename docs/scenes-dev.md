@@ -223,6 +223,28 @@ Items can be set to respawn a specific amount of time after the player has picke
 
 Here we have configured the set of handcuffs to respawn 60 seconds after the user has picked it up. Note that a random location for the handcuffs will be chosen every time the item spawns.
 
+## Background Music
+
+Background music can be specified in a scene using the `background-music` property in the scene's JSON configuration. For example:
+
+```json
+{
+    "background":
+    {
+        "scale": "auto",
+        "tiles": { "x": 16, "y": 16 },
+        "camera": "fixed" 
+    },
+    "background-music":
+    {
+        "file": "music/EuclidHouse.wav",
+        "volume": 80
+    }
+}
+```
+
+`file` is the path the song's .wav file which is played on loop. `volume` is a value 0-100 where 100 is full volume and is the default.
+
 ## Subclassing `Scene`
 
 There are some things that must be considered when subclassing from `Scene` to create a new scene.
