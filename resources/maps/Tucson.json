@@ -8,7 +8,7 @@
     "background-music":
     {
         "file": "music/background_music1.wav",
-        "volume": 30
+        "volume": 20
     },
     "player":
     {
