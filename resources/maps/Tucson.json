@@ -5,6 +5,11 @@
         "tiles": { "x": 16, "y": 16 },
         "camera": "follow"
     },
+    "background-music":
+    {
+        "file": "music/background_music1.wav",
+        "volume": 30
+    },
     "player":
     {
         "start": { "x": 1660, "y": 2855 },

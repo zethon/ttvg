@@ -26,14 +26,14 @@ Tucson::Tucson(const SceneSetup& setup)
     _pgSound.setBuffer(_pgSoundBuffer);
     _pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 140.f, 84.f });
 
-    _bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
-    _bgsong->setLoop(true);
-    _bgsong->setVolume(30);
-    _bgsong->play();
-
-#ifndef RELEASE
-    _bgsong->setVolume(0);
-#endif
+//    _bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
+//    _bgsong->setLoop(true); 
+//    _bgsong->setVolume(30);
+//    //_bgsong->play();
+//
+//#ifndef RELEASE
+//    _bgsong->setVolume(0);
+//#endif
 }
 
 void Tucson::initTraffic()
@@ -133,18 +133,6 @@ ScreenAction Tucson::update(sf::Time elapsed)
 {
     timestepTraffic(elapsed);
     return Scene::update(elapsed);
-}
-
-void Tucson::enter()
-{
-    Scene::enter();
-    _bgsong->play();
-}
-
-void Tucson::exit()
-{
-    Scene::exit();
-    _bgsong->pause();
 }
 
 void Tucson::timestepTraffic(sf::Time elapsed)

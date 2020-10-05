@@ -123,6 +123,14 @@ int registerScene(lua_State* L, SceneT& scene)
 int Scene_getPlayer(lua_State* L);
 int Scene_getDescriptionWindow(lua_State* L);
 
+struct BackgroundMusic
+{
+    std::string file;
+    float volume = 100.f;
+};
+
+void from_json(const nl::json& j, BackgroundMusic& bm);
+
 class Scene : public Screen
 {
 
@@ -184,7 +192,8 @@ protected:
     DescriptionText _descriptionText;
     DebugWindow     _debugWindow;
 
-    BackgroundSharedPtr     _background;
+    BackgroundSharedPtr         _background;
+    std::unique_ptr<sf::Music>  _bgmusic;
 
     std::weak_ptr<Player>   _weakPlayer;
     PlayerPtr               _player;
