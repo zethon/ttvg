@@ -6,9 +6,17 @@ namespace tt
 DelayedSoundPtr DelayedSound::create(const std::string& name, float delay, ResourceManager& resources)
 {
     auto buffer = resources.cacheSound(name);
-    assert(buffer);
+    
+    DelayedSoundPtr retval;
+    if (buffer)
+    {
+        retval = std::make_unique<DelayedSound>(*buffer);
+    }
+    else
+    {
+        retval = std::make_unique<DelayedSound>();
+    }
 
-    auto retval = std::make_unique<DelayedSound>(*buffer);
     retval->setDelay(delay);
 
     return std::move(retval);

@@ -20,6 +20,7 @@ public:
         ResourceManager& resources);
 
     DelayedSound(const sf::SoundBuffer& buffer);
+    DelayedSound() = default;
 
     float delay() const { return _delay; }
     void setDelay(float v) { _delay = v; }
