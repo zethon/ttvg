@@ -25,15 +25,6 @@ Tucson::Tucson(const SceneSetup& setup)
     _pgSoundBuffer = *(_resources.load<sf::SoundBuffer>("sounds/playground.wav"));
     _pgSound.setBuffer(_pgSoundBuffer);
     _pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 140.f, 84.f });
-
-//    _bgsong = _resources.openUniquePtr<sf::Music>("music/background_music1.wav");
-//    _bgsong->setLoop(true); 
-//    _bgsong->setVolume(30);
-//    //_bgsong->play();
-//
-//#ifndef RELEASE
-//    _bgsong->setVolume(0);
-//#endif
 }
 
 void Tucson::initTraffic()

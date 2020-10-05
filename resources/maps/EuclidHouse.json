@@ -8,7 +8,7 @@
     "background-music":
     {
         "file": "music/EuclidHouse.wav",
-        "volume": 70
+        "volume": 80
     },
     "player":
     {
