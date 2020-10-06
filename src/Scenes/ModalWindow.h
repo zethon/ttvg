@@ -124,6 +124,8 @@ private:
     sf::Text    _indicator;
 
     std::optional<std::size_t>  _selection = 0;
+    sf::Sound                   _selectSound;
+    sf::Sound                   _selectionMadeSound;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
