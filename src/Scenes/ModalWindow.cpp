@@ -1,4 +1,5 @@
 #include <map>
+#include <thread>
 
 #include <SFML/Graphics.hpp>
 
@@ -314,6 +315,12 @@ OptionsWindow::OptionsWindow(Screen& parent)
 {   
     _indicator.setCharacterSize(25);
     _indicator.setFillColor(sf::Color::Yellow);
+
+    auto buffer = _parent.resources().cacheSound("sounds/selector2.wav");
+    _selectSound.setBuffer(*buffer);
+
+    buffer = _parent.resources().cacheSound("sounds/selector3.wav");
+    _selectionMadeSound.setBuffer(*buffer);
 }
 
 PollResult OptionsWindow::poll(const sf::Event& e)
@@ -328,12 +335,14 @@ PollResult OptionsWindow::poll(const sf::Event& e)
             case sf::Keyboard::Up:
             {
                 prevSelection();
+                _selectSound.play();
             }
             break;
 
             case sf::Keyboard::Down:
             {
                 nextSelection();
+                _selectSound.play();
             }
             break;
 
@@ -346,6 +355,11 @@ PollResult OptionsWindow::poll(const sf::Event& e)
             case sf::Keyboard::Enter:
             case sf::Keyboard::Space:
             {
+                _selectionMadeSound.play();
+                while (_selectionMadeSound.getStatus() == sf::SoundSource::Status::Playing)
+                {
+                    std::this_thread::yield();
+                }
                 return { true, { ScreenActionType::CLOSE_MODAL }};
             }
         }
