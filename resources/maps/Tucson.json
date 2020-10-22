@@ -187,8 +187,14 @@
             "rects": 
             [
                 "83,14,90,21"
-            ]
+            ],
+            "transition":
+            {
+                "scene": "ChineseRestaurantInterior",
+                "enabled": true
+            }
         },
+
         {
             "name": "Park of Childhood Innocence",
             "description": "None of these children live among adults",
