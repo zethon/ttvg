@@ -1,0 +1,53 @@
+{
+    "background":
+    {
+        "scale": "auto",
+        "tiles": { "x": 16, "y": 16 },
+        "camera": "fixed" 
+    },
+
+    "player":
+    {
+        "start":    { "x": 0, "y": 460 },
+        "scale":    { "x": 2.75, "y": 2.75 },
+        "source":   { "x": 0, "y": 2 },
+        "origin":   { "x": 0, "y": 0 },
+        "stepsize": 16.0
+    },
+
+    "zones":
+    [
+        { 
+            "name" : "China #1",
+            "description": "No Deliver after 9pm.",
+            "rects" :
+            [
+                "3,7,3,7"
+            ]
+        },
+
+        {
+            "name" : "Make you Orders",
+            "description": "Order #5 to go. Make a #2 at home.",
+            "rects" :
+            [
+                "7,6,9,7"
+            ],
+            "onSelect": "order_onSelect"
+        },
+
+        {
+            "name" : "Leave the Restaurant",
+            "description": "Press SPACE to leave the restaurant",
+            "transition":
+            {
+                "scene": "Tucson",
+                "enabled": true
+            },
+            "rects" : 
+            [
+                "1,7,1,8"
+            ]
+        }
+    ]
+}
