@@ -155,4 +155,4 @@ Tools used to make this game were:
 * [bfxr](https://www.bfxr.net/)
 * [Bosca Ceoil](https://boscaceoil.net/)
 
-For more information visit [Dog Finger Studios](https://dogfinger.com).
+<!-- For more information visit [Dog Finger Studios](https://dogfinger.com). -->
