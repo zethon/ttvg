@@ -37,7 +37,17 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     auto textptr = _resources.cacheTexture("textures/tommy.png");
     assert(textptr);
     textptr->setSmooth(true);
-    _player = std::make_shared<Player>(*textptr, sf::Vector2i{ 64, 64 });
+
+    GameObjectInfo playerObjInfo;
+    playerObjInfo.size = sf::Vector2u{ 64, 64 };
+    playerObjInfo.count = 9;
+    playerObjInfo.states.emplace();
+    playerObjInfo.states->emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
+    playerObjInfo.states->emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
+    playerObjInfo.states->emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
+    playerObjInfo.states->emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
+
+    _player = std::make_shared<Player>(playerObjInfo, *textptr);
 
     SceneSetup setup{ _resources, _window, _player, _luaState, _itemFactory };
 
@@ -57,6 +67,8 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     //
     // Would be so nice if lines didn't wrap in source code.
     // I think 80 characters is a fair line size.
+    //
+    // I used to get into this debate with a developer at my old job, and I'll ask you what I asked him: who still uses an editor that's only 80 characters wide? What is this, 1992? 80x254lyfe?!
     //
     _scenes.emplace("DeathCampInterior", 
                     std::make_shared<Scene>("DeathCampInterior", setup));

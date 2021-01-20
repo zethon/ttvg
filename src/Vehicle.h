@@ -6,7 +6,7 @@
 
 #include "GameTypes.h"
 #include "Path.hpp"
-#include "AnimatedSprite.h"
+#include "GameObject.h"
 #include "Intersection.h"
 #include "Tiles.hpp"
 
@@ -19,7 +19,16 @@ using BackgroundSharedPtr = std::shared_ptr<Background>;
 class Vehicle;
 using VehiclePtr = std::shared_ptr<Vehicle>;
 
-class Vehicle : public AnimatedSprite
+struct VehicleInfo : public GameObjectInfo
+{
+    sf::Texture*        texture = nullptr;
+    sf::SoundBuffer*    sound = nullptr;
+
+    sf::Vector2f        speed;  // the car's speed is randomly selected within this range
+    std::uint16_t       damage;
+};
+
+class Vehicle : public GameObject
 {
 
 public:
@@ -35,7 +44,7 @@ public:
         STOPPED
     };
 
-    Vehicle(const sf::Texture& texture, const sf::Vector2i& size, BackgroundSharedPtr bg);
+    Vehicle(const VehicleInfo& info, const sf::Texture& texture, BackgroundSharedPtr bg);
 
     std::uint16_t timestep() override;
     bool isBlocked(const sf::FloatRect& point);

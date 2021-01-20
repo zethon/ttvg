@@ -36,7 +36,17 @@ struct TestHarness
 
         sf::Texture texture;
         texture.create(100, 100);
-        _player = std::make_shared<tt::Player>(texture, sf::Vector2i{ 10,10 });
+
+        tt::GameObjectInfo playerObjInfo;
+        playerObjInfo.size = sf::Vector2u{ 10, 10 };
+        playerObjInfo.count = 9;
+        playerObjInfo.states.emplace();
+        playerObjInfo.states->emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
+        playerObjInfo.states->emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
+        playerObjInfo.states->emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
+        playerObjInfo.states->emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
+
+        _player = std::make_shared<tt::Player>(playerObjInfo, texture);
 
         _itemFactory = std::make_shared<ItemFactory>(_resources);
 
@@ -132,7 +142,7 @@ BOOST_AUTO_TEST_CASE(luaPlayerTest)
 
     writeFile((luapath / "scene1.lua").string(), playerTestFile);
     writeFile((mappath / "scene1.json").string(), 
-        R"({"background":{"tiles":{ "x": 16, "y": 16 }}})");
+        R"({"background":{"tiles":{ "x": 16, "y": 16 }}, "player": { "state": "up" }})");
 
     TestHarness harness{ (path / "resources").string() };
     auto lua = harness._lua;
@@ -159,7 +169,7 @@ BOOST_AUTO_TEST_CASE(playerPositionTest)
     writeFile((mappath / "scene1.json").string(), 
         R"({"onEnter":"onEnter",
             "background":{"tiles":{ "x": 16, "y": 16 }},
-            "player":{"start": { "x": 35, "y": 35 }}})");
+            "player":{"state":"up","start": { "x": 35, "y": 35 }}})");
 
     writeFile((luapath / "scene1.lua").string(),
         R"(s = nil
@@ -283,10 +293,8 @@ end
 const auto luaItemPlayerTestJSON = R"lua(
 {
     "onEnter": "onEnter_addItem",
-    "background":
-    {
-        "tiles": { "x": 16, "y": 16 }
-    }
+    "background": { "tiles": { "x": 16, "y": 16 } },
+    "player": { "state": "up" }
 }
 )lua";
 
@@ -335,6 +343,7 @@ end
 const auto luaItemSceneTestJSON = R"lua(
 {
     "onEnter" : "onEnter_addItem",
+    "player": { "state": "up" },
     "background":
     {
         "tiles": { "x": 16, "y": 16 }
@@ -397,13 +406,14 @@ BOOST_AUTO_TEST_CASE(itemPickUpTest)
     writeFile((mappath / "scene1.json").string(), R"lua(
 {
     "background": { "tiles": { "x": 16, "y": 16 } },
+    "player": { "state": "up" },
     "items":
     {
         "sax":
         {
             "instances":
             [    
-                { "x": 5, "y": 5, "onPickUp": "sax_onPickup" }
+                { "x": 5, "y": 5, "onSelect": "sax_onSelect" }
             ]
         }
     }
@@ -411,7 +421,7 @@ BOOST_AUTO_TEST_CASE(itemPickUpTest)
 )lua");
 
     writeFile((luapath / "scene1.lua").string(), R"lua(
-function sax_onPickup(scene, item)
+function sax_onSelect(scene, item)
     local player = scene:getPlayer()
     player:addItem(item)
     scene:removeItem(item)
@@ -438,7 +448,7 @@ end
     auto sax = scene->items().front();
     void* saxPtr = static_cast<void*>(sax.get());
 
-    tt::CallLuaFunction(L, "sax_onPickup", "scene1",
+    tt::CallLuaFunction(L, "sax_onSelect", "scene1",
         { 
             { LUA_REGISTRYINDEX, scene->luaIdx() },
             { LUA_TLIGHTUSERDATA, static_cast<void*>(&sax) } 
