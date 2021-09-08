@@ -11,7 +11,7 @@ install:
   - echo "Downloading conan..."
   - set PATH=%PATH%;%PYTHON%/Scripts/
   - pip.exe install conan
-  - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+  - conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/conan
   - conan remote add owl https://api.bintray.com/conan/zethon/owl
   - curl -fsS -o oalinst.zip http://www.openal.org/downloads/oalinst.zip
   - 7z x oalinst.zip
