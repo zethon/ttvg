@@ -100,6 +100,16 @@ PUBLIC
     ${CONAN_LIBS_FRAMEWORKS_LUADIST}
 )
 
+target_link_directories(tooter
+PUBLIC 
+    ${CONAN_LIB_DIRS}
+)
+
+target_include_directories(tooter
+PUBLIC 
+    ${CONAN_INCLUDE_DIRS}
+)
+
 if(WIN32)
     set_target_properties(tooter PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE")
     set_target_properties(tooter PROPERTIES COMPILE_DEFINITIONS_DEBUG "_CONSOLE")
