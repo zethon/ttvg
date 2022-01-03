@@ -1,6 +1,6 @@
 #include <boost/filesystem.hpp>
 
-#include <lua/lua.hpp>
+#include <lua.hpp>
 
 #include <fmt/core.h>
 

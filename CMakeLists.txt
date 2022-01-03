@@ -5,8 +5,26 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MACOSX_RPATH 1)
 
 # initialize conan libs
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(NO_OUTPUT_DIRS KEEP_RPATHS)
+include(CMake/conan.cmake)
+conan_cmake_run(REQUIRES
+    boost/1.71.0
+    sfml/2.5.1
+    spdlog/1.4.2
+    jsonformoderncpp/3.7.0
+    lua/5.4.3
+    BASIC_SETUP CMAKE_TARGETS
+    GENERATORS cmake_find_package cmake_paths
+    BUILD missing
+    OPTIONS 
+        boost:shared=False 
+        boost:without_test=False 
+        boost:without_program_options=False 
+        boost:without_filesystem=False 
+        boost:without_system=False 
+        boost:without_exception=False
+        boost:without_contract=False
+)
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
 # optional configuration
 option(UNIT_TEST "Build unit tests (default OFF)" OFF)
@@ -49,6 +67,9 @@ if (MSVC)
         /IGNORE:4099
     )
 endif(MSVC)
+
+add_definitions(
+    -DSPDLOG_FMT_EXTERNAL=ON)
 
 # TODO: move the version information into a dedicated
 # file *just* for versioning information

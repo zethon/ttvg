@@ -9,8 +9,15 @@ function(create_test testname FILES)
     )
 
     target_link_libraries(test_${testname}
-        PUBLIC
-            ${CONAN_LIBS}
+        PUBLIC ${CONAN_LIBS}
+    )
+
+    target_link_directories(test_${testname}
+        PUBLIC ${CONAN_LIB_DIRS}
+    )
+
+    target_include_directories(test_${testname} 
+        PUBLIC ${CONAN_INCLUDE_DIRS}
     )
 
     add_test(NAME test_${testname}

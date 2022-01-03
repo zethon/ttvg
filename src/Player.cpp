@@ -1,4 +1,4 @@
-#include <lua/lua.hpp>
+#include <lua.hpp>
 
 #include "Player.h"
 #include "TTLua.h"

@@ -2,7 +2,7 @@
 #include <string>
 #include <optional>
 
-#include <lua/lua.hpp>
+#include <lua.hpp>
 
 #include <nlohmann/json.hpp>
 

@@ -1,4 +1,4 @@
-#include <lua/lua.hpp>
+#include <lua.hpp>
 
 #include "Scenes/Scene.h"
 #include "Scenes/Tucson.h"

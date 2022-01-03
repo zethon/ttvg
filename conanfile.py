@@ -4,12 +4,12 @@ class TTVGConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
     requires = (
-        "boost/1.71.0@conan/stable",
-        "sfml/2.5.1@bincrafters/stable",
-        "spdlog/1.4.2@bincrafters/stable",
-        "fmt/5.3.0@bincrafters/stable",
-        "jsonformoderncpp/3.6.0@vthiery/stable",
-        "luadist/5.2.3@owl/stable",
+        "boost/1.71.0",
+        "sfml/2.5.1",
+        "spdlog/1.4.2",
+        "fmt/5.3.0",
+        "jsonformoderncpp/3.7.0",
+        "lua/5.4.3",
     )
 
     generators = "cmake"
@@ -20,13 +20,13 @@ class TTVGConan(ConanFile):
         "boost:without_program_options": False,
         "boost:without_filesystem": False,
         "boost:without_thread": True,
-        "boost:without_system": True,
+        "boost:without_system": False,
         "boost:without_stacktrace": True,
         "boost:without_math": True,
         "boost:without_wave": True,
         "boost:without_container": True,
         "boost:without_contract": True,
-        "boost:without_exception": True,
+        "boost:without_exception": False,
         "boost:without_graph": True,
         "boost:without_iostreams": True,
         "boost:without_locale": True,
