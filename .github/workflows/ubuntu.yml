@@ -34,7 +34,16 @@ jobs:
       run:  |
             sudo apt update
             sudo apt install gcc-9 g++-9
-            sudo apt install libgl1-mesa-dev
+            sudo apd install libgl1-mesa-dev
+            sudo apd install xorg-dev
+            sudo apd install libxcb-render-util0-dev
+            sudo apd install libxcb-xkb-dev
+            sudo apd install libxcb-icccm4-dev
+            sudo apd install libudev-dev
+            sudo apd install libfreetype6-dev
+            sudo apd install libxcb-image0-dev
+            sudo apd install libxcb-keysyms1-dev
+            sudo apd install libxcb-xinerama0-dev
 
     - name: Get Conan
       uses: turtlebrowser/get-conan@v1.0
