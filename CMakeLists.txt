@@ -27,7 +27,7 @@ conan_cmake_run(REQUIRES
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
 # optional configuration
-option(UNIT_TEST "Build unit tests (default OFF)" OFF)
+option(BUILD_UNIT_TESTS "Build unit tests (default OFF)" OFF)
 
 # Add a RELEASE definition that we can count on regardless
 # of platform
@@ -95,8 +95,8 @@ endif()
 
 add_subdirectory(src)
 
-if (UNIT_TEST)
+if(BUILD_UNIT_TESTS)
     enable_testing()
     add_subdirectory(tests)
     configure_file(test-config.h.in test-config.h)
-endif (UNIT_TEST)
+endif(BUILD_UNIT_TESTS)
