@@ -153,21 +153,21 @@ std::string GetLuaValue(const LuaArgPair& v)
             case LUA_TBOOLEAN:
             {
                 bool result = lua_toboolean(L, stack_idx) == 0 ? false : true;
-                retval.push_back(LuaArgPair{ LUA_TBOOLEAN, result });
+                retval.emplace_back(LUA_TBOOLEAN, result);
             }
             break;
 
             case LUA_TNUMBER:
             {
                 float result = static_cast<float>(lua_tonumber(L, stack_idx));
-                retval.push_back(LuaArgPair{ LUA_TNUMBER, result });
+                retval.emplace_back(LUA_TNUMBER, result);
             }
             break;
 
             case LUA_TSTRING:
             {
                 const std::string result = lua_tostring(L, stack_idx);
-                retval.push_back(LuaArgPair{ LUA_TSTRING, result });
+                retval.emplace_back(LUA_TSTRING, result);
             }
             break;
         }
