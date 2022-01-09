@@ -23,13 +23,6 @@ All platforms require:
 * [CMake](https://cmake.org/download/)
 * [conan 1.29+](https://conan.io/)
 
-The two following conan repos must be added:
-
-```
-conan remote add SFML https://api.bintray.com/conan/bincrafters/public-conan
-conan remote add owl https://api.bintray.com/conan/zethon/owl
-```
-
 
 ### Windows
 
@@ -48,10 +41,7 @@ git clone https://github.com/lulzapps/ttvg.git
 mkdir build 
 cd build
 ```
-* Initialize conan to install and build the required packages: 
-```
-conan install ../ttvg -s build_type=Debug --build mising
-```
+
 * Initialize CMake: 
 ```
 cmake .. "-GVisual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Debug
@@ -74,10 +64,7 @@ git clone https://github.com/lulzapps/ttvg.git
 mkdir build 
 cd build
 ```
-* Initialize conan to install and build the required packages: 
-```
-conan install ../ttvg -s build_type=Debug --build mising
-```
+
 * Initialize CMake. This will create makefiles. If you want to use Xcode change the generator (the `-G` argument). See the Windows instructions for an example of how to specify the generator.
 
 ```
