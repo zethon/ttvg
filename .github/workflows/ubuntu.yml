@@ -28,11 +28,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Install GCC12
+    - name: Install and Setup
       shell: bash
       run:  |
-            export DISPLAY=:99.0
             sudo apt update
+            sudo apt install xvfb
             sudo apt install gcc-10 g++-10
             sudo apt install libgl1-mesa-dev
             sudo apt install xorg-dev
@@ -43,8 +43,12 @@ jobs:
             sudo apt install libfreetype6-dev
             sudo apt install libxcb-image0-dev
             sudo apt install libxcb-keysyms1-dev
-            sudo apt install libxcb-xinerama0-dev
+            sudo apt install libxcb-xinerama0-dev  
             
+    - name: Start XVFB
+      run:  |
+        sudo systemctl start xvfb
+        export DISPLAY=:99.0
 
     - name: Get Conan
       uses: turtlebrowser/get-conan@v1.0
