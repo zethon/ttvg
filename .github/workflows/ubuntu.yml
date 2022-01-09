@@ -25,9 +25,6 @@ jobs:
         build_type: [Debug, Release]
     env:
       BUILD_TYPE: ${{ matrix.build_type }}
-      
-    services: xvfb
-
 
     steps:
     - uses: actions/checkout@v2
