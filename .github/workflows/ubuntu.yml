@@ -32,7 +32,6 @@ jobs:
       shell: bash
       run:  |
             sudo apt update
-            sudo apt install xvfb
             sudo apt install gcc-10 g++-10
             sudo apt install libgl1-mesa-dev
             sudo apt install xorg-dev
@@ -44,11 +43,6 @@ jobs:
             sudo apt install libxcb-image0-dev
             sudo apt install libxcb-keysyms1-dev
             sudo apt install libxcb-xinerama0-dev  
-            
-    - name: Start XVFB
-      run:  |
-        sudo systemctl start xvfb
-        export DISPLAY=:99.0
 
     - name: Get Conan
       uses: turtlebrowser/get-conan@v1.0
@@ -73,7 +67,10 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE
 
     - name: Tests
-      working-directory: ${{github.workspace}}/build
-      shell: bash
-      run: ctest --rerun-failed --output-on-failure
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        working-directory: ${{github.workspace}}/build
+        shell: bash
+        run: ctest --rerun-failed --output-on-failure
+        
       
