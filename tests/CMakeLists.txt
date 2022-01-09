@@ -9,12 +9,19 @@ function(create_test testname FILES)
     )
 
     target_link_libraries(test_${testname}
-        PUBLIC
-            ${CONAN_LIBS}
+        PUBLIC ${CONAN_LIBS}
+    )
+
+    target_link_directories(test_${testname}
+        PUBLIC ${CONAN_LIB_DIRS}
+    )
+
+    target_include_directories(test_${testname} 
+        PUBLIC ${CONAN_INCLUDE_DIRS}
     )
 
     add_test(NAME test_${testname}
-        COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test_${testname}
+        COMMAND ${CMAKE_BINARY_DIR}/bin/test_${testname}
     )
 
 endfunction(create_test)

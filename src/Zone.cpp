@@ -1,4 +1,4 @@
-#include <lua/lua.hpp>
+#include <lua.hpp>
 
 #include "Zone.h"
 #include "TTLua.h"

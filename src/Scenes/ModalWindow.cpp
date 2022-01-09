@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <lua/lua.hpp>
+#include <lua.hpp>
 
 #include <fmt/core.h>
 

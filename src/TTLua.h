@@ -9,7 +9,7 @@
 
 #include <fmt/core.h>
 
-#include <lua/lua.hpp>
+#include <lua.hpp>
 
 namespace tt
 {
@@ -42,8 +42,8 @@ inline static void dumpstack(lua_State* L)
     }
 }
 
-constexpr auto GAMESCREEN_LUA_IDX = 3;
-constexpr auto ITEMFACTORY_LUA_IDX = 4;
+constexpr auto GAMESCREEN_LUA_IDX = 4;
+constexpr auto ITEMFACTORY_LUA_IDX = 5;
 
 template<typename T>
 [[maybe_unused]] T* checkObject(lua_State* L)

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <lua/lua.hpp>
+#include <lua.hpp>
 
 #include "Item.h"
 #include "TTLua.h"

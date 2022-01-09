@@ -5,11 +5,32 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MACOSX_RPATH 1)
 
 # initialize conan libs
+include(CMake/conan.cmake)
+conan_cmake_run(REQUIRES
+    boost/1.77.0
+    sfml/2.5.1
+    spdlog/1.9.2
+    nlohmann_json/3.10.5
+    lua/5.4.3
+    BASIC_SETUP CMAKE_TARGETS
+    GENERATORS cmake_find_package cmake_paths
+    BUILD missing
+    OPTIONS 
+        boost:shared=False 
+        boost:without_test=False 
+        boost:without_program_options=False 
+        boost:without_filesystem=False 
+        boost:without_system=False 
+        boost:without_exception=False
+        boost:without_contract=False
+        sfml:shared=False
+)
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(NO_OUTPUT_DIRS KEEP_RPATHS)
 
 # optional configuration
-option(UNIT_TEST "Build unit tests (default OFF)" OFF)
+option(BUILD_UNIT_TESTS "Build unit tests (default OFF)" OFF)
 
 # Add a RELEASE definition that we can count on regardless
 # of platform
@@ -22,7 +43,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Boost COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS})
 
-set(SFML_STATIC_LIBRARIES TRUE)
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
 if (MSVC)
@@ -74,8 +94,8 @@ endif()
 
 add_subdirectory(src)
 
-if (UNIT_TEST)
+if(BUILD_UNIT_TESTS)
     enable_testing()
     add_subdirectory(tests)
     configure_file(test-config.h.in test-config.h)
-endif (UNIT_TEST)
+endif(BUILD_UNIT_TESTS)

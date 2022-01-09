@@ -3,7 +3,7 @@
 
 #include <spdlog/spdlog.h>
 
-#include <lua/lua.hpp>
+#include <lua.hpp>
 
 namespace tt
 {
