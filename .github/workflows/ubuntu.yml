@@ -29,11 +29,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install GCC9
+    - name: Install GCC12
       shell: bash
       run:  |
             sudo apt update
-            sudo apt install gcc-9 g++-9
+            sudo apt install gcc-12 g++-12
             sudo apt install libgl1-mesa-dev
             sudo apt install xorg-dev
             sudo apt install libxcb-render-util0-dev
