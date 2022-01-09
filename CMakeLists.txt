@@ -7,10 +7,10 @@ set(CMAKE_MACOSX_RPATH 1)
 # initialize conan libs
 include(CMake/conan.cmake)
 conan_cmake_run(REQUIRES
-    boost/1.71.0
+    boost/1.77.0
     sfml/2.5.1
-    spdlog/1.4.2
-    jsonformoderncpp/3.7.0
+    spdlog/1.9.2
+    nlohmann_json/3.7.0
     lua/5.4.3
     BASIC_SETUP CMAKE_TARGETS
     GENERATORS cmake_find_package cmake_paths
@@ -23,8 +23,11 @@ conan_cmake_run(REQUIRES
         boost:without_system=False 
         boost:without_exception=False
         boost:without_contract=False
+        sfml:shared=False
 )
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(NO_OUTPUT_DIRS KEEP_RPATHS)
 
 # optional configuration
 option(BUILD_UNIT_TESTS "Build unit tests (default OFF)" OFF)
@@ -40,7 +43,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Boost COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS})
 
-set(SFML_STATIC_LIBRARIES TRUE)
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
 if (MSVC)
@@ -67,9 +69,6 @@ if (MSVC)
         /IGNORE:4099
     )
 endif(MSVC)
-
-add_definitions(
-    -DSPDLOG_FMT_EXTERNAL=ON)
 
 # TODO: move the version information into a dedicated
 # file *just* for versioning information
