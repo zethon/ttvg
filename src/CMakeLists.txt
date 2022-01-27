@@ -25,6 +25,7 @@ set(SOURCE_FILES
 
     Scenes/DebugWindow.cpp
     Scenes/DescriptionText.cpp
+    Scenes/HackerTerminal.cpp
     Scenes/Hud.cpp
     Scenes/ModalWindow.cpp
     Scenes/Tucson.cpp
@@ -62,6 +63,7 @@ set(HEADER_FILES
 
     Scenes/DebugWindow.h
     Scenes/DescriptionText.h
+    Scenes/HackerTerminal.h
     Scenes/Hud.h
     Scenes/ModalWindow.h
     Scenes/Tucson.h

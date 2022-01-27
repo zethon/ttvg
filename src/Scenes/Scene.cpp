@@ -458,7 +458,7 @@ void Scene::draw()
     adjustView();
     Screen::draw();
 
-    customDraw();
+    beforeDraw();
 
     std::for_each(_items.begin(), _items.end(),
         [this](ItemPtr item) 
@@ -471,6 +471,8 @@ void Scene::draw()
     _hud.draw();
     _descriptionText.draw();
     _debugWindow.draw();
+
+    afterDraw();
 }
 
 sf::Vector2f Scene::getPlayerTile() const

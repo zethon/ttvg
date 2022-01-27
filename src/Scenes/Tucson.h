@@ -13,6 +13,7 @@
 #include "../Player.h"
 
 #include "Scene.h"
+#include "HackerTerminal.h"
 
 namespace nl = nlohmann;
 
@@ -31,8 +32,10 @@ public:
 
 private:
     void toggleHighlight() override;
-    void customDraw() override;
     void customUpdateCurrentTile(const TileInfo&) override;
+
+    void beforeDraw() override;
+    void afterDraw() override;
 
     void initTraffic();
     void timestepTraffic(sf::Time elapsed);
@@ -47,6 +50,8 @@ private:
     sf::Sound                           _pgSound;
     sf::Vector2f                        _pgCenter;
     float                               _pgVolume = 0.f;
+
+    HackerTerminal                      _hackerTerminal;
 
     bool    _showVehicleWarning = true;
 };
