@@ -1,4 +1,5 @@
 #include <boost/process.hpp>
+#include <boost/algorithm/string/join.hpp>
 
 #include <fmt/core.h>
 
