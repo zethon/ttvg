@@ -27,8 +27,8 @@ jobs:
       BUILD_TYPE: ${{ matrix.build_type }}
 
     steps:
-    - name: Set Xcode 12.5
-      run: sudo xcode-select -s /Applications/Xcode_12.5.app/Contents/Developer
+    - name: Set Xcode 12.4
+      run: sudo xcode-select -s /Applications/Xcode_12.4.app/Contents/Developer
 
     - uses: actions/checkout@v2
       with:
