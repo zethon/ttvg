@@ -44,7 +44,7 @@ cd build
 
 * Initialize CMake: 
 ```
-cmake .. "-GVisual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Debug
+cmake .. "-GVisual Studio 16 2019 Win64" -DCMAKE_BUILD_TYPE=Debug
 ```
 
 If all goes well you should have a **ttvg.sln** in the `build` folder. This is a Visual Studio solution file that can be loaded and you're ready to start coding.
