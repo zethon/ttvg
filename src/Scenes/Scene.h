@@ -135,7 +135,7 @@ class Scene : public Screen
 {
 
 public:
-    using Items = std::vector<ItemPtr> ;
+    using Items = std::vector<ItemPtr>;
     using ItemTasks = std::map<sf::Time, ItemInfo>;
 
     static constexpr auto CLASS_NAME = "Scene";
