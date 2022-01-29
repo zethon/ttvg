@@ -18,13 +18,16 @@ constexpr auto MAX_VEHICLES = 25u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
 Tucson::Tucson(const SceneSetup& setup)
-    : Scene{ SCENE_NAME, setup }
+    : Scene{ SCENE_NAME, setup },
+      _hackerTerminal{setup.resources, setup.window}
 {
      initTraffic();
 
     _pgSoundBuffer = *(_resources.load<sf::SoundBuffer>("sounds/playground.wav"));
     _pgSound.setBuffer(_pgSoundBuffer);
     _pgCenter = _background->getGlobalCenterFromTile(sf::Vector2f{ 140.f, 84.f });
+
+    _hackerTerminal.setVisible(false);
 }
 
 void Tucson::initTraffic()
@@ -114,6 +117,14 @@ Press ESC to skip tutorial. )");
                 w.exec();
             }
             break;
+
+#ifndef _WINDOWS
+            case sf::Keyboard::Slash:
+            {
+                _hackerTerminal.setVisible(!_hackerTerminal.visible());
+            }
+            break;
+#endif
         }
     }
 
@@ -185,7 +196,7 @@ void Tucson::timestepTraffic(sf::Time elapsed)
     }
 }
 
-void Tucson::customDraw()
+void Tucson::beforeDraw()
 {
     // draw the vehicles
     std::for_each(_vehicles.begin(), _vehicles.end(),
@@ -193,6 +204,11 @@ void Tucson::customDraw()
         { 
             _window.draw(*v); 
         });
+}
+
+void Tucson::afterDraw()
+{
+    _hackerTerminal.draw();
 }
 
 void Tucson::customUpdateCurrentTile(const TileInfo& info)

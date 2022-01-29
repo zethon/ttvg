@@ -27,6 +27,7 @@ struct AvatarInfo
     sf::Vector2f    source;
     sf::Vector2f    origin;
     float           stepsize;
+    std::string     state;
 };
 
 struct CallbackInfo
@@ -154,7 +155,6 @@ public:
     virtual void exit();
 
     PollResult poll(const sf::Event& e) override;
-    // ScreenAction timestep() override;
     void draw() override;
     virtual ScreenAction update(sf::Time elapsed);
 
@@ -220,7 +220,8 @@ private:
     PollResult privatePollHandler(const sf::Event& e);
 
     // allow subclasses to define any items that get drawn
-    virtual void customDraw() {}
+    virtual void beforeDraw() {}
+    virtual void afterDraw() {}
 
     // allow subclasses to do custom tile updating
     virtual void customUpdateCurrentTile(const TileInfo&) { }

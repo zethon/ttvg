@@ -80,17 +80,17 @@ bool shouldTurn(const sf::Vector2f pathpoint, const sf::Vector2f& current, Direc
     return false;
 }
 
-Vehicle::Vehicle(const sf::Texture& texture, const sf::Vector2i & size, BackgroundSharedPtr bg)
-    : AnimatedSprite(texture, size),
-      _bg { bg }
+Vehicle::Vehicle(const VehicleInfo& info, const sf::Texture& texture, BackgroundSharedPtr bg)
+    : GameObject{ info, texture },
+      _bg{ bg }
 {
-    setSource(0, 0);
-    setState(AnimatedState::ANIMATED);
+    setState("down");
+    setAnimated(true);
 }
 
 std::uint16_t Vehicle::timestep()
 {
-    AnimatedSprite::timestep();
+    GameObject::timestep();
 
     if (_state == State::MOVING
         && _movementClock.getElapsedTime().asMilliseconds() > 100)
@@ -190,19 +190,27 @@ void Vehicle::setDirection(std::uint32_t dir)
         case NONE:
         case DOWN:
         default:
-            setSource(0, 0);
+        {
+            setState("down");
+        }
         break;
 
         case UP:
-            setSource(0, 3);
+        {
+            setState("up");
+        }
         break;
 
         case LEFT:
-            setSource(0, 1);
+        {
+            setState("left");
+        }
         break;
 
         case RIGHT:
-            setSource(0, 2);
+        {
+            setState("right");
+        }
         break;
     }
 }

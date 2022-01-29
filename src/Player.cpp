@@ -6,6 +6,10 @@
 namespace tt
 {
 
+void from_json(const nl::json & j, Player & i)
+{
+}
+
 namespace
 {
 
@@ -268,5 +272,32 @@ void Player::setBalance(float c)
     onSetCash(_cash);
 }
 
+bool Player::walking() const 
+{ 
+    return _moving; 
+}
+
+void Player::setWalking(bool walking) 
+{ 
+    _moving = walking;
+    _movingTimer.restart();
+}
+
+std::uint16_t Player::timestep()
+{
+    // handle the base class animation
+    GameObject::timestep();
+
+    // check to see if we're walking and if it's time
+    // to signal
+    if (walking()
+        && _movingTimer.getElapsedTime().asMilliseconds() > 75)
+    {
+        onMoveTimer();
+        _movingTimer.restart();
+    }
+
+    return std::uint16_t();
+}
 
 } // namespace tt

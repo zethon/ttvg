@@ -27,8 +27,8 @@ function(create_test testname FILES)
 endfunction(create_test)
 
 set(PROJECT_FILES
-    ../src/AnimatedSprite.h    
-    ../src/AnimatedSprite.cpp
+    ../src/GameObject.h    
+    ../src/GameObject.cpp
     
     ../src/Background.h
     ../src/Background.cpp
@@ -92,6 +92,9 @@ set(HARNESS_FILES
     ../src/Screen.h
     ../src/Screen.cpp
 
+    ../src/SpriteFactory.h
+    ../src/SpriteFactory.cpp
+
     ../src/TTLua.h
     ../src/TTLua.cpp
 
@@ -100,6 +103,9 @@ set(HARNESS_FILES
 
     ../src/Scenes/DescriptionText.h
     ../src/Scenes/DescriptionText.cpp
+
+    ../src/Scenes/HackerTerminal.h
+    ../src/Scenes/HackerTerminal.cpp
 
     ../src/Scenes/Hud.h
     ../src/Scenes/Hud.cpp

@@ -36,6 +36,11 @@ void from_json(const nl::json& j, AvatarInfo& av)
     {
         j.at("stepsize").get_to(av.stepsize);
     }
+
+    if (j.contains("state"))
+    {
+        j.at("state").get_to(av.state);
+    }
 }
 
 void from_json(const nl::json& j, CallbackInfo& cb)
@@ -334,11 +339,9 @@ void Scene::enter()
     _player->setScale(_playerAvatarInfo.scale);
     _player->setOrigin(_playerAvatarInfo.origin);
 
-    _player->setSource(
-        static_cast<std::uint32_t>(_playerAvatarInfo.source.x),
-        static_cast<std::uint32_t>(_playerAvatarInfo.source.y));
+    _player->setState(_playerAvatarInfo.state);
 
-    _player->setAnimeCallback(
+    _player->onMoveTimer.connect(
         [this]()
         {
             return this->animeCallback();
@@ -364,8 +367,14 @@ void Scene::enter()
         {
             _hud.setBalance(cash);
         });
-
-    if (_bgmusic) _bgmusic->play();
+		
+    if (_bgmusic) _bgmusic->play();		
+	
+    _player->onMoveTimer.connect(
+        [this]()
+        {
+            animeCallback();
+        });
 
     tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, 
         { { LUA_REGISTRYINDEX, _luaIdx } });
@@ -375,6 +384,11 @@ void Scene::exit()
 {
     _logger->debug("exiting scene '{}'", _name);
     assert(_player);
+     
+    _player->onSetHealth.disconnect_all_slots();
+    _player->onSetCash.disconnect_all_slots();
+    _player->onMoveTimer.disconnect_all_slots();
+
     tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, 
         { { LUA_REGISTRYINDEX, _luaIdx } });
 
@@ -393,13 +407,14 @@ PollResult Scene::poll(const sf::Event& e)
         return result;
     }
 
-    if (_player->state() == AnimatedState::ANIMATED
+    if (_player->walking()
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Left)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Right)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Up)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        _player->setState(AnimatedState::STILL);
+        _player->setWalking(false);
+        _player->setAnimated(false);
     }
 
     return {};
@@ -433,7 +448,7 @@ ScreenAction Scene::update(sf::Time elapsed)
     ss1 << getPlayerTile();
     auto posText = fmt::format("P({}) T({})", ss1.str(), elapsed.asSeconds());
     _debugWindow.setText(posText);
-
+	
     return Screen::timestep();
 }
 
@@ -443,7 +458,7 @@ void Scene::draw()
     adjustView();
     Screen::draw();
 
-    customDraw();
+    beforeDraw();
 
     std::for_each(_items.begin(), _items.end(),
         [this](ItemPtr item) 
@@ -456,6 +471,8 @@ void Scene::draw()
     _hud.draw();
     _descriptionText.draw();
     _debugWindow.draw();
+
+    afterDraw();
 }
 
 sf::Vector2f Scene::getPlayerTile() const
@@ -676,8 +693,8 @@ void Scene::setItemInstance(Item& item, const ItemInfo& groupInfo, const ItemInf
     const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
     item.setPosition(position);
 
-    item.callbacks.onPickup = instanceInfo.callbacks.onPickup.has_value() ?
-        instanceInfo.callbacks.onPickup : groupInfo.callbacks.onPickup;
+    item.callbacks.onSelect = instanceInfo.callbacks.onSelect.has_value() ?
+        instanceInfo.callbacks.onSelect : groupInfo.callbacks.onSelect;
 
     // TODO: this feels weird to use the item to get its own 
     // info, but it will do for now
@@ -727,11 +744,11 @@ void Scene::pickupItem(Items::iterator itemIt)
 
     bool removeItem = item->isObtainable();
 
-    if (item->callbacks.onPickup.has_value() 
-        && item->callbacks.onPickup->size() > 0)
+    if (item->callbacks.onSelect.has_value() 
+        && item->callbacks.onSelect->size() > 0)
     {
         const auto results = tt::CallLuaFunction(_luaState, 
-            *(item->callbacks.onPickup), 
+            *(item->callbacks.onSelect), 
             _name, 
             { 
                 { LUA_REGISTRYINDEX, _luaIdx },
@@ -806,56 +823,60 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
             case sf::Keyboard::Left:
             {
-                if (_player->state() == AnimatedState::ANIMATED
+                if (_player->walking()
                     && _player->direction() == Direction::LEFT)
                 {
                     return { true, {} };
                 }
 
-                _player->setSource(0, 1);
-                _player->setState(AnimatedState::ANIMATED);
+                _player->setWalking(true);
+                _player->setAnimated(true);
+                _player->setState("left");
                 _player->setDirection(Direction::LEFT);
                 return { true, {} };
             }
 
             case sf::Keyboard::Right:
             {
-                if (_player->state() == AnimatedState::ANIMATED
+                if (_player->walking()
                     && _player->direction() == Direction::RIGHT)
                 {
                     return { true, {} };
                 }
 
-                _player->setSource(0, 3);
-                _player->setState(AnimatedState::ANIMATED);
+                _player->setWalking(true);
+                _player->setAnimated(true);
+                _player->setState("right");
                 _player->setDirection(Direction::RIGHT);
                 return { true, {} };
             }
 
             case sf::Keyboard::Up:
             {
-                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::UP)
+                if ((_player->walking() && _player->direction() == Direction::UP)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
                     return { true, {} };
                 }
 
-                _player->setSource(0, 0);
-                _player->setState(AnimatedState::ANIMATED);
+                _player->setWalking(true);
+                _player->setAnimated(true);
+                _player->setState("up");
                 _player->setDirection(Direction::UP);
                 return { true, {} };
             }
 
             case sf::Keyboard::Down:
             {
-                if ((_player->state() == AnimatedState::ANIMATED && _player->direction() == Direction::DOWN)
+                if ((_player->walking() && _player->direction() == Direction::DOWN)
                     || (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
                 {
                     return { true, {} };
                 }
 
-                _player->setSource(0, 2);
-                _player->setState(AnimatedState::ANIMATED);
+                _player->setWalking(true);
+                _player->setAnimated(true);
+                _player->setState("down");
                 _player->setDirection(Direction::DOWN);
                 return { true, {} };
             }

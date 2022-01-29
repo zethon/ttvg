@@ -2,7 +2,9 @@
 
 #include <boost/signals2.hpp>
 
-#include "AnimatedSprite.h"
+#include <nlohmann/json.hpp>
+
+#include "GameObject.h"
 #include "Item.h"
 
 namespace tt
@@ -10,14 +12,15 @@ namespace tt
 
 class Player;
 using PlayerPtr = std::shared_ptr<Player>;
+void from_json(const nl::json& j, Player& i);
 
-class Player : public AnimatedSprite
+class Player : public GameObject
 {
 public:
     static constexpr auto CLASS_NAME = "Player";
     static const struct luaL_Reg LuaMethods[];
 
-    using AnimatedSprite::AnimatedSprite;
+    using GameObject::GameObject;
 
     sf::Vector2f getGlobalCenter() const;
 
@@ -50,11 +53,26 @@ public:
     void setBalance(float c);
     boost::signals2::signal<void(float cash)> onSetCash;
 
+    bool walking() const;
+    void setWalking(bool v);
+
+    Direction direction() const { return _direction; }
+    void setDirection(Direction val) { _direction = val; }
+
+    std::uint16_t timestep() override;
+
+public: // signals
+
+    boost::signals2::signal<void(void)> onMoveTimer;
+
 private:
     std::vector<ItemPtr>    _inventory;
-
+    Direction               _direction = Direction::DOWN;
     std::uint32_t           _health = 100;
     float                   _cash = 40.0f;
+
+    sf::Clock               _movingTimer;
+    bool                    _moving = false;
 
 };
 

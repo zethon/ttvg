@@ -1,5 +1,5 @@
 set(SOURCE_FILES
-    AnimatedSprite.cpp
+    GameObject.cpp
     Background.cpp
     DelayedSound.cpp
     Engine.cpp
@@ -14,6 +14,7 @@ set(SOURCE_FILES
     Player.cpp
     ResourceManager.cpp
     Screen.cpp
+    SpriteFactory.cpp
     TooterLogger.cpp
     Transition.cpp
     TTLua.cpp
@@ -24,6 +25,7 @@ set(SOURCE_FILES
 
     Scenes/DebugWindow.cpp
     Scenes/DescriptionText.cpp
+    Scenes/HackerTerminal.cpp
     Scenes/Hud.cpp
     Scenes/ModalWindow.cpp
     Scenes/Tucson.cpp
@@ -31,7 +33,7 @@ set(SOURCE_FILES
 )
 
 set(HEADER_FILES
-    AnimatedSprite.h
+    GameObject.h
     Background.h
     core.h
     DelayedSound.h
@@ -46,6 +48,7 @@ set(HEADER_FILES
     Player.h
     ResourceManager.h
     Screen.h
+    SpriteFactory.h
     Tiles.hpp
     TooterLogger.h
     Transition.h
@@ -60,6 +63,7 @@ set(HEADER_FILES
 
     Scenes/DebugWindow.h
     Scenes/DescriptionText.h
+    Scenes/HackerTerminal.h
     Scenes/Hud.h
     Scenes/ModalWindow.h
     Scenes/Tucson.h

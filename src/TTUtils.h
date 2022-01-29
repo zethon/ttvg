@@ -18,6 +18,8 @@ namespace sf
 {
 
 void from_json(const nl::json& j, Vector2f& v);
+void from_json(const nl::json& j, Vector2i& v);
+void from_json(const nl::json& j, Vector2u& v);
 
 } // namespace sf
 
@@ -138,5 +140,6 @@ inline float distance(const sf::Vector2f& v1, const sf::Vector2f& v2)
     
 void openBrowser(const std::string& url_str);
 std::string getOsString();
+std::string getUserFolder();
 
 } // namespace tt

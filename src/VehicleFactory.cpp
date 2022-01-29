@@ -42,16 +42,9 @@ void VehicleFactory::loadVehicles(const nl::json& json)
 
     for (const auto& item : json["vehicles"]["assets"].items())
     {
-        VehicleInfo info;
+        VehicleInfo info{ item.value().get<GameObjectInfo>() };
 
-        std::string temp = item.value().at("size").get<std::string>();
-        phrase_parse(temp.begin(), temp.end(), VectorFloatParser, x3::ascii::space, info.size);
-
-        temp = item.value().at("scale").get<std::string>();
-        phrase_parse(temp.begin(), temp.end(), VectorFloatParser, x3::ascii::space, info.scale);
-
-        temp = item.value().at("speed").get<std::string>();
-        phrase_parse(temp.begin(), temp.end(), VectorFloatParser, x3::ascii::space, info.speed);
+        info.speed = item.value().at("speed").get<sf::Vector2f>();
 
         if (item.value().contains("damage"))
         {
@@ -83,10 +76,9 @@ VehiclePtr VehicleFactory::createVehicle()
     static std::mt19937 gen(rd());
 
     auto vinfo = tt::select_randomly(_vehicles);
-    auto vehicle = std::make_shared<Vehicle>(*(vinfo->texture), sf::Vector2i{ vinfo->size }, _background);
+    auto vehicle = std::make_shared<Vehicle>(*vinfo, *(vinfo->texture), _background);
 
     vehicle->setHornSound(vinfo->sound);
-    vehicle->setScale(vinfo->scale);
 
     std::uniform_real_distribution<float> dis(vinfo->speed.x, vinfo->speed.y);
     vehicle->setSpeed(dis(gen));

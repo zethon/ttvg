@@ -37,6 +37,32 @@ void from_json(const nl::json& j, Vector2f& v)
    }
 }
 
+void from_json(const nl::json& j, Vector2i& v)
+{
+    if (j.contains("x"))
+    {
+        j.at("x").get_to(v.x);
+    }
+
+    if (j.contains("y"))
+    {
+        j.at("y").get_to(v.y);
+    }
+}
+
+void from_json(const nl::json& j, Vector2u& v)
+{
+    if (j.contains("x"))
+    {
+        j.at("x").get_to(v.x);
+    }
+
+    if (j.contains("y"))
+    {
+        j.at("y").get_to(v.y);
+    }
+}
+
 }
 
 namespace tt
@@ -104,6 +130,30 @@ std::string getOsString()
 #else
     return "unknown"
 #endif
+}
+
+std::string getUserFolder()
+{
+    std::string retval;
+
+#ifdef _WINDOWS
+    TCHAR path[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, 0, path)))
+    {
+        std::stringstream ss;
+        ss << path;
+        retval = ss.str();
+    }
+    else
+    {
+        throw std::runtime_error("could not retrieve user folder");
+    }
+#else
+struct passwd *pw = getpwuid(getuid());
+retval = pw->pw_dir;
+#endif
+
+    return retval;
 }
 
 } // namespace tt
