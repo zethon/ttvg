@@ -141,7 +141,8 @@ std::string getUserFolder()
     if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, path)))
     {
         std::wstring temp(path);
-        retval.assign(temp.begin(), temp.end());
+        std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> convert;
+        retval = convert.to_bytes(temp);
     }
     else
     {
