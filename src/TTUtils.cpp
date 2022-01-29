@@ -137,11 +137,12 @@ std::string getUserFolder()
     std::string retval;
 
 #ifdef _WINDOWS
-    WCHAR path[MAX_PATH];
-    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, path)))
+    TCHAR path[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PROFILE, NULL, 0, path)))
     {
-        std::wstring temp(path);
-        retval.assign(temp.begin(), temp.end());
+        std::stringstream ss;
+        ss << path;
+        retval = ss.str();
     }
     else
     {
