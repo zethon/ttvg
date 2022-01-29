@@ -2,6 +2,7 @@
 #   include <windows.h>
 #   include <shellapi.h>
 #   include <Shlobj.h>
+#   include <codecvt>
 #else
 #   include <unistd.h>
 #   include <sys/types.h>
