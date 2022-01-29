@@ -104,6 +104,9 @@ set(HARNESS_FILES
     ../src/Scenes/DescriptionText.h
     ../src/Scenes/DescriptionText.cpp
 
+    ../src/Scenes/HackerTerminal.h
+    ../src/Scenes/HackerTerminal.cpp
+
     ../src/Scenes/Hud.h
     ../src/Scenes/Hud.cpp
 
