@@ -118,11 +118,13 @@ Press ESC to skip tutorial. )");
             }
             break;
 
+#ifndef _WINDOWS
             case sf::Keyboard::Slash:
             {
                 _hackerTerminal.setVisible(!_hackerTerminal.visible());
             }
             break;
+#endif
         }
     }
 
