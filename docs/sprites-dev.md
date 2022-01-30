@@ -2,7 +2,6 @@
 
 ```json
 {
-    "
     "texture": "textures/tommy.png",
     "size": { "x": 64, "y": 64 },
     "states":
