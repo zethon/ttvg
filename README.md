@@ -1,5 +1,9 @@
 # The Tommy Tucson Video Game
 
+![Windows Build](https://github.com/zethon/ttvg/actions/workflows/windows.yml/badge.svg)
+![MacOS Build](https://github.com/zethon/ttvg/actions/workflows/macos.yml/badge.svg)
+![Ubuntu Build](https://github.com/zethon/ttvg/actions/workflows/ubuntu.yml/badge.svg)
+
 ![](docs/images/screenshot1.png)
 
 This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs on Windows, Mac and Linux.
