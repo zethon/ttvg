@@ -196,6 +196,16 @@
         },
 
         {
+            "name": "Rape River",
+            "description": "Buy and sell your precious stones at this \n charming depression era shit hole.",
+            "rects":
+            [
+                "109,138,123,140"
+            ]
+        },
+
+
+        {
             "name": "Park of Childhood Innocence",
             "description": "None of these children live among adults",
             "rects":[ "131,75,149,94"]
