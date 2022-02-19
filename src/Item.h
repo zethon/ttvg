@@ -16,34 +16,7 @@ namespace tt
 class Item;
 using ItemPtr = std::shared_ptr<Item>;
 
-// Item callbacks can be null or non-null and empty. 
-// If the callback is null, then it was not defined.
-// If it is empty, then this denotes a configuration
-// like: `"onSelect": ""` which might be used to 
-// override a default action with an empty action
-struct ItemCallbacks
-{
-    // used when the item is picked up from the map
-    std::optional<std::string> onSelect;
-
-    // // used when a weapon is yielded or an instrument
-    // // is played
-    // std::optional<std::string> onUse;
-
-    // // used when somethin is eaten, smoked, etc
-    // std::optional<std::string> onConsume;
-};
-
-enum class ItemFlags : std::uint16_t
-{
-    NONE = 0x0000,
-    CONSUMABLE = 0x0001,
-    WEAPON = 0x0002,
-    INSTRUMENT = 0x0004,       // can be used for busking
-};
-
-
-struct ItemInfo
+struct ItemInstanceInfo
 {
     std::string             id;
 
@@ -53,7 +26,7 @@ struct ItemInfo
     std::optional<float>    y;
     std::optional<float>    respawn;
 
-    ItemCallbacks           callbacks;
+    GameObjectCallbacks     callbacks;
 };
 
 class Item : public GameObject
@@ -78,10 +51,10 @@ public:
     bool    isObtainable() const;
     void    setObtainable(bool b);
 
-    ItemCallbacks   callbacks;
+    GameObjectCallbacks   callbacks;
 
-    void setInfo(const ItemInfo& info) { _itemInfo = info; }
-    ItemInfo info() const { return _itemInfo; }
+    void setInfo(const ItemInstanceInfo& info) { _itemInfo = info; }
+    ItemInstanceInfo info() const { return _itemInfo; }
 
 private:
 
@@ -92,10 +65,9 @@ private:
     std::uint32_t   _flags = 0;
     bool            _isObtainable = false;
 
-    ItemInfo        _itemInfo;
+    ItemInstanceInfo        _itemInfo;
 };
 
-void from_json(const nl::json& j, ItemCallbacks& i);
-void from_json(const nl::json& j, ItemInfo& i);
+void from_json(const nl::json& j, ItemInstanceInfo& i);
 
 } // namespace tt

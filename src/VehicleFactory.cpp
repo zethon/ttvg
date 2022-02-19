@@ -55,11 +55,7 @@ void VehicleFactory::loadVehicles(const nl::json& json)
             item.value().at("horn").get<std::string>());
 
         info.sound = _resources.cacheSound(soundname);
-
-        const auto textname = fmt::format("textures/{}.png",
-            item.value().at("name").get<std::string>());
-
-        info.texture = _resources.cacheTexture(textname);
+        info.texture = _resources.cacheTexture(info.texturefile);
 
         if (info.texture)
         {

@@ -1,3 +1,32 @@
+## 2022-02-13
+
+
+
+## 2022-02-10
+
+`GameObject`
+`GameObjectInfo`
+`GameObjectInstanceInfo`
+
+`Item`
+`ItemInfo`
+`ItemInstanceInfo`
+
+Difference(s) between a `GameObject` and an `Item`
+ * `Item`s can be picked up, like a `Bag of Weed`
+ * `GameObjects`can be an NPC
+ * 
+
+
+class GameObject;
+class Item : public GameObject
+class NPC : public GameObject
+
+The `GameObject` class is used for shared base functionality of _things_ in the game, for example drawing mehods would 
+be stored
+
+class GameObjectInfo
+
 ## 2020-06-18
 
 Trying to figure out a good architecture for the top level classes, but instead I should first I should do a basic design doc:

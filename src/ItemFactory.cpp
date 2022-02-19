@@ -78,7 +78,7 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
  *
  */
 ItemPtr ItemFactory::createItem(const std::string&  name,
-                                const ItemCallbacks& callbacks)
+                                const GameObjectCallbacks& callbacks)
 {
 
     std::string jsonFile =
@@ -86,7 +86,7 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
 
     if( !boost::filesystem::exists(jsonFile) )
     {
-        auto error = fmt::format("file '{}' not found", jsonFile);
+        auto error = fmt::format("json file '{}' not found", jsonFile);
         throw std::runtime_error(error);
     }
 
@@ -100,6 +100,11 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
 
     std::string textureFile = fmt::format("items/{}.png", name);
     sf::Texture* texture = _resources.cacheTexture(textureFile);
+    if (texture == nullptr)
+    {
+        auto error = fmt::format("texture file '{}' not found", textureFile);
+        throw std::runtime_error(error);
+    }
 
     //
     // By default, scale item image to tile size.
@@ -155,6 +160,48 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
     item->callbacks = callbacks;
 
     return item;
+}
+
+GameObjectPtr ItemFactory::createGameObject(const std::string& name)
+{
+    return {};
+}
+
+GameObjectInfo ItemFactory::getObjectInfo(const std::string& name)
+{
+    const auto jsonFile = _resources.getFilename(fmt::format("items/{}.json", name));
+
+    if( !boost::filesystem::exists(jsonFile) )
+    {
+        auto error = fmt::format("json file '{}' not found", jsonFile);
+        throw std::runtime_error(error);
+    }
+
+    std::ifstream   file(jsonFile.c_str());
+    nl::json        j = nl::json::parse(file, nullptr, false);
+
+    if (j.is_discarded())
+    {
+        auto error = fmt::format("json file '{}' could not be loaded", jsonFile);
+        throw std::runtime_error(error);
+    }
+
+    // TODO: function that validates the JSON has all the required fields
+    if (!j.contains("texture"))
+    {
+        auto error = fmt::format("json file '{}' does not have a 'texture' field", jsonFile);
+        throw std::runtime_error(error);
+    }
+
+    const GameObjectInfo retval = j.get<tt::GameObjectInfo>();
+    if (auto texture = _resources.cacheTexture(retval.texturefile);
+            texture == nullptr)
+    {
+            auto error = fmt::format("texture file '{}' not found", retval.texturefile);
+            throw std::runtime_error(error);
+    }
+
+    return retval;
 }
 
 } // namespace tt

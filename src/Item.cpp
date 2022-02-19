@@ -8,30 +8,7 @@
 namespace tt
 {
 
-void from_json(const nl::json& j, ItemCallbacks& i)
-{
-    if (j.contains("onSelect")) 
-    {
-        i.onSelect = j["onSelect"].get<std::string>();
-    }
-
-    // if (j.contains("onDrop")) 
-    // {
-    //     j.at("onDrop").get_to(i.onDrop);
-    // }
-
-    // if (j.contains("onUse")) 
-    // {
-    //     j.at("onUse").get_to(i.onUse);
-    // }
-
-    // if (j.contains("onConsume")) 
-    // {
-    //     j.at("onConsume").get_to(i.onConsume);
-    // }
-}
-
-void from_json(const nl::json& j, ItemInfo& info)
+void from_json(const nl::json& j, ItemInstanceInfo& info)
 {
     if (j.contains("x"))
     {
@@ -72,7 +49,7 @@ void from_json(const nl::json& j, ItemInfo& info)
         info.respawn = j["respawn-delay"].get<float>();
     }
 
-    info.callbacks = j.get<ItemCallbacks>();
+    info.callbacks = j.get<GameObjectCallbacks>();
 }
 
 namespace

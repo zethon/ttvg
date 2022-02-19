@@ -1,0 +1,28 @@
+{
+    "name" : "Bag of Weed",
+     "description": "This a bag of weed",
+}
+
+,
+
+"objects":
+{
+    "bag-of-weed2":
+    {
+        "instances":
+        [
+            { "x": -1, "y": -1 },
+            { "x": 20, "y": 20 }
+        ]
+    },
+
+    "bag-of-crack2":
+    {
+        "instances":
+        [
+            { "x": 10, "y": 10 },
+            { "x": 75, "y": 75 }
+        ]
+    },
+
+}

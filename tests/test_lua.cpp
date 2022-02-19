@@ -39,7 +39,7 @@ struct TestHarness
 
         tt::GameObjectInfo playerObjInfo;
         playerObjInfo.size = sf::Vector2u{ 10, 10 };
-        playerObjInfo.count = 9;
+        playerObjInfo.framecount = 9;
         playerObjInfo.states.emplace();
         playerObjInfo.states->emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
         playerObjInfo.states->emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });

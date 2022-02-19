@@ -134,7 +134,7 @@ class InventoryWindow : public OptionsWindow
 {
     bool _debug = false;
 
-    // count and name
+    // framecount and name
     using InvAgg = std::tuple<std::uint32_t, ItemPtr>;
     std::map<std::string, InvAgg> _aggregate;
 

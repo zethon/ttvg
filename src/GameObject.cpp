@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <fmt/core.h>
+
 #include "GameObject.h"
 #include "TTUtils.h"
 
@@ -12,20 +14,20 @@ void from_json(const nl::json& j, GameObjectInfo& i)
 {
     if (j.contains("name")) j["name"].get_to(i.name);
     if (j.contains("description")) j["description"].get_to(i.description);
+
+    if (j.contains("texture"))
+    {
+        j["texture"].get_to(i.texturefile);
+    }
+    else
+    {
+        const auto error = fmt::format("item '{}' is missing texture file", i.name);
+        throw std::runtime_error(error);
+    }
     
-    if (j.contains("size"))
+    if (j.contains("obtainable"))
     {
-        i.size = j["size"].get<sf::Vector2u>();
-    }
-
-    if (j.contains("scale"))
-    {
-        i.scale = j["scale"].get<sf::Vector2f>();
-    }
-
-    if (j.contains("count"))
-    {
-        i.count = j["count"].get<std::uint32_t>();
+        i.obtainable = j["obtainable"].get<bool>();
     }
 
     if (j.contains("states")
@@ -39,6 +41,26 @@ void from_json(const nl::json& j, GameObjectInfo& i)
             i.states->insert(std::make_pair(state.id, std::move(state)));
         }
     }
+
+    if (j.contains("size"))
+    {
+        i.size = j["size"].get<sf::Vector2u>();
+    }
+
+    if (j.contains("scale"))
+    {
+        i.scale = j["scale"].get<sf::Vector2f>();
+    }
+
+    if (j.contains("framecount"))
+    {
+        i.framecount = j["framecount"].get<std::uint32_t>();
+    }
+
+    if (j.contains("timestep"))
+    {
+        i.timestep = j["timestep"].get<std::uint32_t>();
+    }
 }
 
 void from_json(const nl::json& j, GameObjectState& state)
@@ -47,15 +69,37 @@ void from_json(const nl::json& j, GameObjectState& state)
     {
         j["id"].get_to(state.id);
     }
+    else
+    {
+        throw std::runtime_error("object state is missing 'id'");
+    }
 
     if (j.contains("source"))
     {
         state.source = j["source"].get<sf::Vector2i>();
     }
-
-    if (j.contains("count"))
+    else
     {
-        state.count = j["count"].get<std::uint32_t>();
+        throw std::runtime_error("object state is missing 'source'");
+    }
+
+
+    if (j.contains("frame-count"))
+    {
+        state.framecount = j["frame-count"].get<std::uint32_t>();
+    }
+
+    if (j.contains("time-step"))
+    {
+        state.timestep = j["time-step"].get<std::uint32_t>();
+    }
+}
+
+void from_json(const nl::json& j, GameObjectCallbacks& cbs)
+{
+    if (j.contains("onSelect"))
+    {
+        j["onSelect"].get_to(cbs.onSelect);
     }
 }
 
@@ -79,9 +123,9 @@ GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
     }
 
     std::uint32_t count = 1;
-    if (info.count.has_value())
+    if (info.framecount.has_value())
     {
-        count = *(info.count);
+        count = *(info.framecount);
     }
 
     if (info.states.has_value())
@@ -90,8 +134,8 @@ GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
         for (const auto& [id, state] : *(info.states))
         {
             GameObjectState newstate = state;
-            if (!newstate.count.has_value()) newstate.count = count;
-            _states.emplace(id, newstate);
+            if (!newstate.framecount.has_value()) newstate.framecount = count;
+            _states.emplace(id, std::move(newstate));
         }
     }
     else
@@ -128,7 +172,7 @@ void GameObject::setState(const std::string& statename)
 std::uint16_t GameObject::timestep()
 {
     if (animated()
-        && _timer.getElapsedTime().asMilliseconds() > 55)
+        && _timer.getElapsedTime().asMilliseconds() > _timestep)
     {
         auto[left, top] = _source;
         left++;

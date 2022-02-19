@@ -5,3 +5,4 @@ core
 .vscode/settings.json
 bin.minsizerel/
 bin.release/
+build-make

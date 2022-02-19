@@ -99,6 +99,7 @@ PollResult Tucson::poll(const sf::Event& e)
             }
             break;
 
+            case sf::Keyboard::End:
             case sf::Keyboard::F1:
             {
                 MessagesWindow w{ *this };

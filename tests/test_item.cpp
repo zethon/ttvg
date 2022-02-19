@@ -2,6 +2,7 @@
 #include <boost/test/data/test_case.hpp>
 #include <boost/filesystem.hpp>
 
+#include <nlohmann/json.hpp>
 #include <fmt/format.h>
 
 #include <SFML/Graphics.hpp>
@@ -18,6 +19,7 @@
 namespace tools = boost::test_tools;
 namespace data = boost::unit_test::data;
 namespace fs = boost::filesystem;
+namespace nl = nlohmann;
 
 BOOST_AUTO_TEST_SUITE(tt)
 BOOST_AUTO_TEST_SUITE(items)
@@ -146,4 +148,39 @@ BOOST_AUTO_TEST_CASE(itemRandomPlacementTest)
 }
 
 BOOST_AUTO_TEST_SUITE_END() // items
+
+BOOST_AUTO_TEST_SUITE(gameobjects)
+
+const auto sevanjson = R"x({ "name": "sevan2",
+"description": "this is the description",
+"size": { "x": 64, "y": 64 },
+"scale": { "x": 1.0, "y": 1.25 },
+"states":
+    [
+        { "id":"up","source":{ "x":0, "y":0 },"count":2 },
+        { "id":"down", "source":{ "x":0, "y":128 },"count":2 }
+    ]
+})x";
+
+// --run_test=tt/gameobjects/gameObjectLoadTest
+BOOST_AUTO_TEST_CASE(gameObjectLoadTest)
+{
+    nl::json jsondata = nl::json::parse(sevanjson, nullptr, false);
+    BOOST_TEST(!jsondata.is_discarded());
+
+    const auto object = jsondata.get<tt::GameObjectInfo>();
+    BOOST_TEST(object.name == "sevan2");
+    BOOST_TEST(object.states.has_value());
+    BOOST_TEST(object.states->size() == 2);
+
+    const auto& statesmap = *(object.states);
+    BOOST_TEST((statesmap.find("up") != statesmap.end()));
+    BOOST_TEST((statesmap.find("down") != statesmap.end()));
+
+    BOOST_TEST(statesmap.at("up").source.y == 0);
+    BOOST_TEST(statesmap.at("down").source.y == 128);
+}
+
+BOOST_AUTO_TEST_SUITE_END() // gameobjects
+
 BOOST_AUTO_TEST_SUITE_END() // tt
