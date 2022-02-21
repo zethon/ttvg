@@ -44,7 +44,11 @@ struct TestHarness
 
         sf::Texture texture;
         texture.create(100, 100);
-        _player = std::make_shared<tt::Player>(texture, sf::Vector2i{ 10,10 });
+
+        tt::GameObjectInfo playerObjInfo;
+        playerObjInfo.size = sf::Vector2u{ 10, 10 };
+
+        _player = std::make_shared<tt::Player>(playerObjInfo, texture);
 
         _itemFactory = std::make_shared<ItemFactory>(_resources);
 

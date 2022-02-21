@@ -103,7 +103,52 @@ void from_json(const nl::json& j, GameObjectCallbacks& cbs)
     }
 }
 
+void from_json(const nl::json& j, GameObjectInstanceInfo& info)
+{
+    if (j.contains("x"))
+    {
+        if (j["x"].is_number())
+        {
+            info.x = j["x"].get<float>();
+        }
+        else if (j["x"].is_string()
+            && j["x"].get<std::string>() == "random")
+        {
+            info.x = -1.f;
+        }
+        else
+        {
+            throw std::runtime_error("invalid item coordinate");
+        }
+    }
+
+    if (j.contains("y"))
+    {
+        if (j["y"].is_number())
+        {
+            info.y = j["y"].get<float>();
+        }
+        else if (j["y"].is_string()
+            && j["y"].get<std::string>() == "random")
+        {
+            info.y = -1.f;
+        }
+        else
+        {
+            throw std::runtime_error("invalid item coordinate");
+        }
+    }
+
+    if (j.contains("respawn-delay"))
+    {
+        info.respawn = j["respawn-delay"].get<float>();
+    }
+
+    info.callbacks = j.get<GameObjectCallbacks>();
+}
+
 GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
+    : _objectInfo{info}
 {
     _sprite.setTexture(texture);
 
@@ -150,16 +195,16 @@ GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
 }
 
 // TODO: THIS CONSTRUCTOR WILL BE REFACTORED OUT
-GameObject::GameObject(const sf::Texture& texture, const sf::Vector2i& size)
-    :   _size{ size }
-{
-    _sprite.setTexture(texture);
-    _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
+//GameObject::GameObject(const sf::Texture& texture, const sf::Vector2i& size)
+//    :   _size{ size }, _objectInfo{GameObjectInfo{}}
+//{
+//    _sprite.setTexture(texture);
+//    _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
 
-    _highlight.setFillColor(sf::Color::Transparent);
-    _highlight.setOutlineThickness(2);
-    _highlight.setOutlineColor(sf::Color(255, 255, 255));
-}
+//    _highlight.setFillColor(sf::Color::Transparent);
+//    _highlight.setOutlineThickness(2);
+//    _highlight.setOutlineColor(sf::Color(255, 255, 255));
+//}
 
 void GameObject::setState(const std::string& statename)
 {

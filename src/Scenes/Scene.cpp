@@ -324,7 +324,7 @@ void Scene::init()
 {
     _logger->debug("initializing scene '{}'", _name);
     createItems();
-    createGameObjects();
+//    createGameObjects();
 
     tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, 
         { { LUA_REGISTRYINDEX, _luaIdx } });
@@ -658,7 +658,7 @@ Walk around and enjoy Tucson!
     w.exec();
 }
 
-void Scene::setItemInstance(Item& item, const ItemInstanceInfo& groupInfo, const ItemInstanceInfo& instanceInfo)
+void Scene::setItemInstance(Item& item, const GameObjectInstanceInfo& groupInfo, const GameObjectInstanceInfo& instanceInfo)
 {
     auto x = instanceInfo.x.has_value() ? instanceInfo.x : groupInfo.x;
     if (!x.has_value())
@@ -699,7 +699,7 @@ void Scene::setItemInstance(Item& item, const ItemInstanceInfo& groupInfo, const
 
     // TODO: this feels weird to use the item to get its own 
     // info, but it will do for now
-    item.setInfo(ItemInstanceInfo{ item.getID(), x, y, respawn, item.callbacks });
+    item.setInfo(GameObjectInstanceInfo{ item.getID(), x, y, respawn, item.callbacks });
 }
 
 void Scene::createItems()
@@ -721,14 +721,14 @@ void Scene::createItems()
             }
 
             // default info for the item
-            ItemInstanceInfo groupinfo = data.get<ItemInstanceInfo>();
+            GameObjectInstanceInfo groupinfo = data.get<GameObjectInstanceInfo>();
             
             for (const auto& instance : data["instances"])
             {
                 auto item = _itemFactory.createItem(itemId);
                 if (item)
                 {
-                    ItemInstanceInfo instanceinfo = instance.get<ItemInstanceInfo>();
+                    auto instanceinfo = instance.get<GameObjectInstanceInfo>();
                     setItemInstance(*item, groupinfo, instanceinfo);
                     _items.push_back(item);
                 }
@@ -739,41 +739,41 @@ void Scene::createItems()
     _logger->debug("scene '{}' loaded {} items", _name, _items.size());
 }
 
-void Scene::createGameObjects()
-{
-    _logger->debug("scene {} loading game objects", _name);
-    _objectInfoList.clear();
+//void Scene::createGameObjects()
+//{
+//    _logger->debug("scene {} loading game objects", _name);
+//    _objectInfoList.clear();
 
-    if (const auto& config = _background->json();
-            config.contains("objects"))
-    {
-        for (const auto& el : config["objects"].items())
-        {
-            if (!el.value().contains("instances"))
-            {
-                const auto error = fmt::format("object '{}' has no defined instances");
-                throw std::runtime_error(error);
-            }
+//    if (const auto& config = _background->json();
+//            config.contains("objects"))
+//    {
+//        for (const auto& el : config["objects"].items())
+//        {
+//            if (!el.value().contains("instances"))
+//            {
+//                const auto error = fmt::format("object '{}' has no defined instances");
+//                throw std::runtime_error(error);
+//            }
 
-            if (_objectInfoList.find(el.key()) != _objectInfoList.end())
-            {
-                throw std::runtime_error(fmt::format("duplicate object {} found", el.key()));
-            }
+//            if (_objectInfoList.find(el.key()) != _objectInfoList.end())
+//            {
+//                throw std::runtime_error(fmt::format("duplicate object {} found", el.key()));
+//            }
 
-            const auto objectInfo = _itemFactory.getObjectInfo(el.key());
-            _objectInfoList.emplace(el.key(), std::move(objectInfo));
+//            const auto objectInfo = _itemFactory.getObjectInfo(el.key());
+//            _objectInfoList.emplace(el.key(), std::move(objectInfo));
 
-            for (const auto& jinst : el.value()["instances"])
-            {
-//                const auto instance = jinst.get<tt::GameObjectInstanceInfo>();
+//            for (const auto& jinst : el.value()["instances"])
+//            {
+////                const auto instance = jinst.get<tt::GameObjectInstanceInfo>();
 
-                // load instance info
-                // create `GameObject` and put into object list
+//                // load instance info
+//                // create `GameObject` and put into object list
 
-            }
-        }
-    }
-}
+//            }
+//        }
+//    }
+//}
 
 void Scene::pickupItem(Items::iterator itemIt)
 {

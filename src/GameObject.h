@@ -32,6 +32,10 @@ void from_json(const nl::json& j, GameObjectState& i);
 struct GameObjectCallbacks;
 void from_json(const nl::json& j, GameObjectCallbacks& cbs);
 
+struct GameObjectInstanceInfo;
+using GameObjectInstanceInfoPtr = std::shared_ptr<GameObjectInstanceInfo>;
+void from_json(const nl::json& j, GameObjectInstanceInfo& info);
+
 struct GameObjectState
 {
     std::string     id;
@@ -101,7 +105,12 @@ class GameObject :
 public:
 
     GameObject(const GameObjectInfo& info, const sf::Texture& texture);
-    GameObject(const sf::Texture& texture, const sf::Vector2i& size);
+//    GameObject(const sf::Texture& texture, const sf::Vector2i& size);
+
+    GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
+        : _objectInfo{obj}, _instanceInfo{inst}
+    {
+    }
 
     void setState(const std::string& statename);
     
@@ -143,7 +152,8 @@ protected:
     // 2022-02-10: The idea right now is that a `GameObject` has a reference
     // to a `GameObjectInfo` structs, and to also a `GameObjectInstance` struct
     // to let it know about the instance of the `GameObject`
-    GameObjectInfoPtr _objectInfo;
+    const GameObjectInfo&           _objectInfo;    // ref to the cached info
+    const GameObjectInstanceInfo    _instanceInfo;  // copy of the instance info
 };
 
 } // namespace tt

@@ -16,19 +16,6 @@ namespace tt
 class Item;
 using ItemPtr = std::shared_ptr<Item>;
 
-struct ItemInstanceInfo
-{
-    std::string             id;
-
-    // a null x,y means that the coordinate was not specified, 
-    // and a value of -1 means it should be picked randomly
-    std::optional<float>    x;
-    std::optional<float>    y;
-    std::optional<float>    respawn;
-
-    GameObjectCallbacks     callbacks;
-};
-
 class Item : public GameObject
 {
 
@@ -37,8 +24,15 @@ public:
     static const struct luaL_Reg LuaMethods[];
 
     Item(       const std::string&  id,
-                const sf::Texture&  texture, 
+                const sf::Texture&  texture,
                 const sf::Vector2i& size );
+
+    Item(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
+        : GameObject(obj, inst)
+    {
+        // nothing to do
+    }
+
 
     std::string getID() const;
 
@@ -53,8 +47,8 @@ public:
 
     GameObjectCallbacks   callbacks;
 
-    void setInfo(const ItemInstanceInfo& info) { _itemInfo = info; }
-    ItemInstanceInfo info() const { return _itemInfo; }
+    void setInfo(const GameObjectInstanceInfo& info) { _itemInfo = info; }
+    GameObjectInstanceInfo info() const { return _itemInfo; }
 
 private:
 
@@ -65,9 +59,7 @@ private:
     std::uint32_t   _flags = 0;
     bool            _isObtainable = false;
 
-    ItemInstanceInfo        _itemInfo;
+    GameObjectInstanceInfo        _itemInfo;
 };
-
-void from_json(const nl::json& j, ItemInstanceInfo& i);
 
 } // namespace tt

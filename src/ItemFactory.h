@@ -13,6 +13,7 @@ class ItemFactory
 {
 
 ResourceManager&    _resources;
+GameObjectInfoMap   _objectMap;
 
 public:
     static constexpr auto CLASS_NAME = "ItemFactory";
@@ -27,6 +28,8 @@ public:
     {
         return createItem(name, GameObjectCallbacks{});
     }
+
+    ItemPtr createItem2(const std::string& name, const GameObjectInstanceInfo& instinfo);
 
     GameObjectPtr createGameObject(const std::string& name);
     GameObjectInfo getObjectInfo(const std::string& name);

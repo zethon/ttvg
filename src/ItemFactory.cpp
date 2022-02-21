@@ -80,7 +80,6 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
 ItemPtr ItemFactory::createItem(const std::string&  name,
                                 const GameObjectCallbacks& callbacks)
 {
-
     std::string jsonFile =
         _resources.getFilename(fmt::format("items/{}.json", name));
 
@@ -135,9 +134,9 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
         }
     }
     
-    auto item   = std::make_shared<Item>(   
-                                    name, 
-                                    *texture, 
+    auto item   = std::make_shared<Item>(
+                                    name,
+                                    *texture,
                                     sf::Vector2i{ width, height } );
 
     item->setScale(scaleX, scaleY);
@@ -159,6 +158,20 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
 
     item->callbacks = callbacks;
 
+    return item;
+}
+
+ItemPtr ItemFactory::createItem2(const std::string& name, const GameObjectInstanceInfo& instinfo)
+{
+    // load and cache the object info
+    if (_objectMap.find(name) == _objectMap.end())
+    {
+        const auto tempinfo = getObjectInfo(name);
+        _objectMap.emplace(name, tempinfo);
+    }
+
+    const auto& objinfo = _objectMap.at(name);
+    auto item = std::make_shared<Item>(objinfo, instinfo);
     return item;
 }
 

@@ -137,7 +137,7 @@ class Scene : public Screen
 
 public:
     using Items = std::vector<ItemPtr>;
-    using ItemTasks = std::map<sf::Time, ItemInstanceInfo>;
+    using ItemTasks = std::map<sf::Time, GameObjectInstanceInfo>;
 
     static constexpr auto CLASS_NAME = "Scene";
     static const struct luaL_Reg LuaMethods[];
@@ -215,7 +215,6 @@ protected:
 
 private:
     void createItems();
-    void createGameObjects();
     void pickupItem(Items::iterator itemIt);
     virtual void updateCurrentTile(const TileInfo& info);
     
@@ -229,7 +228,7 @@ private:
     virtual void customUpdateCurrentTile(const TileInfo&) { }
 
     // setup an item's info based on the map and item info
-    void setItemInstance(Item& item, const ItemInstanceInfo& groupInfo, const ItemInstanceInfo& instanceInfo);
+    void setItemInstance(Item& item, const GameObjectInstanceInfo& groupInfo, const GameObjectInstanceInfo& instanceInfo);
 };
 
 } // namespace tt

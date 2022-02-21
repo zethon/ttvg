@@ -8,50 +8,6 @@
 namespace tt
 {
 
-void from_json(const nl::json& j, ItemInstanceInfo& info)
-{
-    if (j.contains("x"))
-    {
-        if (j["x"].is_number())
-        {
-            info.x = j["x"].get<float>();
-        }
-        else if (j["x"].is_string()
-            && j["x"].get<std::string>() == "random")
-        {
-            info.x = -1.f;
-        }
-        else
-        {
-            throw std::runtime_error("invalid item coordinate");
-        }
-    }
-
-    if (j.contains("y"))
-    {
-        if (j["y"].is_number())
-        {
-            info.y = j["y"].get<float>();
-        }
-        else if (j["y"].is_string()
-            && j["y"].get<std::string>() == "random")
-        {
-            info.y = -1.f;
-        }
-        else
-        {
-            throw std::runtime_error("invalid item coordinate");
-        }
-    }
-
-    if (j.contains("respawn-delay"))
-    {
-        info.respawn = j["respawn-delay"].get<float>();
-    }
-
-    info.callbacks = j.get<GameObjectCallbacks>();
-}
-
 namespace
 {
 
@@ -121,13 +77,15 @@ const struct luaL_Reg Item::LuaMethods[] =
     {nullptr, nullptr}
 };
 
+// -- START: THIS WILL BE REFACTORED OUT
 Item::Item( const std::string&  id,
             const sf::Texture& texture,
             const sf::Vector2i& size )
-    : GameObject(texture, size),
+    : GameObject(GameObjectInfo{}, GameObjectInstanceInfo{}),
         _id { id }
 {
 }
+// -- END: THIS WILL BE REFACTORED OUT
 
 std::string Item::getID() const
 {
