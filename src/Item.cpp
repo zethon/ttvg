@@ -81,35 +81,35 @@ const struct luaL_Reg Item::LuaMethods[] =
 Item::Item( const std::string&  id,
             const sf::Texture& texture,
             const sf::Vector2i& size )
-    : GameObject(GameObjectInfo{}, GameObjectInstanceInfo{}),
-        _id { id }
+    // : GameObject(GameObjectInfo{}, GameObjectInstanceInfo{}),
+    : GameObject{ texture, size }
 {
 }
 // -- END: THIS WILL BE REFACTORED OUT
 
 std::string Item::getID() const
 {
-    return _id;
+    return this->_objectInfo.id;
 }
 
 void Item::setName(const std::string& s)
 {
-    _name = s;
+    throw std::runtime_error("Item::setName has been deprecated");
 }
 
 std::string Item::getName() const
 {
-    return _name;
+    return _objectInfo.name;
 }
 
 void Item::setDescription(const std::string& s)
 {
-    _description = s;
+    throw std::runtime_error("Item::setDescription has been deprecated");
 }
 
 std::string Item::getDescription() const
 {
-    return _description;
+    return _objectInfo.description;
 }
 
 void Item::setObtainable(bool b)

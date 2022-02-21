@@ -52,10 +52,6 @@ public:
 
 private:
 
-    std::string     _id;
-    std::string     _name;
-    std::string     _description;
-
     std::uint32_t   _flags = 0;
     bool            _isObtainable = false;
 

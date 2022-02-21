@@ -77,11 +77,11 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
  * Create an Item from the specified name.
  *
  */
-ItemPtr ItemFactory::createItem(const std::string&  name,
+ItemPtr ItemFactory::createItem(const std::string&  objid,
                                 const GameObjectCallbacks& callbacks)
 {
     std::string jsonFile =
-        _resources.getFilename(fmt::format("items/{}.json", name));
+        _resources.getFilename(fmt::format("items/{}.json", objid));
 
     if( !boost::filesystem::exists(jsonFile) )
     {
@@ -97,7 +97,7 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
         file >> json;
     }
 
-    std::string textureFile = fmt::format("items/{}.png", name);
+    std::string textureFile = fmt::format("items/{}.png", objid);
     sf::Texture* texture = _resources.cacheTexture(textureFile);
     if (texture == nullptr)
     {
@@ -135,21 +135,21 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
     }
     
     auto item   = std::make_shared<Item>(
-                                    name,
+                                    objid,
                                     *texture,
                                     sf::Vector2i{ width, height } );
 
     item->setScale(scaleX, scaleY);
 
-    if(json.find("name") != json.end())
-    {
-        item->setName(json["name"]);
-    }
+    //if(json.find("name") != json.end())
+    //{
+    //    item->setName(json["name"]);
+    //}
 
-    if(json.find("description") != json.end())
-    {
-        item->setDescription(json["description"]);
-    }
+    //if(json.find("description") != json.end())
+    //{
+    //    item->setDescription(json["description"]);
+    //}
 
     if(json.find("obtainable") != json.end())
     {
@@ -161,16 +161,16 @@ ItemPtr ItemFactory::createItem(const std::string&  name,
     return item;
 }
 
-ItemPtr ItemFactory::createItem2(const std::string& name, const GameObjectInstanceInfo& instinfo)
+ItemPtr ItemFactory::createItem2(const std::string& objid, const GameObjectInstanceInfo& instinfo)
 {
     // load and cache the object info
-    if (_objectMap.find(name) == _objectMap.end())
+    if (_objectMap.find(objid) == _objectMap.end())
     {
-        const auto tempinfo = getObjectInfo(name);
-        _objectMap.emplace(name, tempinfo);
+        const auto tempinfo = getObjectInfo(objid);
+        _objectMap.emplace(objid, tempinfo);
     }
 
-    const auto& objinfo = _objectMap.at(name);
+    const auto& objinfo = _objectMap.at(objid);
     auto item = std::make_shared<Item>(objinfo, instinfo);
     return item;
 }
@@ -180,9 +180,9 @@ GameObjectPtr ItemFactory::createGameObject(const std::string& name)
     return {};
 }
 
-GameObjectInfo ItemFactory::getObjectInfo(const std::string& name)
+GameObjectInfo ItemFactory::getObjectInfo(const std::string& objid)
 {
-    const auto jsonFile = _resources.getFilename(fmt::format("items/{}.json", name));
+    const auto jsonFile = _resources.getFilename(fmt::format("items/{}.json", objid));
 
     if( !boost::filesystem::exists(jsonFile) )
     {
@@ -206,13 +206,17 @@ GameObjectInfo ItemFactory::getObjectInfo(const std::string& name)
         throw std::runtime_error(error);
     }
 
-    const GameObjectInfo retval = j.get<tt::GameObjectInfo>();
+    GameObjectInfo retval = j.get<tt::GameObjectInfo>();
     if (auto texture = _resources.cacheTexture(retval.texturefile);
             texture == nullptr)
     {
             auto error = fmt::format("texture file '{}' not found", retval.texturefile);
             throw std::runtime_error(error);
     }
+
+    // 2022-02-21: This is ugly. I wanted to create a default contructor and a constructor
+    // that accepted just a std::string, but nlohmman wouldn't let me!
+    retval.id = objid;
 
     return retval;
 }

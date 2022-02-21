@@ -50,6 +50,7 @@ if (MSVC)
         -DWIN32
         -D_WIN32
         -D_WINDOWS
+        -D_WIN32_WINDOWS
         -DNOMINMAX
         -D_SCL_SECURE_NO_WARNINGS
         -DWIN32_LEAN_AND_MEAN

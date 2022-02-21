@@ -194,17 +194,17 @@ GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
     _highlight.setOutlineColor(sf::Color(255, 255, 255));
 }
 
-// TODO: THIS CONSTRUCTOR WILL BE REFACTORED OUT
-//GameObject::GameObject(const sf::Texture& texture, const sf::Vector2i& size)
-//    :   _size{ size }, _objectInfo{GameObjectInfo{}}
-//{
-//    _sprite.setTexture(texture);
-//    _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
+ // TODO: THIS CONSTRUCTOR WILL BE REFACTORED OUT
+GameObject::GameObject(const sf::Texture& texture, const sf::Vector2i& size)
+    :   _size{ size }, _objectInfo{GameObjectInfo{}}
+{
+    _sprite.setTexture(texture);
+    _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
 
-//    _highlight.setFillColor(sf::Color::Transparent);
-//    _highlight.setOutlineThickness(2);
-//    _highlight.setOutlineColor(sf::Color(255, 255, 255));
-//}
+    _highlight.setFillColor(sf::Color::Transparent);
+    _highlight.setOutlineThickness(2);
+    _highlight.setOutlineColor(sf::Color(255, 255, 255));
+}
 
 void GameObject::setState(const std::string& statename)
 {
@@ -217,7 +217,7 @@ void GameObject::setState(const std::string& statename)
 std::uint16_t GameObject::timestep()
 {
     if (animated()
-        && _timer.getElapsedTime().asMilliseconds() > _timestep)
+        && _timer.getElapsedTime().asMilliseconds() > static_cast<int>(_timestep))
     {
         auto[left, top] = _source;
         left++;

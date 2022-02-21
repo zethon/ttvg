@@ -46,7 +46,8 @@ struct GameObjectState
 
 struct GameObjectInfo
 {
-    std::string     name;
+    std::string     id;             // unique! id is how the object is refrerenced in the json
+    std::string     name;           // name is how the object shows up in the game (i.e. inventory)
     std::string     description;
     std::string     texturefile;
 
@@ -105,7 +106,7 @@ class GameObject :
 public:
 
     GameObject(const GameObjectInfo& info, const sf::Texture& texture);
-//    GameObject(const sf::Texture& texture, const sf::Vector2i& size);
+    GameObject(const sf::Texture& texture, const sf::Vector2i& size);
 
     GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
         : _objectInfo{obj}, _instanceInfo{inst}
