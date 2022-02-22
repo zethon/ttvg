@@ -80,7 +80,8 @@ const struct luaL_Reg Item::LuaMethods[] =
 // -- START: THIS WILL BE REFACTORED OUT
 Item::Item( const std::string&  id,
             const sf::Texture& texture,
-            const sf::Vector2i& size )
+            const sf::Vector2i& size,
+            const GameObjectInfo& objinfo)
     // : GameObject(GameObjectInfo{}, GameObjectInstanceInfo{}),
     : GameObject{ texture, size }
 {

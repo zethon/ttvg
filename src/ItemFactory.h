@@ -31,7 +31,6 @@ public:
 
     ItemPtr createItem2(const std::string& name, const GameObjectInstanceInfo& instinfo);
 
-    GameObjectPtr createGameObject(const std::string& name);
     GameObjectInfo getObjectInfo(const std::string& name);
 };
 

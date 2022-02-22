@@ -80,30 +80,48 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
 ItemPtr ItemFactory::createItem(const std::string&  objid,
                                 const GameObjectCallbacks& callbacks)
 {
-    std::string jsonFile =
+    const std::string jsonFile =
         _resources.getFilename(fmt::format("items/{}.json", objid));
 
-    if( !boost::filesystem::exists(jsonFile) )
-    {
-        auto error = fmt::format("json file '{}' not found", jsonFile);
-        throw std::runtime_error(error);
-    }
+//    if( !boost::filesystem::exists(jsonFile) )
+//    {
+//        auto error = fmt::format("json file '{}' not found", jsonFile);
+//        throw std::runtime_error(error);
+//    }
 
     std::ifstream   file(jsonFile.c_str());
-    nl::json        json;
+    nl::json        json = nl::json::parse(file, nullptr, false);
 
-    if(file.is_open())
-    {
-        file >> json;
-    }
+//    if (json.is_discarded())
+//    {
+//        auto error = fmt::format("json file '{}' could not be loaded", jsonFile);
+//        throw std::runtime_error(error);
+//    }
 
-    std::string textureFile = fmt::format("items/{}.png", objid);
-    sf::Texture* texture = _resources.cacheTexture(textureFile);
+//    // TODO: function that validates the JSON has all the required fields
+//    if (!json.contains("texture"))
+//    {
+//        auto error = fmt::format("json file '{}' does not have a 'texture' field", jsonFile);
+//        throw std::runtime_error(error);
+//    }
+
+//    GameObjectInfo objinfo = json.get<tt::GameObjectInfo>();
+
+    auto objinfo = getObjectInfo(objid);
+    auto texture = _resources.cacheTexture(objinfo.texturefile);
     if (texture == nullptr)
     {
-        auto error = fmt::format("texture file '{}' not found", textureFile);
-        throw std::runtime_error(error);
+            auto error = fmt::format("texture file '{}' not found", objinfo.texturefile);
+            throw std::runtime_error(error);
     }
+
+//    std::string textureFile = fmt::format("items/{}.png", objid);
+//    sf::Texture* texture = _resources.cacheTexture(textureFile);
+//    if (texture == nullptr)
+//    {
+//        auto error = fmt::format("texture file '{}' not found", textureFile);
+//        throw std::runtime_error(error);
+//    }
 
     //
     // By default, scale item image to tile size.
@@ -137,7 +155,8 @@ ItemPtr ItemFactory::createItem(const std::string&  objid,
     auto item   = std::make_shared<Item>(
                                     objid,
                                     *texture,
-                                    sf::Vector2i{ width, height } );
+                                    sf::Vector2i{ width, height },
+                                    objinfo);
 
     item->setScale(scaleX, scaleY);
 
@@ -175,13 +194,14 @@ ItemPtr ItemFactory::createItem2(const std::string& objid, const GameObjectInsta
     return item;
 }
 
-GameObjectPtr ItemFactory::createGameObject(const std::string& name)
-{
-    return {};
-}
-
 GameObjectInfo ItemFactory::getObjectInfo(const std::string& objid)
 {
+    // load or cache the object info
+    if (_objectMap.find(objid) != _objectMap.end())
+    {
+        return _objectMap.at(objid);
+    }
+
     const auto jsonFile = _resources.getFilename(fmt::format("items/{}.json", objid));
 
     if( !boost::filesystem::exists(jsonFile) )
@@ -218,7 +238,8 @@ GameObjectInfo ItemFactory::getObjectInfo(const std::string& objid)
     // that accepted just a std::string, but nlohmman wouldn't let me!
     retval.id = objid;
 
-    return retval;
+    _objectMap.insert({objid, retval});
+    return _objectMap.at(objid);
 }
 
 } // namespace tt
