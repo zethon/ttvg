@@ -726,20 +726,7 @@ void Scene::createItems()
                 auto instanceinfo = instance.get<GameObjectInstanceInfo>();
                 auto groupcallbacks = instance.get<GameObjectCallbacks>();
                 auto item = _itemFactory.createItem2(itemid, instanceinfo);
-                if (item)
-                {
-                    placeItem(item);
-                }
-
-                //// the "ItemFactory" creates the "Item" and then we let the "Scene" class
-                //// place it in the Scene
-                //auto item = _itemFactory.createItem(itemId);
-                //if (item)
-                //{
-                //    auto instanceinfo = instance.get<GameObjectInstanceInfo>();
-                //    setItemInstance(*item, groupinfo, instanceinfo);
-                //    this->placeItem(item);
-                //}
+                if (item) placeItem(item);
             }
         }
     }
@@ -788,7 +775,6 @@ void Scene::placeItem(ItemPtr item)
     int     height = texture->getSize().y;
     float   scaleX = 36.0f / width;
     float   scaleY = 36.0f / height;
-
 
     // set scale
     item->setScale(scaleX, scaleY);

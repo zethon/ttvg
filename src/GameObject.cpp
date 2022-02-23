@@ -78,7 +78,6 @@ void from_json(const nl::json& j, GameObjectState& state)
         throw std::runtime_error("object state is missing 'source'");
     }
 
-
     if (j.contains("frame-count"))
     {
         state.framecount = j["frame-count"].get<std::uint32_t>();
@@ -189,17 +188,18 @@ GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
     _highlight.setOutlineColor(sf::Color(255, 255, 255));
 }
 
- // TODO: THIS CONSTRUCTOR WILL BE REFACTORED OUT
-//GameObject::GameObject(const sf::Texture& texture, const sf::Vector2i& size)
-//    :   _size{ size }, _objectInfo{GameObjectInfo{}}
-//{
-//    _sprite.setTexture(texture);
-//    _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
+GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
+    : _objectInfo{ obj }, _instanceInfo{ inst }
+{
+    assert(obj.texture);
+    _sprite.setTexture(*obj.texture);
 
-//    _highlight.setFillColor(sf::Color::Transparent);
-//    _highlight.setOutlineThickness(2);
-//    _highlight.setOutlineColor(sf::Color(255, 255, 255));
-//}
+    _size = _sprite.getTexture()->getSize();
+
+    _highlight.setFillColor(sf::Color::Transparent);
+    _highlight.setOutlineThickness(2);
+    _highlight.setOutlineColor(sf::Color(255, 255, 255));
+}
 
 void GameObject::setState(const std::string& statename)
 {

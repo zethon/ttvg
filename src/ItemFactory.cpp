@@ -184,7 +184,7 @@ ItemPtr ItemFactory::createItem(const std::string&  objid,
 
 ItemPtr ItemFactory::createItem2(const std::string& objid, const GameObjectInstanceInfo& instinfo)
 {
-    auto objinfo = getObjectInfo(objid);
+    auto& objinfo = getObjectInfoRef(objid);
     auto texture = _resources.cacheTexture(objinfo.texturefile);
     if (texture == nullptr)
     {
@@ -196,7 +196,7 @@ ItemPtr ItemFactory::createItem2(const std::string& objid, const GameObjectInsta
     return item;
 }
 
-GameObjectInfo ItemFactory::getObjectInfo(const std::string& objid)
+GameObjectInfo& ItemFactory::getObjectInfoRef(const std::string& objid)
 {
     // load or cache the object info
     if (_objectMap.find(objid) != _objectMap.end())
