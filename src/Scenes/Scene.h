@@ -215,6 +215,8 @@ protected:
 
 private:
     void createItems();
+    void placeItem(ItemPtr item);
+
     void pickupItem(Items::iterator itemIt);
     virtual void updateCurrentTile(const TileInfo& info);
     

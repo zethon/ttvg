@@ -240,14 +240,6 @@
             ]
         },
         
-        "sevan2": 
-        {
-            "instances":
-            [    
-                { "x": 12, "y": 21, "onSelect": "sevan_select" }
-            ]
-        },
-
         "plunger": 
         {
             "instances":
@@ -600,18 +592,5 @@
             "93,107,left,true",
             "93,109,right,true"
         ]
-    },
-
-    "objects":
-    {
-        "sevan2":
-        {
-            "instances":
-            [
-                { "x": -1, "y": -1 }
-            ]
-        }
     }
-    
-
 }

@@ -46,17 +46,14 @@ public:
     bool    isObtainable() const;
     void    setObtainable(bool b);
 
-    GameObjectCallbacks   callbacks;
+    //GameObjectCallbacks   callbacks;
+    
 
-    void setInfo(const GameObjectInstanceInfo& info) { _itemInfo = info; }
-    GameObjectInstanceInfo info() const { return _itemInfo; }
 
 private:
 
-    std::uint32_t   _flags = 0;
     bool            _isObtainable = false;
-
-    GameObjectInstanceInfo        _itemInfo;
+    //GameObjectInstanceInfo        _itemInfo;
 };
 
 } // namespace tt

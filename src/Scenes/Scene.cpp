@@ -694,12 +694,12 @@ void Scene::setItemInstance(Item& item, const GameObjectInstanceInfo& groupInfo,
     const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
     item.setPosition(position);
 
-    item.callbacks.onSelect = instanceInfo.callbacks.onSelect.has_value() ?
-        instanceInfo.callbacks.onSelect : groupInfo.callbacks.onSelect;
+    //item.callbacks.onSelect = instanceInfo.callbacks.onSelect.has_value() ?
+    //    instanceInfo.callbacks.onSelect : groupInfo.callbacks.onSelect;
 
     // TODO: this feels weird to use the item to get its own 
     // info, but it will do for now
-    item.setInfo(GameObjectInstanceInfo{ item.getID(), x, y, respawn, item.callbacks });
+    //item.setInfo(GameObjectInstanceInfo{ item.getID(), x, y, respawn, item.callbacks });
 }
 
 void Scene::createItems()
@@ -712,26 +712,35 @@ void Scene::createItems()
     {
         for (auto& el : config["items"].items())
         {
-            const auto& itemId = el.key();
+            const auto& itemid = el.key();
             const auto& data = el.value();
-            if (!data.contains("instances")
-                || !data["instances"].is_array())
+            if (!data.contains("instances") || !data["instances"].is_array())
             {
                 continue;
             }
 
             // default info for the item
-            GameObjectInstanceInfo groupinfo = data.get<GameObjectInstanceInfo>();
+            //GameObjectInstanceInfo groupinfo = data.get<GameObjectInstanceInfo>();
             
             for (const auto& instance : data["instances"])
             {
-                auto item = _itemFactory.createItem(itemId);
+                auto instanceinfo = instance.get<GameObjectInstanceInfo>();
+                auto groupcallbacks = instance.get<GameObjectCallbacks>();
+                auto item = _itemFactory.createItem2(itemid, instanceinfo);
                 if (item)
                 {
-                    auto instanceinfo = instance.get<GameObjectInstanceInfo>();
-                    setItemInstance(*item, groupinfo, instanceinfo);
-                    _items.push_back(item);
+                    placeItem(item);
                 }
+
+                //// the "ItemFactory" creates the "Item" and then we let the "Scene" class
+                //// place it in the Scene
+                //auto item = _itemFactory.createItem(itemId);
+                //if (item)
+                //{
+                //    auto instanceinfo = instance.get<GameObjectInstanceInfo>();
+                //    setItemInstance(*item, groupinfo, instanceinfo);
+                //    this->placeItem(item);
+                //}
             }
         }
     }
@@ -739,41 +748,45 @@ void Scene::createItems()
     _logger->debug("scene '{}' loaded {} items", _name, _items.size());
 }
 
-//void Scene::createGameObjects()
-//{
-//    _logger->debug("scene {} loading game objects", _name);
-//    _objectInfoList.clear();
+// Calculates where to put an Item in the Scene based on the item's properties and
+// then adds the Item to Scene::_items
+void Scene::placeItem(ItemPtr item)
+{
+    auto instanceInfo = item->instanceInfo();
 
-//    if (const auto& config = _background->json();
-//            config.contains("objects"))
-//    {
-//        for (const auto& el : config["objects"].items())
-//        {
-//            if (!el.value().contains("instances"))
-//            {
-//                const auto error = fmt::format("object '{}' has no defined instances");
-//                throw std::runtime_error(error);
-//            }
+    if (!instanceInfo.x.has_value())
+    {
+        throw std::runtime_error(fmt::format(
+            "scene '{}' with item '{}' has an invalid 'x' coordinate", _name, item->getID()));
+    }
 
-//            if (_objectInfoList.find(el.key()) != _objectInfoList.end())
-//            {
-//                throw std::runtime_error(fmt::format("duplicate object {} found", el.key()));
-//            }
+    if (!instanceInfo.y.has_value())
+    {
+        throw std::runtime_error(fmt::format(
+            "scene '{}' with item '{}' has an invalid 'y' coordinate", _name, item->getID()));
+    }
 
-//            const auto objectInfo = _itemFactory.getObjectInfo(el.key());
-//            _objectInfoList.emplace(el.key(), std::move(objectInfo));
+    float xpos = *(instanceInfo.x);
+    if (*(instanceInfo.x) == -1)
+    {
+        const auto bounds = _background->getWorldTileRect();
+        xpos = tt::RandomNumber<float>(0.f, bounds.width);
+    }
 
-//            for (const auto& jinst : el.value()["instances"])
-//            {
-////                const auto instance = jinst.get<tt::GameObjectInstanceInfo>();
+    float ypos = *(instanceInfo.y);
+    if (*(instanceInfo.y) == -1)
+    {
+        const auto bounds = _background->getWorldTileRect();
+        xpos = tt::RandomNumber<float>(0.f, bounds.height);
+    }
 
-//                // load instance info
-//                // create `GameObject` and put into object list
+    // TODO: RESPAWN
 
-//            }
-//        }
-//    }
-//}
+    const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
+    item->setPosition(position);
+
+    _items.push_back(item);
+}
 
 void Scene::pickupItem(Items::iterator itemIt)
 {
@@ -781,11 +794,11 @@ void Scene::pickupItem(Items::iterator itemIt)
 
     bool removeItem = item->isObtainable();
 
-    if (item->callbacks.onSelect.has_value() 
-        && item->callbacks.onSelect->size() > 0)
+    if (item->callbacks().onSelect.has_value() 
+        && item->callbacks().onSelect->size() > 0)
     {
         const auto results = tt::CallLuaFunction(_luaState, 
-            *(item->callbacks.onSelect), 
+            *(item->callbacks().onSelect), 
             _name, 
             { 
                 { LUA_REGISTRYINDEX, _luaIdx },
@@ -803,12 +816,15 @@ void Scene::pickupItem(Items::iterator itemIt)
         _player->addItem(item);
         _items.erase(itemIt);
 
-        if (const auto info = item->info();
-            info.respawn.has_value() && *(info.respawn) > 0)
-        {
-            const auto newtime = _gameTime + sf::seconds(*(info.respawn));
-            _itemTasks.insert({ newtime, std::move(info) });
-        }
+        // TODO: IMPLEMENT RESPAWNING WITH NEW OBJECT CODE
+        throw std::runtime_error("Remove Item is not implemented!");
+        // 
+        //if (const auto info = item->info();
+        //    info.respawn.has_value() && *(info.respawn) > 0)
+        //{
+        //    const auto newtime = _gameTime + sf::seconds(*(info.respawn));
+        //    _itemTasks.insert({ newtime, std::move(info) });
+        //}
         
         _pickupSound->play();
         _descriptionText.setText("Picked up " + item->getName());

@@ -19,11 +19,6 @@ void from_json(const nl::json& j, GameObjectInfo& i)
     {
         j["texture"].get_to(i.texturefile);
     }
-    else
-    {
-        const auto error = fmt::format("item '{}' is missing texture file", i.name);
-        throw std::runtime_error(error);
-    }
     
     if (j.contains("obtainable"))
     {

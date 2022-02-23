@@ -175,18 +175,19 @@ ItemPtr ItemFactory::createItem(const std::string&  objid,
         item->setObtainable(json["obtainable"]);
     }
 
-    item->callbacks = callbacks;
+    //item->callbacks = callbacks;
 
     return item;
 }
 
 ItemPtr ItemFactory::createItem2(const std::string& objid, const GameObjectInstanceInfo& instinfo)
 {
-    // load and cache the object info
-    if (_objectMap.find(objid) == _objectMap.end())
+    auto objinfo = getObjectInfo(objid);
+    auto texture = _resources.cacheTexture(objinfo.texturefile);
+    if (texture == nullptr)
     {
-        const auto tempinfo = getObjectInfo(objid);
-        _objectMap.emplace(objid, tempinfo);
+        auto error = fmt::format("texture file '{}' not found", objinfo.texturefile);
+        throw std::runtime_error(error);
     }
 
     const auto& objinfo = _objectMap.at(objid);
@@ -213,20 +214,24 @@ GameObjectInfo ItemFactory::getObjectInfo(const std::string& objid)
     std::ifstream   file(jsonFile.c_str());
     nl::json        j = nl::json::parse(file, nullptr, false);
 
-    if (j.is_discarded())
+    if (j.is_discarded() || !j.is_object())
     {
         auto error = fmt::format("json file '{}' could not be loaded", jsonFile);
         throw std::runtime_error(error);
     }
 
-    // TODO: function that validates the JSON has all the required fields
-    if (!j.contains("texture"))
+    if (j.find("name") == j.end())
     {
-        auto error = fmt::format("json file '{}' does not have a 'texture' field", jsonFile);
+        auto error = fmt::format("json file '{}' does not have a 'name' field", jsonFile);
         throw std::runtime_error(error);
     }
 
     GameObjectInfo retval = j.get<tt::GameObjectInfo>();
+    if (retval.texturefile.empty())
+    {
+        retval.texturefile = fmt::format("items/{}.png", objid);
+    }
+    
     if (auto texture = _resources.cacheTexture(retval.texturefile);
             texture == nullptr)
     {

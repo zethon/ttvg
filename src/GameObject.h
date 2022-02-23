@@ -94,7 +94,7 @@ struct GameObjectInstanceInfo
     std::optional<float>    y;
     std::optional<float>    respawn;
 
-    GameObjectCallbacks           callbacks;
+    GameObjectCallbacks     callbacks;
 };
 
 class GameObject :
@@ -111,6 +111,21 @@ public:
     GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
         : _objectInfo{obj}, _instanceInfo{inst}
     {
+    }
+
+    const GameObjectCallbacks& callbacks() const
+    {
+        return this->_instanceInfo.callbacks;
+    }
+
+    const GameObjectInfo& objectInfo() const
+    {
+        return this->_objectInfo;
+    }
+
+    const GameObjectInstanceInfo& instanceInfo()
+    {
+        return this->_instanceInfo;
     }
 
     void setState(const std::string& statename);
