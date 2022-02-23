@@ -192,6 +192,7 @@ ItemPtr ItemFactory::createItem2(const std::string& objid, const GameObjectInsta
 
     const auto& objinfo = _objectMap.at(objid);
     auto item = std::make_shared<Item>(objinfo, instinfo);
+   
     return item;
 }
 
@@ -227,6 +228,8 @@ GameObjectInfo ItemFactory::getObjectInfo(const std::string& objid)
     }
 
     GameObjectInfo retval = j.get<tt::GameObjectInfo>();
+    retval.id = objid;
+
     if (retval.texturefile.empty())
     {
         retval.texturefile = fmt::format("items/{}.png", objid);
@@ -238,11 +241,11 @@ GameObjectInfo ItemFactory::getObjectInfo(const std::string& objid)
             auto error = fmt::format("texture file '{}' not found", retval.texturefile);
             throw std::runtime_error(error);
     }
-
-    // 2022-02-21: This is ugly. I wanted to create a default contructor and a constructor
-    // that accepted just a std::string, but nlohmman wouldn't let me!
-    retval.id = objid;
-
+    else
+    {
+        retval.texture = texture;
+    }    
+    
     _objectMap.insert({objid, retval});
     return _objectMap.at(objid);
 }

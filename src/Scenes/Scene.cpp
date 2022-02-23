@@ -782,6 +782,21 @@ void Scene::placeItem(ItemPtr item)
 
     // TODO: RESPAWN
 
+    auto texture = item->objectInfo().texture;
+    assert(texture);
+
+    int     width = texture->getSize().x;
+    int     height = texture->getSize().y;
+    float   scaleX = 36.0f / width;
+    float   scaleY = 36.0f / height;
+
+
+    // set size
+
+    // set scale
+    item->setScale(scaleX, scaleY);
+
+    // set position
     const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
     item->setPosition(position);
 

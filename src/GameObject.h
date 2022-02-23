@@ -49,7 +49,9 @@ struct GameObjectInfo
     std::string     id;             // unique! id is how the object is refrerenced in the json
     std::string     name;           // name is how the object shows up in the game (i.e. inventory)
     std::string     description;
+    
     std::string     texturefile;
+    sf::Texture*    texture = nullptr;
 
     // TODO (document): `size` here refers to the size of the individual
     // tiles inside the texture file, and *NOT* the size of the object
@@ -58,6 +60,8 @@ struct GameObjectInfo
 
     bool            obtainable = false;
     std::optional<GameObjectStates> states;
+
+    
 
     // SHOULD THESE BE REFACTORED?
     std::optional<sf::Vector2f>     scale;
