@@ -324,7 +324,6 @@ void Scene::init()
 {
     _logger->debug("initializing scene '{}'", _name);
     createItems();
-//    createGameObjects();
 
     tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, 
         { { LUA_REGISTRYINDEX, _luaIdx } });

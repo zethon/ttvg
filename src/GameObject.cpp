@@ -190,16 +190,16 @@ GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
 }
 
  // TODO: THIS CONSTRUCTOR WILL BE REFACTORED OUT
-GameObject::GameObject(const sf::Texture& texture, const sf::Vector2i& size)
-    :   _size{ size }, _objectInfo{GameObjectInfo{}}
-{
-    _sprite.setTexture(texture);
-    _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
+//GameObject::GameObject(const sf::Texture& texture, const sf::Vector2i& size)
+//    :   _size{ size }, _objectInfo{GameObjectInfo{}}
+//{
+//    _sprite.setTexture(texture);
+//    _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
 
-    _highlight.setFillColor(sf::Color::Transparent);
-    _highlight.setOutlineThickness(2);
-    _highlight.setOutlineColor(sf::Color(255, 255, 255));
-}
+//    _highlight.setFillColor(sf::Color::Transparent);
+//    _highlight.setOutlineThickness(2);
+//    _highlight.setOutlineColor(sf::Color(255, 255, 255));
+//}
 
 void GameObject::setState(const std::string& statename)
 {

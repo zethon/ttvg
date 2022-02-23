@@ -110,7 +110,7 @@ class GameObject :
 public:
 
     GameObject(const GameObjectInfo& info, const sf::Texture& texture);
-    GameObject(const sf::Texture& texture, const sf::Vector2i& size);
+//    GameObject(const sf::Texture& texture, const sf::Vector2i& size);
 
     GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
         : _objectInfo{obj}, _instanceInfo{inst}

@@ -139,16 +139,16 @@ BOOST_AUTO_TEST_CASE(itemRandomPlacementTest)
     const auto& firstItem = scene->items().at(0);
     BOOST_TEST(firstItem->getPosition().x == expxy.x, tools::tolerance(0.001));
     BOOST_TEST(firstItem->getPosition().y == expxy.y, tools::tolerance(0.001));
-    BOOST_TEST(firstItem->callbacks.onSelect.has_value());
-    BOOST_TEST(*(firstItem->callbacks.onSelect) == "bag_onSelect");
+    BOOST_TEST(firstItem->callbacks().onSelect.has_value());
+    BOOST_TEST(*(firstItem->callbacks().onSelect) == "bag_onSelect");
 
     const auto& seconditem = scene->items().at(1);
-    BOOST_TEST(seconditem->callbacks.onSelect.has_value());
-    BOOST_TEST(*(seconditem->callbacks.onSelect) == "special_bagPickup");
+    BOOST_TEST(seconditem->callbacks().onSelect.has_value());
+    BOOST_TEST(*(seconditem->callbacks().onSelect) == "special_bagPickup");
 
     const auto& thirditem = scene->items().at(2);
-    BOOST_TEST(thirditem->callbacks.onSelect.has_value());
-    BOOST_TEST(thirditem->callbacks.onSelect->empty());
+    BOOST_TEST(thirditem->callbacks().onSelect.has_value());
+    BOOST_TEST(thirditem->callbacks().onSelect->empty());
 }
 
 BOOST_AUTO_TEST_SUITE_END() // items
