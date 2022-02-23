@@ -43,7 +43,7 @@ int ItemFactory_createItem(lua_State* L)
 
     // create a shared_ptr in the space Lua allocated
     // for us, so if we never assign this to anyone/thing
-    // else it should gt deleted
+    // else it should get deleted
     new(userdata) ItemPtr{fact->createItem(itemname)};
 
 	luaL_setmetatable(L, Item::CLASS_NAME);

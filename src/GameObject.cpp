@@ -194,7 +194,20 @@ GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& 
     assert(obj.texture);
     _sprite.setTexture(*obj.texture);
 
-    _size = _sprite.getTexture()->getSize();
+    if (_objectInfo.size.has_value())
+    {
+        _size = *(_objectInfo.size);
+        _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
+    }
+    else
+    {
+        _size = _sprite.getTexture()->getSize();
+    }
+
+    if (_objectInfo.scale.has_value())
+    {
+        setScale(*(_objectInfo.scale));
+    }
 
     _highlight.setFillColor(sf::Color::Transparent);
     _highlight.setOutlineThickness(2);
