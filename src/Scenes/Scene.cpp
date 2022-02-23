@@ -791,8 +791,6 @@ void Scene::placeItem(ItemPtr item)
     float   scaleY = 36.0f / height;
 
 
-    // set size
-
     // set scale
     item->setScale(scaleX, scaleY);
 
