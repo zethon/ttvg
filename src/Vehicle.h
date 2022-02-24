@@ -21,11 +21,12 @@ using VehiclePtr = std::shared_ptr<Vehicle>;
 
 struct VehicleInfo : public GameObjectInfo
 {
-    sf::Texture*        texture = nullptr;
-    sf::SoundBuffer*    sound = nullptr;
+    sf::SoundBuffer*        sound = nullptr;
 
-    sf::Vector2f        speed;  // the car's speed is randomly selected within this range
-    std::uint16_t       damage;
+    sf::Vector2f            speed;  // the car's speed is randomly selected within this range
+    std::uint16_t           damage;
+
+    GameObjectInstanceInfo  instinfo;
 };
 
 class Vehicle : public GameObject
@@ -38,19 +39,20 @@ public:
         DELETE_VEHICLE = 1
     };
 
-    enum State
+    enum VehicleState
     {
         MOVING,
         STOPPED
     };
 
     Vehicle(const VehicleInfo& info, const sf::Texture& texture, BackgroundSharedPtr bg);
+    Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg);
 
     std::uint16_t timestep() override;
     bool isBlocked(const sf::FloatRect& point);
 
-    State vehicleState() const { return _state; }
-    void setVehicleState(State val);
+    VehicleState vehicleState() const { return _vehicleState; }
+    void setVehicleState(VehicleState val);
 
     void setPath(const Path& path);
     const Path& path() const { return _path; }
@@ -92,7 +94,7 @@ private:
     std::uint16_t               _damage = 0;
 
     Direction                   _direction = DOWN;  // Current direction of the object
-    State                       _state = MOVING;
+    VehicleState                _vehicleState = MOVING;
 
     bool                _finishedPath = false;
 

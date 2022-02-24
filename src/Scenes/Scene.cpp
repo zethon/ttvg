@@ -719,7 +719,7 @@ void Scene::createItems()
             }
 
             // default info for the item
-            //GameObjectInstanceInfo groupinfo = data.get<GameObjectInstanceInfo>();
+            GameObjectInstanceInfo groupinfo = data.get<GameObjectInstanceInfo>();
             
             for (const auto& instance : data["instances"])
             {

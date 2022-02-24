@@ -174,15 +174,13 @@ BOOST_AUTO_TEST_CASE(gameObjectLoadTest)
 
     const auto object = jsondata.get<tt::GameObjectInfo>();
     BOOST_TEST(object.name == "sevan2");
-    BOOST_TEST(object.states.has_value());
-    BOOST_TEST(object.states->size() == 2);
+    BOOST_TEST(object.states.size() == 2);
 
-    const auto& statesmap = *(object.states);
-    BOOST_TEST((statesmap.find("up") != statesmap.end()));
-    BOOST_TEST((statesmap.find("down") != statesmap.end()));
+    BOOST_TEST((object.states.find("up") != object.states.end()));
+    BOOST_TEST((object.states.find("down") != object.states.end()));
 
-    BOOST_TEST(statesmap.at("up").source.y == 0);
-    BOOST_TEST(statesmap.at("down").source.y == 128);
+    BOOST_TEST(object.states.at("up").source.y == 0);
+    BOOST_TEST(object.states.at("down").source.y == 128);
 }
 
 BOOST_AUTO_TEST_SUITE_END() // gameobjects

@@ -88,11 +88,18 @@ Vehicle::Vehicle(const VehicleInfo& info, const sf::Texture& texture, Background
     setAnimated(true);
 }
 
+Vehicle::Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg)
+    : GameObject(info, info.instinfo),
+      _bg{ bg }
+{
+    // nothing to do
+}
+
 std::uint16_t Vehicle::timestep()
 {
     GameObject::timestep();
 
-    if (_state == State::MOVING
+    if (_vehicleState == VehicleState::MOVING
         && _movementClock.getElapsedTime().asMilliseconds() > 100)
     {
         move();
@@ -153,9 +160,9 @@ bool Vehicle::isBlocked(const sf::FloatRect& test)
     return isPathBlocked(getGlobalBounds(), test, _direction, minDistance);
 }
 
-void Vehicle::setVehicleState(State val) 
+void Vehicle::setVehicleState(VehicleState val)
 { 
-    _state = val; 
+    _vehicleState = val;
 }
 
 void Vehicle::setPath(const Path& path)

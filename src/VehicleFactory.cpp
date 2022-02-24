@@ -44,6 +44,7 @@ void VehicleFactory::loadVehicles(const nl::json& json)
     {
         VehicleInfo info{ item.value().get<GameObjectInfo>() };
 
+        info.instinfo = item.value().get<GameObjectInstanceInfo>();
         info.speed = item.value().at("speed").get<sf::Vector2f>();
 
         if (item.value().contains("damage"))
@@ -72,7 +73,7 @@ VehiclePtr VehicleFactory::createVehicle()
     static std::mt19937 gen(rd());
 
     auto vinfo = tt::select_randomly(_vehicles);
-    auto vehicle = std::make_shared<Vehicle>(*vinfo, *(vinfo->texture), _background);
+    auto vehicle = std::make_shared<Vehicle>(*vinfo, _background);
 
     vehicle->setHornSound(vinfo->sound);
 

@@ -33,18 +33,13 @@ void from_json(const nl::json& j, GameObjectInfo& i)
         for (const auto& item : j["states"].items())
         {
             auto state = item.value().get<GameObjectState>();
-            i.states->insert(std::make_pair(state.id, std::move(state)));
+            i.states.insert(std::make_pair(state.id, std::move(state)));
         }
     }
 
     if (j.contains("size"))
     {
         i.size = j["size"].get<sf::Vector2u>();
-    }
-
-    if (j.contains("scale"))
-    {
-        i.scale = j["scale"].get<sf::Vector2f>();
     }
 
     if (j.contains("framecount"))
@@ -138,6 +133,11 @@ void from_json(const nl::json& j, GameObjectInstanceInfo& info)
         info.respawn = j["respawn-delay"].get<float>();
     }
 
+    if (j.contains("scale"))
+    {
+        info.scale = j["scale"].get<sf::Vector2f>();
+    }
+
     info.callbacks = j.get<GameObjectCallbacks>();
 }
 
@@ -156,10 +156,10 @@ GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
         _size = _sprite.getTexture()->getSize();
     }
 
-    if (info.scale.has_value())
-    {
-        setScale(*(info.scale));
-    }
+//    if (info.scale.has_value())
+//    {
+//        setScale(*(info.scale));
+//    }
 
     std::uint32_t count = 1;
     if (info.framecount.has_value())
@@ -167,21 +167,21 @@ GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
         count = *(info.framecount);
     }
 
-    if (info.states.has_value())
-    {
-        // TODO: container copy!!!
-        for (const auto& [id, state] : *(info.states))
-        {
-            GameObjectState newstate = state;
-            if (!newstate.framecount.has_value()) newstate.framecount = count;
-            _states.emplace(id, std::move(newstate));
-        }
-    }
-    else
-    {
-        _states.insert(
-            std::make_pair("default", GameObjectState{ "default", sf::Vector2i{0,0}, 1 }));
-    }
+//    if (info.states.has_value())
+//    {
+//        // TODO: container copy!!!
+//        for (const auto& [id, state] : *(info.states))
+//        {
+//            GameObjectState newstate = state;
+//            if (!newstate.framecount.has_value()) newstate.framecount = count;
+//            _states.emplace(id, std::move(newstate));
+//        }
+//    }
+//    else
+//    {
+//        _states.insert(
+//            std::make_pair("default", GameObjectState{ "default", sf::Vector2i{0,0}, 1 }));
+//    }
 
     _highlight.setFillColor(sf::Color::Transparent);
     _highlight.setOutlineThickness(2);
@@ -204,9 +204,9 @@ GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& 
         _size = _sprite.getTexture()->getSize();
     }
 
-    if (_objectInfo.scale.has_value())
+    if (_instanceInfo.scale.has_value())
     {
-        setScale(*(_objectInfo.scale));
+        setScale(*(_instanceInfo.scale));
     }
 
     _highlight.setFillColor(sf::Color::Transparent);
@@ -216,6 +216,12 @@ GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& 
 
 void GameObject::setState(const std::string& statename)
 {
+    if (_states.find(statename) == _states.end())
+    {
+        throw std::runtime_error(
+            fmt::format("object '{}' does not contain state '{}", this->objectInfo().id, statename));
+    }
+
     const auto& state = _states.at(statename);
     _source = state.source;
     _sprite.setTextureRect(sf::IntRect(

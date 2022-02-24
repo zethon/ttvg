@@ -42,10 +42,10 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     playerObjInfo.size = sf::Vector2u{ 64, 64 };
     playerObjInfo.framecount = 9;
     playerObjInfo.states.emplace();
-    playerObjInfo.states->emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
-    playerObjInfo.states->emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
-    playerObjInfo.states->emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
-    playerObjInfo.states->emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
+    playerObjInfo.states.emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
+    playerObjInfo.states.emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
+    playerObjInfo.states.emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
+    playerObjInfo.states.emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
 
     _player = std::make_shared<Player>(playerObjInfo, *textptr);
 

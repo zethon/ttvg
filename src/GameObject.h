@@ -58,15 +58,11 @@ struct GameObjectInfo
     // as it will be rendered in the scene
     std::optional<sf::Vector2u>     size;
 
-    bool            obtainable = false;
-    std::optional<GameObjectStates> states;
-
-    
+    bool                obtainable = false;
+    GameObjectStates    states;
 
     // SHOULD THESE BE REFACTORED?
-    std::optional<sf::Vector2f>     scale;
     std::optional<std::uint32_t>    framecount;
-    bool            animated = false;
     std::uint32_t   timestep = DEFAULT_TIMESTEP;
 
 };
@@ -97,6 +93,8 @@ struct GameObjectInstanceInfo
     std::optional<float>    x;
     std::optional<float>    y;
     std::optional<float>    respawn;
+
+    std::optional<sf::Vector2f> scale;
 
     GameObjectCallbacks     callbacks;
 };

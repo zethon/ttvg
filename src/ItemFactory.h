@@ -29,9 +29,15 @@ public:
         return createItem(name, GameObjectCallbacks{});
     }
 
-    ItemPtr createItem2(const std::string& name, const GameObjectInstanceInfo& instinfo);
+    ItemPtr createItem2(const std::string& name,
+                        const GameObjectInstanceInfo& instinfo,
+                        const GameObjectInstanceInfo& groupinfo = {});
 
     GameObjectInfo& getObjectInfoRef(const std::string& name);
+
+private:
+    GameObjectInstanceInfo resolveDefaults(const GameObjectInstanceInfo& instinfo,
+                                           const GameObjectInstanceInfo& groupinfo);
 };
 
 
