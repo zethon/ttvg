@@ -216,13 +216,13 @@ GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& 
 
 void GameObject::setState(const std::string& statename)
 {
-    if (_states.find(statename) == _states.end())
+    if (_objectInfo.states.find(statename) == _objectInfo.states.end())
     {
         throw std::runtime_error(
             fmt::format("object '{}' does not contain state '{}", this->objectInfo().id, statename));
     }
 
-    const auto& state = _states.at(statename);
+    const auto& state = _objectInfo.states.at(statename);
     _source = state.source;
     _sprite.setTextureRect(sf::IntRect(
         _source.x * _size.x, _source.y * _size.y, _size.x, _size.y));

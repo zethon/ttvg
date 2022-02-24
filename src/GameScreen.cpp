@@ -33,21 +33,22 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     _luaState = luaL_newstate();
         initLua(_luaState, *this, static_cast<void*>(_itemFactory.get()));
 
+    _playerObjectInfo.size = sf::Vector2u{ 64, 64 };
+    _playerObjectInfo.framecount = 9;
+    _playerObjectInfo.states.emplace();
+    _playerObjectInfo.states.emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
+    _playerObjectInfo.states.emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
+    _playerObjectInfo.states.emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
+    _playerObjectInfo.states.emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
+
     // the `Player` object is shared among all the `Scene` objects
     auto textptr = _resources.cacheTexture("textures/tommy.png");
     assert(textptr);
     textptr->setSmooth(true);
 
-    GameObjectInfo playerObjInfo;
-    playerObjInfo.size = sf::Vector2u{ 64, 64 };
-    playerObjInfo.framecount = 9;
-    playerObjInfo.states.emplace();
-    playerObjInfo.states.emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
-    playerObjInfo.states.emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
-    playerObjInfo.states.emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
-    playerObjInfo.states.emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
+    _playerObjectInfo.texture = textptr;
 
-    _player = std::make_shared<Player>(playerObjInfo, *textptr);
+    _player = std::make_shared<Player>(_playerObjectInfo, GameObjectInstanceInfo{});
 
     SceneSetup setup{ _resources, _window, _player, _luaState, _itemFactory };
 

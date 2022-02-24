@@ -158,7 +158,6 @@ protected:
     sf::Sprite          _sprite;
     sf::RectangleShape  _highlight;
 
-    GameObjectStates    _states;
     bool                _animated = false;
     std::uint32_t       _timestep = 55;
 

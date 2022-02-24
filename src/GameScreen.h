@@ -182,7 +182,10 @@ public:
 private:
     SceneSharedPtr                  _currentScene;
     SceneMap                        _scenes;
+
     PlayerPtr                       _player;
+    GameObjectInfo                  _playerObjectInfo;
+
     lua_State*                      _luaState;
     std::shared_ptr<ItemFactory>    _itemFactory;
     sf::Clock                       _gameClock;
