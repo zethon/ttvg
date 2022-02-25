@@ -80,19 +80,12 @@ bool shouldTurn(const sf::Vector2f pathpoint, const sf::Vector2f& current, Direc
     return false;
 }
 
-Vehicle::Vehicle(const VehicleInfo& info, const sf::Texture& texture, BackgroundSharedPtr bg)
-    : GameObject{ info, texture },
-      _bg{ bg }
-{
-    setState("down");
-    setAnimated(true);
-}
-
 Vehicle::Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg)
     : GameObject(info, info.instinfo),
       _bg{ bg }
 {
-    // nothing to do
+    setState("down");
+    setAnimated(true);
 }
 
 std::uint16_t Vehicle::timestep()

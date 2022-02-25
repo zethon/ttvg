@@ -45,7 +45,6 @@ public:
         STOPPED
     };
 
-    Vehicle(const VehicleInfo& info, const sf::Texture& texture, BackgroundSharedPtr bg);
     Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg);
 
     std::uint16_t timestep() override;

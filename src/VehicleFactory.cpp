@@ -87,6 +87,8 @@ VehiclePtr VehicleFactory::createVehicle()
 
     vehicle->setHighlighted(_highlighted);
     vehicle->setDamage(vinfo->damage);
+
+    vehicle->setScale(*(vinfo->scale));
     
     return vehicle;
 }
