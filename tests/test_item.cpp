@@ -78,12 +78,16 @@ BOOST_AUTO_TEST_CASE(loadItemTest)
 
     tt::ItemFactory itemf{ resmgr };
 
-    auto item = itemf.createItem("bag", {});
+    GameObjectInstanceInfo ii1;
+    ii1.objid = "bag";
+    auto item = itemf.createItem(ii1);
     BOOST_TEST(item->getID() == "bag");
     BOOST_TEST(item->getName() == "Bag");
     BOOST_TEST(item->obtainable());
     
-    item = itemf.createItem("nissan-truck", {});
+    GameObjectInstanceInfo ii2;
+    ii2.objid = "nissan-truck";
+    item = itemf.createItem(ii2);
     BOOST_TEST(item->getID() == "nissan-truck");
     BOOST_TEST(item->getName() == "Nissan Vagina");
     BOOST_TEST(!item->obtainable());

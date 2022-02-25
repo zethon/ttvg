@@ -23,17 +23,11 @@ public:
     static constexpr auto CLASS_NAME = "Item";
     static const struct luaL_Reg LuaMethods[];
 
-//    Item(       const std::string&  id,
-//                const sf::Texture&  texture,
-//                const sf::Vector2i& size,
-//                const GameObjectInfo& objinfo);
-
     Item(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
         : GameObject(obj, inst)
     {
         // nothing to do
     }
-
 
     std::string getID() const;
 
@@ -43,17 +37,8 @@ public:
     std::string getDescription() const;
     void        setDescription(const std::string& s);
 
-//    bool    isObtainable() const;
-//    void    setObtainable(bool b);
-
-    //GameObjectCallbacks   callbacks;
-    
-
-
 private:
 
-//    bool            _isObtainable = false;
-    //GameObjectInstanceInfo        _itemInfo;
 };
 
 } // namespace tt

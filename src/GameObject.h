@@ -69,6 +69,7 @@ struct GameObjectInfo
     std::uint32_t   framecount = DEFAULT_FRAMECOUNT;
     std::uint32_t   timestep = DEFAULT_TIMESTEP;
     bool            obtainable = false;
+    float           respawn = 0.f;
 };
 
 // `GameObjectCallbacks` callbacks can be null or non-null and empty.
@@ -90,6 +91,8 @@ struct GameObjectCallbacks
 
 struct GameObjectInstanceInfo
 {
+    std::string objid; // the id of the object this is an instance of
+
     // a null x,y means that the coordinate was not specified,
     // and a value of -1 means it should be picked randomly
     std::optional<float>    x;
@@ -108,6 +111,13 @@ struct GameObjectInstanceInfo
     // through the JSON parser
     void applyDefaults(const GameObjectInstanceInfo& defaults)
     {
+        // this allows us to set the objid once when loading the Scene
+        // and then just copy it to the individual instances
+        if (objid.size() == 0 && defaults.objid.size() > 0)
+        {
+            objid = defaults.objid;
+        }
+
         if (!x.has_value() && defaults.x.has_value())
         {
             x = defaults.x;
@@ -141,6 +151,11 @@ struct GameObjectInstanceInfo
         if (defaultState.size() == 0 && defaults.defaultState.size() > 0)
         {
             defaultState = defaults.defaultState;
+        }
+
+        if (!respawn.has_value() && defaults.respawn.has_value())
+        {
+            respawn = defaults.respawn;
         }
     }
 };
@@ -187,6 +202,9 @@ public:
     bool obtainable() const { return _obtainable; }
     void setObtainable(bool o) { _obtainable = o; }
 
+    float respawn() const { return _respawn; }
+    void setRespawn(float r) { _respawn = r; }
+
 public: // signals
     
     boost::signals2::signal<void(void)> onFrameChange;
@@ -216,6 +234,7 @@ protected:
     // properties that can change
     bool    _animated = false;
     bool    _obtainable = false;
+    float   _respawn = 0.0;
 };
 
 } // namespace tt

@@ -442,13 +442,10 @@ ScreenAction Scene::update(sf::Time elapsed)
         auto current = _itemTasks.begin();
         while (current != taskIt)
         {
-            throw std::runtime_error("implement respawning items!");
-            //auto item = _itemFactory.createItem(current->second.id);
-            //setItemInstance(*item, {}, current->second);
-            //_items.push_back(item);
-            //current = _itemTasks.erase(current);
+            auto item = _itemFactory.createItem(current->second);
+            placeItem(item);
+            current = _itemTasks.erase(current);
         }
-        
     }
 
     std::stringstream ss1;
@@ -727,6 +724,7 @@ void Scene::createItems()
 
             // default info for the item
             GameObjectInstanceInfo groupinfo = data.get<GameObjectInstanceInfo>();
+            groupinfo.objid = itemid; // we don't want to require the objid to be set in json
             
             for (const auto& instance : data["instances"])
             {
@@ -734,7 +732,7 @@ void Scene::createItems()
                 instanceinfo.applyDefaults(groupinfo);
 
                 auto groupcallbacks = instance.get<GameObjectCallbacks>();
-                auto item = _itemFactory.createItem(itemid, instanceinfo);
+                auto item = _itemFactory.createItem(instanceinfo);
                 if (item) placeItem(item);
             }
         }
@@ -829,15 +827,11 @@ void Scene::pickupItem(Items::iterator itemIt)
         _player->addItem(item);
         _items.erase(itemIt);
 
-        // TODO: IMPLEMENT RESPAWNING WITH NEW OBJECT CODE
-        throw std::runtime_error("Remove Item is not implemented!");
-        // 
-        //if (const auto info = item->info();
-        //    info.respawn.has_value() && *(info.respawn) > 0)
-        //{
-        //    const auto newtime = _gameTime + sf::seconds(*(info.respawn));
-        //    _itemTasks.insert({ newtime, std::move(info) });
-        //}
+        if (auto respawn = item->respawn(); respawn > 0)
+        {
+            const auto newtime = _gameTime + sf::seconds(respawn);
+            _itemTasks.insert({ newtime, item->instanceInfo() });
+        }
         
         _pickupSound->play();
         _descriptionText.setText("Picked up " + item->getName());

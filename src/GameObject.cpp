@@ -50,6 +50,11 @@ void from_json(const nl::json& j, GameObjectInfo& i)
         i.timestep = j["time-step"].get<std::uint32_t>();
     }
 
+    if (j.contains("respawn-delay"))
+    {
+        i.respawn = j["respawn-delay"].get<float>();
+    }
+
     if (j.contains("states") && j["states"].is_array())
     {
         i.states.emplace();
@@ -206,7 +211,17 @@ GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& 
         setState(defaultState);
     }
 
+    _obtainable = _objectInfo.obtainable;
+    if (_instanceInfo.obtainable.has_value())
+    {
+        _obtainable = *(_instanceInfo.obtainable);
+    }
 
+    _respawn = _objectInfo.respawn;
+    if (_instanceInfo.respawn.has_value())
+    {
+        _respawn = *(_instanceInfo.respawn);
+    }
 
     _highlight.setFillColor(sf::Color::Transparent);
     _highlight.setOutlineThickness(2);

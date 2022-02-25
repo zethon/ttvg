@@ -77,17 +77,6 @@ const struct luaL_Reg Item::LuaMethods[] =
     {nullptr, nullptr}
 };
 
-// -- START: THIS WILL BE REFACTORED OUT
-//Item::Item( const std::string&  id,
-//            const sf::Texture& texture,
-//            const sf::Vector2i& size,
-//            const GameObjectInfo& objinfo)
-//    // : GameObject(GameObjectInfo{}, GameObjectInstanceInfo{}),
-//    : GameObject{ texture, size }
-//{
-//}
-// -- END: THIS WILL BE REFACTORED OUT
-
 std::string Item::getID() const
 {
     return this->_objectInfo.id;
@@ -113,14 +102,5 @@ std::string Item::getDescription() const
     return _objectInfo.description;
 }
 
-//void Item::setObtainable(bool b)
-//{
-//    _isObtainable = b;
-//}
-
-//bool Item::isObtainable() const
-//{
-//    return _isObtainable;
-//}
- 
 }
+

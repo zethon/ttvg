@@ -21,15 +21,9 @@ public:
     
     ItemFactory(ResourceManager& resMgr);
 
-    ItemPtr createItem(const std::string& name,
-                        const GameObjectInstanceInfo& instinfo,
-                        const GameObjectInstanceInfo& groupinfo = {});
+    ItemPtr createItem(const GameObjectInstanceInfo& instinfo);
 
     GameObjectInfo& getObjectInfoRef(const std::string& name);
-
-private:
-    GameObjectInstanceInfo resolveDefaults(const GameObjectInstanceInfo& instinfo,
-                                           const GameObjectInstanceInfo& groupinfo);
 };
 
 

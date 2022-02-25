@@ -78,11 +78,9 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
  * Create an Item from the specified name.
  *
  */
-ItemPtr ItemFactory::createItem(const std::string& objid,
-                                 const GameObjectInstanceInfo& instinfo,
-                                 const GameObjectInstanceInfo& groupinfo)
+ItemPtr ItemFactory::createItem(const GameObjectInstanceInfo& instinfo)
 {
-    auto& objinfo = getObjectInfoRef(objid);
+    auto& objinfo = getObjectInfoRef(instinfo.objid);
     auto texture = _resources.cacheTexture(objinfo.texturefile);
     if (texture == nullptr)
     {
@@ -151,41 +149,6 @@ GameObjectInfo& ItemFactory::getObjectInfoRef(const std::string& objid)
     
     _objectMap.insert({objid, retval});
     return _objectMap.at(objid);
-}
-
-// this is when I wish C++ had reflection so I could iterate the members
-// but instead we have to do this manually
-GameObjectInstanceInfo resolveDefaults(const GameObjectInstanceInfo& instinfo,
-                                       const GameObjectInstanceInfo& groupinfo)
-{
-    GameObjectInstanceInfo retval { instinfo }; // copy!
-
-    if (!retval.x.has_value() && groupinfo.x.has_value())
-    {
-        retval.x = groupinfo.x;
-    }
-
-    if (!retval.y.has_value() && groupinfo.y.has_value())
-    {
-        retval.y = groupinfo.y;
-    }
-
-    if (!retval.respawn.has_value() && groupinfo.respawn.has_value())
-    {
-        retval.respawn = groupinfo.respawn;
-    }
-
-    if (!retval.scale.has_value() && groupinfo.scale.has_value())
-    {
-        retval.scale = groupinfo.scale;
-    }
-
-    if (!retval.callbacks.onSelect.has_value() && groupinfo.callbacks.onSelect.has_value())
-    {
-        retval.callbacks.onSelect = groupinfo.callbacks.onSelect;
-    }
-
-    return retval;
 }
 
 
