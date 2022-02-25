@@ -40,6 +40,11 @@ void from_json(const nl::json& j, GameObjectInfo& i)
         i.framecount = j["frame-count"].get<std::uint32_t>();
     }
 
+    if (j.contains("default-state"))
+    {
+        i.defaultState = j["default-state"].get<std::string>();
+    }
+
     if (j.contains("time-step"))
     {
         i.timestep = j["time-step"].get<std::uint32_t>();
@@ -152,6 +157,11 @@ void from_json(const nl::json& j, GameObjectInstanceInfo& info)
         info.scale = j["scale"].get<sf::Vector2f>();
     }
 
+    if (j.contains("default-state"))
+    {
+        info.defaultState = j["default-state"].get<std::string>();
+    }
+
     info.callbacks = j.get<GameObjectCallbacks>();
 }
 
@@ -191,10 +201,24 @@ GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& 
         _size = _sprite.getTexture()->getSize();
     }
 
-    if (obj.id == "fire1")
+    std::string defaultState;
+    if (_instanceInfo.defaultState.size() > 0)
+    {
+        defaultState = _instanceInfo.defaultState;
+    }
+    else if (_objectInfo.defaultState.size() > 0)
+    {
+        defaultState = _objectInfo.defaultState;
+    }
+    else if (_objectInfo.states.size() > 0)
+    {
+        throw std::runtime_error(fmt::format("object '{}' requires a 'default-state'", _objectInfo.id));
+    }
+
+    if (defaultState.size() > 0)
     {
         _animated = true;
-        setState("1");
+        setState(defaultState);
     }
 
     _highlight.setFillColor(sf::Color::Transparent);
@@ -221,11 +245,6 @@ void GameObject::setState(const std::string& statename)
 
 std::uint16_t GameObject::timestep()
 {
-    if (this->objectInfo().id == "fire1")
-    {
-        std::cout << "fire!" << std::endl;
-    }
-
     if (_animated
         && _framecount > 0
         && _timer.getElapsedTime().asMilliseconds() > static_cast<int>(_timestep))

@@ -63,6 +63,7 @@ struct GameObjectInfo
     // in the Scene's settings
     std::optional<sf::Vector2f>     scale;
 
+    std::string         defaultState;
     GameObjectStates    states;
 
     std::uint32_t   framecount = DEFAULT_FRAMECOUNT;
@@ -98,6 +99,7 @@ struct GameObjectInstanceInfo
     std::optional<float>    respawn;
 
     std::optional<sf::Vector2f> scale;
+    std::string                 defaultState;
 
     GameObjectCallbacks     callbacks;
 
@@ -132,6 +134,10 @@ struct GameObjectInstanceInfo
             callbacks.onSelect = defaults.callbacks.onSelect;
         }
 
+        if (defaultState.size() == 0 && defaults.defaultState.size() > 0)
+        {
+            defaultState = defaults.defaultState;
+        }
     }
 };
 

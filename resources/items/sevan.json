@@ -9,6 +9,8 @@
     "frame-count": 5,
     "time-step": 55,
     
+    "default-state": "idle",
+
     "states":
         [
             { "id":"idle", "source": { "x": 0, "y": 0 }, "frame-count": 5, "time-step": 55 },

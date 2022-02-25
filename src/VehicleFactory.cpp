@@ -57,6 +57,7 @@ void VehicleFactory::loadVehicles(const nl::json& json)
 
         info.sound = _resources.cacheSound(soundname);
         info.texture = _resources.cacheTexture(info.texturefile);
+        info.defaultState = "right";
 
         if (info.texture)
         {

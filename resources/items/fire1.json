@@ -7,7 +7,8 @@
     "scale": { "x": 3.5, "y": 3.5 },
 
     "frame-count": 10,
-    "time-step": 55,
+    "time-step": 25,
+    "default-state": "1",
     
     "states":
         [
