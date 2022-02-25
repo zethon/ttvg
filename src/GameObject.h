@@ -149,7 +149,6 @@ class GameObject :
 
 public:
 
-    GameObject(const GameObjectInfo& info, const sf::Texture& texture);
     GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst);
 
     const GameObjectCallbacks& callbacks() const

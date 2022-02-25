@@ -165,26 +165,6 @@ void from_json(const nl::json& j, GameObjectInstanceInfo& info)
     info.callbacks = j.get<GameObjectCallbacks>();
 }
 
-GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
-    : _objectInfo{info}
-{
-    _sprite.setTexture(texture);
-
-    if (info.size.has_value())
-    {
-        _size = *info.size;
-        _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
-    }
-    else
-    {
-        _size = _sprite.getTexture()->getSize();
-    }
-
-    _highlight.setFillColor(sf::Color::Transparent);
-    _highlight.setOutlineThickness(2);
-    _highlight.setOutlineColor(sf::Color(255, 255, 255));
-}
-
 GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
     : _objectInfo{ obj }, _instanceInfo{ inst }
 {

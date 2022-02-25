@@ -28,14 +28,13 @@ struct TestHarness
     tt::PlayerPtr   _player;
     lua_State* _lua;
     std::shared_ptr<ItemFactory> _itemFactory;
+    sf::Texture _playerTexture;
 
     TestHarness(const std::string& resfolder)
         : _resources{ resfolder }
     {
         _lua = luaL_newstate();
-
-        sf::Texture texture;
-        texture.create(100, 100);
+        _playerTexture.create(100, 100);
 
         tt::GameObjectInfo playerObjInfo;
         playerObjInfo.size = sf::Vector2u{ 10, 10 };
@@ -45,8 +44,9 @@ struct TestHarness
         playerObjInfo.states.emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
         playerObjInfo.states.emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
         playerObjInfo.states.emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
+        playerObjInfo.texture = &_playerTexture;
 
-        _player = std::make_shared<tt::Player>(playerObjInfo, texture);
+        _player = std::make_shared<tt::Player>(playerObjInfo, GameObjectInstanceInfo{});
 
         _itemFactory = std::make_shared<ItemFactory>(_resources);
 
