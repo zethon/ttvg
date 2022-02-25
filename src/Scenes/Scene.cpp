@@ -805,7 +805,7 @@ void Scene::pickupItem(Items::iterator itemIt)
 {
     auto item = *itemIt;
 
-    bool removeItem = item->isObtainable();
+    bool removeItem = item->obtainable();
 
     if (item->callbacks().onSelect.has_value() 
         && item->callbacks().onSelect->size() > 0)
@@ -1132,3 +1132,4 @@ void Scene::toggleHighlight()
 }
 
 } // namespace tt
+

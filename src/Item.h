@@ -43,8 +43,8 @@ public:
     std::string getDescription() const;
     void        setDescription(const std::string& s);
 
-    bool    isObtainable() const;
-    void    setObtainable(bool b);
+//    bool    isObtainable() const;
+//    void    setObtainable(bool b);
 
     //GameObjectCallbacks   callbacks;
     
@@ -52,7 +52,7 @@ public:
 
 private:
 
-    bool            _isObtainable = false;
+//    bool            _isObtainable = false;
     //GameObjectInstanceInfo        _itemInfo;
 };
 

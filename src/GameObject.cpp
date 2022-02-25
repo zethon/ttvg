@@ -162,6 +162,11 @@ void from_json(const nl::json& j, GameObjectInstanceInfo& info)
         info.defaultState = j["default-state"].get<std::string>();
     }
 
+    if (j.contains("obtainable"))
+    {
+        info.obtainable = j["obtainable"].get<bool>();
+    }
+
     info.callbacks = j.get<GameObjectCallbacks>();
 }
 
@@ -200,6 +205,8 @@ GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& 
         _animated = true;
         setState(defaultState);
     }
+
+
 
     _highlight.setFillColor(sf::Color::Transparent);
     _highlight.setOutlineThickness(2);

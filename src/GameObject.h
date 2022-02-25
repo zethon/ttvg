@@ -68,9 +68,7 @@ struct GameObjectInfo
 
     std::uint32_t   framecount = DEFAULT_FRAMECOUNT;
     std::uint32_t   timestep = DEFAULT_TIMESTEP;
-
-    // refactored out?
-    bool                obtainable = false;
+    bool            obtainable = false;
 };
 
 // `GameObjectCallbacks` callbacks can be null or non-null and empty.
@@ -100,8 +98,9 @@ struct GameObjectInstanceInfo
 
     std::optional<sf::Vector2f> scale;
     std::string                 defaultState;
+    std::optional<bool>         obtainable;
 
-    GameObjectCallbacks     callbacks;
+    GameObjectCallbacks         callbacks;
 
     // will apply the default values if they are set in the `defaults` object
     // and *not* set in this object.
@@ -127,6 +126,11 @@ struct GameObjectInstanceInfo
         if (!scale.has_value() && defaults.scale.has_value())
         {
             scale = defaults.scale;
+        }
+
+        if (!obtainable.has_value() && defaults.obtainable.has_value())
+        {
+            obtainable = defaults.obtainable;
         }
 
         if (!callbacks.onSelect.has_value() && defaults.callbacks.onSelect.has_value())
@@ -180,6 +184,9 @@ public:
     bool animated() const { return _animated; }
     void setAnimated(bool v);
 
+    bool obtainable() const { return _obtainable; }
+    void setObtainable(bool o) { _obtainable = o; }
+
 public: // signals
     
     boost::signals2::signal<void(void)> onFrameChange;
@@ -200,14 +207,15 @@ protected:
     sf::Sprite          _sprite;
     sf::RectangleShape  _highlight;
 
-    bool                _animated = false;
-    
-
     // 2022-02-10: The idea right now is that a `GameObject` has a reference
     // to a `GameObjectInfo` structs, and to also a `GameObjectInstance` struct
     // to let it know about the instance of the `GameObject`
     const GameObjectInfo&           _objectInfo;    // ref to the cached info
     const GameObjectInstanceInfo    _instanceInfo;  // copy of the instance info
+
+    // properties that can change
+    bool    _animated = false;
+    bool    _obtainable = false;
 };
 
 } // namespace tt

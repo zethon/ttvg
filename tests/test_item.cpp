@@ -81,12 +81,12 @@ BOOST_AUTO_TEST_CASE(loadItemTest)
     auto item = itemf.createItem("bag", {});
     BOOST_TEST(item->getID() == "bag");
     BOOST_TEST(item->getName() == "Bag");
-    BOOST_TEST(item->isObtainable());
+    BOOST_TEST(item->obtainable());
     
     item = itemf.createItem("nissan-truck", {});
     BOOST_TEST(item->getID() == "nissan-truck");
     BOOST_TEST(item->getName() == "Nissan Vagina");
-    BOOST_TEST(!item->isObtainable());
+    BOOST_TEST(!item->obtainable());
 }
 
 const auto bagjson = R"x({

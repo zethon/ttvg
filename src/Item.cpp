@@ -51,7 +51,7 @@ int Item_setDescription(lua_State* L)
 int Item_isObtainable(lua_State* L)
 {
     auto item = tt::checkObject<Item>(L);
-    lua_pushboolean(L, item->isObtainable() ? 1 : 0);
+    lua_pushboolean(L, item->obtainable() ? 1 : 0);
     return 1;
 }
 
@@ -113,14 +113,14 @@ std::string Item::getDescription() const
     return _objectInfo.description;
 }
 
-void Item::setObtainable(bool b)
-{
-    _isObtainable = b;
-}
+//void Item::setObtainable(bool b)
+//{
+//    _isObtainable = b;
+//}
 
-bool Item::isObtainable() const
-{
-    return _isObtainable;
-}
+//bool Item::isObtainable() const
+//{
+//    return _isObtainable;
+//}
  
 }
