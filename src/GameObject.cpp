@@ -25,31 +25,45 @@ void from_json(const nl::json& j, GameObjectInfo& i)
         i.obtainable = j["obtainable"].get<bool>();
     }
 
-    if (j.contains("states")
-        && j["states"].is_array())
+    if (j.contains("size"))
+    {
+        i.size = j["size"].get<sf::Vector2u>();
+    }
+
+    if (j.contains("scale"))
+    {
+        i.scale = j["scale"].get<sf::Vector2f>();
+    }
+
+    if (j.contains("frame-count"))
+    {
+        i.framecount = j["frame-count"].get<std::uint32_t>();
+    }
+
+    if (j.contains("time-step"))
+    {
+        i.timestep = j["time-step"].get<std::uint32_t>();
+    }
+
+    if (j.contains("states") && j["states"].is_array())
     {
         i.states.emplace();
 
         for (const auto& item : j["states"].items())
         {
             auto state = item.value().get<GameObjectState>();
+            if (!state.framecount.has_value())
+            {
+                state.framecount = i.framecount;
+            }
+
+            if (!state.timestep.has_value())
+            {
+                state.timestep = i.timestep;
+            }
+
             i.states.insert(std::make_pair(state.id, std::move(state)));
         }
-    }
-
-    if (j.contains("size"))
-    {
-        i.size = j["size"].get<sf::Vector2u>();
-    }
-
-    if (j.contains("framecount"))
-    {
-        i.framecount = j["framecount"].get<std::uint32_t>();
-    }
-
-    if (j.contains("timestep"))
-    {
-        i.timestep = j["timestep"].get<std::uint32_t>();
     }
 }
 
@@ -156,33 +170,6 @@ GameObject::GameObject(const GameObjectInfo& info, const sf::Texture& texture)
         _size = _sprite.getTexture()->getSize();
     }
 
-//    if (info.scale.has_value())
-//    {
-//        setScale(*(info.scale));
-//    }
-
-    std::uint32_t count = 1;
-    if (info.framecount.has_value())
-    {
-        count = *(info.framecount);
-    }
-
-//    if (info.states.has_value())
-//    {
-//        // TODO: container copy!!!
-//        for (const auto& [id, state] : *(info.states))
-//        {
-//            GameObjectState newstate = state;
-//            if (!newstate.framecount.has_value()) newstate.framecount = count;
-//            _states.emplace(id, std::move(newstate));
-//        }
-//    }
-//    else
-//    {
-//        _states.insert(
-//            std::make_pair("default", GameObjectState{ "default", sf::Vector2i{0,0}, 1 }));
-//    }
-
     _highlight.setFillColor(sf::Color::Transparent);
     _highlight.setOutlineThickness(2);
     _highlight.setOutlineColor(sf::Color(255, 255, 255));
@@ -204,9 +191,10 @@ GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& 
         _size = _sprite.getTexture()->getSize();
     }
 
-    if (_instanceInfo.scale.has_value())
+    if (obj.id == "fire1")
     {
-        setScale(*(_instanceInfo.scale));
+        _animated = true;
+        setState("1");
     }
 
     _highlight.setFillColor(sf::Color::Transparent);
@@ -224,20 +212,29 @@ void GameObject::setState(const std::string& statename)
 
     const auto& state = _objectInfo.states.at(statename);
     _source = state.source;
+    _framecount = *(state.framecount);
+    _timestep = *(state.timestep);
+
     _sprite.setTextureRect(sf::IntRect(
         _source.x * _size.x, _source.y * _size.y, _size.x, _size.y));
 }
 
 std::uint16_t GameObject::timestep()
 {
-    if (animated()
+    if (this->objectInfo().id == "fire1")
+    {
+        std::cout << "fire!" << std::endl;
+    }
+
+    if (_animated
+        && _framecount > 0
         && _timer.getElapsedTime().asMilliseconds() > static_cast<int>(_timestep))
     {
         auto[left, top] = _source;
         left++;
 
-        auto textureWidth = _maxFramesPerRow > 0 ?
-            _maxFramesPerRow * _size.x : _sprite.getTexture()->getSize().x;
+        auto textureWidth = _framecount > 0 ?
+            _framecount * _size.x : _sprite.getTexture()->getSize().x;
 
         if (static_cast<std::uint32_t>(left * _size.x) >= textureWidth)
         {

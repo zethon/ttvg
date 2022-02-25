@@ -2,17 +2,16 @@
     "name":         "Sevan",
     "description":  "Your former lover has an offer.",
     "obtainable":   false,
-    "image-attr":   
-        {   
-            "width":    64,
-            "height":   64,
-            "scale-x":  1.5,
-            "scale-y":  1.5     
-        },
-    "attributes":   { },
+
+    "size": { "x": 64, "y": 64 },
+    "scale": { "x": 1.5, "y": 1.5 },
+
+    "frame-count": 5,
+    "time-step": 55,
+    
     "states":
         [
-            { "id":"idle", "source": { "x": 0, "y": 0 }, "frame-count": 5, "timestep": 55 },
+            { "id":"idle", "source": { "x": 0, "y": 0 }, "frame-count": 5, "time-step": 55 },
             { "id":"angry", "source": { "x": 0, "y": 1 }, "frame-count": 5 },
             { "id":"smoking", "source": { "x": 0, "y": 2 }, "frame-count": 5 }
         ]

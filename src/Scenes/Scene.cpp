@@ -430,16 +430,23 @@ ScreenAction Scene::update(sf::Time elapsed)
         return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
     }
 
+    std::for_each(_items.begin(), _items.end(),
+        [this](ItemPtr item)
+        {
+            item->timestep();
+        });
+
     const auto taskIt = _itemTasks.lower_bound(elapsed);
     if (taskIt != _itemTasks.begin())
     {
         auto current = _itemTasks.begin();
         while (current != taskIt)
         {
-            auto item = _itemFactory.createItem(current->second.id);
-            setItemInstance(*item, {}, current->second);
-            _items.push_back(item);
-            current = _itemTasks.erase(current);
+            throw std::runtime_error("implement respawning items!");
+            //auto item = _itemFactory.createItem(current->second.id);
+            //setItemInstance(*item, {}, current->second);
+            //_items.push_back(item);
+            //current = _itemTasks.erase(current);
         }
         
     }
@@ -724,8 +731,10 @@ void Scene::createItems()
             for (const auto& instance : data["instances"])
             {
                 auto instanceinfo = instance.get<GameObjectInstanceInfo>();
+                instanceinfo.applyDefaults(groupinfo);
+
                 auto groupcallbacks = instance.get<GameObjectCallbacks>();
-                auto item = _itemFactory.createItem2(itemid, instanceinfo);
+                auto item = _itemFactory.createItem(itemid, instanceinfo);
                 if (item) placeItem(item);
             }
         }
@@ -766,22 +775,28 @@ void Scene::placeItem(ItemPtr item)
         xpos = tt::RandomNumber<float>(0.f, bounds.height);
     }
 
-    // TODO: RESPAWN
+    // set position
+    const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
+    item->setPosition(position);
 
     auto texture = item->objectInfo().texture;
     assert(texture);
 
-    int     width = texture->getSize().x;
-    int     height = texture->getSize().y;
-    float   scaleX = 36.0f / width;
-    float   scaleY = 36.0f / height;
+    if (const auto scale = item->instanceInfo().scale; scale.has_value())
+    {
+        item->setScale(*scale);
+    }
+    else
+    {
+        assert(item->objectInfo().size.has_value());
+        int width = item->objectInfo().size->x;
+        int height = item->objectInfo().size->y;
+        float   scaleX = 36.0f / width;
+        float   scaleY = 36.0f / height;
 
-    // set scale
-    item->setScale(scaleX, scaleY);
-
-    // set position
-    const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
-    item->setPosition(position);
+        // set scale
+        item->setScale(scaleX, scaleY);
+    }
 
     _items.push_back(item);
 }

@@ -15,6 +15,7 @@ namespace nl = nlohmann;
 namespace tt
 {
 
+constexpr auto DEFAULT_FRAMECOUNT = 1u;
 constexpr auto DEFAULT_TIMESTEP = 55u;
 
 class GameObject;
@@ -58,13 +59,17 @@ struct GameObjectInfo
     // as it will be rendered in the scene
     std::optional<sf::Vector2u>     size;
 
-    bool                obtainable = false;
+    // default scale used for the object it the scale is not specified
+    // in the Scene's settings
+    std::optional<sf::Vector2f>     scale;
+
     GameObjectStates    states;
 
-    // SHOULD THESE BE REFACTORED?
-    std::optional<std::uint32_t>    framecount;
+    std::uint32_t   framecount = DEFAULT_FRAMECOUNT;
     std::uint32_t   timestep = DEFAULT_TIMESTEP;
 
+    // refactored out?
+    bool                obtainable = false;
 };
 
 // `GameObjectCallbacks` callbacks can be null or non-null and empty.
@@ -86,8 +91,6 @@ struct GameObjectCallbacks
 
 struct GameObjectInstanceInfo
 {
-    std::string             id;
-
     // a null x,y means that the coordinate was not specified,
     // and a value of -1 means it should be picked randomly
     std::optional<float>    x;
@@ -97,6 +100,39 @@ struct GameObjectInstanceInfo
     std::optional<sf::Vector2f> scale;
 
     GameObjectCallbacks     callbacks;
+
+    // will apply the default values if they are set in the `defaults` object
+    // and *not* set in this object.
+    // NOTE: We cannot use a constructor since these objects are constructed
+    // through the JSON parser
+    void applyDefaults(const GameObjectInstanceInfo& defaults)
+    {
+        if (!x.has_value() && defaults.x.has_value())
+        {
+            x = defaults.x;
+        }
+
+        if (!y.has_value() && defaults.y.has_value())
+        {
+            y = defaults.y;
+        }
+
+        if (!respawn.has_value() && defaults.respawn.has_value())
+        {
+            respawn = defaults.respawn;
+        }
+
+        if (!scale.has_value() && defaults.scale.has_value())
+        {
+            scale = defaults.scale;
+        }
+
+        if (!callbacks.onSelect.has_value() && defaults.callbacks.onSelect.has_value())
+        {
+            callbacks.onSelect = defaults.callbacks.onSelect;
+        }
+
+    }
 };
 
 class GameObject :
@@ -152,14 +188,15 @@ protected:
     // some sprite sheets have different frames per row
     // so this allows us to adjust how many frames get
     // animated in a particular row
-    std::uint32_t   _maxFramesPerRow = 0;
-    sf::Vector2i    _source;
+    std::uint32_t   _framecount = 0;                // of current state
+    std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
+    sf::Vector2i    _source;                        // of current state
 
     sf::Sprite          _sprite;
     sf::RectangleShape  _highlight;
 
     bool                _animated = false;
-    std::uint32_t       _timestep = 55;
+    
 
     // 2022-02-10: The idea right now is that a `GameObject` has a reference
     // to a `GameObjectInfo` structs, and to also a `GameObjectInstance` struct

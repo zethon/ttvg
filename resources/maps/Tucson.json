@@ -213,6 +213,14 @@
     ],
     "items":
     {
+        "fire1":
+        {
+            "scale": { "x": 1.5, "y": 1.5 },
+            "instances":
+            [
+                { "x": 51, "y": 82 }
+            ]
+        },
         "sax": 
         {
             "instances":

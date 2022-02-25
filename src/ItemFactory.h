@@ -21,15 +21,7 @@ public:
     
     ItemFactory(ResourceManager& resMgr);
 
-    ItemPtr createItem(const std::string&  name,
-                const GameObjectCallbacks& callbacks);
-
-    ItemPtr createItem(const std::string& name)
-    {
-        return createItem(name, GameObjectCallbacks{});
-    }
-
-    ItemPtr createItem2(const std::string& name,
+    ItemPtr createItem(const std::string& name,
                         const GameObjectInstanceInfo& instinfo,
                         const GameObjectInstanceInfo& groupinfo = {});
 

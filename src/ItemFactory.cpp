@@ -44,7 +44,8 @@ int ItemFactory_createItem(lua_State* L)
     // create a shared_ptr in the space Lua allocated
     // for us, so if we never assign this to anyone/thing
     // else it should get deleted
-    new(userdata) ItemPtr{fact->createItem(itemname)};
+    //new(userdata) ItemPtr{fact->createItem(itemname)};
+    throw std::runtime_error("implement LUA createitem");
 
 	luaL_setmetatable(L, Item::CLASS_NAME);
     return 1;
@@ -69,7 +70,7 @@ constexpr auto DEFAULT_ITEM_HEIGHT  = 36.0f;
 ItemFactory::ItemFactory(ResourceManager& resMgr)
     : _resources { resMgr }
 {
-
+    // nothing to do
 }
 
 /**
@@ -77,112 +78,7 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
  * Create an Item from the specified name.
  *
  */
-ItemPtr ItemFactory::createItem(const std::string&  objid,
-                                const GameObjectCallbacks& callbacks)
-{
-//    const std::string jsonFile =
-//        _resources.getFilename(fmt::format("items/{}.json", objid));
-
-////    if( !boost::filesystem::exists(jsonFile) )
-////    {
-////        auto error = fmt::format("json file '{}' not found", jsonFile);
-////        throw std::runtime_error(error);
-////    }
-
-//    std::ifstream   file(jsonFile.c_str());
-//    nl::json        json = nl::json::parse(file, nullptr, false);
-
-////    if (json.is_discarded())
-////    {
-////        auto error = fmt::format("json file '{}' could not be loaded", jsonFile);
-////        throw std::runtime_error(error);
-////    }
-
-////    // TODO: function that validates the JSON has all the required fields
-////    if (!json.contains("texture"))
-////    {
-////        auto error = fmt::format("json file '{}' does not have a 'texture' field", jsonFile);
-////        throw std::runtime_error(error);
-////    }
-
-////    GameObjectInfo objinfo = json.get<tt::GameObjectInfo>();
-
-//    auto objinfo = getObjectInfo(objid);
-//    auto texture = _resources.cacheTexture(objinfo.texturefile);
-//    if (texture == nullptr)
-//    {
-//            auto error = fmt::format("texture file '{}' not found", objinfo.texturefile);
-//            throw std::runtime_error(error);
-//    }
-
-////    std::string textureFile = fmt::format("items/{}.png", objid);
-////    sf::Texture* texture = _resources.cacheTexture(textureFile);
-////    if (texture == nullptr)
-////    {
-////        auto error = fmt::format("texture file '{}' not found", textureFile);
-////        throw std::runtime_error(error);
-////    }
-
-//    //
-//    // By default, scale item image to tile size.
-//    //
-//    int     width   = texture->getSize().x;
-//    int     height  = texture->getSize().y;
-//    float   scaleX  = DEFAULT_ITEM_WIDTH    / width;
-//    float   scaleY  = DEFAULT_ITEM_HEIGHT   / height;
-    
-//    //
-//    // Optionally allow for item author to specify
-//    // size and scale.
-//    //
-//    if( json.find("image-attr") != json.end())
-//    {
-//        nl::json children = json["image-attr"];
-
-//        if (children.find("width") != children.end() &&
-//            children.find("height") != children.end() &&
-//            children.find("scale-x") != children.end() &&
-//            children.find("scale-y") != children.end())
-//        {
-
-//            width = json["image-attr"]["width"];
-//            height = json["image-attr"]["height"];
-//            scaleX = json["image-attr"]["scale-x"];
-//            scaleY = json["image-attr"]["scale-y"];
-//        }
-//    }
-    
-//    auto item   = std::make_shared<Item>(
-//                                    objid,
-//                                    *texture,
-//                                    sf::Vector2i{ width, height },
-//                                    objinfo);
-
-//    item->setScale(scaleX, scaleY);
-
-//    //if(json.find("name") != json.end())
-//    //{
-//    //    item->setName(json["name"]);
-//    //}
-
-//    //if(json.find("description") != json.end())
-//    //{
-//    //    item->setDescription(json["description"]);
-//    //}
-
-//    if(json.find("obtainable") != json.end())
-//    {
-//        item->setObtainable(json["obtainable"]);
-//    }
-
-//    //item->callbacks = callbacks;
-
-//    return item;
-
-    return {};
-}
-
-ItemPtr ItemFactory::createItem2(const std::string& objid,
+ItemPtr ItemFactory::createItem(const std::string& objid,
                                  const GameObjectInstanceInfo& instinfo,
                                  const GameObjectInstanceInfo& groupinfo)
 {
@@ -193,8 +89,6 @@ ItemPtr ItemFactory::createItem2(const std::string& objid,
         auto error = fmt::format("texture file '{}' not found", objinfo.texturefile);
         throw std::runtime_error(error);
     }
-
-
 
     auto item = std::make_shared<Item>(objinfo, instinfo);   
     return item;
@@ -248,7 +142,12 @@ GameObjectInfo& ItemFactory::getObjectInfoRef(const std::string& objid)
     else
     {
         retval.texture = texture;
-    }    
+    }
+
+    if (!retval.size.has_value())
+    {
+        retval.size = retval.texture->getSize();
+    }
     
     _objectMap.insert({objid, retval});
     return _objectMap.at(objid);

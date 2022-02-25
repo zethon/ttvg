@@ -36,10 +36,10 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     _playerObjectInfo.size = sf::Vector2u{ 64, 64 };
     _playerObjectInfo.framecount = 9;
     _playerObjectInfo.states.emplace();
-    _playerObjectInfo.states.emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
-    _playerObjectInfo.states.emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
-    _playerObjectInfo.states.emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
-    _playerObjectInfo.states.emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
+    _playerObjectInfo.states.emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9, 55 });
+    _playerObjectInfo.states.emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9, 55 });
+    _playerObjectInfo.states.emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9, 55 });
+    _playerObjectInfo.states.emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9, 55 });
 
     // the `Player` object is shared among all the `Scene` objects
     auto textptr = _resources.cacheTexture("textures/tommy.png");
