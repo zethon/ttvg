@@ -5,7 +5,7 @@
 #include <fmt/core.h>
 
 #include "Item.h"
-#include "ItemFactory.h"
+#include "GameObjectFactory.h"
 #include "TTLua.h"
 
 namespace tt
@@ -14,7 +14,7 @@ namespace tt
 namespace
 {
 
-ItemFactory* checkItemFactory(lua_State* L)
+GameObjectFactory* checkItemFactory(lua_State* L)
 {
     lua_rawgeti(L, LUA_REGISTRYINDEX, ITEMFACTORY_LUA_IDX);
     int type = lua_type(L, -1);
@@ -23,7 +23,7 @@ ItemFactory* checkItemFactory(lua_State* L)
         return nullptr;
     }
 
-    ItemFactory* state = static_cast<ItemFactory*>(lua_touserdata(L, -1));
+    GameObjectFactory* state = static_cast<GameObjectFactory*>(lua_touserdata(L, -1));
     if (!state)
     {
         return nullptr;
@@ -52,7 +52,7 @@ int ItemFactory_createItem(lua_State* L)
 
 } // anonymous namespace
 
-const struct luaL_Reg ItemFactory::LuaMethods[] =
+const struct luaL_Reg GameObjectFactory::LuaMethods[] =
 {
     {"createItem", ItemFactory_createItem},
     {nullptr, nullptr}
@@ -66,7 +66,7 @@ constexpr auto DEFAULT_ITEM_WIDTH   = 36.0f;
 constexpr auto DEFAULT_ITEM_HEIGHT  = 36.0f;
 
 
-ItemFactory::ItemFactory(ResourceManager& resMgr)
+GameObjectFactory::GameObjectFactory(ResourceManager& resMgr)
     : _resources { resMgr }
 {
     // nothing to do
@@ -77,7 +77,7 @@ ItemFactory::ItemFactory(ResourceManager& resMgr)
  * Create an Item from the specified name.
  *
  */
-ItemPtr ItemFactory::createItem(const GameObjectInstanceInfo& instinfo)
+ItemPtr GameObjectFactory::createItem(const GameObjectInstanceInfo& instinfo)
 {
     auto& objinfo = getObjectInfoRef(instinfo.objid);
     auto texture = _resources.cacheTexture(objinfo.texturefile);
@@ -91,14 +91,14 @@ ItemPtr ItemFactory::createItem(const GameObjectInstanceInfo& instinfo)
     return item;
 }
 
-ItemPtr ItemFactory::createItem(const std::string& objid)
+ItemPtr GameObjectFactory::createItem(const std::string& objid)
 {
     auto& objinfo = getObjectInfoRef(objid);
     auto item = std::make_shared<Item>(objinfo, GameObjectInstanceInfo{});
     return item;
 }
 
-GameObjectInfo& ItemFactory::getObjectInfoRef(const std::string& objid)
+GameObjectInfo& GameObjectFactory::getObjectInfoRef(const std::string& objid)
 {
     // load or cache the object info
     if (_objectMap.find(objid) != _objectMap.end())

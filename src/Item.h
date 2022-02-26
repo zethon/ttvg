@@ -23,19 +23,11 @@ public:
     static constexpr auto CLASS_NAME = "Item";
     static const struct luaL_Reg LuaMethods[];
 
-    Item(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
-        : GameObject(obj, inst)
-    {
-        // nothing to do
-    }
+    using GameObject::GameObject;
 
     std::string getID() const;
-
     std::string getName() const;
-    void        setName(const std::string& s);
-
     std::string getDescription() const;
-    void        setDescription(const std::string& s);
 
 private:
 

@@ -9,17 +9,17 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-class ItemFactory
+class GameObjectFactory
 {
 
 ResourceManager&    _resources;
 GameObjectInfoMap   _objectMap;
 
 public:
-    static constexpr auto CLASS_NAME = "ItemFactory";
+    static constexpr auto CLASS_NAME = "GameObjectFactory";
     static const struct luaL_Reg LuaMethods[];
     
-    ItemFactory(ResourceManager& resMgr);
+    GameObjectFactory(ResourceManager& resMgr);
 
     ItemPtr createItem(const GameObjectInstanceInfo& instinfo);
     ItemPtr createItem(const std::string& objid);
