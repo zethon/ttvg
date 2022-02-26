@@ -7,8 +7,8 @@ set(SOURCE_FILES
     GameScreen.cpp
     Intersection.cpp
     IntroScreen.cpp
-    Item.cpp
-    ItemFactory.cpp
+    GameObject.cpp
+    GameObjectFactory.cpp
     main.cpp
     PathFactory.cpp
     Player.cpp
@@ -38,6 +38,8 @@ set(HEADER_FILES
     core.h
     DelayedSound.h
     Engine.h
+    GameObject.h
+    GameObjectFactory.h
     GameOverScreen.h
     GameScreen.h
     GameTypes.h
@@ -58,8 +60,6 @@ set(HEADER_FILES
     VehicleFactory.h
     Zone.h
     
-    Item.h
-    ItemFactory.h
 
     Scenes/DebugWindow.h
     Scenes/DescriptionText.h

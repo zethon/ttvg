@@ -4,6 +4,7 @@
 
 #include "GameObject.h"
 #include "TTUtils.h"
+#include "TTLua.h"
 
 namespace nl = nlohmann;
 
@@ -172,6 +173,59 @@ void from_json(const nl::json& j, GameObjectInstanceInfo& info)
 
     info.callbacks = j.get<GameObjectCallbacks>();
 }
+
+
+namespace
+{
+
+int Item_getId(lua_State* L)
+{
+    auto item = tt::checkObject<GameObject>(L);
+    lua_pushstring(L, item->getID().c_str());
+    return 1;
+}
+
+int Item_getName(lua_State* L)
+{
+    auto item = tt::checkObject<GameObject>(L);
+    lua_pushstring(L, item->getName().c_str());
+    return 1;
+}
+
+int Item_getDescription(lua_State* L)
+{
+    auto item = tt::checkObject<GameObject>(L);
+    lua_pushstring(L, item->getDescription().c_str());
+    return 1;
+}
+
+int Item_isObtainable(lua_State* L)
+{
+    auto item = tt::checkObject<GameObject>(L);
+    lua_pushboolean(L, item->obtainable() ? 1 : 0);
+    return 1;
+}
+
+int Item_setObtainable(lua_State* L)
+{
+    auto item = tt::checkObject<GameObject>(L);
+    const auto val = lua_toboolean(L, 2);
+    item->setObtainable(val);
+    return 0;
+}
+
+}
+
+const struct luaL_Reg GameObject::LuaMethods[] =
+    {
+        {"id", Item_getId},
+        {"name", Item_getName},
+        {"description", Item_getDescription},
+        {"obtainable", Item_isObtainable},
+        {"setObtainable", Item_setObtainable},
+        {nullptr, nullptr}
+    };
+
 
 GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
     : _objectInfo{ obj }, _instanceInfo{ inst }

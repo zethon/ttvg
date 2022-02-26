@@ -2,6 +2,8 @@
 #include <memory>
 
 #include <nlohmann/json.hpp>
+
+#include "GameObject.h"
 #include "ResourceManager.h"
 
 namespace nl = nlohmann;
@@ -21,8 +23,8 @@ public:
     
     GameObjectFactory(ResourceManager& resMgr);
 
-    ItemPtr createItem(const GameObjectInstanceInfo& instinfo);
-    ItemPtr createItem(const std::string& objid);
+    GameObjectPtr createItem(const GameObjectInstanceInfo& instinfo);
+    GameObjectPtr createItem(const std::string& objid);
 
 private:
     GameObjectInfo& getObjectInfoRef(const std::string& name);

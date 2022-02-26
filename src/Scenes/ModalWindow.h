@@ -135,7 +135,7 @@ class InventoryWindow : public OptionsWindow
     bool _debug = false;
 
     // framecount and name
-    using InvAgg = std::tuple<std::uint32_t, ItemPtr>;
+    using InvAgg = std::tuple<std::uint32_t, GameObjectPtr>;
     std::map<std::string, InvAgg> _aggregate;
 
     void updateOptions();

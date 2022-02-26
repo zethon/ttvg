@@ -27,7 +27,7 @@ struct TestHarness
     tt::NullWindow  _window;
     tt::PlayerPtr   _player;
     lua_State* _lua;
-    std::shared_ptr<ItemFactory> _itemFactory;
+    std::shared_ptr<GameObjectFactory> _itemFactory;
     sf::Texture _playerTexture;
     tt::GameObjectInfo _playerObjInfo;
 
@@ -49,7 +49,7 @@ struct TestHarness
 
         _player = std::make_shared<tt::Player>(_playerObjInfo, GameObjectInstanceInfo{});
 
-        _itemFactory = std::make_shared<ItemFactory>(_resources);
+        _itemFactory = std::make_shared<GameObjectFactory>(_resources);
 
         GameScreenStub stub;
         tt::initLua(_lua, stub, static_cast<void*>(_itemFactory.get()));
@@ -263,7 +263,7 @@ const std::tuple<std::string, std::string> itemTestData[] =
 BOOST_DATA_TEST_CASE(luaItemCreateTest, data::make(itemTestData), id, expected)
 {
     const auto testscript = fmt::format(R"lua(
-local item = ItemFactory.createItem('{}')
+local item = GameObjectFactory.createItem('{}')
 return item:name()
 )lua", id);
 
@@ -282,7 +282,7 @@ newitem = nil
 player = nil
 function onEnter_addItem(scene)
     player = scene:getPlayer()
-    newitem = ItemFactory.createItem("key")
+    newitem = GameObjectFactory.createItem("key")
     player:addItem(newitem)
 end
 
@@ -332,7 +332,7 @@ BOOST_AUTO_TEST_CASE(itemPlayerTest)
 
 const auto luaItemSceneTestLua = R"lua(
 function onEnter_addItem(scene)
-    local newitem = ItemFactory.createItem("key")
+    local newitem = GameObjectFactory.createItem("key")
     scene:addItem(newitem)
 end
 

@@ -28,7 +28,7 @@ GameScreen* GameScreen::l_get(lua_State * L)
 
 GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     : Screen(resmgr, target),
-      _itemFactory{std::make_shared<ItemFactory>(resmgr)}
+      _itemFactory{std::make_shared<GameObjectFactory>(resmgr)}
 {
     _luaState = luaL_newstate();
         initLua(_luaState, *this, static_cast<void*>(_itemFactory.get()));

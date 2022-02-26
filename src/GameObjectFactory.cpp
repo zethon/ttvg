@@ -4,7 +4,6 @@
 
 #include <fmt/core.h>
 
-#include "Item.h"
 #include "GameObjectFactory.h"
 #include "TTLua.h"
 
@@ -38,15 +37,15 @@ int ItemFactory_createItem(lua_State* L)
     auto fact = checkItemFactory(L);
     const auto itemname = lua_tostring(L, 1);
 
-    std::size_t size = sizeof(ItemPtr);
+    std::size_t size = sizeof(GameObjectPtr);
     void* userdata = lua_newuserdata(L, size);
 
     // create a shared_ptr in the space Lua allocated
     // for us, so if we never assign this to anyone/thing
     // else it should get deleted
-    new(userdata) ItemPtr{fact->createItem(itemname)};
+    new(userdata) GameObjectPtr{fact->createItem(itemname)};
 
-    luaL_setmetatable(L, Item::CLASS_NAME);
+    luaL_setmetatable(L, GameObject::CLASS_NAME);
     return 1;
 }
 
@@ -77,7 +76,7 @@ GameObjectFactory::GameObjectFactory(ResourceManager& resMgr)
  * Create an Item from the specified name.
  *
  */
-ItemPtr GameObjectFactory::createItem(const GameObjectInstanceInfo& instinfo)
+GameObjectPtr GameObjectFactory::createItem(const GameObjectInstanceInfo& instinfo)
 {
     auto& objinfo = getObjectInfoRef(instinfo.objid);
     auto texture = _resources.cacheTexture(objinfo.texturefile);
@@ -87,14 +86,14 @@ ItemPtr GameObjectFactory::createItem(const GameObjectInstanceInfo& instinfo)
         throw std::runtime_error(error);
     }
 
-    auto item = std::make_shared<Item>(objinfo, instinfo);   
+    auto item = std::make_shared<GameObject>(objinfo, instinfo);   
     return item;
 }
 
-ItemPtr GameObjectFactory::createItem(const std::string& objid)
+GameObjectPtr GameObjectFactory::createItem(const std::string& objid)
 {
     auto& objinfo = getObjectInfoRef(objid);
-    auto item = std::make_shared<Item>(objinfo, GameObjectInstanceInfo{});
+    auto item = std::make_shared<GameObject>(objinfo, GameObjectInstanceInfo{});
     return item;
 }
 

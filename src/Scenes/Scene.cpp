@@ -121,7 +121,7 @@ int Scene_getDescriptionWindow(lua_State* L)
 int Scene_addItem(lua_State* L)
 {
     auto scene = checkObject<Scene>(L);
-    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    auto itemp = static_cast<GameObjectPtr*>(lua_touserdata(L, 2));
     scene->addItem(*itemp);
     return 0;
 }
@@ -129,7 +129,7 @@ int Scene_addItem(lua_State* L)
 int Scene_removeItem(lua_State* L)
 {
     auto scene = checkObject<Scene>(L);
-    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    auto itemp = static_cast<GameObjectPtr*>(lua_touserdata(L, 2));
     scene->removeItem(*itemp);
     return 0;
 }
@@ -431,7 +431,7 @@ ScreenAction Scene::update(sf::Time elapsed)
     }
 
     std::for_each(_items.begin(), _items.end(),
-        [this](ItemPtr item)
+        [this](GameObjectPtr item)
         {
             item->timestep();
         });
@@ -465,7 +465,7 @@ void Scene::draw()
     beforeDraw();
 
     std::for_each(_items.begin(), _items.end(),
-        [this](ItemPtr item) 
+        [this](GameObjectPtr item) 
         { 
             _window.draw(*item); 
         });
@@ -491,12 +491,12 @@ void Scene::setPlayerTile(const Tile& tile)
     _player->setPosition(global);
 }
 
-void Scene::addItem(ItemPtr item)
+void Scene::addItem(GameObjectPtr item)
 {
     _items.push_back(item);
 }
 
-void Scene::removeItem(ItemPtr item)
+void Scene::removeItem(GameObjectPtr item)
 {
     auto it = std::find(_items.begin(), _items.end(), item);
     if (it != _items.end())
@@ -661,7 +661,7 @@ Walk around and enjoy Tucson!
     w.exec();
 }
 
-void Scene::setItemInstance(Item& item, const GameObjectInstanceInfo& groupInfo, const GameObjectInstanceInfo& instanceInfo)
+void Scene::setItemInstance(GameObject& item, const GameObjectInstanceInfo& groupInfo, const GameObjectInstanceInfo& instanceInfo)
 {
     auto x = instanceInfo.x.has_value() ? instanceInfo.x : groupInfo.x;
     if (!x.has_value())
@@ -743,7 +743,7 @@ void Scene::createItems()
 
 // Calculates where to put an Item in the Scene based on the item's properties and
 // then adds the Item to Scene::_items
-void Scene::placeItem(ItemPtr item)
+void Scene::placeItem(GameObjectPtr item)
 {
     auto instanceInfo = item->instanceInfo();
 

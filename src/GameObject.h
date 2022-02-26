@@ -6,6 +6,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <nlohmann/json.hpp>
+#include <lua.hpp>
 
 #include "GameTypes.h"
 #include "IUpdateable.h"
@@ -167,6 +168,8 @@ class GameObject :
 {
 
 public:
+    static constexpr auto CLASS_NAME = "Item";
+    static const struct luaL_Reg LuaMethods[];
 
     GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst);
 
@@ -191,9 +194,7 @@ public:
     bool highlighted() const { return _highlight.getSize().x != 0; }
     
     sf::RectangleShape& highlight() { return _highlight; }
-
     sf::FloatRect getGlobalBounds() const;
-
     std::uint16_t timestep() override;
 
     bool animated() const { return _animated; }
@@ -204,6 +205,21 @@ public:
 
     float respawn() const { return _respawn; }
     void setRespawn(float r) { _respawn = r; }
+
+    std::string getID() const
+    {
+        return this->_objectInfo.id;
+    }
+
+    std::string getName() const
+    {
+        return _objectInfo.name;
+    }
+
+    std::string getDescription() const
+    {
+        return _objectInfo.description;
+    }
 
 public: // signals
     

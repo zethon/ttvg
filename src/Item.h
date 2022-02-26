@@ -14,20 +14,15 @@ namespace tt
 {
 
 class Item;
-using ItemPtr = std::shared_ptr<Item>;
+using GameObjectPtr = std::shared_ptr<GameObject>;
 
 class Item : public GameObject
 {
 
 public:
-    static constexpr auto CLASS_NAME = "Item";
-    static const struct luaL_Reg LuaMethods[];
+
 
     using GameObject::GameObject;
-
-    std::string getID() const;
-    std::string getName() const;
-    std::string getDescription() const;
 
 private:
 

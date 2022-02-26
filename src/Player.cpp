@@ -46,7 +46,7 @@ int Player_setBalance(lua_State* L)
 int Player_addItem(lua_State* L)
 {
     auto player = checkObject<Player>(L);
-    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    auto itemp = static_cast<GameObjectPtr*>(lua_touserdata(L, 2));
     player->addItem(*itemp);
     return 0;
 }
@@ -54,7 +54,7 @@ int Player_addItem(lua_State* L)
 int Player_hasItem(lua_State* L)
 {
     auto player = checkObject<Player>(L);
-    auto itemv = static_cast<ItemPtr*>(lua_touserdata(L, -2));
+    auto itemv = static_cast<GameObjectPtr*>(lua_touserdata(L, -2));
     lua_pushboolean(L, player->hasItem(*itemv) ? 1 : 0);
     return 1;
 }
@@ -70,7 +70,7 @@ int Player_hasItemByName(lua_State* L)
 int Player_removeItem(lua_State* L)
 {
     auto player = checkObject<Player>(L);
-    auto itemp = static_cast<ItemPtr*>(lua_touserdata(L, 2));
+    auto itemp = static_cast<GameObjectPtr*>(lua_touserdata(L, 2));
     player->removeItem(*itemp);
     return 0;
 }
@@ -176,7 +176,7 @@ void Player::setGlobalBottom(float bottom)
     setPosition(bounds.left, y);
 }
 
-void Player::addItem(ItemPtr item)
+void Player::addItem(GameObjectPtr item)
 {
     _inventory.push_back(item);
 }
@@ -193,7 +193,7 @@ bool Player::hasItem(const std::string& s)
 	return false;
 }
 
-bool Player::hasItem(ItemPtr item)
+bool Player::hasItem(GameObjectPtr item)
 {
     return std::find(
         _inventory.begin(), _inventory.end(), item) != _inventory.end();
@@ -203,7 +203,7 @@ void Player::removeItem(const std::string& s)
 {
     for(auto it = _inventory.begin(); it != _inventory.end(); it++)
     {
-        ItemPtr item = *it;
+        GameObjectPtr item = *it;
     	if(item->getID() == s)
         {
             _inventory.erase(it);
@@ -212,7 +212,7 @@ void Player::removeItem(const std::string& s)
     }
 }
 
-void Player::removeItem(ItemPtr item)
+void Player::removeItem(GameObjectPtr item)
 {
     auto it = std::find(
         _inventory.begin(), _inventory.end(), item);
@@ -223,16 +223,16 @@ void Player::removeItem(ItemPtr item)
     }
 }
 
-ItemPtr Player::getItemByName(const std::string& name)
+GameObjectPtr Player::getItemByName(const std::string& name)
 {
     auto it = std::find_if(_inventory.begin(), _inventory.end(),
-        [&name](ItemPtr i) { return i->getID() == name; });
+        [&name](GameObjectPtr i) { return i->getID() == name; });
 
     if (it != _inventory.end()) return *it;
     return {};
 }
 
-const std::vector<ItemPtr>& Player::getInventory() const
+const std::vector<GameObjectPtr>& Player::getInventory() const
 {
     return _inventory;
 }

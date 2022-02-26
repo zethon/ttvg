@@ -7,8 +7,7 @@
 #include "../Screen.h"
 #include "../Player.h"
 #include "../Background.h"
-#include "../Item.h"
-#include "../ItemFactory.h"
+#include "../GameObjectFactory.h"
 #include "../TooterLogger.h"
 #include "../DelayedSound.h"
 
@@ -48,7 +47,7 @@ struct SceneSetup
     sf::RenderTarget&               window;
     PlayerPtr                       player;
     lua_State*                      lua;
-    std::shared_ptr<ItemFactory>    itemFactory;
+    std::shared_ptr<GameObjectFactory>    itemFactory;
 };
 
 void from_json(const nl::json& j, AvatarInfo& av);
@@ -136,7 +135,7 @@ class Scene : public Screen
 {
 
 public:
-    using Items = std::vector<ItemPtr>;
+    using Items = std::vector<GameObjectPtr>;
     using ItemTasks = std::map<sf::Time, GameObjectInstanceInfo>;
 
     static constexpr auto CLASS_NAME = "Scene";
@@ -166,9 +165,9 @@ public:
     Hud& hud() { return _hud; }
     DescriptionText& descriptionText() { return _descriptionText; }
 
-    void addItem(ItemPtr item);
-    void removeItem(ItemPtr item);
-    const std::vector<ItemPtr>& items() const { return _items; }
+    void addItem(GameObjectPtr item);
+    void removeItem(GameObjectPtr item);
+    const std::vector<GameObjectPtr>& items() const { return _items; }
 
     BackgroundSharedPtr background() const { return _background; }
     PlayerPtr player() const { return _player; }
@@ -203,7 +202,7 @@ protected:
 
     Items               _items;
     ItemTasks           _itemTasks;
-    ItemFactory&        _itemFactory;
+    GameObjectFactory&        _itemFactory;
     GameObjectInfoMap  _objectInfoList;
 
     log::SpdLogPtr  _logger;
@@ -215,7 +214,7 @@ protected:
 
 private:
     void createItems();
-    void placeItem(ItemPtr item);
+    void placeItem(GameObjectPtr item);
 
     void pickupItem(Items::iterator itemIt);
     virtual void updateCurrentTile(const TileInfo& info);
@@ -230,7 +229,7 @@ private:
     virtual void customUpdateCurrentTile(const TileInfo&) { }
 
     // setup an item's info based on the map and item info
-    void setItemInstance(Item& item, const GameObjectInstanceInfo& groupInfo, const GameObjectInstanceInfo& instanceInfo);
+    void setItemInstance(GameObject& item, const GameObjectInstanceInfo& groupInfo, const GameObjectInstanceInfo& instanceInfo);
 };
 
 } // namespace tt

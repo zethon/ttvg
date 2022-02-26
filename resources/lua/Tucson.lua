@@ -12,7 +12,7 @@ function treasureChest_onSelect(scene, item)
         -- the key from the player's inventory. returning 
         -- true will tell the engine to remove 'treasure-chest'
         -- (aka `item`) from the scene
-        local vagina = ItemFactory.createItem("magic-space-vagina")
+        local vagina = GameObjectFactory.createItem("magic-space-vagina")
         _player:addItem(vagina)
         _player:removeItemByName("key")
         Utils.showModal(scene, "You opened the chest!\nNow you have a Magic Space Vagina!")

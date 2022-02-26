@@ -11,8 +11,8 @@
 #include "../src/GameScreen.h"
 #include "../src/TTLua.h"
 #include "../src/Scenes/Scene.h"
-#include "../src/Item.h"
-#include "../src/ItemFactory.h"
+#include "../src/GameObject.h"
+#include "../src/GameObjectFactory.h"
 
 #include "Test.h"
 
@@ -35,7 +35,7 @@ struct TestHarness
     tt::NullWindow  _window;
     tt::PlayerPtr   _player;
     lua_State* _lua;
-    std::shared_ptr<ItemFactory> _itemFactory;
+    std::shared_ptr<GameObjectFactory> _itemFactory;
     sf::Texture _playerTexture;
 
     TestHarness(const std::string& resfolder)
@@ -51,7 +51,7 @@ struct TestHarness
 
         _player = std::make_shared<tt::Player>(playerObjInfo, GameObjectInstanceInfo{});
 
-        _itemFactory = std::make_shared<ItemFactory>(_resources);
+        _itemFactory = std::make_shared<GameObjectFactory>(_resources);
 
         GameScreenStub stub;
         tt::initLua(_lua, stub, static_cast<void*>(_itemFactory.get()));
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(loadItemTest)
     const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
     tt::ResourceManager resmgr{ resfolder };
 
-    tt::ItemFactory itemf{ resmgr };
+    tt::GameObjectFactory itemf{ resmgr };
 
     GameObjectInstanceInfo ii1;
     ii1.objid = "bag";

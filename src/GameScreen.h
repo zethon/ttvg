@@ -91,11 +91,11 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
         assert(ITEMFACTORY_LUA_IDX == reference);
     }
 
-    // register static methods for `ItemFactory`
+    // register static methods for `GameObjectFactory`
     {
         lua_newtable(L);
-        luaL_setfuncs(L, ItemFactory::LuaMethods, 0);
-        lua_setglobal(L, ItemFactory::CLASS_NAME);
+        luaL_setfuncs(L, GameObjectFactory::LuaMethods, 0);
+        lua_setglobal(L, GameObjectFactory::CLASS_NAME);
     }
 
     // register static methods for `Modal`
@@ -120,7 +120,7 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
     registerLuaFunctions<Scene>(L);
     registerLuaFunctions<Player>(L);
     registerLuaFunctions<DescriptionText>(L);
-    registerLuaFunctions<Item>(L);
+    registerLuaFunctions<GameObject>(L);
     registerLuaFunctions<Zone>(L);
     registerLuaFunctions<ModalWindow>(L);
     registerLuaFunctions<MessagesWindow>(L);
@@ -187,7 +187,7 @@ private:
     GameObjectInfo                  _playerObjectInfo;
 
     lua_State*                      _luaState;
-    std::shared_ptr<ItemFactory>    _itemFactory;
+    std::shared_ptr<GameObjectFactory>    _itemFactory;
     sf::Clock                       _gameClock;
 };
 

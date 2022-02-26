@@ -39,11 +39,8 @@ set(PROJECT_FILES
     ../src/Intersection.h
     ../src/Intersection.cpp
 
-    ../src/Item.h
-    ../src/Item.cpp
-
-    ../src/ItemFactory.h
-    ../src/ItemFactory.cpp
+    ../src/GameObjectFactory.h
+    ../src/GameObjectFactory.cpp
 
     ../src/PathFactory.h
     ../src/PathFactory.cpp
@@ -80,11 +77,11 @@ set(HARNESS_FILES
     ../src/GameScreen.h
     ../src/GameScreen.cpp
 
-    ../src/Item.h
-    ../src/Item.cpp
+    ../src/GameObject.h
+    ../src/GameObject.cpp
 
-    ../src/ItemFactory.h
-    ../src/ItemFactory.cpp
+        ../src/GameObjectFactory.h
+        ../src/GameObjectFactory.cpp
 
     ../src/Player.h
     ../src/Player.cpp
