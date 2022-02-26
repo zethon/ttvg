@@ -9,12 +9,30 @@
     "frame-count": 5,
     "time-step": 55,
     
-    "default-state": "idle",
+    "default-state": "down2",
 
     "states":
         [
-            { "id":"idle", "source": { "x": 0, "y": 0 }, "frame-count": 5, "time-step": 55 },
-            { "id":"angry", "source": { "x": 0, "y": 1 }, "frame-count": 5 },
-            { "id":"smoking", "source": { "x": 0, "y": 2 }, "frame-count": 5 }
+            { "id":"up1", "source": { "x": 0, "y": 0 }, "frame-count": 7, "time-step": 5 },
+            { "id":"left1", "source": { "x": 0, "y": 1 }, "frame-count": 7, "time-step": 15 },
+            { "id":"down1", "source": { "x": 0, "y": 2 }, "frame-count": 7, "time-step": 25 },
+            { "id":"right1", "source": { "x": 0, "y": 3 }, "frame-count": 7, "time-step": 35 },
+            { "id":"up2", "source": { "x": 0, "y": 4 }, "frame-count": 8, "time-step": 45 },
+            { "id":"left2", "source": { "x": 0, "y": 5 }, "frame-count": 8, "time-step": 55 },
+            { "id":"down2", "source": { "x": 0, "y": 6 }, "frame-count": 8, "time-step": 1005 },
+            { "id":"right2", "source": { "x": 0, "y": 7 }, "frame-count": 8, "time-step": 115 },
+            { "id":"up3", "source": { "x": 0, "y": 8 }, "frame-count": 9, "time-step": 125 },
+            { "id":"left3", "source": { "x": 0, "y": 9 }, "frame-count": 9, "time-step": 135 },
+            { "id":"down3", "source": { "x": 0, "y": 10 }, "frame-count": 9, "time-step": 145 },
+            { "id":"right3", "source": { "x": 0, "y": 11 }, "frame-count": 9, "time-step": 155 },
+            { "id":"up4", "source": { "x": 0, "y": 12 }, "frame-count": 6, "time-step": 225 },
+            { "id":"left4", "source": { "x": 0, "y": 13 }, "frame-count": 6, "time-step": 525 },
+            { "id":"down4", "source": { "x": 0, "y": 14 }, "frame-count": 6, "time-step": 1025 },
+            { "id":"right4", "source": { "x": 0, "y": 15 }, "frame-count": 6, "time-step": 2025 },
+            { "id":"up5", "source": { "x": 0, "y": 16 }, "frame-count": 13, "time-step": 3025 },
+            { "id":"left5", "source": { "x": 0, "y": 17 }, "frame-count": 13, "time-step": 4025 },
+            { "id":"down5", "source": { "x": 0, "y": 18 }, "frame-count": 13, "time-step": 5025 },
+            { "id":"right5", "source": { "x": 0, "y": 19 }, "frame-count": 13, "time-step": 6025 },
+            { "id":"flip", "source": { "x": 0, "y": 20 }, "frame-count": 6, "time-step": 10025 }
         ]
 }

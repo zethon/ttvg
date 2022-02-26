@@ -174,7 +174,6 @@ void from_json(const nl::json& j, ItemInstanceInfo& info)
     info.callbacks = j.get<ItemCallbacks>();
 }
 
-
 namespace
 {
 
@@ -214,6 +213,14 @@ int Item_setObtainable(lua_State* L)
     return 0;
 }
 
+int Item_setState(lua_State* L)
+{
+    auto item = tt::checkObject<Item>(L);
+    const auto state = lua_tostring(L, 2);
+    item->setState(state);
+    return 0;
+}
+
 }
 
 const struct luaL_Reg Item::LuaMethods[] =
@@ -223,6 +230,7 @@ const struct luaL_Reg Item::LuaMethods[] =
         {"description", Item_getDescription},
         {"obtainable", Item_isObtainable},
         {"setObtainable", Item_setObtainable},
+        {"setState", Item_setState},
         {nullptr, nullptr}
     };
 

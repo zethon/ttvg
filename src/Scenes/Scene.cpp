@@ -661,50 +661,6 @@ Walk around and enjoy Tucson!
     w.exec();
 }
 
-void Scene::setItemInstance(Item& item, const ItemInstanceInfo& groupInfo, const ItemInstanceInfo& instanceInfo)
-{
-    auto x = instanceInfo.x.has_value() ? instanceInfo.x : groupInfo.x;
-    if (!x.has_value())
-    {
-        throw std::runtime_error(fmt::format(
-            "scene '{}' with item '{}' has an invalid 'x' coordinate", _name, item.getID()));
-    }
-
-    auto y = instanceInfo.y.has_value() ? instanceInfo.y : groupInfo.y;
-    if (!y.has_value())
-    {
-        throw std::runtime_error(fmt::format(
-            "scene '{}' with item '{}' has an invalid 'y' coordinate", _name, item.getID()));
-    }
-
-    float xpos = *x;
-    if (*x == -1)
-    {
-        const auto bounds = _background->getWorldTileRect();
-        xpos = tt::RandomNumber<float>(0.f, bounds.width);
-    }
-
-    float ypos = *y;
-    if (*y == -1)
-    {
-        const auto bounds = _background->getWorldTileRect();
-        ypos = tt::RandomNumber<float>(0.f, bounds.height);
-    }
-
-    auto respawn = instanceInfo.respawn.has_value() ?
-        instanceInfo.respawn : groupInfo.respawn;
-
-    const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
-    item.setPosition(position);
-
-    //item.callbacks.onSelect = instanceInfo.callbacks.onSelect.has_value() ?
-    //    instanceInfo.callbacks.onSelect : groupInfo.callbacks.onSelect;
-
-    // TODO: this feels weird to use the item to get its own 
-    // info, but it will do for now
-    //item.setInfo(ItemInstanceInfo{ item.getID(), x, y, respawn, item.callbacks });
-}
-
 void Scene::createItems()
 {
     _logger->debug("scene {} loading items", _name);

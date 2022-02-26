@@ -241,11 +241,10 @@
         
         "sevan": 
         {
-            "scale": { "x": 1.5, "y": 1.5 },
+            "scale": { "x": 1.25, "y": 1.5 },
             "instances":
             [    
-                { "x": 126, "y": 21, "onSelect": "sevan_select" },
-                { "x": 226, "y": 21,  "scale": { "x": 3.5, "y": 3.5 } }
+                { "x": 126, "y": 21, "onSelect": "sevan_select" }
             ]
         },
         
@@ -428,6 +427,7 @@
             [
                 { "x": 234, "y": 82 },
                 { "x": 91, "y": 104 },
+                { "x": 126, "y": 25 },
                 { "x": "random", "y": "random" },
                 { "x": "random", "y": "random" },
                 { "x": "random", "y": "random" },
