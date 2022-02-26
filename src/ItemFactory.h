@@ -22,7 +22,9 @@ public:
     ItemFactory(ResourceManager& resMgr);
 
     ItemPtr createItem(const GameObjectInstanceInfo& instinfo);
+    ItemPtr createItem(const std::string& objid);
 
+private:
     GameObjectInfo& getObjectInfoRef(const std::string& name);
 };
 

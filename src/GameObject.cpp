@@ -57,8 +57,6 @@ void from_json(const nl::json& j, GameObjectInfo& i)
 
     if (j.contains("states") && j["states"].is_array())
     {
-        i.states.emplace();
-
         for (const auto& item : j["states"].items())
         {
             auto state = item.value().get<GameObjectState>();

@@ -29,6 +29,7 @@ struct TestHarness
     lua_State* _lua;
     std::shared_ptr<ItemFactory> _itemFactory;
     sf::Texture _playerTexture;
+    tt::GameObjectInfo _playerObjInfo;
 
     TestHarness(const std::string& resfolder)
         : _resources{ resfolder }
@@ -36,17 +37,17 @@ struct TestHarness
         _lua = luaL_newstate();
         _playerTexture.create(100, 100);
 
-        tt::GameObjectInfo playerObjInfo;
-        playerObjInfo.size = sf::Vector2u{ 10, 10 };
-        playerObjInfo.framecount = 9;
-        playerObjInfo.states.emplace();
-        playerObjInfo.states.emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
-        playerObjInfo.states.emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
-        playerObjInfo.states.emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
-        playerObjInfo.states.emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
-        playerObjInfo.texture = &_playerTexture;
 
-        _player = std::make_shared<tt::Player>(playerObjInfo, GameObjectInstanceInfo{});
+        _playerObjInfo.size = sf::Vector2u{ 10, 10 };
+        _playerObjInfo.framecount = 9;
+        _playerObjInfo.states.emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
+        _playerObjInfo.states.emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
+        _playerObjInfo.states.emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
+        _playerObjInfo.states.emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
+        _playerObjInfo.texture = &_playerTexture;
+        _playerObjInfo.defaultState = "up";
+
+        _player = std::make_shared<tt::Player>(_playerObjInfo, GameObjectInstanceInfo{});
 
         _itemFactory = std::make_shared<ItemFactory>(_resources);
 
