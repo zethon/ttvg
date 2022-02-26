@@ -32,7 +32,7 @@ conan_basic_setup(NO_OUTPUT_DIRS KEEP_RPATHS)
 # optional configuration
 option(BUILD_UNIT_TESTS "Build unit tests (default OFF)" OFF)
 
-# Add a RELEASE definition that we can framecount on regardless
+# Add a RELEASE definition that we can count on regardless
 # of platform
 string(APPEND CMAKE_CXX_FLAGS_RELEASE " -DRELEASE")
 string(APPEND CMAKE_CXX_FLAGS_MINSIZEREL " -DRELEASE")
