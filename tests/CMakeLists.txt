@@ -27,8 +27,8 @@ function(create_test testname FILES)
 endfunction(create_test)
 
 set(PROJECT_FILES
-    ../src/GameObject.h    
-    ../src/GameObject.cpp
+    ../src/Item.h    
+    ../src/Item.cpp
     
     ../src/Background.h
     ../src/Background.cpp
@@ -39,8 +39,8 @@ set(PROJECT_FILES
     ../src/Intersection.h
     ../src/Intersection.cpp
 
-    ../src/GameObjectFactory.h
-    ../src/GameObjectFactory.cpp
+    ../src/ItemFactory.h
+    ../src/ItemFactory.cpp
 
     ../src/PathFactory.h
     ../src/PathFactory.cpp
@@ -77,11 +77,11 @@ set(HARNESS_FILES
     ../src/GameScreen.h
     ../src/GameScreen.cpp
 
-    ../src/GameObject.h
-    ../src/GameObject.cpp
+    ../src/Item.h
+    ../src/Item.cpp
 
-        ../src/GameObjectFactory.h
-        ../src/GameObjectFactory.cpp
+    ../src/ItemFactory.h
+    ../src/ItemFactory.cpp
 
     ../src/Player.h
     ../src/Player.cpp

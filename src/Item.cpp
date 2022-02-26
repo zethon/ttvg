@@ -2,7 +2,7 @@
 
 #include <fmt/core.h>
 
-#include "GameObject.h"
+#include "Item.h"
 #include "TTUtils.h"
 #include "TTLua.h"
 
@@ -11,7 +11,7 @@ namespace nl = nlohmann;
 namespace tt
 {
 
-void from_json(const nl::json& j, GameObjectInfo& i)
+void from_json(const nl::json& j, ItemInfo& i)
 {
     if (j.contains("name")) j["name"].get_to(i.name);
     if (j.contains("description")) j["description"].get_to(i.description);
@@ -60,7 +60,7 @@ void from_json(const nl::json& j, GameObjectInfo& i)
     {
         for (const auto& item : j["states"].items())
         {
-            auto state = item.value().get<GameObjectState>();
+            auto state = item.value().get<ItemState>();
             if (!state.framecount.has_value())
             {
                 state.framecount = i.framecount;
@@ -76,7 +76,7 @@ void from_json(const nl::json& j, GameObjectInfo& i)
     }
 }
 
-void from_json(const nl::json& j, GameObjectState& state)
+void from_json(const nl::json& j, ItemState& state)
 {
     if (j.contains("id"))
     {
@@ -107,7 +107,7 @@ void from_json(const nl::json& j, GameObjectState& state)
     }
 }
 
-void from_json(const nl::json& j, GameObjectCallbacks& cbs)
+void from_json(const nl::json& j, ItemCallbacks& cbs)
 {
     if (j.contains("onSelect"))
     {
@@ -115,7 +115,7 @@ void from_json(const nl::json& j, GameObjectCallbacks& cbs)
     }
 }
 
-void from_json(const nl::json& j, GameObjectInstanceInfo& info)
+void from_json(const nl::json& j, ItemInstanceInfo& info)
 {
     if (j.contains("x"))
     {
@@ -171,7 +171,7 @@ void from_json(const nl::json& j, GameObjectInstanceInfo& info)
         info.obtainable = j["obtainable"].get<bool>();
     }
 
-    info.callbacks = j.get<GameObjectCallbacks>();
+    info.callbacks = j.get<ItemCallbacks>();
 }
 
 
@@ -180,35 +180,35 @@ namespace
 
 int Item_getId(lua_State* L)
 {
-    auto item = tt::checkObject<GameObject>(L);
+    auto item = tt::checkObject<Item>(L);
     lua_pushstring(L, item->getID().c_str());
     return 1;
 }
 
 int Item_getName(lua_State* L)
 {
-    auto item = tt::checkObject<GameObject>(L);
+    auto item = tt::checkObject<Item>(L);
     lua_pushstring(L, item->getName().c_str());
     return 1;
 }
 
 int Item_getDescription(lua_State* L)
 {
-    auto item = tt::checkObject<GameObject>(L);
+    auto item = tt::checkObject<Item>(L);
     lua_pushstring(L, item->getDescription().c_str());
     return 1;
 }
 
 int Item_isObtainable(lua_State* L)
 {
-    auto item = tt::checkObject<GameObject>(L);
+    auto item = tt::checkObject<Item>(L);
     lua_pushboolean(L, item->obtainable() ? 1 : 0);
     return 1;
 }
 
 int Item_setObtainable(lua_State* L)
 {
-    auto item = tt::checkObject<GameObject>(L);
+    auto item = tt::checkObject<Item>(L);
     const auto val = lua_toboolean(L, 2);
     item->setObtainable(val);
     return 0;
@@ -216,7 +216,7 @@ int Item_setObtainable(lua_State* L)
 
 }
 
-const struct luaL_Reg GameObject::LuaMethods[] =
+const struct luaL_Reg Item::LuaMethods[] =
     {
         {"id", Item_getId},
         {"name", Item_getName},
@@ -227,7 +227,7 @@ const struct luaL_Reg GameObject::LuaMethods[] =
     };
 
 
-GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst)
+Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
     : _objectInfo{ obj }, _instanceInfo{ inst }
 {
     assert(obj.texture);
@@ -280,7 +280,7 @@ GameObject::GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& 
     _highlight.setOutlineColor(sf::Color(255, 255, 255));
 }
 
-void GameObject::setState(const std::string& statename)
+void Item::setState(const std::string& statename)
 {
     if (_objectInfo.states.find(statename) == _objectInfo.states.end())
     {
@@ -297,7 +297,7 @@ void GameObject::setState(const std::string& statename)
         _source.x * _size.x, _source.y * _size.y, _size.x, _size.y));
 }
 
-std::uint16_t GameObject::timestep()
+std::uint16_t Item::timestep()
 {
     if (_animated
         && _framecount > 0
@@ -328,7 +328,7 @@ std::uint16_t GameObject::timestep()
     return 0;
 }
 
-sf::FloatRect GameObject::getGlobalBounds() const
+sf::FloatRect Item::getGlobalBounds() const
 {
     const auto textureRect = _sprite.getTextureRect();
     float width = static_cast<float>(std::abs(textureRect.width));
@@ -336,7 +336,7 @@ sf::FloatRect GameObject::getGlobalBounds() const
     return getTransform().transformRect(sf::FloatRect(0.f, 0.f, width, height));
 }
 
-void GameObject::setHighlighted(bool h)
+void Item::setHighlighted(bool h)
 {
     if (h)
     {
@@ -350,13 +350,13 @@ void GameObject::setHighlighted(bool h)
     }
 }
 
-void GameObject::setAnimated(bool v)
+void Item::setAnimated(bool v)
 {
     _animated = v;
     _timer.restart();
 }
 
-void GameObject::draw(sf::RenderTarget & target, sf::RenderStates states) const
+void Item::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
     states.transform *= getTransform();
     target.draw(_sprite, states);

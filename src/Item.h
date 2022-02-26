@@ -19,26 +19,26 @@ namespace tt
 constexpr auto DEFAULT_FRAMECOUNT = 1u;
 constexpr auto DEFAULT_TIMESTEP = 55u;
 
-class GameObject;
-using GameObjectPtr = std::shared_ptr<GameObject>;
+class Item;
+using ItemPtr = std::shared_ptr<Item>;
 
-struct GameObjectInfo;
-using GameObjectInfoPtr = std::shared_ptr<GameObjectInfo>;
-using GameObjectInfoMap = std::map<std::string, GameObjectInfo>;
-void from_json(const nl::json& j, GameObjectInfo& i);
+struct ItemInfo;
+using ItemInfoPtr = std::shared_ptr<ItemInfo>;
+using ItemInfoMap = std::map<std::string, ItemInfo>;
+void from_json(const nl::json& j, ItemInfo& i);
 
-struct GameObjectState;
-using GameObjectStates = std::map<std::string, GameObjectState>;
-void from_json(const nl::json& j, GameObjectState& i);
+struct ItemState;
+using ItemStates = std::map<std::string, ItemState>;
+void from_json(const nl::json& j, ItemState& i);
 
-struct GameObjectCallbacks;
-void from_json(const nl::json& j, GameObjectCallbacks& cbs);
+struct ItemCallbacks;
+void from_json(const nl::json& j, ItemCallbacks& cbs);
 
-struct GameObjectInstanceInfo;
-using GameObjectInstanceInfoPtr = std::shared_ptr<GameObjectInstanceInfo>;
-void from_json(const nl::json& j, GameObjectInstanceInfo& info);
+struct ItemInstanceInfo;
+using ItemInstanceInfoPtr = std::shared_ptr<ItemInstanceInfo>;
+void from_json(const nl::json& j, ItemInstanceInfo& info);
 
-struct GameObjectState
+struct ItemState
 {
     std::string     id;
     sf::Vector2i    source;
@@ -46,7 +46,7 @@ struct GameObjectState
     std::optional<std::uint32_t>    timestep;
 };
 
-struct GameObjectInfo
+struct ItemInfo
 {
     std::string     id;             // unique! id is how the object is refrerenced in the json
     std::string     name;           // name is how the object shows up in the game (i.e. inventory)
@@ -65,7 +65,7 @@ struct GameObjectInfo
     std::optional<sf::Vector2f>     scale;
 
     std::string         defaultState;
-    GameObjectStates    states;
+    ItemStates    states;
 
     std::uint32_t   framecount = DEFAULT_FRAMECOUNT;
     std::uint32_t   timestep = DEFAULT_TIMESTEP;
@@ -73,11 +73,11 @@ struct GameObjectInfo
     float           respawn = 0.f;
 };
 
-// `GameObjectCallbacks` callbacks can be null or non-null and empty.
+// `ItemCallbacks` callbacks can be null or non-null and empty.
 // If the callback is null, then it was not defined. If it is empty,
 // then this denotes a configuration like: `"onSelect": ""` which
 // might be used to override a default action with an empty action
-struct GameObjectCallbacks
+struct ItemCallbacks
 {
     // used when the item is picked up from the map
     std::optional<std::string> onSelect;
@@ -90,7 +90,7 @@ struct GameObjectCallbacks
     // std::optional<std::string> onConsume;
 };
 
-struct GameObjectInstanceInfo
+struct ItemInstanceInfo
 {
     std::string objid; // the id of the object this is an instance of
 
@@ -104,13 +104,13 @@ struct GameObjectInstanceInfo
     std::string                 defaultState;
     std::optional<bool>         obtainable;
 
-    GameObjectCallbacks         callbacks;
+    ItemCallbacks         callbacks;
 
     // will apply the default values if they are set in the `defaults` object
     // and *not* set in this object.
     // NOTE: We cannot use a constructor since these objects are constructed
     // through the JSON parser
-    void applyDefaults(const GameObjectInstanceInfo& defaults)
+    void applyDefaults(const ItemInstanceInfo& defaults)
     {
         // this allows us to set the objid once when loading the Scene
         // and then just copy it to the individual instances
@@ -161,7 +161,7 @@ struct GameObjectInstanceInfo
     }
 };
 
-class GameObject :
+class Item :
     public sf::Drawable,
     public sf::Transformable,
     public IUpdateable
@@ -171,19 +171,19 @@ public:
     static constexpr auto CLASS_NAME = "Item";
     static const struct luaL_Reg LuaMethods[];
 
-    GameObject(const GameObjectInfo& obj, const GameObjectInstanceInfo& inst);
+    Item(const ItemInfo& obj, const ItemInstanceInfo& inst);
 
-    const GameObjectCallbacks& callbacks() const
+    const ItemCallbacks& callbacks() const
     {
         return this->_instanceInfo.callbacks;
     }
 
-    const GameObjectInfo& objectInfo() const
+    const ItemInfo& objectInfo() const
     {
         return this->_objectInfo;
     }
 
-    const GameObjectInstanceInfo& instanceInfo()
+    const ItemInstanceInfo& instanceInfo()
     {
         return this->_instanceInfo;
     }
@@ -241,11 +241,11 @@ protected:
     sf::Sprite          _sprite;
     sf::RectangleShape  _highlight;
 
-    // 2022-02-10: The idea right now is that a `GameObject` has a reference
-    // to a `GameObjectInfo` structs, and to also a `GameObjectInstance` struct
-    // to let it know about the instance of the `GameObject`
-    const GameObjectInfo&           _objectInfo;    // ref to the cached info
-    const GameObjectInstanceInfo    _instanceInfo;  // copy of the instance info
+    // 2022-02-10: The idea right now is that a `Item` has a reference
+    // to a `ItemInfo` structs, and to also a `ItemInstance` struct
+    // to let it know about the instance of the `Item`
+    const ItemInfo&           _objectInfo;    // ref to the cached info
+    const ItemInstanceInfo    _instanceInfo;  // copy of the instance info
 
     // properties that can change
     bool    _animated = false;

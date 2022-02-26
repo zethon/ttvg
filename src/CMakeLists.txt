@@ -1,5 +1,5 @@
 set(SOURCE_FILES
-    GameObject.cpp
+    Item.cpp
     Background.cpp
     DelayedSound.cpp
     Engine.cpp
@@ -7,8 +7,8 @@ set(SOURCE_FILES
     GameScreen.cpp
     Intersection.cpp
     IntroScreen.cpp
-    GameObject.cpp
-    GameObjectFactory.cpp
+    Item.cpp
+    ItemFactory.cpp
     main.cpp
     PathFactory.cpp
     Player.cpp
@@ -33,13 +33,13 @@ set(SOURCE_FILES
 )
 
 set(HEADER_FILES
-    GameObject.h
+    Item.h
     Background.h
     core.h
     DelayedSound.h
     Engine.h
-    GameObject.h
-    GameObjectFactory.h
+    Item.h
+    ItemFactory.h
     GameOverScreen.h
     GameScreen.h
     GameTypes.h

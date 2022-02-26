@@ -27,9 +27,9 @@ struct TestHarness
     tt::NullWindow  _window;
     tt::PlayerPtr   _player;
     lua_State* _lua;
-    std::shared_ptr<GameObjectFactory> _itemFactory;
+    std::shared_ptr<ItemFactory> _itemFactory;
     sf::Texture _playerTexture;
-    tt::GameObjectInfo _playerObjInfo;
+    tt::ItemInfo _playerObjInfo;
 
     TestHarness(const std::string& resfolder)
         : _resources{ resfolder }
@@ -40,16 +40,16 @@ struct TestHarness
 
         _playerObjInfo.size = sf::Vector2u{ 10, 10 };
         _playerObjInfo.framecount = 9;
-        _playerObjInfo.states.emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
-        _playerObjInfo.states.emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
-        _playerObjInfo.states.emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
-        _playerObjInfo.states.emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
+        _playerObjInfo.states.emplace("up", ItemState{ "up", sf::Vector2i{0,0}, 9 });
+        _playerObjInfo.states.emplace("left", ItemState{ "left", sf::Vector2i{0,1}, 9 });
+        _playerObjInfo.states.emplace("down", ItemState{ "down", sf::Vector2i{0,2}, 9 });
+        _playerObjInfo.states.emplace("right", ItemState{ "right", sf::Vector2i{0,3}, 9 });
         _playerObjInfo.texture = &_playerTexture;
         _playerObjInfo.defaultState = "up";
 
-        _player = std::make_shared<tt::Player>(_playerObjInfo, GameObjectInstanceInfo{});
+        _player = std::make_shared<tt::Player>(_playerObjInfo, ItemInstanceInfo{});
 
-        _itemFactory = std::make_shared<GameObjectFactory>(_resources);
+        _itemFactory = std::make_shared<ItemFactory>(_resources);
 
         GameScreenStub stub;
         tt::initLua(_lua, stub, static_cast<void*>(_itemFactory.get()));
@@ -263,7 +263,7 @@ const std::tuple<std::string, std::string> itemTestData[] =
 BOOST_DATA_TEST_CASE(luaItemCreateTest, data::make(itemTestData), id, expected)
 {
     const auto testscript = fmt::format(R"lua(
-local item = GameObjectFactory.createItem('{}')
+local item = ItemFactory.createItem('{}')
 return item:name()
 )lua", id);
 
@@ -282,7 +282,7 @@ newitem = nil
 player = nil
 function onEnter_addItem(scene)
     player = scene:getPlayer()
-    newitem = GameObjectFactory.createItem("key")
+    newitem = ItemFactory.createItem("key")
     player:addItem(newitem)
 end
 
@@ -332,7 +332,7 @@ BOOST_AUTO_TEST_CASE(itemPlayerTest)
 
 const auto luaItemSceneTestLua = R"lua(
 function onEnter_addItem(scene)
-    local newitem = GameObjectFactory.createItem("key")
+    local newitem = ItemFactory.createItem("key")
     scene:addItem(newitem)
 end
 

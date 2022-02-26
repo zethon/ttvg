@@ -8,7 +8,7 @@
 #include "Scenes/ModalWindow.h"
 
 #include "Screen.h"
-#include "GameObject.h"
+#include "Item.h"
 #include "Player.h"
 #include "TTLua.h"
 #include "TTUtils.h"
@@ -91,11 +91,11 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
         assert(ITEMFACTORY_LUA_IDX == reference);
     }
 
-    // register static methods for `GameObjectFactory`
+    // register static methods for `ItemFactory`
     {
         lua_newtable(L);
-        luaL_setfuncs(L, GameObjectFactory::LuaMethods, 0);
-        lua_setglobal(L, GameObjectFactory::CLASS_NAME);
+        luaL_setfuncs(L, ItemFactory::LuaMethods, 0);
+        lua_setglobal(L, ItemFactory::CLASS_NAME);
     }
 
     // register static methods for `Modal`
@@ -120,7 +120,7 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
     registerLuaFunctions<Scene>(L);
     registerLuaFunctions<Player>(L);
     registerLuaFunctions<DescriptionText>(L);
-    registerLuaFunctions<GameObject>(L);
+    registerLuaFunctions<Item>(L);
     registerLuaFunctions<Zone>(L);
     registerLuaFunctions<ModalWindow>(L);
     registerLuaFunctions<MessagesWindow>(L);
@@ -184,10 +184,10 @@ private:
     SceneMap                        _scenes;
 
     PlayerPtr                       _player;
-    GameObjectInfo                  _playerObjectInfo;
+    ItemInfo                  _playerObjectInfo;
 
     lua_State*                      _luaState;
-    std::shared_ptr<GameObjectFactory>    _itemFactory;
+    std::shared_ptr<ItemFactory>    _itemFactory;
     sf::Clock                       _gameClock;
 };
 

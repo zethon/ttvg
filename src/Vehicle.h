@@ -6,7 +6,7 @@
 
 #include "GameTypes.h"
 #include "Path.hpp"
-#include "GameObject.h"
+#include "Item.h"
 #include "Intersection.h"
 #include "Tiles.hpp"
 
@@ -19,17 +19,17 @@ using BackgroundSharedPtr = std::shared_ptr<Background>;
 class Vehicle;
 using VehiclePtr = std::shared_ptr<Vehicle>;
 
-struct VehicleInfo : public GameObjectInfo
+struct VehicleInfo : public ItemInfo
 {
     sf::SoundBuffer*        sound = nullptr;
 
     sf::Vector2f            speed;  // the car's speed is randomly selected within this range
     std::uint16_t           damage;
 
-    GameObjectInstanceInfo  instinfo;
+    ItemInstanceInfo  instinfo;
 };
 
-class Vehicle : public GameObject
+class Vehicle : public Item
 {
 
 public:

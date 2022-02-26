@@ -28,17 +28,17 @@ GameScreen* GameScreen::l_get(lua_State * L)
 
 GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     : Screen(resmgr, target),
-      _itemFactory{std::make_shared<GameObjectFactory>(resmgr)}
+      _itemFactory{std::make_shared<ItemFactory>(resmgr)}
 {
     _luaState = luaL_newstate();
         initLua(_luaState, *this, static_cast<void*>(_itemFactory.get()));
 
     _playerObjectInfo.size = sf::Vector2u{ 64, 64 };
     _playerObjectInfo.framecount = 9;
-    _playerObjectInfo.states.emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9, 55 });
-    _playerObjectInfo.states.emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9, 55 });
-    _playerObjectInfo.states.emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9, 55 });
-    _playerObjectInfo.states.emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9, 55 });
+    _playerObjectInfo.states.emplace("up", ItemState{ "up", sf::Vector2i{0,0}, 9, 55 });
+    _playerObjectInfo.states.emplace("left", ItemState{ "left", sf::Vector2i{0,1}, 9, 55 });
+    _playerObjectInfo.states.emplace("down", ItemState{ "down", sf::Vector2i{0,2}, 9, 55 });
+    _playerObjectInfo.states.emplace("right", ItemState{ "right", sf::Vector2i{0,3}, 9, 55 });
     _playerObjectInfo.defaultState = "down";
 
     // the `Player` object is shared among all the `Scene` objects
@@ -48,7 +48,7 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
 
     _playerObjectInfo.texture = textptr;
 
-    _player = std::make_shared<Player>(_playerObjectInfo, GameObjectInstanceInfo{});
+    _player = std::make_shared<Player>(_playerObjectInfo, ItemInstanceInfo{});
     _player->setAnimated(false); // TODO: set this in the Player class
 
     SceneSetup setup{ _resources, _window, _player, _luaState, _itemFactory };

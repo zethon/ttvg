@@ -4,7 +4,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "GameObject.h"
+#include "Item.h"
 
 namespace tt
 {
@@ -13,13 +13,13 @@ class Player;
 using PlayerPtr = std::shared_ptr<Player>;
 void from_json(const nl::json& j, Player& i);
 
-class Player : public GameObject
+class Player : public Item
 {
 public:
     static constexpr auto CLASS_NAME = "Player";
     static const struct luaL_Reg LuaMethods[];
 
-    using GameObject::GameObject;
+    using Item::Item;
 
     sf::Vector2f getGlobalCenter() const;
 
@@ -33,14 +33,14 @@ public:
     void setGlobalTop(float top);
     void setGlobalBottom(float bottom);
 
-    void addItem(GameObjectPtr item);
+    void addItem(ItemPtr item);
     bool hasItem(const std::string& s);
-    bool hasItem(GameObjectPtr item);
+    bool hasItem(ItemPtr item);
     void removeItem(const std::string& s);
-    void removeItem(GameObjectPtr item);
-    GameObjectPtr getItemByName(const std::string& name);
+    void removeItem(ItemPtr item);
+    ItemPtr getItemByName(const std::string& name);
 
-    const std::vector<GameObjectPtr>& getInventory() const;
+    const std::vector<ItemPtr>& getInventory() const;
 
     std::uint32_t health() const { return _health; }
     void setHealth(std::int32_t h);
@@ -65,7 +65,7 @@ public: // signals
     boost::signals2::signal<void(void)> onMoveTimer;
 
 private:
-    std::vector<GameObjectPtr>    _inventory;
+    std::vector<ItemPtr>    _inventory;
     Direction               _direction = Direction::DOWN;
     std::uint32_t           _health = 100;
     float                   _cash = 40.0f;

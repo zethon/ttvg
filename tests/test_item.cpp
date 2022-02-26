@@ -11,8 +11,8 @@
 #include "../src/GameScreen.h"
 #include "../src/TTLua.h"
 #include "../src/Scenes/Scene.h"
-#include "../src/GameObject.h"
-#include "../src/GameObjectFactory.h"
+#include "../src/Item.h"
+#include "../src/ItemFactory.h"
 
 #include "Test.h"
 
@@ -35,7 +35,7 @@ struct TestHarness
     tt::NullWindow  _window;
     tt::PlayerPtr   _player;
     lua_State* _lua;
-    std::shared_ptr<GameObjectFactory> _itemFactory;
+    std::shared_ptr<ItemFactory> _itemFactory;
     sf::Texture _playerTexture;
 
     TestHarness(const std::string& resfolder)
@@ -45,13 +45,13 @@ struct TestHarness
 
         _playerTexture.create(100, 100);
 
-        tt::GameObjectInfo playerObjInfo;
+        tt::ItemInfo playerObjInfo;
         playerObjInfo.size = sf::Vector2u{ 10, 10 };
         playerObjInfo.texture = &_playerTexture;
 
-        _player = std::make_shared<tt::Player>(playerObjInfo, GameObjectInstanceInfo{});
+        _player = std::make_shared<tt::Player>(playerObjInfo, ItemInstanceInfo{});
 
-        _itemFactory = std::make_shared<GameObjectFactory>(_resources);
+        _itemFactory = std::make_shared<ItemFactory>(_resources);
 
         GameScreenStub stub;
         tt::initLua(_lua, stub, static_cast<void*>(_itemFactory.get()));
@@ -76,16 +76,16 @@ BOOST_AUTO_TEST_CASE(loadItemTest)
     const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
     tt::ResourceManager resmgr{ resfolder };
 
-    tt::GameObjectFactory itemf{ resmgr };
+    tt::ItemFactory itemf{ resmgr };
 
-    GameObjectInstanceInfo ii1;
+    ItemInstanceInfo ii1;
     ii1.objid = "bag";
     auto item = itemf.createItem(ii1);
     BOOST_TEST(item->getID() == "bag");
     BOOST_TEST(item->getName() == "Bag");
     BOOST_TEST(item->obtainable());
     
-    GameObjectInstanceInfo ii2;
+    ItemInstanceInfo ii2;
     ii2.objid = "nissan-truck";
     item = itemf.createItem(ii2);
     BOOST_TEST(item->getID() == "nissan-truck");
@@ -177,7 +177,7 @@ BOOST_AUTO_TEST_CASE(gameObjectLoadTest)
     nl::json jsondata = nl::json::parse(sevanjson, nullptr, false);
     BOOST_TEST(!jsondata.is_discarded());
 
-    const auto object = jsondata.get<tt::GameObjectInfo>();
+    const auto object = jsondata.get<tt::ItemInfo>();
     BOOST_TEST(object.name == "sevan2");
     BOOST_TEST(object.states.size() == 2);
 

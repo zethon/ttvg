@@ -81,7 +81,7 @@ bool shouldTurn(const sf::Vector2f pathpoint, const sf::Vector2f& current, Direc
 }
 
 Vehicle::Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg)
-    : GameObject(info, info.instinfo),
+    : Item(info, info.instinfo),
       _bg{ bg }
 {
     setState("down");
@@ -90,7 +90,7 @@ Vehicle::Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg)
 
 std::uint16_t Vehicle::timestep()
 {
-    GameObject::timestep();
+    Item::timestep();
 
     if (_vehicleState == VehicleState::MOVING
         && _movementClock.getElapsedTime().asMilliseconds() > 100)

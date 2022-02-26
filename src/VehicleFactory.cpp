@@ -42,9 +42,9 @@ void VehicleFactory::loadVehicles(const nl::json& json)
 
     for (const auto& item : json["vehicles"]["assets"].items())
     {
-        VehicleInfo info{ item.value().get<GameObjectInfo>() };
+        VehicleInfo info{ item.value().get<ItemInfo>() };
 
-        info.instinfo = item.value().get<GameObjectInstanceInfo>();
+        info.instinfo = item.value().get<ItemInstanceInfo>();
         info.speed = item.value().at("speed").get<sf::Vector2f>();
 
         if (item.value().contains("damage"))
