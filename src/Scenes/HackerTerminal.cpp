@@ -31,7 +31,7 @@ std::string getHackerText()
     {
         if (fs::is_directory(entry)) continue;
 
-        std::uint32_t size = fs::file_size(entry.path()) / 1024u;
+        auto size = static_cast<std::uint32_t>(fs::file_size(entry.path()) / 1024u);
 
         output <<
             fmt::format("{:<30} [*********] {:>6}KB   00:00", entry.path().filename().string(), size) << '\n';
