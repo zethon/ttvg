@@ -95,21 +95,21 @@ bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
     return true;
 }
 
-template<typename SceneT>
-int registerScene(lua_State* L, SceneT& scene)
+template<typename ObjT>
+int registerObject(lua_State* L, ObjT& object)
 {
     int idx = 0;
 
-    // create a pointer to `this` in the Lua state and register
-    // it as a `Scene` class/object/table inside Lua
+    // create a pointer to the object in the Lua state and register
+    // it as an object of `ObjT` class/object/table inside Lua
     {
-        // create the pointer to ourselves in the Lua state
-        std::size_t size = sizeof(SceneT*);
-        SceneT** data = static_cast<SceneT**>(lua_newuserdata(L, size)); // -1:ud
-        *data = &scene;
+        // create the pointer to itself in the Lua state
+        std::size_t size = sizeof(ObjT*);
+        ObjT** data = static_cast<ObjT**>(lua_newuserdata(L, size)); // -1:ud
+        *data = &object;
 
         // and set the metatable
-        luaL_getmetatable(L, SceneT::CLASS_NAME); // -2:ud, -1: mt
+        luaL_getmetatable(L, ObjT::CLASS_NAME); // -2:ud, -1: mt
         lua_setmetatable(L, -2); // -1: ud
         idx = luaL_ref(L, LUA_REGISTRYINDEX);  // empty stack
 
@@ -146,7 +146,7 @@ public:
     
     Scene(std::string_view name, const SceneSetup& setup);
 
-    std::string name() const { return _name; }
+    std::string name() const { return _sceneName; }
 
     virtual void init();
 
@@ -182,10 +182,9 @@ protected:
     [[maybe_unused]] bool walkPlayer(float speed);
     void showHelp();
 
-    std::string     _name;
+    std::string     _sceneName;
     lua_State*      _luaState = nullptr;
-    lua_State*      _luaState2 = nullptr;
-    int             _luaIdx = 0;
+    int             _luaIdx = 0;    // the index for `this` object in the Lua registry
     CallbackInfo    _callbackNames;
 
     Hud             _hud;
@@ -204,7 +203,7 @@ protected:
     Items               _items;
     ItemTasks           _itemTasks;
     ItemFactory&        _itemFactory;
-    ItemInfoMap  _objectInfoList;
+    ItemInfoMap         _objectInfoList;
 
     log::SpdLogPtr  _logger;
 

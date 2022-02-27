@@ -244,7 +244,7 @@ const struct luaL_Reg Scene::LuaMethods[] =
 
 Scene::Scene(std::string_view name, const SceneSetup& setup)
     : Screen(setup.resources, setup.window),
-      _name{ name },
+      _sceneName{name },
       _luaState{setup.lua},
       _hud{ setup.resources, setup.window },
       _descriptionText{ setup.resources, setup.window },
@@ -253,9 +253,9 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
       _itemFactory{ *(setup.itemFactory) },
       _logger { log::initializeLogger("Scene") }
 {
-    _logger->info("creating scene '{}'", _name);
+    _logger->info("creating scene '{}'", _sceneName);
 
-    if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _name)); 
+    if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _sceneName));
             jsonopt.has_value())
     {
         const auto& json = *jsonopt;
@@ -282,36 +282,32 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
             }
         }
 
-        _logger->debug("loaded json file for scene '{}'", _name);
+        _logger->debug("loaded json file for scene '{}'", _sceneName);
     }
     else
     {
-        _logger->warn("no json file loaded for scene '{}'", _name);
+        _logger->warn("no json file loaded for scene '{}'", _sceneName);
     }
 
     // the scene must be registered in the Lua registry even
     // if it has no <scene>.lua file
-    _luaIdx = registerScene(_luaState, *this);
-    if (const auto luafile = _resources.getFilename(fmt::format("lua/{}.lua", _name));
+    _luaIdx = registerObject(_luaState, *this);
+    if (const auto luafile = _resources.getFilename(fmt::format("lua/{}.lua", _sceneName));
             boost::filesystem::exists(luafile))
     {
          if (!loadSceneLuaFile(*this, luafile, _luaState))
          {
-            _luaState = nullptr;
             _logger->warn("Could not load scene luafile {}", luafile);
          }
     }
     else
     {
-        _luaState = nullptr;
         _logger->debug("No scene luafile found at {}", luafile);
     }
 
-    _luaState2 = setup.lua;
-
     _lastPlayerPos = _playerAvatarInfo.start;
 
-    _background = std::make_shared<Background>(_name, _resources, _window);
+    _background = std::make_shared<Background>(_sceneName, _resources, _window);
     addDrawable(_background);
 
     sf::View view(sf::FloatRect(0.f, 0.f,
@@ -324,16 +320,16 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
 
 void Scene::init()
 {
-    _logger->debug("initializing scene '{}'", _name);
+    _logger->debug("initializing scene '{}'", _sceneName);
     createItems();
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, 
-        { { LUA_REGISTRYINDEX, _luaIdx } });
+    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _sceneName,
+                        { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::enter()
 {
-    _logger->debug("entering scene '{}'", _name);
+    _logger->debug("entering scene '{}'", _sceneName);
     assert(!_player);
     _player = _weakPlayer.lock();
 
@@ -378,21 +374,21 @@ void Scene::enter()
             animeCallback();
         });
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, 
-        { { LUA_REGISTRYINDEX, _luaIdx } });
+    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _sceneName,
+                        { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::exit()
 {
-    _logger->debug("exiting scene '{}'", _name);
+    _logger->debug("exiting scene '{}'", _sceneName);
     assert(_player);
      
     _player->onSetHealth.disconnect_all_slots();
     _player->onSetCash.disconnect_all_slots();
     _player->onMoveTimer.disconnect_all_slots();
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, 
-        { { LUA_REGISTRYINDEX, _luaIdx } });
+    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _sceneName,
+                        { { LUA_REGISTRYINDEX, _luaIdx } });
 
     _lastPlayerPos = _player->getPosition();
     removeUpdateable(_player);
@@ -558,8 +554,8 @@ void Scene::updateCurrentTile(const TileInfo& info)
     // allow subclasses to do their own handling
     customUpdateCurrentTile(info);
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onTileUpdate, _name, 
-        { 
+    tt::CallLuaFunction(_luaState, _callbackNames.onTileUpdate, _sceneName,
+                        {
             { LUA_REGISTRYINDEX, _luaIdx },
             MakeLuaArg(_currentTile.tile.x),
             MakeLuaArg(_currentTile.tile.y)
@@ -665,7 +661,7 @@ Walk around and enjoy Tucson!
 
 void Scene::createItems()
 {
-    _logger->debug("scene {} loading items", _name);
+    _logger->debug("scene {} loading items", _sceneName);
 
     const auto& config = _background->json();
 
@@ -696,7 +692,7 @@ void Scene::createItems()
         }
     }
 
-    _logger->debug("scene '{}' loaded {} items", _name, _items.size());
+    _logger->debug("scene '{}' loaded {} items", _sceneName, _items.size());
 }
 
 // Calculates where to put an Item in the Scene based on the item's properties and
@@ -708,13 +704,13 @@ void Scene::placeItem(ItemPtr item)
     if (!instanceInfo.x.has_value())
     {
         throw std::runtime_error(fmt::format(
-            "scene '{}' with item '{}' has an invalid 'x' coordinate", _name, item->getID()));
+                "scene '{}' with item '{}' has an invalid 'x' coordinate", _sceneName, item->getID()));
     }
 
     if (!instanceInfo.y.has_value())
     {
         throw std::runtime_error(fmt::format(
-            "scene '{}' with item '{}' has an invalid 'y' coordinate", _name, item->getID()));
+                "scene '{}' with item '{}' has an invalid 'y' coordinate", _sceneName, item->getID()));
     }
 
     float xpos = *(instanceInfo.x);
@@ -754,7 +750,7 @@ void Scene::placeItem(ItemPtr item)
         item->setScale(scaleX, scaleY);
     }
 
-    auto luaidx = registerScene(_luaState2, *item);
+    auto luaidx = registerObject(_luaState, *item);
     item->setLuaIdx(luaidx);
 
     _items.push_back(item);
@@ -769,13 +765,12 @@ void Scene::pickupItem(Items::iterator itemIt)
     if (item->callbacks().onSelect.has_value() 
         && item->callbacks().onSelect->size() > 0)
     {
-        const auto results = tt::CallLuaFunction(_luaState, 
-            *(item->callbacks().onSelect), 
-            _name, 
-            { 
+        const auto results = tt::CallLuaFunction(_luaState,
+                                                 *(item->callbacks().onSelect),
+                                                 _sceneName,
+                                                 {
                 { LUA_REGISTRYINDEX, _luaIdx },
                 { LUA_REGISTRYINDEX, item->luaIdx() }
-                //{ LUA_TLIGHTUSERDATA, static_cast<void*>(&item) } 
             });
 
         if (results.has_value() && results->size() > 0)
@@ -940,9 +935,9 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                     auto& zone = boost::any_cast<Zone&>(_currentTile.data);
 
                     auto resultp = tt::CallLuaFunction(_luaState,
-                        zone.callbacks.onSelect,
-                        _name,
-                        {
+                                                       zone.callbacks.onSelect,
+                                                       _sceneName,
+                                                       {
                             { LUA_REGISTRYINDEX, _luaIdx },
                             { LUA_TLIGHTUSERDATA, static_cast<void*>(&zone) }
                         });

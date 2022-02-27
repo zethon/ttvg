@@ -73,7 +73,11 @@ std::string GetLuaValue(const LuaArgPair& v)
     {
         // first get the execution environment and set that
         lua_getglobal(L, sandbox.data()); // 1:env
-        assert(lua_isnil(L, 1) == 0);
+        if (lua_isnil(L, 1) != 0)
+        {
+            lua_settop(L, 0);
+            return {};
+        }
     }
 
     // save off the stack so we can get an accurate

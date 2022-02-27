@@ -103,10 +103,10 @@ BOOST_AUTO_TEST_CASE(loadTestCase)
     writeFile(luafile2, file2);
 
     SceneStub s1{ "scene1" };
-    auto s1idx = tt::registerScene(lua, s1);
+    auto s1idx = tt::registerObject(lua, s1);
 
     SceneStub s2{ "scene2" };
-    auto s2idx = tt::registerScene(lua, s2);
+    auto s2idx = tt::registerObject(lua, s2);
 
     BOOST_TEST(tt::loadSceneLuaFile(s1, luafile1, lua));
     BOOST_TEST(tt::loadSceneLuaFile(s2, luafile2, lua));
