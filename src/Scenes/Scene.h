@@ -184,6 +184,7 @@ protected:
 
     std::string     _name;
     lua_State*      _luaState = nullptr;
+    lua_State*      _luaState2 = nullptr;
     int             _luaIdx = 0;
     CallbackInfo    _callbackNames;
 

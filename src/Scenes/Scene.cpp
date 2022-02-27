@@ -303,9 +303,11 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
     }
     else
     {
-        _logger->debug("No scene luafile found at {}", luafile);
         _luaState = nullptr;
+        _logger->debug("No scene luafile found at {}", luafile);
     }
+
+    _luaState2 = setup.lua;
 
     _lastPlayerPos = _playerAvatarInfo.start;
 
@@ -752,6 +754,9 @@ void Scene::placeItem(ItemPtr item)
         item->setScale(scaleX, scaleY);
     }
 
+    auto luaidx = registerScene(_luaState2, *item);
+    item->setLuaIdx(luaidx);
+
     _items.push_back(item);
 }
 
@@ -769,7 +774,8 @@ void Scene::pickupItem(Items::iterator itemIt)
             _name, 
             { 
                 { LUA_REGISTRYINDEX, _luaIdx },
-                { LUA_TLIGHTUSERDATA, static_cast<void*>(&item) } 
+                { LUA_REGISTRYINDEX, item->luaIdx() }
+                //{ LUA_TLIGHTUSERDATA, static_cast<void*>(&item) } 
             });
 
         if (results.has_value() && results->size() > 0)

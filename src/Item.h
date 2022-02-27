@@ -221,6 +221,9 @@ public:
         return _objectInfo.description;
     }
 
+    int luaIdx() const { return _luaIdx; }
+    void setLuaIdx(int i) { _luaIdx = i; }
+
 public: // signals
     
     boost::signals2::signal<void(void)> onFrameChange;
@@ -251,6 +254,8 @@ protected:
     bool    _animated = false;
     bool    _obtainable = false;
     float   _respawn = 0.0;
+
+    int     _luaIdx = 0;
 };
 
 } // namespace tt
