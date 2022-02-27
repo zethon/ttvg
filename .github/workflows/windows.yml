@@ -34,7 +34,7 @@ jobs:
 
     - name: Add custom conan repo
       run:  |
-        dir "C:/Program Files"
+        dir "C:/Program Files" /s
         conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
             
     - name: Create Build Environment
