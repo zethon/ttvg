@@ -465,5 +465,11 @@ end
     BOOST_TEST(static_cast<void*>(newsax.get()) == saxPtr); 
 }
 
+// --run_test=tt/lua/itemPropertyTest
+BOOST_AUTO_TEST_CASE(itemPropertyTest)
+{
+
+}
+
 BOOST_AUTO_TEST_SUITE_END() // lua
 BOOST_AUTO_TEST_SUITE_END() // tt
