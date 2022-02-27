@@ -6,3 +6,4 @@ core
 bin.minsizerel/
 bin.release/
 build-make
+.vs/

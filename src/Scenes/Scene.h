@@ -168,6 +168,8 @@ public:
     void addItem(ItemPtr item);
     void removeItem(ItemPtr item);
     const std::vector<ItemPtr>& items() const { return _items; }
+    void placeItem(ItemPtr item);
+    void pickupItem(Items::iterator itemIt);
 
     BackgroundSharedPtr background() const { return _background; }
     PlayerPtr player() const { return _player; }
@@ -214,9 +216,6 @@ protected:
 
 private:
     void createItems();
-    void placeItem(ItemPtr item);
-
-    void pickupItem(Items::iterator itemIt);
     virtual void updateCurrentTile(const TileInfo& info);
     
     PollResult privatePollHandler(const sf::Event& e);
