@@ -35,8 +35,7 @@ jobs:
     - name: Add custom conan repo
       run: |
         conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
-        type D:/a/ttvg/ttvg/build/CMakeFiles/CMakeOutput.log
-        dir /s 
+        dir c:\ /s 
       
     - name: Create Build Environment
       run: cmake -E make_directory ${{github.workspace}}/build
