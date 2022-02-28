@@ -15,11 +15,11 @@
         [
             { "id":"up1", "source": { "x": 0, "y": 0 }, "frame-count": 7 },
             { "id":"left1", "source": { "x": 0, "y": 1 }, "frame-count": 7 },
-            { "id":"down1", "source": { "x": 0, "y": 2 }, "frame-count": 7 },
+            { "id":"down1", "source": { "x": 0, "y": 2 }, "frame-count": 7},
             { "id":"right1", "source": { "x": 0, "y": 3 }, "frame-count": 7 },
             { "id":"up2", "source": { "x": 0, "y": 4 }, "frame-count": 8 },
             { "id":"left2", "source": { "x": 0, "y": 5 }, "frame-count": 8 },
-            { "id":"down2", "source": { "x": 0, "y": 6 }, "frame-count": 8 },
+            { "id":"down2", "source": { "x": 0, "y": 6 }, "frame-count": 8, "time-step": 1000 },
             { "id":"right2", "source": { "x": 0, "y": 7 }, "frame-count": 8 },
             { "id":"up3", "source": { "x": 0, "y": 8 }, "frame-count": 9 },
             { "id":"left3", "source": { "x": 0, "y": 9 }, "frame-count": 9 },

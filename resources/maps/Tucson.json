@@ -248,6 +248,15 @@
             ]
         },
         
+        "officer": 
+        {
+            "scale": { "x": 3.0, "y": 3.0 },
+            "instances":
+            [    
+                { "x": 127, "y": 55 }
+            ]
+        },
+
         "plunger": 
         {
             "instances":
