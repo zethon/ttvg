@@ -4,6 +4,15 @@ project(ttvg)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MACOSX_RPATH 1)
 
+# optional configuration
+option(BUILD_UNIT_TESTS "Build unit tests (default OFF)" OFF)
+option(SHARED_SFML "Use shared SFML libraries (default OFF)" ON)
+
+set(SHARED_SFML_STR "False")
+if (SHARED_SFML)
+    set(SHARED_SFML_STR "True")
+endif(SHARED_SFML)
+
 # initialize conan libs
 include(CMake/conan.cmake)
 conan_cmake_run(REQUIRES
@@ -23,14 +32,11 @@ conan_cmake_run(REQUIRES
         boost:without_system=False 
         boost:without_exception=False
         boost:without_contract=False
-        sfml:shared=True
+        sfml:shared=False
 )
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(NO_OUTPUT_DIRS KEEP_RPATHS)
-
-# optional configuration
-option(BUILD_UNIT_TESTS "Build unit tests (default OFF)" OFF)
 
 # Add a RELEASE definition that we can count on regardless
 # of platform
