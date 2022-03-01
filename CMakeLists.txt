@@ -32,7 +32,7 @@ conan_cmake_run(REQUIRES
         boost:without_system=False 
         boost:without_exception=False
         boost:without_contract=False
-        sfml:shared=False
+        sfml:shared=${SHARED_SFML_STR}
 )
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
