@@ -116,14 +116,22 @@ tools/linux/run.sh
 
 ## Runtime
 
-Enable audio
 
 ```
+# Setup user audio permission
+usermod -aG audio <username>
+
+# Add to config /etc/pulse/client.conf
+auto-connect-localhost = yes
+
+# Add to config /etc/pulse/default.pa
+load-module module-native-protocol-tcp listen=127.0.0.1 auth-ip-acl=127.0.0.1 auth-anonymous=1
+
+# Kill pulseaudio
 pulseaudio -k
 ```
 
-Enable video with your desired screen size using the --window-size option
-
+sudo pulseaudio -D
 
 ```
 ./tools/linux/run.sh --window-size=950x700
