@@ -114,6 +114,27 @@ Run Game
 tools/linux/run.sh
 ```
 
+Audio on Linux
+
+```
+# Setup user audio permission
+usermod -aG audio <username>
+
+# Add to config /etc/pulse/client.conf
+auto-connect-localhost = yes
+
+# Add to config /etc/pulse/default.pa
+load-module module-native-protocol-tcp listen=127.0.0.1 auth-ip-acl=127.0.0.1 auth-anonymous=1
+
+# Kill pulseaudio
+pulseaudio -k
+
+# Restart pulseaudio
+sudo pulseaudio -D
+
+```
+
+
 ## How to Play
 
 Once the game has been built and you try to run it, then you might notice that it crashes. This is because you must tell the game where to find all of the assets (i.e. images, sound files, etc) Eventually installers will install the resource files to appropriate locations where the executable will be able to find them automatically. For now you must manually tell the game where the resources are with the `--resources` or `-r` command line parameter. For example:
