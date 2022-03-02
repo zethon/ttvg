@@ -114,6 +114,21 @@ Run Game
 tools/linux/run.sh
 ```
 
+## Runtime
+
+Enable audio
+
+```
+pulseaudio -k
+```
+
+Enable video with your desired screen size using the --window-size option
+
+
+```
+./tools/linux/run.sh --window-size=950x700
+```
+
 ## How to Play
 
 Once the game has been built and you try to run it, then you might notice that it crashes. This is because you must tell the game where to find all of the assets (i.e. images, sound files, etc) Eventually installers will install the resource files to appropriate locations where the executable will be able to find them automatically. For now you must manually tell the game where the resources are with the `--resources` or `-r` command line parameter. For example:
