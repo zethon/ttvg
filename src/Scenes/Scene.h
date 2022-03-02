@@ -181,7 +181,7 @@ protected:
     // subclasses might also have to deal with highlighting
     virtual void toggleHighlight();
 
-    [[maybe_unused]] bool walkPlayer(float speed);
+    [[maybe_unused]] bool walkPlayer(float baseStepSize);
     void showHelp();
 
     std::string     _sceneName;

@@ -576,11 +576,17 @@ sf::Vector2f Scene::animeCallback()
     return _player->getPosition();
 }
 
-bool Scene::walkPlayer(float stepsize)
+bool Scene::walkPlayer(float baseStepSize)
 {
-    const float stepSize = stepsize
-        + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-            || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20.f : 0.f);
+    float stepSize = baseStepSize;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+    {
+        stepSize += 20.f;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
+    {
+        stepSize = 1.0;
+    }
 
     bool moved = false;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
