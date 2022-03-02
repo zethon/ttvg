@@ -71,6 +71,11 @@ void from_json(const nl::json& j, ItemInfo& i)
                 state.timestep = i.timestep;
             }
 
+            if (!state.hitbox.has_value() && i.hitbox.has_value())
+            {
+                state.hitbox = i.hitbox;
+            }
+
             i.states.insert(std::make_pair(state.id, std::move(state)));
         }
     }
@@ -298,8 +303,24 @@ void Item::setState(const std::string& statename)
 
     const auto& state = _objectInfo.states.at(statename);
     _source = state.source;
+
     _framecount = *(state.framecount);
     _timestep = *(state.timestep);
+
+    if (this->objectInfo().id == "bag")
+    {
+        std::cout << "erer";
+    }
+
+    auto width = _size.x * static_cast<std::uint32_t>(getScale().x);
+    auto height = _size.y * static_cast<std::uint32_t>(getScale().y);
+    if (state.hitbox.has_value())
+    {
+        width = state.hitbox->width * static_cast<std::uint32_t>(getScale().x);
+        height = state.hitbox->height * static_cast<std::uint32_t>(getScale().y);
+
+    }
+    _hitbox = HitBox{0, 0, width, height};
 
     _sprite.setTextureRect(sf::IntRect(
         _source.x * _size.x, _source.y * _size.y, _size.x, _size.y));
@@ -333,6 +354,16 @@ std::uint16_t Item::timestep()
     }
 
     _highlight.setPosition(getPosition());
+
+
+//    if (_highlight.getSize().x > 0 && _highlight.getSize().y > 0)
+//    {
+//        const auto itempos = getPosition();
+//        auto xpos = itempos.x + _hitbox.left;
+//        auto ypos = itempos.y + _hitbox.top;
+//        _highlight.setPosition(xpos, ypos);
+//    }
+
     return 0;
 }
 
@@ -346,11 +377,30 @@ sf::FloatRect Item::getGlobalBounds() const
 
 void Item::setHighlighted(bool h)
 {
+    if (!_animated)
+    {
+        // since we never call "setState" on unanimated object, we
+        // have to set the hitbox here
+        auto width = _size.x * static_cast<std::uint32_t>(getScale().x);
+        auto height = _size.y * static_cast<std::uint32_t>(getScale().y);
+        if (this->objectInfo().hitbox.has_value())
+        {
+            width = this->objectInfo().hitbox->width * static_cast<std::uint32_t>(getScale().x);
+            height = this->objectInfo().hitbox->height * static_cast<std::uint32_t>(getScale().y);
+
+        }
+        _hitbox = HitBox{0, 0, width, height};
+    }
+
     if (h)
     {
-        _highlight.setPosition(getPosition());
-        auto b = getGlobalBounds();
-        _highlight.setSize(sf::Vector2f{ b.width, b.height });
+        const auto itempos = getPosition();
+        auto xpos = itempos.x + _hitbox.left;
+        auto ypos = itempos.y + _hitbox.top;
+        _highlight.setPosition(xpos, ypos);
+
+        _highlight.setSize(sf::Vector2f{
+            static_cast<float>(_hitbox.width), static_cast<float>(_hitbox.height) });
     }
     else
     {

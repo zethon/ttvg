@@ -45,6 +45,7 @@ private:
     std::unique_ptr<VehicleFactory>     _vehicleFactory;
     std::vector<VehiclePtr>             _vehicles;
     bool                                _updateTraffic = true;
+    bool                                _vehicleCollision = true;
 
     sf::SoundBuffer                     _pgSoundBuffer;
     sf::Sound                           _pgSound;

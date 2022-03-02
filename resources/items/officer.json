@@ -9,6 +9,7 @@
     "time-step": 55,
     
     "default-state": "idle",
+    
 
     "states":
         [

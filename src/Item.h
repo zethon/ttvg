@@ -38,12 +38,15 @@ struct ItemInstanceInfo;
 using ItemInstanceInfoPtr = std::shared_ptr<ItemInstanceInfo>;
 void from_json(const nl::json& j, ItemInstanceInfo& info);
 
+using HitBox = sf::Rect<std::uint32_t>;
+
 struct ItemState
 {
     std::string     id;
     sf::Vector2i    source;
     std::optional<std::uint32_t>    framecount;
     std::optional<std::uint32_t>    timestep;
+    std::optional<tt::HitBox>       hitbox;
 };
 
 struct ItemInfo
@@ -64,13 +67,14 @@ struct ItemInfo
     // in the Scene's settings
     std::optional<sf::Vector2f>     scale;
 
-    std::string         defaultState;
-    ItemStates    states;
+    std::string     defaultState;
+    ItemStates      states;
 
-    std::uint32_t   framecount = DEFAULT_FRAMECOUNT;
-    std::uint32_t   timestep = DEFAULT_TIMESTEP;
-    bool            obtainable = false;
-    float           respawn = 0.f;
+    std::uint32_t           framecount = DEFAULT_FRAMECOUNT;
+    std::uint32_t           timestep = DEFAULT_TIMESTEP;
+    std::optional<HitBox>   hitbox;
+    bool                    obtainable = false;
+    float                   respawn = 0.f;
 };
 
 // `ItemCallbacks` callbacks can be null or non-null and empty.
@@ -240,6 +244,7 @@ protected:
     std::uint32_t   _framecount = 0;                // of current state
     std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
     sf::Vector2i    _source;                        // of current state
+    HitBox          _hitbox;                        // of current state
 
     sf::Sprite          _sprite;
     sf::RectangleShape  _highlight;

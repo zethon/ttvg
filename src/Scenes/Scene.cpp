@@ -740,6 +740,11 @@ void Scene::placeItem(ItemPtr item)
     auto texture = item->objectInfo().texture;
     assert(texture);
 
+    if (item->getID() == "bag")
+    {
+        std::cout << 2121;
+    }
+
     if (const auto scale = item->instanceInfo().scale; scale.has_value())
     {
         item->setScale(*scale);
@@ -748,9 +753,13 @@ void Scene::placeItem(ItemPtr item)
     {
         assert(item->objectInfo().size.has_value());
         int width = item->objectInfo().size->x;
+        width *= width * 1.25;
+
         int height = item->objectInfo().size->y;
-        float   scaleX = 36.0f / width;
-        float   scaleY = 36.0f / height;
+        height *= 1.25;
+
+        float   scaleX = background()->tilesize().x / width;
+        float   scaleY = background()->tilesize().y / height;
 
         // set scale
         item->setScale(scaleX, scaleY);

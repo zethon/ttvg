@@ -99,6 +99,15 @@ PollResult Tucson::poll(const sf::Event& e)
             }
             break;
 
+            case sf::Keyboard::V:
+            {
+                _vehicleCollision = !_vehicleCollision;
+                const auto msg = fmt::format("vehicle collision detection has been turned {}",
+                                             (_vehicleCollision ? "ON" : "OFF"));
+                _descriptionText.setText(msg);
+            }
+            break;
+
             case sf::Keyboard::End:
             case sf::Keyboard::F1:
             {
@@ -156,7 +165,7 @@ void Tucson::timestepTraffic(sf::Time elapsed)
             vi = _vehicles.erase(vi);
             continue;
         }
-        else if (ptr->isBlocked(playerBounds))
+        else if (_vehicleCollision && ptr->isBlocked(playerBounds))
         {
             if (ptr->vehicleState() == Vehicle::MOVING)
             {
