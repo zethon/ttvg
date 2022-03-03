@@ -244,7 +244,7 @@ protected:
     std::uint32_t   _framecount = 0;                // of current state
     std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
     sf::Vector2i    _source;                        // of current state
-    HitBox          _hitbox;                        // of current state
+    HitBox          _hitbox;                        // unscaled hitbox of the current state
 
     sf::Sprite          _sprite;
     sf::RectangleShape  _highlight;

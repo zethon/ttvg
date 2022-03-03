@@ -751,17 +751,16 @@ void Scene::placeItem(ItemPtr item)
     }
     else
     {
+        // the default scale/size of the item will be the same as the tilesize
+        // for the background
         assert(item->objectInfo().size.has_value());
+        
         int width = item->objectInfo().size->x;
-        width *= width * 1.25;
-
         int height = item->objectInfo().size->y;
-        height *= 1.25;
+        
+        float scaleX = (background()->tilesize().x * background()->getScale().x) / width;
+        float scaleY = (background()->tilesize().y * background()->getScale().y) / height;
 
-        float   scaleX = background()->tilesize().x / width;
-        float   scaleY = background()->tilesize().y / height;
-
-        // set scale
         item->setScale(scaleX, scaleY);
     }
 
