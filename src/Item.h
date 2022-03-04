@@ -199,6 +199,7 @@ public:
     
     sf::RectangleShape& highlight() { return _highlight; }
     sf::FloatRect getGlobalBounds() const;
+    sf::FloatRect getGlobalHitBox() const;
     std::uint16_t timestep() override;
 
     bool animated() const { return _animated; }
@@ -245,6 +246,7 @@ protected:
     std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
     sf::Vector2i    _source;                        // of current state
     HitBox          _hitbox;                        // unscaled hitbox of the current state
+    HitBox          _hitbox2;
 
     sf::Sprite          _sprite;
     sf::RectangleShape  _highlight;

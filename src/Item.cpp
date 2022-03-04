@@ -249,6 +249,19 @@ const struct luaL_Reg Item::LuaMethods[] =
         {nullptr, nullptr}
     };
 
+} // namespace tt
+
+namespace std
+{
+    std::ostream& operator<<(std::ostream& out, const sf::Color color)
+    {
+        out << "{" << color.r << "," << color.g << "," << color.b << "," << color.a << "}";
+        return out;
+    }
+}
+
+namespace tt
+{
 
 Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
     : _objectInfo{ obj }, _instanceInfo{ inst }
@@ -266,6 +279,38 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
         _size = _sprite.getTexture()->getSize();
     }
 
+    auto image = obj.texture->copyToImage();
+    std::optional<std::uint32_t> left, right, top, bottom;
+    for (auto x = 0u; x < _size.x; x++)
+    {
+        for (auto y = 0u; y < _size.y; y++)
+        {
+            sf::Color pixel = image.getPixel(x, y);
+            if (pixel.a == 0) continue;
+
+            if (!left.has_value() || x < *left)
+            {
+                left = x;
+            }
+
+            if (!top.has_value() || y < *top)
+            {
+                top = y;
+            }
+
+            if (!right.has_value() || x > *right)
+            {
+                right = x;
+            }
+
+            if (!bottom.has_value() || y > *bottom)
+            {
+                bottom = y;
+            }
+        }
+    }
+    _hitbox2 = HitBox{*left, *top, *right - *top, *bottom - *top };
+
     std::string defaultState;
     if (_instanceInfo.defaultState.size() > 0)
     {
@@ -280,15 +325,15 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
         throw std::runtime_error(fmt::format("object '{}' requires a 'default-state'", _objectInfo.id));
     }
 
-    if (defaultState.size() > 0)
-    {
-        _animated = true;
-        setState(defaultState);
-    }
-    else
-    {
-        _hitbox = HitBox{ 0, 0, _size.x, _size.y };
-    }
+//    if (defaultState.size() > 0)
+//    {
+//        _animated = true;
+//        setState(defaultState);
+//    }
+//    else
+//    {
+//        _hitbox = HitBox{ 0, 0, _size.x, _size.y };
+//    }
 
     _obtainable = _objectInfo.obtainable;
     if (_instanceInfo.obtainable.has_value())
@@ -321,14 +366,16 @@ void Item::setState(const std::string& statename)
     _framecount = *(state.framecount);
     _timestep = *(state.timestep);
 
-    if (state.hitbox.has_value())
-    {
-        _hitbox = *(state.hitbox);
-    }
-    else
-    {
-        _hitbox = HitBox{ 0, 0, _size.x, _size.y };
-    }
+//    if (state.hitbox.has_value())
+//    {
+//        _hitbox = *(state.hitbox);
+//    }
+//    else
+//    {
+//        _hitbox = HitBox{ 0, 0, _size.x, _size.y };
+//    }
+
+    _hitbox = _hitbox2;
 
     if (_showHighlight)
     {
@@ -383,6 +430,20 @@ sf::FloatRect Item::getGlobalBounds() const
     float width = static_cast<float>(std::abs(textureRect.width));
     float height = static_cast<float>(std::abs(textureRect.height));
     return getTransform().transformRect(sf::FloatRect(0.f, 0.f, width, height));
+}
+
+sf::FloatRect Item::getGlobalHitBox() const
+{
+    sf::FloatRect retval;
+
+    // TODO: this information could be cached each time the item moves
+    const auto hpos = getPosition();
+    retval.left = hpos.x + _hitbox.left;
+    retval.top = hpos.y + _hitbox.top;
+    retval.width = static_cast<float>(_hitbox.width * this->getScale().x);
+    retval.height = static_cast<float>(_hitbox.height * this->getScale().y);
+
+    return retval;
 }
 
 void Item::setHighlighted(bool h)

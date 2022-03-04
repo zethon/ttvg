@@ -511,7 +511,7 @@ void Scene::updateCurrentTile(const TileInfo& info)
     bool handled = false;
     for (const auto& item : _items)
     {
-        if (item->getGlobalBounds().intersects(_player->getGlobalBounds())) 
+        if (item->getGlobalHitBox().intersects(_player->getGlobalHitBox()))
         {
             _descriptionText.setText(
                 item->getName() + ": " +
@@ -996,8 +996,8 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 for(auto it = _items.begin(); it != _items.end(); it++)
                 {
                     auto item = *it;
-                    if (item->getGlobalBounds()
-                            .intersects(_player->getGlobalBounds()))
+                    if (item->getGlobalHitBox()
+                        .intersects(_player->getGlobalHitBox()))
                     {
                         pickupItem(it);
                         break;
