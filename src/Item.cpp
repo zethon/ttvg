@@ -363,7 +363,7 @@ std::uint16_t Item::timestep()
 
     auto hpos = getPosition();
     hpos.x += _hitbox.left;
-    hpos.y *= _hitbox.top;
+    hpos.y += _hitbox.top;
     _highlight.setPosition(hpos);
 
     return 0;
@@ -379,33 +379,12 @@ sf::FloatRect Item::getGlobalBounds() const
 
 void Item::setHighlighted(bool h)
 {
-    //if (!_animated)
-    //{
-    //    if (getID() == "@player")
-    //    {
-    //        std::cout << 23232;
-    //    }
-
-    //    // since we never call "setState" on unanimated object, we
-    //    // have to set the hitbox here
-    //    const auto rect = this->getGlobalBounds(); 
-    //    auto width = static_cast<std::uint32_t>(rect.width);
-    //    auto height = static_cast<std::uint32_t>(rect.height);
-    //    if (this->objectInfo().hitbox.has_value())
-    //    {
-    //        width = this->objectInfo().hitbox->width * static_cast<std::uint32_t>(getScale().x);
-    //        height = this->objectInfo().hitbox->height * static_cast<std::uint32_t>(getScale().y);
-    //    }
-
-    //    _hitbox = HitBox{0, 0, width, height};
-    //}
-
     if (h)
     {
-        //auto width = _hitbox.width * this-
-        //auto height = _hitbox.height * getScale().y;
-        //_highlight.setSize(sf::Vector2f{
-        //    static_cast<float>(width), static_cast<float>(height) });
+        auto width = _hitbox.width * this->getScale().x;
+        auto height = _hitbox.height * getScale().y;
+        _highlight.setSize(sf::Vector2f{
+            static_cast<float>(width), static_cast<float>(height) });
     }
     else
     {
