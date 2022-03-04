@@ -248,6 +248,7 @@ protected:
 
     sf::Sprite          _sprite;
     sf::RectangleShape  _highlight;
+    bool                _showHighlight = false;
 
     // 2022-02-10: The idea right now is that a `Item` has a reference
     // to a `ItemInfo` structs, and to also a `ItemInstance` struct

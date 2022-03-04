@@ -330,6 +330,14 @@ void Item::setState(const std::string& statename)
         _hitbox = HitBox{ 0, 0, _size.x, _size.y };
     }
 
+    if (_showHighlight)
+    {
+        auto width = _hitbox.width * this->getScale().x;
+        auto height = _hitbox.height * getScale().y;
+        _highlight.setSize(sf::Vector2f{
+            static_cast<float>(width), static_cast<float>(height) });
+    }
+
     _sprite.setTextureRect(sf::IntRect(
         _source.x * _size.x, _source.y * _size.y, _size.x, _size.y));
 }
@@ -379,7 +387,9 @@ sf::FloatRect Item::getGlobalBounds() const
 
 void Item::setHighlighted(bool h)
 {
-    if (h)
+    _showHighlight = h;
+
+    if (_showHighlight)
     {
         auto width = _hitbox.width * this->getScale().x;
         auto height = _hitbox.height * getScale().y;
