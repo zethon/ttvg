@@ -128,12 +128,14 @@ void Vehicle::move()
         }
 
         setPosition(nextpos);
+        updateHighlight();
         return;
     }
     else
     {
         auto globalPos = _bg->getGlobalFromTile(currentTile);
         setPosition(globalPos);
+        updateHighlight();
         _path.step();
 
         auto newdirection = tt::getDirection(currentTile, _path.next());
@@ -178,6 +180,7 @@ void Vehicle::setPath(const Path& path)
 
     auto globalPos = _bg->getGlobalFromTile(_path.points().at(0));
     setPosition(globalPos);
+    updateHighlight();
 }
 
 void Vehicle::setDirection(std::uint32_t dir)

@@ -192,6 +192,16 @@ public:
         return this->_instanceInfo;
     }
 
+    float getGlobalLeft() const;
+    float getGlobalRight() const;
+    float getGlobalTop() const;
+    float getGlobalBottom() const;
+
+    void setGlobalLeft(float left);
+    void setGlobalRight(float right);
+    void setGlobalTop(float top);
+    void setGlobalBottom(float bottom);
+
     void setState(const std::string& statename);
     
     void setHighlighted(bool h);
@@ -229,12 +239,21 @@ public:
     int luaIdx() const { return _luaIdx; }
     void setLuaIdx(int i) { _luaIdx = i; }
 
+    void updateHighlight()
+    {
+        auto hpos = getPosition();
+        hpos.x += _hitbox.left;
+        hpos.y += _hitbox.top;
+        _highlight.setPosition(hpos);
+    }
+
 public: // signals
     
     boost::signals2::signal<void(void)> onFrameChange;
 
 protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override final;
+    void initStateHitboxes(const std::string &defaultstate);
 
     sf::Vector2u    _size; // fixed cell size of each frame within the sprite 
     sf::Clock       _timer;
@@ -245,12 +264,14 @@ protected:
     std::uint32_t   _framecount = 0;                // of current state
     std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
     sf::Vector2i    _source;                        // of current state
+
     HitBox          _hitbox;                        // unscaled hitbox of the current state
-    HitBox          _hitbox2;
+    std::map<std::string, HitBox>   _hitboxes;
 
     sf::Sprite          _sprite;
     sf::RectangleShape  _highlight;
     bool                _showHighlight = false;
+    std::string         _currentState;
 
     // 2022-02-10: The idea right now is that a `Item` has a reference
     // to a `ItemInfo` structs, and to also a `ItemInstance` struct

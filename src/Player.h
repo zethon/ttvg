@@ -23,16 +23,6 @@ public:
 
     sf::Vector2f getGlobalCenter() const;
 
-    float getGlobalLeft() const;
-    float getGlobalRight() const;
-    float getGlobalTop() const;
-    float getGlobalBottom() const;
-
-    void setGlobalLeft(float left);
-    void setGlobalRight(float right);
-    void setGlobalTop(float top);
-    void setGlobalBottom(float bottom);
-
     void addItem(ItemPtr item);
     bool hasItem(const std::string& s);
     bool hasItem(ItemPtr item);

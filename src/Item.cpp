@@ -279,38 +279,6 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
         _size = _sprite.getTexture()->getSize();
     }
 
-    auto image = obj.texture->copyToImage();
-    std::optional<std::uint32_t> left, right, top, bottom;
-    for (auto x = 0u; x < _size.x; x++)
-    {
-        for (auto y = 0u; y < _size.y; y++)
-        {
-            sf::Color pixel = image.getPixel(x, y);
-            if (pixel.a == 0) continue;
-
-            if (!left.has_value() || x < *left)
-            {
-                left = x;
-            }
-
-            if (!top.has_value() || y < *top)
-            {
-                top = y;
-            }
-
-            if (!right.has_value() || x > *right)
-            {
-                right = x;
-            }
-
-            if (!bottom.has_value() || y > *bottom)
-            {
-                bottom = y;
-            }
-        }
-    }
-    _hitbox2 = HitBox{*left, *top, *right - *top, *bottom - *top };
-
     std::string defaultState;
     if (_instanceInfo.defaultState.size() > 0)
     {
@@ -325,15 +293,19 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
         throw std::runtime_error(fmt::format("object '{}' requires a 'default-state'", _objectInfo.id));
     }
 
-//    if (defaultState.size() > 0)
-//    {
-//        _animated = true;
-//        setState(defaultState);
-//    }
-//    else
-//    {
+    initStateHitboxes(defaultState);
+
+    // TODO: this should be refacotered out
+    if (defaultState.size() > 0)
+    {
+        _animated = true;
+        setState(defaultState);
+    }
+    else
+    {
 //        _hitbox = HitBox{ 0, 0, _size.x, _size.y };
-//    }
+        _currentState = "@default";
+    }
 
     _obtainable = _objectInfo.obtainable;
     if (_instanceInfo.obtainable.has_value())
@@ -352,6 +324,26 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
     _highlight.setOutlineColor(sf::Color(255, 255, 255));
 }
 
+void Item::initStateHitboxes(const std::string &defaultstate)
+{
+    for (const auto& [key, value] : _objectInfo.states)
+    {
+        if (value.hitbox.has_value())
+        {
+            _hitboxes.emplace(key, *(value.hitbox));
+        }
+        else
+        {
+            _hitboxes.emplace(key, HitBox{ 0, 0, _size.x, _size.y });
+        }
+    }
+
+    if (_hitboxes.size() == 0)
+    {
+        _hitboxes.emplace("@default", HitBox{ 0, 0, _size.x, _size.y });
+    }
+}
+
 void Item::setState(const std::string& statename)
 {
     if (_objectInfo.states.find(statename) == _objectInfo.states.end())
@@ -360,27 +352,24 @@ void Item::setState(const std::string& statename)
             fmt::format("object '{}' does not contain state '{}", this->objectInfo().id, statename));
     }
 
+    if (_hitboxes.find(statename) == _hitboxes.end())
+    {
+        throw std::runtime_error(
+                fmt::format("object '{}' missing hitbox for state '{}", this->objectInfo().id, statename));
+    }
+
+    _currentState = statename;
+
     const auto& state = _objectInfo.states.at(statename);
     _source = state.source;
 
     _framecount = *(state.framecount);
     _timestep = *(state.timestep);
 
-//    if (state.hitbox.has_value())
-//    {
-//        _hitbox = *(state.hitbox);
-//    }
-//    else
-//    {
-//        _hitbox = HitBox{ 0, 0, _size.x, _size.y };
-//    }
-
-    _hitbox = _hitbox2;
-
     if (_showHighlight)
     {
-        auto width = _hitbox.width * this->getScale().x;
-        auto height = _hitbox.height * getScale().y;
+        auto width = _hitboxes.at(_currentState).width * this->getScale().x;
+        auto height = _hitboxes.at(_currentState).height * getScale().y;
         _highlight.setSize(sf::Vector2f{
             static_cast<float>(width), static_cast<float>(height) });
     }
@@ -416,11 +405,6 @@ std::uint16_t Item::timestep()
         _timer.restart();
     }
 
-    auto hpos = getPosition();
-    hpos.x += _hitbox.left;
-    hpos.y += _hitbox.top;
-    _highlight.setPosition(hpos);
-
     return 0;
 }
 
@@ -440,8 +424,8 @@ sf::FloatRect Item::getGlobalHitBox() const
     const auto hpos = getPosition();
     retval.left = hpos.x + _hitbox.left;
     retval.top = hpos.y + _hitbox.top;
-    retval.width = static_cast<float>(_hitbox.width * this->getScale().x);
-    retval.height = static_cast<float>(_hitbox.height * this->getScale().y);
+    retval.width = static_cast<float>(_hitboxes.at(_currentState).width * this->getScale().x);
+    retval.height = static_cast<float>(_hitboxes.at(_currentState).height * this->getScale().y);
 
     return retval;
 }
@@ -452,10 +436,12 @@ void Item::setHighlighted(bool h)
 
     if (_showHighlight)
     {
-        auto width = _hitbox.width * this->getScale().x;
-        auto height = _hitbox.height * getScale().y;
+        auto width = _hitboxes[_currentState].width * this->getScale().x;
+        auto height = _hitboxes[_currentState].height * getScale().y;
         _highlight.setSize(sf::Vector2f{
             static_cast<float>(width), static_cast<float>(height) });
+
+        updateHighlight();
     }
     else
     {
@@ -474,6 +460,56 @@ void Item::draw(sf::RenderTarget & target, sf::RenderStates states) const
     states.transform *= getTransform();
     target.draw(_sprite, states);
     target.draw(_highlight);
+}
+
+float Item::getGlobalLeft() const
+{
+    return getGlobalBounds().left;
+}
+
+float Item::getGlobalRight() const
+{
+    return getGlobalBounds().left + getGlobalBounds().width;
+}
+
+float Item::getGlobalTop() const
+{
+    return getGlobalBounds().top;
+}
+
+float Item::getGlobalBottom() const
+{
+    return getGlobalBounds().top + getGlobalBounds().height;
+}
+
+void Item::setGlobalLeft(float left)
+{
+    auto bounds = getGlobalBounds();
+    setPosition(left, bounds.top);
+    updateHighlight();
+}
+
+void Item::setGlobalRight(float right)
+{
+    auto bounds = getGlobalBounds();
+    auto x = right - bounds.width;
+    setPosition(x, bounds.top);
+    updateHighlight();
+}
+
+void Item::setGlobalTop(float top)
+{
+    auto bounds = getGlobalBounds();
+    setPosition(bounds.left, top);
+    updateHighlight();
+}
+
+void Item::setGlobalBottom(float bottom)
+{
+    auto bounds = getGlobalBounds();
+    auto y = bottom - bounds.height;
+    setPosition(bounds.left, y);
+    updateHighlight();
 }
 
 } // namespace tt
