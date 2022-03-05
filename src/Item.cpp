@@ -303,7 +303,6 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
     }
     else
     {
-//        _hitbox = HitBox{ 0, 0, _size.x, _size.y };
         _currentState = "@default";
     }
 
@@ -334,7 +333,40 @@ void Item::initStateHitboxes(const std::string &defaultstate)
         }
         else
         {
-            _hitboxes.emplace(key, HitBox{ 0, 0, _size.x, _size.y });
+            // if no hitbox is defines, scan the first frame of the state to figure
+            // out the bounds of the image
+            auto image = this->_objectInfo.texture->copyToImage();
+            std::optional<std::uint32_t> left, right, top, bottom;
+            for (auto x = 0u; x < _size.x; x++)
+            {
+                for (auto y = 0u; y < _size.y; y++)
+                {
+                    sf::Color pixel = image.getPixel(x, y);
+                    if (pixel.a == 0) continue;
+
+                    if (!left.has_value() || x < *left)
+                    {
+                        left = x;
+                    }
+
+                    if (!top.has_value() || y < *top)
+                    {
+                        top = y;
+                    }
+
+                    if (!right.has_value() || x > *right)
+                    {
+                        right = x;
+                    }
+
+                    if (!bottom.has_value() || y > *bottom)
+                    {
+                        bottom = y;
+                    }
+                }
+            }
+
+            _hitboxes.emplace(key, HitBox{*left, *top, *right - *left, *bottom - *top });
         }
     }
 
@@ -372,6 +404,8 @@ void Item::setState(const std::string& statename)
         auto height = _hitboxes.at(_currentState).height * getScale().y;
         _highlight.setSize(sf::Vector2f{
             static_cast<float>(width), static_cast<float>(height) });
+
+        updateHighlight();
     }
 
     _sprite.setTextureRect(sf::IntRect(
@@ -422,8 +456,8 @@ sf::FloatRect Item::getGlobalHitBox() const
 
     // TODO: this information could be cached each time the item moves
     const auto hpos = getPosition();
-    retval.left = hpos.x + _hitbox.left;
-    retval.top = hpos.y + _hitbox.top;
+    retval.left = hpos.x + _hitboxes.at(_currentState).left;
+    retval.top = hpos.y + _hitboxes.at(_currentState).top;
     retval.width = static_cast<float>(_hitboxes.at(_currentState).width * this->getScale().x);
     retval.height = static_cast<float>(_hitboxes.at(_currentState).height * this->getScale().y);
 

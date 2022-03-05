@@ -242,8 +242,8 @@ public:
     void updateHighlight()
     {
         auto hpos = getPosition();
-        hpos.x += _hitbox.left;
-        hpos.y += _hitbox.top;
+        hpos.x += (_hitboxes.at(_currentState).left * getScale().x);
+        hpos.y += (_hitboxes.at(_currentState).top * getScale().y);
         _highlight.setPosition(hpos);
     }
 
@@ -264,8 +264,6 @@ protected:
     std::uint32_t   _framecount = 0;                // of current state
     std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
     sf::Vector2i    _source;                        // of current state
-
-    HitBox          _hitbox;                        // unscaled hitbox of the current state
     std::map<std::string, HitBox>   _hitboxes;
 
     sf::Sprite          _sprite;
