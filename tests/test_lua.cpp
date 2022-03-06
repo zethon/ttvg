@@ -39,10 +39,10 @@ struct TestHarness
 
         _playerObjInfo.size = sf::Vector2u{ 10, 10 };
         _playerObjInfo.framecount = 9;
-        _playerObjInfo.states.emplace("up", ItemState{ "up", sf::Vector2i{0,0}, 9, 55 });
-        _playerObjInfo.states.emplace("left", ItemState{ "left", sf::Vector2i{0,1}, 9, 55 });
-        _playerObjInfo.states.emplace("down", ItemState{ "down", sf::Vector2i{0,2}, 9, 55 });
-        _playerObjInfo.states.emplace("right", ItemState{ "right", sf::Vector2i{0,3}, 9, 55 });
+        _playerObjInfo.states.emplace("up", ItemState{ "up", sf::Vector2i{0,0}, 9, 55, HitBox{0,0,64,64} });
+        _playerObjInfo.states.emplace("left", ItemState{ "left", sf::Vector2i{0,1}, 9, 55, HitBox{0,0,64,64} });
+        _playerObjInfo.states.emplace("down", ItemState{ "down", sf::Vector2i{0,2}, 9, 55, HitBox{0,0,64,64} });
+        _playerObjInfo.states.emplace("right", ItemState{ "right", sf::Vector2i{0,3}, 9, 55, HitBox{0,0,64,64} });
         _playerObjInfo.texture = &_playerTexture;
         _playerObjInfo.defaultState = "up";
 
