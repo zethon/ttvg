@@ -740,11 +740,6 @@ void Scene::placeItem(ItemPtr item)
     auto texture = item->objectInfo().texture;
     assert(texture);
 
-    if (item->getID() == "bag")
-    {
-        std::cout << 2121;
-    }
-
     if (const auto scale = item->instanceInfo().scale; scale.has_value())
     {
         item->setScale(*scale);

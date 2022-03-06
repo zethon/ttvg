@@ -337,11 +337,14 @@ void Item::initStateHitboxes(const std::string &defaultstate)
             // out the bounds of the image
             auto image = this->_objectInfo.texture->copyToImage();
             std::optional<std::uint32_t> left, right, top, bottom;
-            for (auto x = 0u; x < _size.x; x++)
+            std::uint32_t x = 0;
+            std::uint32_t y = 0;
+            for (auto startX = (value.source.x * _size.x); startX < (value.source.x * _size.x) + _size.x; startX++, x++)
             {
-                for (auto y = 0u; y < _size.y; y++)
+                y=0;
+                for (auto startY = (value.source.y * _size.y); startY < (value.source.y * _size.y) + _size.y; startY++, y++)
                 {
-                    sf::Color pixel = image.getPixel(x, y);
+                    sf::Color pixel = image.getPixel(startX, startY);
                     if (pixel.a == 0) continue;
 
                     if (!left.has_value() || x < *left)

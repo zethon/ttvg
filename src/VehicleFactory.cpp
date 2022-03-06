@@ -44,6 +44,7 @@ void VehicleFactory::loadVehicles(const nl::json& json)
     {
         VehicleInfo info{ item.value().get<ItemInfo>() };
 
+        info.id = info.name;
         info.instinfo = item.value().get<ItemInstanceInfo>();
         info.speed = item.value().at("speed").get<sf::Vector2f>();
 
