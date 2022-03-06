@@ -288,6 +288,11 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
     {
         defaultState = _objectInfo.defaultState;
     }
+    else if (_objectInfo.states.size() == 1)
+    {
+        // default to the only state
+        defaultState = _objectInfo.states.begin()->first;
+    }
     else if (_objectInfo.states.size() > 0)
     {
         throw std::runtime_error(fmt::format("object '{}' requires a 'default-state'", _objectInfo.id));

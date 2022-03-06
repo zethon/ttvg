@@ -1,6 +1,4 @@
 {
     "name":         "Bag",
-    "description":  "This bag is empty, but it is full of potential.",
-    "obtainable":   true,
-    "attributes":   { }
+    "description":  "This bag is empty, but it is full of potential."
 }

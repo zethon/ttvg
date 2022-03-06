@@ -220,6 +220,14 @@
                 { "x": 55, "y": 79, "default-state": "1", "scale": { "x": 0.75, "y": 1.15 } }
             ]
         },
+        "dumpster":
+        {
+            "scale": { "x": 2.125, "y": 2.125 },
+            "instances":
+            [
+                { "x": 30, "y": 79 }
+            ]
+        },
         "sax": 
         {
             "instances":
