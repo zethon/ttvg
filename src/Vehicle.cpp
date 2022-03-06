@@ -151,8 +151,8 @@ tt::Tile Vehicle::currentTile() const
 
 bool Vehicle::isBlocked(const sf::FloatRect& test)
 {
-    const auto minDistance = 6.f;
-    return isPathBlocked(getGlobalBounds(), test, _direction, minDistance);
+    const auto minDistance = 0.f;
+    return isPathBlocked(getGlobalHitBox(), test, _direction, minDistance);
 }
 
 void Vehicle::setVehicleState(VehicleState val)
