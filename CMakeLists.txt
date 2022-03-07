@@ -17,11 +17,11 @@ endif(SHARED_SFML)
 include(CMake/conan.cmake)
 conan_cmake_run(REQUIRES
     boost/1.77.0
+    ogg/1.3.5
     sfml/2.5.1
     spdlog/1.9.2
     nlohmann_json/3.10.5
     lua/5.4.3
-    ogg/1.3.4
     BASIC_SETUP CMAKE_TARGETS
     GENERATORS cmake_find_package cmake_paths
     BUILD missing
