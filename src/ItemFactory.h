@@ -2,6 +2,8 @@
 #include <memory>
 
 #include <nlohmann/json.hpp>
+
+#include "Item.h"
 #include "ResourceManager.h"
 
 namespace nl = nlohmann;
@@ -13,6 +15,7 @@ class ItemFactory
 {
 
 ResourceManager&    _resources;
+ItemInfoMap   _objectMap;
 
 public:
     static constexpr auto CLASS_NAME = "ItemFactory";
@@ -20,13 +23,11 @@ public:
     
     ItemFactory(ResourceManager& resMgr);
 
-    ItemPtr createItem(const std::string&  name,
-                const ItemCallbacks& callbacks);
+    ItemPtr createItem(const ItemInstanceInfo& instinfo);
+    ItemPtr createItem(const std::string& objid);
 
-    ItemPtr createItem(const std::string& name)
-    {
-        return createItem(name, ItemCallbacks{});
-    }
+private:
+    ItemInfo& getObjectInfoRef(const std::string& name);
 };
 
 

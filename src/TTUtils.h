@@ -21,6 +21,30 @@ void from_json(const nl::json& j, Vector2f& v);
 void from_json(const nl::json& j, Vector2i& v);
 void from_json(const nl::json& j, Vector2u& v);
 
+template<typename T>
+void from_json(const nl::json& j, sf::Rect<T>& r)
+{
+    if (j.contains("left"))
+    {
+        j.at("left").get_to(r.left);
+    }
+
+    if (j.contains("top"))
+    {
+        j.at("top").get_to(r.top);
+    }
+
+    if (j.contains("width"))
+    {
+        j.at("width").get_to(r.width);
+    }
+
+    if (j.contains("height"))
+    {
+        j.at("height").get_to(r.height);
+    }
+}
+
 } // namespace sf
 
 namespace tt

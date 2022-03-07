@@ -17,7 +17,7 @@ function getWindowsDownloadFilename()
 {
     $dir = glob(LOCAL_PATH_PREFIX . DOWNLOAD_PATH . 'tooter-*.exe');
     usort($dir, create_function('$a,$b', 'return filemtime($b) - filemtime($a);'));
-    if (count($dir) > 0)
+    if (framecount($dir) > 0)
     {
         return basename($dir[0]);
     }
@@ -29,7 +29,7 @@ function getMacDownloadFilename()
 {
     $dir = glob(LOCAL_PATH_PREFIX . DOWNLOAD_PATH . 'tooter-*-darwin*.zip');
     usort($dir, create_function('$a,$b', 'return filemtime($b) - filemtime($a);'));
-    if (count($dir) > 0)
+    if (framecount($dir) > 0)
     {
         return basename($dir[0]);
     }

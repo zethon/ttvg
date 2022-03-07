@@ -8,7 +8,7 @@
 #include "Scenes/ModalWindow.h"
 
 #include "Screen.h"
-#include "GameObject.h"
+#include "Item.h"
 #include "Player.h"
 #include "TTLua.h"
 #include "TTUtils.h"
@@ -182,7 +182,10 @@ public:
 private:
     SceneSharedPtr                  _currentScene;
     SceneMap                        _scenes;
+
     PlayerPtr                       _player;
+    ItemInfo                  _playerObjectInfo;
+
     lua_State*                      _luaState;
     std::shared_ptr<ItemFactory>    _itemFactory;
     sf::Clock                       _gameClock;

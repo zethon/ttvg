@@ -42,8 +42,10 @@ void VehicleFactory::loadVehicles(const nl::json& json)
 
     for (const auto& item : json["vehicles"]["assets"].items())
     {
-        VehicleInfo info{ item.value().get<GameObjectInfo>() };
+        VehicleInfo info{ item.value().get<ItemInfo>() };
 
+        info.id = info.name;
+        info.instinfo = item.value().get<ItemInstanceInfo>();
         info.speed = item.value().at("speed").get<sf::Vector2f>();
 
         if (item.value().contains("damage"))
@@ -55,11 +57,8 @@ void VehicleFactory::loadVehicles(const nl::json& json)
             item.value().at("horn").get<std::string>());
 
         info.sound = _resources.cacheSound(soundname);
-
-        const auto textname = fmt::format("textures/{}.png",
-            item.value().at("name").get<std::string>());
-
-        info.texture = _resources.cacheTexture(textname);
+        info.texture = _resources.cacheTexture(info.texturefile);
+        info.defaultState = "right";
 
         if (info.texture)
         {
@@ -76,7 +75,7 @@ VehiclePtr VehicleFactory::createVehicle()
     static std::mt19937 gen(rd());
 
     auto vinfo = tt::select_randomly(_vehicles);
-    auto vehicle = std::make_shared<Vehicle>(*vinfo, *(vinfo->texture), _background);
+    auto vehicle = std::make_shared<Vehicle>(*vinfo, _background);
 
     vehicle->setHornSound(vinfo->sound);
 
@@ -89,6 +88,8 @@ VehiclePtr VehicleFactory::createVehicle()
 
     vehicle->setHighlighted(_highlighted);
     vehicle->setDamage(vinfo->damage);
+
+    vehicle->setScale(*(vinfo->scale));
     
     return vehicle;
 }

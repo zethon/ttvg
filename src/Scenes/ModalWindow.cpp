@@ -76,7 +76,7 @@ ModalWindow::ModalWindow(Screen& parent)
     }
     else
     {
-        // TODO: logging?!?!
+        throw std::runtime_error("could not load modal window font");
     }
 
     _border = std::make_shared<sf::RectangleShape>();

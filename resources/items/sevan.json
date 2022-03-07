@@ -2,12 +2,37 @@
     "name":         "Sevan",
     "description":  "Your former lover has an offer.",
     "obtainable":   false,
-    "image-attr":   
-        {   
-            "width":    64,
-            "height":   64,
-            "scale-x":  1.5,
-            "scale-y":  1.5     
-        },
-    "attributes":   { }
+
+    "size": { "x": 64, "y": 64 },
+    "scale": { "x": 1.5, "y": 1.5 },
+
+    "frame-count": 5,
+    "time-step": 55,
+    
+    "default-state": "down2",
+
+    "states":
+        [
+            { "id":"up1", "source": { "x": 0, "y": 0 }, "frame-count": 7 },
+            { "id":"left1", "source": { "x": 0, "y": 1 }, "frame-count": 7 },
+            { "id":"down1", "source": { "x": 0, "y": 2 }, "frame-count": 7},
+            { "id":"right1", "source": { "x": 0, "y": 3 }, "frame-count": 7 },
+            { "id":"up2", "source": { "x": 0, "y": 4 }, "frame-count": 8 },
+            { "id":"left2", "source": { "x": 0, "y": 5 }, "frame-count": 8 },
+            { "id":"down2", "source": { "x": 0, "y": 6 }, "frame-count": 8, "time-step": 1000 },
+            { "id":"right2", "source": { "x": 0, "y": 7 }, "frame-count": 8 },
+            { "id":"up3", "source": { "x": 0, "y": 8 }, "frame-count": 9 },
+            { "id":"left3", "source": { "x": 0, "y": 9 }, "frame-count": 9 },
+            { "id":"down3", "source": { "x": 0, "y": 10 }, "frame-count": 9 },
+            { "id":"right3", "source": { "x": 0, "y": 11 }, "frame-count": 9 },
+            { "id":"up4", "source": { "x": 0, "y": 12 }, "frame-count": 6 },
+            { "id":"left4", "source": { "x": 0, "y": 13 }, "frame-count": 6 },
+            { "id":"down4", "source": { "x": 0, "y": 14 }, "frame-count": 6 },
+            { "id":"right4", "source": { "x": 0, "y": 15 }, "frame-count": 6 },
+            { "id":"up5", "source": { "x": 0, "y": 16 }, "frame-count": 13 },
+            { "id":"left5", "source": { "x": 0, "y": 17 }, "frame-count": 13 },
+            { "id":"down5", "source": { "x": 0, "y": 18 }, "frame-count": 13 },
+            { "id":"right5", "source": { "x": 0, "y": 19 }, "frame-count": 13 },
+            { "id":"flip", "source": { "x": 0, "y": 20 }, "frame-count": 6 }
+        ]
 }

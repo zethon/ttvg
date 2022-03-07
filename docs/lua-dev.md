@@ -372,12 +372,6 @@ Sets the description of the item to `text`. Can be empty.
 
 <hr/>
 
-### `[void] Item.setName(name)`
-
-Sets the name of the item to `name`. Can be empty.
-
-<hr/>
-
 ### `[bool] Item.setObtainable()`
 
 <br/>

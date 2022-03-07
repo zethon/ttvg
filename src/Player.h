@@ -4,7 +4,6 @@
 
 #include <nlohmann/json.hpp>
 
-#include "GameObject.h"
 #include "Item.h"
 
 namespace tt
@@ -14,25 +13,15 @@ class Player;
 using PlayerPtr = std::shared_ptr<Player>;
 void from_json(const nl::json& j, Player& i);
 
-class Player : public GameObject
+class Player : public Item
 {
 public:
     static constexpr auto CLASS_NAME = "Player";
     static const struct luaL_Reg LuaMethods[];
 
-    using GameObject::GameObject;
+    using Item::Item;
 
     sf::Vector2f getGlobalCenter() const;
-
-    float getGlobalLeft() const;
-    float getGlobalRight() const;
-    float getGlobalTop() const;
-    float getGlobalBottom() const;
-
-    void setGlobalLeft(float left);
-    void setGlobalRight(float right);
-    void setGlobalTop(float top);
-    void setGlobalBottom(float bottom);
 
     void addItem(ItemPtr item);
     bool hasItem(const std::string& s);

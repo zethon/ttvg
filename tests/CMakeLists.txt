@@ -27,8 +27,8 @@ function(create_test testname FILES)
 endfunction(create_test)
 
 set(PROJECT_FILES
-    ../src/GameObject.h    
-    ../src/GameObject.cpp
+    ../src/Item.h    
+    ../src/Item.cpp
     
     ../src/Background.h
     ../src/Background.cpp
@@ -38,9 +38,6 @@ set(PROJECT_FILES
     
     ../src/Intersection.h
     ../src/Intersection.cpp
-
-    ../src/Item.h
-    ../src/Item.cpp
 
     ../src/ItemFactory.h
     ../src/ItemFactory.cpp

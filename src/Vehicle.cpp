@@ -80,8 +80,8 @@ bool shouldTurn(const sf::Vector2f pathpoint, const sf::Vector2f& current, Direc
     return false;
 }
 
-Vehicle::Vehicle(const VehicleInfo& info, const sf::Texture& texture, BackgroundSharedPtr bg)
-    : GameObject{ info, texture },
+Vehicle::Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg)
+    : Item(info, info.instinfo),
       _bg{ bg }
 {
     setState("down");
@@ -90,9 +90,9 @@ Vehicle::Vehicle(const VehicleInfo& info, const sf::Texture& texture, Background
 
 std::uint16_t Vehicle::timestep()
 {
-    GameObject::timestep();
+    Item::timestep();
 
-    if (_state == State::MOVING
+    if (_vehicleState == VehicleState::MOVING
         && _movementClock.getElapsedTime().asMilliseconds() > 100)
     {
         move();
@@ -128,12 +128,14 @@ void Vehicle::move()
         }
 
         setPosition(nextpos);
+        updateHighlight();
         return;
     }
     else
     {
         auto globalPos = _bg->getGlobalFromTile(currentTile);
         setPosition(globalPos);
+        updateHighlight();
         _path.step();
 
         auto newdirection = tt::getDirection(currentTile, _path.next());
@@ -149,13 +151,13 @@ tt::Tile Vehicle::currentTile() const
 
 bool Vehicle::isBlocked(const sf::FloatRect& test)
 {
-    const auto minDistance = 6.f;
-    return isPathBlocked(getGlobalBounds(), test, _direction, minDistance);
+    const auto minDistance = 0.f;
+    return isPathBlocked(getGlobalHitBox(), test, _direction, minDistance);
 }
 
-void Vehicle::setVehicleState(State val) 
+void Vehicle::setVehicleState(VehicleState val)
 { 
-    _state = val; 
+    _vehicleState = val;
 }
 
 void Vehicle::setPath(const Path& path)
@@ -178,6 +180,7 @@ void Vehicle::setPath(const Path& path)
 
     auto globalPos = _bg->getGlobalFromTile(_path.points().at(0));
     setPosition(globalPos);
+    updateHighlight();
 }
 
 void Vehicle::setDirection(std::uint32_t dir)

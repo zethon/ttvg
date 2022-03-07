@@ -244,7 +244,7 @@ const struct luaL_Reg Scene::LuaMethods[] =
 
 Scene::Scene(std::string_view name, const SceneSetup& setup)
     : Screen(setup.resources, setup.window),
-      _name{ name },
+      _sceneName{name },
       _luaState{setup.lua},
       _hud{ setup.resources, setup.window },
       _descriptionText{ setup.resources, setup.window },
@@ -253,9 +253,9 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
       _itemFactory{ *(setup.itemFactory) },
       _logger { log::initializeLogger("Scene") }
 {
-    _logger->info("creating scene '{}'", _name);
+    _logger->info("creating scene '{}'", _sceneName);
 
-    if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _name)); 
+    if (const auto jsonopt = _resources.getJson(fmt::format("maps/{}.json", _sceneName));
             jsonopt.has_value())
     {
         const auto& json = *jsonopt;
@@ -282,34 +282,32 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
             }
         }
 
-        _logger->debug("loaded json file for scene '{}'", _name);
+        _logger->debug("loaded json file for scene '{}'", _sceneName);
     }
     else
     {
-        _logger->warn("no json file loaded for scene '{}'", _name);
+        _logger->warn("no json file loaded for scene '{}'", _sceneName);
     }
 
     // the scene must be registered in the Lua registry even
     // if it has no <scene>.lua file
-    _luaIdx = registerScene(_luaState, *this);
-    if (const auto luafile = _resources.getFilename(fmt::format("lua/{}.lua", _name));
+    _luaIdx = registerObject(_luaState, *this);
+    if (const auto luafile = _resources.getFilename(fmt::format("lua/{}.lua", _sceneName));
             boost::filesystem::exists(luafile))
     {
          if (!loadSceneLuaFile(*this, luafile, _luaState))
          {
-            _luaState = nullptr;
             _logger->warn("Could not load scene luafile {}", luafile);
          }
     }
     else
     {
         _logger->debug("No scene luafile found at {}", luafile);
-        _luaState = nullptr;
     }
 
     _lastPlayerPos = _playerAvatarInfo.start;
 
-    _background = std::make_shared<Background>(_name, _resources, _window);
+    _background = std::make_shared<Background>(_sceneName, _resources, _window);
     addDrawable(_background);
 
     sf::View view(sf::FloatRect(0.f, 0.f,
@@ -322,16 +320,16 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
 
 void Scene::init()
 {
-    _logger->debug("initializing scene '{}'", _name);
+    _logger->debug("initializing scene '{}'", _sceneName);
     createItems();
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _name, 
-        { { LUA_REGISTRYINDEX, _luaIdx } });
+    tt::CallLuaFunction(_luaState, _callbackNames.onInit, _sceneName,
+                        { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::enter()
 {
-    _logger->debug("entering scene '{}'", _name);
+    _logger->debug("entering scene '{}'", _sceneName);
     assert(!_player);
     _player = _weakPlayer.lock();
 
@@ -376,21 +374,21 @@ void Scene::enter()
             animeCallback();
         });
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _name, 
-        { { LUA_REGISTRYINDEX, _luaIdx } });
+    tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _sceneName,
+                        { { LUA_REGISTRYINDEX, _luaIdx } });
 }
 
 void Scene::exit()
 {
-    _logger->debug("exiting scene '{}'", _name);
+    _logger->debug("exiting scene '{}'", _sceneName);
     assert(_player);
      
     _player->onSetHealth.disconnect_all_slots();
     _player->onSetCash.disconnect_all_slots();
     _player->onMoveTimer.disconnect_all_slots();
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _name, 
-        { { LUA_REGISTRYINDEX, _luaIdx } });
+    tt::CallLuaFunction(_luaState, _callbackNames.onExit, _sceneName,
+                        { { LUA_REGISTRYINDEX, _luaIdx } });
 
     _lastPlayerPos = _player->getPosition();
     removeUpdateable(_player);
@@ -430,18 +428,22 @@ ScreenAction Scene::update(sf::Time elapsed)
         return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
     }
 
+    std::for_each(_items.begin(), _items.end(),
+        [this](ItemPtr item)
+        {
+            item->timestep();
+        });
+
     const auto taskIt = _itemTasks.lower_bound(elapsed);
     if (taskIt != _itemTasks.begin())
     {
         auto current = _itemTasks.begin();
         while (current != taskIt)
         {
-            auto item = _itemFactory.createItem(current->second.id);
-            setItemInstance(*item, {}, current->second);
-            _items.push_back(item);
+            auto item = _itemFactory.createItem(current->second);
+            placeItem(item);
             current = _itemTasks.erase(current);
         }
-        
     }
 
     std::stringstream ss1;
@@ -509,7 +511,7 @@ void Scene::updateCurrentTile(const TileInfo& info)
     bool handled = false;
     for (const auto& item : _items)
     {
-        if (item->getGlobalBounds().intersects(_player->getGlobalBounds())) 
+        if (item->getGlobalHitBox().intersects(_player->getGlobalHitBox()))
         {
             _descriptionText.setText(
                 item->getName() + ": " +
@@ -552,8 +554,8 @@ void Scene::updateCurrentTile(const TileInfo& info)
     // allow subclasses to do their own handling
     customUpdateCurrentTile(info);
 
-    tt::CallLuaFunction(_luaState, _callbackNames.onTileUpdate, _name, 
-        { 
+    tt::CallLuaFunction(_luaState, _callbackNames.onTileUpdate, _sceneName,
+                        {
             { LUA_REGISTRYINDEX, _luaIdx },
             MakeLuaArg(_currentTile.tile.x),
             MakeLuaArg(_currentTile.tile.y)
@@ -574,11 +576,17 @@ sf::Vector2f Scene::animeCallback()
     return _player->getPosition();
 }
 
-bool Scene::walkPlayer(float stepsize)
+bool Scene::walkPlayer(float baseStepSize)
 {
-    const float stepSize = stepsize
-        + (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-            || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) ? 20.f : 0.f);
+    float stepSize = baseStepSize;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+    {
+        stepSize += 20.f;
+    }
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
+    {
+        stepSize = 1.0;
+    }
 
     bool moved = false;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -657,53 +665,9 @@ Walk around and enjoy Tucson!
     w.exec();
 }
 
-void Scene::setItemInstance(Item& item, const ItemInfo& groupInfo, const ItemInfo& instanceInfo)
-{
-    auto x = instanceInfo.x.has_value() ? instanceInfo.x : groupInfo.x;
-    if (!x.has_value())
-    {
-        throw std::runtime_error(fmt::format(
-            "scene '{}' with item '{}' has an invalid 'x' coordinate", _name, item.getID()));
-    }
-
-    auto y = instanceInfo.y.has_value() ? instanceInfo.y : groupInfo.y;
-    if (!y.has_value())
-    {
-        throw std::runtime_error(fmt::format(
-            "scene '{}' with item '{}' has an invalid 'y' coordinate", _name, item.getID()));
-    }
-
-    float xpos = *x;
-    if (*x == -1)
-    {
-        const auto bounds = _background->getWorldTileRect();
-        xpos = tt::RandomNumber<float>(0.f, bounds.width);
-    }
-
-    float ypos = *y;
-    if (*y == -1)
-    {
-        const auto bounds = _background->getWorldTileRect();
-        ypos = tt::RandomNumber<float>(0.f, bounds.height);
-    }
-
-    auto respawn = instanceInfo.respawn.has_value() ?
-        instanceInfo.respawn : groupInfo.respawn;
-
-    const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
-    item.setPosition(position);
-
-    item.callbacks.onSelect = instanceInfo.callbacks.onSelect.has_value() ?
-        instanceInfo.callbacks.onSelect : groupInfo.callbacks.onSelect;
-
-    // TODO: this feels weird to use the item to get its own 
-    // info, but it will do for now
-    item.setInfo(ItemInfo{ item.getID(), x, y, respawn, item.callbacks });
-}
-
 void Scene::createItems()
 {
-    _logger->debug("scene {} loading items", _name);
+    _logger->debug("scene {} loading items", _sceneName);
 
     const auto& config = _background->json();
 
@@ -711,48 +675,111 @@ void Scene::createItems()
     {
         for (auto& el : config["items"].items())
         {
-            const auto& itemId = el.key();
+            const auto& itemid = el.key();
             const auto& data = el.value();
-            if (!data.contains("instances")
-                || !data["instances"].is_array())
+            if (!data.contains("instances") || !data["instances"].is_array())
             {
                 continue;
             }
 
             // default info for the item
-            ItemInfo groupinfo = data.get<ItemInfo>();
+            ItemInstanceInfo groupinfo = data.get<ItemInstanceInfo>();
+            groupinfo.objid = itemid; // we don't want to require the objid to be set in json
             
             for (const auto& instance : data["instances"])
             {
-                auto item = _itemFactory.createItem(itemId);
-                if (item)
-                {
-                    ItemInfo thisinfo = instance.get<ItemInfo>();
-                    setItemInstance(*item, groupinfo, thisinfo);
-                    _items.push_back(item);
-                }
+                auto instanceinfo = instance.get<ItemInstanceInfo>();
+                instanceinfo.applyDefaults(groupinfo);
+
+                auto groupcallbacks = instance.get<ItemCallbacks>();
+                auto item = _itemFactory.createItem(instanceinfo);
+                if (item) placeItem(item);
             }
         }
     }
 
-    _logger->debug("scene '{}' loaded {} items", _name, _items.size());
+    _logger->debug("scene '{}' loaded {} items", _sceneName, _items.size());
+}
+
+// Calculates where to put an Item in the Scene based on the item's properties and
+// then adds the Item to Scene::_items
+void Scene::placeItem(ItemPtr item)
+{
+    auto instanceInfo = item->instanceInfo();
+
+    if (!instanceInfo.x.has_value())
+    {
+        throw std::runtime_error(fmt::format(
+                "scene '{}' with item '{}' has an invalid 'x' coordinate", _sceneName, item->getID()));
+    }
+
+    if (!instanceInfo.y.has_value())
+    {
+        throw std::runtime_error(fmt::format(
+                "scene '{}' with item '{}' has an invalid 'y' coordinate", _sceneName, item->getID()));
+    }
+
+    float xpos = *(instanceInfo.x);
+    if (*(instanceInfo.x) == -1)
+    {
+        const auto bounds = _background->getWorldTileRect();
+        xpos = tt::RandomNumber<float>(0.f, bounds.width);
+    }
+
+    float ypos = *(instanceInfo.y);
+    if (*(instanceInfo.y) == -1)
+    {
+        const auto bounds = _background->getWorldTileRect();
+        xpos = tt::RandomNumber<float>(0.f, bounds.height);
+    }
+
+    // set position
+    const auto position = _background->getGlobalFromTile(sf::Vector2f(xpos, ypos));
+    item->setPosition(position);
+
+    auto texture = item->objectInfo().texture;
+    assert(texture);
+
+    if (const auto scale = item->instanceInfo().scale; scale.has_value())
+    {
+        item->setScale(*scale);
+    }
+    else
+    {
+        // the default scale/size of the item will be the same as the tilesize
+        // for the background
+        assert(item->objectInfo().size.has_value());
+        
+        int width = item->objectInfo().size->x;
+        int height = item->objectInfo().size->y;
+        
+        float scaleX = (background()->tilesize().x * background()->getScale().x) / width;
+        float scaleY = (background()->tilesize().y * background()->getScale().y) / height;
+
+        item->setScale(scaleX, scaleY);
+    }
+
+    auto luaidx = registerObject(_luaState, *item);
+    item->setLuaIdx(luaidx);
+
+    _items.push_back(item);
 }
 
 void Scene::pickupItem(Items::iterator itemIt)
 {
     auto item = *itemIt;
 
-    bool removeItem = item->isObtainable();
+    bool removeItem = item->obtainable();
 
-    if (item->callbacks.onSelect.has_value() 
-        && item->callbacks.onSelect->size() > 0)
+    if (item->callbacks().onSelect.has_value() 
+        && item->callbacks().onSelect->size() > 0)
     {
-        const auto results = tt::CallLuaFunction(_luaState, 
-            *(item->callbacks.onSelect), 
-            _name, 
-            { 
+        const auto results = tt::CallLuaFunction(_luaState,
+                                                 *(item->callbacks().onSelect),
+                                                 _sceneName,
+                                                 {
                 { LUA_REGISTRYINDEX, _luaIdx },
-                { LUA_TLIGHTUSERDATA, static_cast<void*>(&item) } 
+                { LUA_REGISTRYINDEX, item->luaIdx() }
             });
 
         if (results.has_value() && results->size() > 0)
@@ -766,11 +793,10 @@ void Scene::pickupItem(Items::iterator itemIt)
         _player->addItem(item);
         _items.erase(itemIt);
 
-        if (const auto info = item->info();
-            info.respawn.has_value() && *(info.respawn) > 0)
+        if (auto respawn = item->respawn(); respawn > 0)
         {
-            const auto newtime = _gameTime + sf::seconds(*(info.respawn));
-            _itemTasks.insert({ newtime, std::move(info) });
+            const auto newtime = _gameTime + sf::seconds(respawn);
+            _itemTasks.insert({ newtime, item->instanceInfo() });
         }
         
         _pickupSound->play();
@@ -918,9 +944,9 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                     auto& zone = boost::any_cast<Zone&>(_currentTile.data);
 
                     auto resultp = tt::CallLuaFunction(_luaState,
-                        zone.callbacks.onSelect,
-                        _name,
-                        {
+                                                       zone.callbacks.onSelect,
+                                                       _sceneName,
+                                                       {
                             { LUA_REGISTRYINDEX, _luaIdx },
                             { LUA_TLIGHTUSERDATA, static_cast<void*>(&zone) }
                         });
@@ -965,8 +991,8 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 for(auto it = _items.begin(); it != _items.end(); it++)
                 {
                     auto item = *it;
-                    if (item->getGlobalBounds()
-                            .intersects(_player->getGlobalBounds()))
+                    if (item->getGlobalHitBox()
+                        .intersects(_player->getGlobalHitBox()))
                     {
                         pickupItem(it);
                         break;
@@ -1066,3 +1092,4 @@ void Scene::toggleHighlight()
 }
 
 } // namespace tt
+

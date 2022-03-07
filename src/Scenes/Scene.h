@@ -7,7 +7,6 @@
 #include "../Screen.h"
 #include "../Player.h"
 #include "../Background.h"
-#include "../Item.h"
 #include "../ItemFactory.h"
 #include "../TooterLogger.h"
 #include "../DelayedSound.h"
@@ -96,21 +95,21 @@ bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
     return true;
 }
 
-template<typename SceneT>
-int registerScene(lua_State* L, SceneT& scene)
+template<typename ObjT>
+int registerObject(lua_State* L, ObjT& object)
 {
     int idx = 0;
 
-    // create a pointer to `this` in the Lua state and register
-    // it as a `Scene` class/object/table inside Lua
+    // create a pointer to the object in the Lua state and register
+    // it as an object of `ObjT` class/object/table inside Lua
     {
-        // create the pointer to ourselves in the Lua state
-        std::size_t size = sizeof(SceneT*);
-        SceneT** data = static_cast<SceneT**>(lua_newuserdata(L, size)); // -1:ud
-        *data = &scene;
+        // create the pointer to itself in the Lua state
+        std::size_t size = sizeof(ObjT*);
+        ObjT** data = static_cast<ObjT**>(lua_newuserdata(L, size)); // -1:ud
+        *data = &object;
 
         // and set the metatable
-        luaL_getmetatable(L, SceneT::CLASS_NAME); // -2:ud, -1: mt
+        luaL_getmetatable(L, ObjT::CLASS_NAME); // -2:ud, -1: mt
         lua_setmetatable(L, -2); // -1: ud
         idx = luaL_ref(L, LUA_REGISTRYINDEX);  // empty stack
 
@@ -137,7 +136,7 @@ class Scene : public Screen
 
 public:
     using Items = std::vector<ItemPtr>;
-    using ItemTasks = std::map<sf::Time, ItemInfo>;
+    using ItemTasks = std::map<sf::Time, ItemInstanceInfo>;
 
     static constexpr auto CLASS_NAME = "Scene";
     static const struct luaL_Reg LuaMethods[];
@@ -147,7 +146,7 @@ public:
     
     Scene(std::string_view name, const SceneSetup& setup);
 
-    std::string name() const { return _name; }
+    std::string name() const { return _sceneName; }
 
     virtual void init();
 
@@ -169,6 +168,8 @@ public:
     void addItem(ItemPtr item);
     void removeItem(ItemPtr item);
     const std::vector<ItemPtr>& items() const { return _items; }
+    void placeItem(ItemPtr item);
+    void pickupItem(Items::iterator itemIt);
 
     BackgroundSharedPtr background() const { return _background; }
     PlayerPtr player() const { return _player; }
@@ -180,12 +181,12 @@ protected:
     // subclasses might also have to deal with highlighting
     virtual void toggleHighlight();
 
-    [[maybe_unused]] bool walkPlayer(float speed);
+    [[maybe_unused]] bool walkPlayer(float baseStepSize);
     void showHelp();
 
-    std::string     _name;
+    std::string     _sceneName;
     lua_State*      _luaState = nullptr;
-    int             _luaIdx = 0;
+    int             _luaIdx = 0;    // the index for `this` object in the Lua registry
     CallbackInfo    _callbackNames;
 
     Hud             _hud;
@@ -201,9 +202,10 @@ protected:
     AvatarInfo              _playerAvatarInfo;
     TileInfo                _currentTile;
 
-    ItemTasks       _itemTasks;
-    Items           _items;
-    ItemFactory&    _itemFactory;
+    Items               _items;
+    ItemTasks           _itemTasks;
+    ItemFactory&        _itemFactory;
+    ItemInfoMap         _objectInfoList;
 
     log::SpdLogPtr  _logger;
 
@@ -214,7 +216,6 @@ protected:
 
 private:
     void createItems();
-    void pickupItem(Items::iterator itemIt);
     virtual void updateCurrentTile(const TileInfo& info);
     
     PollResult privatePollHandler(const sf::Event& e);
@@ -225,9 +226,6 @@ private:
 
     // allow subclasses to do custom tile updating
     virtual void customUpdateCurrentTile(const TileInfo&) { }
-
-    // setup an item's info based on the map and item info
-    void setItemInstance(Item& item, const ItemInfo& groupInfo, const ItemInfo& instanceInfo);
 };
 
 } // namespace tt

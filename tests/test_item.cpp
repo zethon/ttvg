@@ -2,6 +2,7 @@
 #include <boost/test/data/test_case.hpp>
 #include <boost/filesystem.hpp>
 
+#include <nlohmann/json.hpp>
 #include <fmt/format.h>
 
 #include <SFML/Graphics.hpp>
@@ -18,6 +19,7 @@
 namespace tools = boost::test_tools;
 namespace data = boost::unit_test::data;
 namespace fs = boost::filesystem;
+namespace nl = nlohmann;
 
 BOOST_AUTO_TEST_SUITE(tt)
 BOOST_AUTO_TEST_SUITE(items)
@@ -34,15 +36,20 @@ struct TestHarness
     tt::PlayerPtr   _player;
     lua_State* _lua;
     std::shared_ptr<ItemFactory> _itemFactory;
+    sf::Texture _playerTexture;
 
     TestHarness(const std::string& resfolder)
         : _resources{ resfolder }
     {
         _lua = luaL_newstate();
 
-        sf::Texture texture;
-        texture.create(100, 100);
-        _player = std::make_shared<tt::Player>(texture, sf::Vector2i{ 10,10 });
+        _playerTexture.create(100, 100);
+
+        tt::ItemInfo playerObjInfo;
+        playerObjInfo.size = sf::Vector2u{ 10, 10 };
+        playerObjInfo.texture = &_playerTexture;
+
+        _player = std::make_shared<tt::Player>(playerObjInfo, ItemInstanceInfo{});
 
         _itemFactory = std::make_shared<ItemFactory>(_resources);
 
@@ -71,15 +78,19 @@ BOOST_AUTO_TEST_CASE(loadItemTest)
 
     tt::ItemFactory itemf{ resmgr };
 
-    auto item = itemf.createItem("bag", {});
+    ItemInstanceInfo ii1;
+    ii1.objid = "bag";
+    auto item = itemf.createItem(ii1);
     BOOST_TEST(item->getID() == "bag");
     BOOST_TEST(item->getName() == "Bag");
-    BOOST_TEST(item->isObtainable());
+    BOOST_TEST(item->obtainable());
     
-    item = itemf.createItem("nissan-truck", {});
+    ItemInstanceInfo ii2;
+    ii2.objid = "nissan-truck";
+    item = itemf.createItem(ii2);
     BOOST_TEST(item->getID() == "nissan-truck");
     BOOST_TEST(item->getName() == "Nissan Vagina");
-    BOOST_TEST(!item->isObtainable());
+    BOOST_TEST(!item->obtainable());
 }
 
 const auto bagjson = R"x({
@@ -133,17 +144,50 @@ BOOST_AUTO_TEST_CASE(itemRandomPlacementTest)
     const auto& firstItem = scene->items().at(0);
     BOOST_TEST(firstItem->getPosition().x == expxy.x, tools::tolerance(0.001));
     BOOST_TEST(firstItem->getPosition().y == expxy.y, tools::tolerance(0.001));
-    BOOST_TEST(firstItem->callbacks.onSelect.has_value());
-    BOOST_TEST(*(firstItem->callbacks.onSelect) == "bag_onSelect");
+    BOOST_TEST(firstItem->callbacks().onSelect.has_value());
+    BOOST_TEST(*(firstItem->callbacks().onSelect) == "bag_onSelect");
 
     const auto& seconditem = scene->items().at(1);
-    BOOST_TEST(seconditem->callbacks.onSelect.has_value());
-    BOOST_TEST(*(seconditem->callbacks.onSelect) == "special_bagPickup");
+    BOOST_TEST(seconditem->callbacks().onSelect.has_value());
+    BOOST_TEST(*(seconditem->callbacks().onSelect) == "special_bagPickup");
 
     const auto& thirditem = scene->items().at(2);
-    BOOST_TEST(thirditem->callbacks.onSelect.has_value());
-    BOOST_TEST(thirditem->callbacks.onSelect->empty());
+    BOOST_TEST(thirditem->callbacks().onSelect.has_value());
+    BOOST_TEST(thirditem->callbacks().onSelect->empty());
 }
 
 BOOST_AUTO_TEST_SUITE_END() // items
+
+BOOST_AUTO_TEST_SUITE(gameobjects)
+
+const auto sevanjson = R"x({ "name": "sevan2",
+"description": "this is the description",
+"size": { "x": 64, "y": 64 },
+"scale": { "x": 1.0, "y": 1.25 },
+"states":
+    [
+        { "id":"up","source":{ "x":0, "y":0 },"count":2 },
+        { "id":"down", "source":{ "x":0, "y":128 },"count":2 }
+    ]
+})x";
+
+// --run_test=tt/gameobjects/gameObjectLoadTest
+BOOST_AUTO_TEST_CASE(gameObjectLoadTest)
+{
+    nl::json jsondata = nl::json::parse(sevanjson, nullptr, false);
+    BOOST_TEST(!jsondata.is_discarded());
+
+    const auto object = jsondata.get<tt::ItemInfo>();
+    BOOST_TEST(object.name == "sevan2");
+    BOOST_TEST(object.states.size() == 2);
+
+    BOOST_TEST((object.states.find("up") != object.states.end()));
+    BOOST_TEST((object.states.find("down") != object.states.end()));
+
+    BOOST_TEST(object.states.at("up").source.y == 0);
+    BOOST_TEST(object.states.at("down").source.y == 128);
+}
+
+BOOST_AUTO_TEST_SUITE_END() // gameobjects
+
 BOOST_AUTO_TEST_SUITE_END() // tt

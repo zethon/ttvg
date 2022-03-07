@@ -28,25 +28,25 @@ struct TestHarness
     tt::PlayerPtr   _player;
     lua_State* _lua;
     std::shared_ptr<ItemFactory> _itemFactory;
+    sf::Texture _playerTexture;
+    tt::ItemInfo _playerObjInfo;
 
     TestHarness(const std::string& resfolder)
         : _resources{ resfolder }
     {
         _lua = luaL_newstate();
+        _playerTexture.create(100, 100);
 
-        sf::Texture texture;
-        texture.create(100, 100);
+        _playerObjInfo.size = sf::Vector2u{ 10, 10 };
+        _playerObjInfo.framecount = 9;
+        _playerObjInfo.states.emplace("up", ItemState{ "up", sf::Vector2i{0,0}, 9, 55, HitBox{0,0,64,64} });
+        _playerObjInfo.states.emplace("left", ItemState{ "left", sf::Vector2i{0,1}, 9, 55, HitBox{0,0,64,64} });
+        _playerObjInfo.states.emplace("down", ItemState{ "down", sf::Vector2i{0,2}, 9, 55, HitBox{0,0,64,64} });
+        _playerObjInfo.states.emplace("right", ItemState{ "right", sf::Vector2i{0,3}, 9, 55, HitBox{0,0,64,64} });
+        _playerObjInfo.texture = &_playerTexture;
+        _playerObjInfo.defaultState = "up";
 
-        tt::GameObjectInfo playerObjInfo;
-        playerObjInfo.size = sf::Vector2u{ 10, 10 };
-        playerObjInfo.count = 9;
-        playerObjInfo.states.emplace();
-        playerObjInfo.states->emplace("up", GameObjectState{ "up", sf::Vector2i{0,0}, 9 });
-        playerObjInfo.states->emplace("left", GameObjectState{ "left", sf::Vector2i{0,1}, 9 });
-        playerObjInfo.states->emplace("down", GameObjectState{ "down", sf::Vector2i{0,2}, 9 });
-        playerObjInfo.states->emplace("right", GameObjectState{ "right", sf::Vector2i{0,3}, 9 });
-
-        _player = std::make_shared<tt::Player>(playerObjInfo, texture);
+        _player = std::make_shared<tt::Player>(_playerObjInfo, ItemInstanceInfo{});
 
         _itemFactory = std::make_shared<ItemFactory>(_resources);
 
@@ -102,10 +102,10 @@ BOOST_AUTO_TEST_CASE(loadTestCase)
     writeFile(luafile2, file2);
 
     SceneStub s1{ "scene1" };
-    auto s1idx = tt::registerScene(lua, s1);
+    auto s1idx = tt::registerObject(lua, s1);
 
     SceneStub s2{ "scene2" };
-    auto s2idx = tt::registerScene(lua, s2);
+    auto s2idx = tt::registerObject(lua, s2);
 
     BOOST_TEST(tt::loadSceneLuaFile(s1, luafile1, lua));
     BOOST_TEST(tt::loadSceneLuaFile(s2, luafile2, lua));
@@ -462,6 +462,76 @@ end
 
     // make sure it's the same underlying object
     BOOST_TEST(static_cast<void*>(newsax.get()) == saxPtr); 
+}
+
+// --run_test=tt/lua/itemPropertyTest
+BOOST_AUTO_TEST_CASE(itemPropertyTest)
+{
+    const auto path{ tt::tempFolder() };
+    const auto luapath{ path / "resources" / "lua" };
+    const auto mappath{ path / "resources" / "maps" };
+    const auto itemspath{ path / "resources" / "items" };
+
+    // copy the bag PNG to the test folder
+    const auto itemsrc{ fmt::format("{}/resources/items", TT_SRC_DIRECTORY_) };
+    copyFile((fs::path{ itemsrc } / "bag.png"), itemspath / "bag.png");
+
+    writeFile((itemspath / "bag.json").string(),
+        R"x({
+    "name":         "Bag of Crack",
+    "description":  "This is good for your blood pressure.",
+    "obtainable":   false,
+    "size": { "x": 64, "y": 64 }
+})x");
+
+    writeFile((mappath / "scene1.json").string(),
+        R"({
+    "background":{"tiles":{ "x": 16, "y": 16 }},
+    "player":{"state":"up","start": { "x": 35, "y": 35 }},
+    "items": {"bag": { "instances": [ { "x": 5, "y": 5 } ] }}
+})");
+
+    writeFile((luapath / "scene1.lua").string(),
+        R"(
+function getId(item)
+    local id = item:id()
+    return id
+end
+
+function getName(item)
+    local name = item:name()
+    return name
+end
+
+)");
+
+    TestHarness harness{ (path / "resources").string() };
+    auto scene = std::make_shared<tt::Scene>("scene1", harness.setup());
+    scene->init();
+    scene->enter();
+
+    auto& items = scene->items();
+    const auto bag = std::find_if(items.begin(), items.end(), [](auto item) { return item->getID() == "bag";  });
+
+    BOOST_TEST((bag != items.end()));
+
+    auto results = tt::CallLuaFunction(harness._lua, "getId", "scene1",
+        {
+            { LUA_REGISTRYINDEX, (*bag)->luaIdx() } // `bag` is an iterator to a shared_ptr
+        });
+
+    BOOST_TEST(results.has_value());
+    BOOST_TEST(results->size() == 1);
+    BOOST_TEST(tt::GetLuaValue<std::string>(results->at(0)) == "bag");
+
+    results = tt::CallLuaFunction(harness._lua, "getName", "scene1",
+        {
+            { LUA_REGISTRYINDEX, (*bag)->luaIdx() } // `bag` is an iterator to a shared_ptr
+        });
+
+    BOOST_TEST(results.has_value());
+    BOOST_TEST(results->size() == 1);
+    BOOST_TEST(tt::GetLuaValue<std::string>(results->at(0)) == "Bag of Crack");
 }
 
 BOOST_AUTO_TEST_SUITE_END() // lua

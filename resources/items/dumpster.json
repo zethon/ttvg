@@ -1,0 +1,15 @@
+{
+    "name":         "Dumpster",
+    "description":  "This dumpster could hold a number of treasures.",
+    "obtainable":   false,
+
+    "size": { "x": 32, "y": 32 },
+
+    "frame-count": 3,
+    "time-step": 150,
+    
+    "states":
+        [
+            { "id": "default", "source": { "x": 0, "y": 0 } }
+        ]
+}
