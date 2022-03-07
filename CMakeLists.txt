@@ -16,7 +16,7 @@ endif(SHARED_SFML)
 # initialize conan libs
 include(CMake/conan.cmake)
 conan_cmake_run(REQUIRES
-    boost/1.78.0
+    boost/1.77.0
     ogg/1.3.5
     sfml/2.5.1
     spdlog/1.9.2
