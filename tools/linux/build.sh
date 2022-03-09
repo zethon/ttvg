@@ -17,6 +17,9 @@ fi
 cd "$GIT_ROOT/build"
 
 conan install .. -s build_type=Debug --build=missing
-cmake .. -DCMAKE_BUILD_TYPE=Debug
+
+cmake .. -DCMAKE_BUILD_TYPE=Debug -D CMAKE_C_COMPILER=/usr/bin/gcc-10 -D CMAKE_CXX_COMPILER=/usr/bin/g++-10 .
+
 cmake --build .
+
 
