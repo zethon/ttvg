@@ -579,6 +579,10 @@ sf::Vector2f Scene::animeCallback()
 bool Scene::walkPlayer(float baseStepSize)
 {
     float stepSize = baseStepSize;
+
+    const auto oldTop = _player->getGlobalTop();
+    const auto oldLeft = _player->getGlobalLeft();
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
     {
         stepSize += 20.f;
@@ -641,6 +645,18 @@ bool Scene::walkPlayer(float baseStepSize)
         }
         _player->setGlobalBottom(y);
         moved = true;
+    }
+
+    const auto tileinfo = _background->getTileInfo(getPlayerTile());
+    if (tileinfo.type == tt::TileType::ZONE)
+    {
+        auto zone = boost::any_cast<Zone>(tileinfo.data);
+        if (zone.barrier)
+        {
+            _player->setGlobalTop(oldTop);
+            _player->setGlobalLeft(oldLeft);
+            return false;
+        }
     }
 
     return moved;
@@ -1018,7 +1034,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             }
             break;
 
-            case sf::Keyboard::H:
+            case sf::Keyboard::BackSlash:
             {
                 toggleHighlight();
             }

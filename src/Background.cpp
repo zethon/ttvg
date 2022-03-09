@@ -115,7 +115,7 @@ void Background::initZones()
             if (result)
             {   
                 zone.rect = rect;
-                _zones.emplace(zone);
+                _zones.emplace(std::move(zone));
             }
         }
     }

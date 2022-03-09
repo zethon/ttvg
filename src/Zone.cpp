@@ -23,6 +23,11 @@ void from_json(const nl::json& j, Zone& z)
     {
         j.at("onSelect").get_to(z.callbacks.onSelect);
     }
+
+    if (j.contains("barrier"))
+    {
+        z.barrier = j.at("barrier").get<bool>();
+    }
 }
 
 namespace

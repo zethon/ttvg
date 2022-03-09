@@ -323,9 +323,10 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
         _respawn = *(_instanceInfo.respawn);
     }
 
-    _highlight.setFillColor(sf::Color::Transparent);
+//    _highlight.setFillColor(sf::Color::Transparent);
+    _highlight.setFillColor(sf::Color(225,225,204,200));
     _highlight.setOutlineThickness(2);
-    _highlight.setOutlineColor(sf::Color(255, 255, 255));
+    _highlight.setOutlineColor(sf::Color(255, 0, 0));
 }
 
 void Item::initStateHitboxes(const std::string &defaultstate)

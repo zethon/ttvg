@@ -8,6 +8,36 @@
 
 This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs on Windows, Mac and Linux.
 
+## Game Controls
+
+**There is not yet any mouse support**
+
+### Gameplay Commands
+
+| Command | Description |
+| --- | --- |
+| &uarr;, &darr;, &larr;, &rarr; | Move the player up, down, left and right |
+| LShift | Walk faster |
+| RShift | Walk slower |
+| ESC | Game menu |
+| A | Pickup an Item |
+| I | Display inventory |
+| . | Toggle Hud Display |
+
+### Debug Commands
+
+These commands only work if the game is started with debugging turned on.
+
+| Command | Description |
+| --- | --- |
+| [ | Decrease health |
+| ] | Increase health |
+| 0 | Toggle display of coordinate and game time informatio |
+| 9 | Cheat menu |
+| H | Toggle hitbox renedering |
+| P | Pause traffic |
+| V | Toggle vehicle collision |
+
 ## Downloads
 
 ### Windows
@@ -151,11 +181,14 @@ The path specificied should be the `resources` path in this repo on your local s
 
 The following command line options exist:
 
-* `-r [ --resources ]` - Specifies the name of the resources folder.
-* `-l [ --logfile ]` - The fully qualified pathname of the logfile.
-* `-w [ --window-size]` - Customer window size in the form of `WIDTHxHEIGHT` (i.e. "`-w1024x768`")
-* `-v [ --version ]` - Print version information
-* `--loglevel` - Sets the level of logging. One of: `trace,debug,info,warning,error,critical,off`
+| Arguent | Description |
+| --- | --- |
+|  `-d` | Start game with debugging commands enabled |
+| `-r [ --resources ]` | Specifies the name of the resources folder |
+| `-w [ --window-size]` | Customer window size in the form of `WIDTHxHEIGHT` (i.e. "`-w1024x768`") |
+| `-v [ --version ]` | Print version information |
+| `-l [ --logfile ]` | The fully qualified pathname of the logfile |
+| `--loglevel` | Sets the level of logging. One of: `trace,debug,info,warning,error,critical,off` |
 
 ## Licensing
 

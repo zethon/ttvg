@@ -30,6 +30,21 @@ Tucson::Tucson(const SceneSetup& setup)
     _hackerTerminal.setVisible(false);
 }
 
+void Tucson::enter()
+{
+    if (_firstLoad)
+    {
+        Scene::enter();
+        tt::MessagesWindow w{*this};
+
+        w.pushMessage(R"(Ye who find the magic vagina will be given
+true salvation with the land owners on Mars.)");
+
+        w.exec();
+        _firstLoad = false;
+    }
+}
+
 void Tucson::initTraffic()
 {
     // initialize the traffic system
@@ -108,8 +123,7 @@ PollResult Tucson::poll(const sf::Event& e)
             }
             break;
 
-            case sf::Keyboard::End:
-            case sf::Keyboard::F1:
+            case sf::Keyboard::H:
             {
                 MessagesWindow w{ *this };
                 w.pushMessage(R"(

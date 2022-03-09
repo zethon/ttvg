@@ -30,6 +30,9 @@ public:
     PollResult poll(const sf::Event& e) override;
     ScreenAction update(sf::Time elapsed) override;
 
+protected:
+    void enter() override;
+
 private:
     void toggleHighlight() override;
     void customUpdateCurrentTile(const TileInfo&) override;
@@ -46,6 +49,7 @@ private:
     std::vector<VehiclePtr>             _vehicles;
     bool                                _updateTraffic = true;
     bool                                _vehicleCollision = true;
+    bool                                _firstLoad = true;
 
     sf::SoundBuffer                     _pgSoundBuffer;
     sf::Sound                           _pgSound;
