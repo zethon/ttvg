@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
     while (win->isOpen()) 
     {
         sf::Event e;
-        while (win->pollEvent(e)) 
+        while (win->pollEvent(e))
         {
             switch (e.type) 
             {
