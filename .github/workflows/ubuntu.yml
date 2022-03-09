@@ -43,7 +43,50 @@ jobs:
             sudo apt install libxcb-image0-dev
             sudo apt install libxcb-keysyms1-dev
             sudo apt install libxcb-xinerama0-dev
-            sudo apt install libx11-dev libx11-xcb-dev libfontenc-dev libice-dev libsm-dev libxau-dev libxaw7-dev libxcomposite-dev libxcursor-dev libxdamage-dev libxdmcp-dev libxext-dev libxfixes-dev libxft-dev libxi-dev libxinerama-dev libxkbfile-dev libxmu-dev libxmuu-dev libxpm-dev libxrandr-dev libxrender-dev libxres-dev libxss-dev libxt-dev libxtst-dev libxv-dev libxvmc-dev libxxf86vm-dev xtrans-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-xinerama0-dev xkb-data libxcb-dri3-dev libxcb-util-dev 
+            sudo apt install libx11-dev 
+            sudo apt install libx11-xcb-dev
+            sudo apt install libfontenc-dev
+            sudo apt install libice-dev
+            sudo apt install libsm-dev
+            sudo apt install libxau-dev
+            sudo apt install libxaw7-dev
+            sudo apt install libxcomposite-dev
+            sudo apt install libxcursor-dev
+            sudo apt install libxdamage-dev
+            sudo apt install libxdmcp-dev
+            sudo apt install libxext-dev
+            sudo apt install libxfixes-dev
+            sudo apt install libxft-dev
+            sudo apt install libxi-dev
+            sudo apt install libxinerama-dev
+            sudo apt install libxkbfile-dev
+            sudo apt install libxmu-dev
+            sudo apt install libxmuu-dev
+            sudo apt install libxpm-dev
+            sudo apt install libxrandr-dev
+            sudo apt install libxrender-dev
+            sudo apt install libxres-dev
+            sudo apt install libxss-dev
+            sudo apt install libxt-dev
+            sudo apt install libxtst-dev
+            sudo apt install libxv-dev
+            sudo apt install libxvmc-dev
+            sudo apt install libxxf86vm-dev
+            sudo apt install xtrans-dev
+            sudo apt install libxcb-render0-dev
+            sudo apt install libxcb-render-util0-dev
+            sudo apt install libxcb-xkb-dev
+            sudo apt install libxcb-icccm4-dev
+            sudo apt install libxcb-image0-dev
+            sudo apt install libxcb-keysyms1-dev
+            sudo apt install libxcb-randr0-dev
+            sudo apt install libxcb-shape0-dev
+            sudo apt install libxcb-sync-dev
+            sudo apt install libxcb-xfixes0-dev
+            sudo apt install libxcb-xinerama0-dev
+            sudo apt install xkb-data
+            sudo apt install libxcb-dri3-dev
+            sudo apt install libxcb-util-dev
 
     - name: Get Conan
       uses: turtlebrowser/get-conan@v1.0
