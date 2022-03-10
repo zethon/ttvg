@@ -194,6 +194,34 @@
                 "enabled": true
             }
         },
+ 
+        {
+            "name": "Gas Station",
+            "description": "Got Gas?",
+            "rects":
+            [
+                "4,56,13,56"
+            ]
+        },
+
+        {
+            "name": "Gas Station",
+            "description": "Gas, Grass, or Ass. Nobody rides for free.",
+            "rects":
+            [
+                "119,37,127,37"
+            ]
+        },
+
+        {
+            "name": "Gas Station",
+            "description": "I can't believe it's not diesel!",
+            "rects":
+            [
+                "95,139,103,140"
+            ]
+        },
+
 
         {
             "name": "Rape River",
