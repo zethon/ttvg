@@ -31,7 +31,7 @@ function sevan_select(scene, item)
         w:pushMessage("Oh hi Tommy! How does your hobohole feel?")
         w:pushMessage("I know I was little rough on you\n that night\nLOL")
         w:pushMessage("Maybe you can help me. Do you know where I can\nfind some weed?")
-        w:pushMessage("If you bring me a bag weed I'll pay you $20")
+        w:pushMessage("If you bring me a bag of weed I'll pay you $20")
         w:pushMessage("And if you're feeling horny, let me know!\nI miss that dirty hole!")
         w:exec()
         firstTimeSevan = false
@@ -63,3 +63,81 @@ function courtHouse_onEnter(scene)
         end
     end
 end
+
+
+--
+-- Fill an empty gas can at a gas station.
+--
+function gasStation_onSelect(scene)
+
+    if _player:hasItemByName("empty-gas-can") then
+        local gasCan = ItemFactory.createItem("gas-can")
+        _player:addItem(gasCan)
+        _player:removeItemByName("empty-gas-can")
+        Utils.showModal(scene, "You've got gas!")
+    else
+        Utils.showModal(scene, "You need something to put the gas in.")
+    end
+end
+
+
+--
+-- Talk to Chief Covfefe
+--
+function covfefe_select(scene, item)
+
+    if not (_player:hasItemByName("empty-gas-can")) then
+        Utils.showModal(
+            scene, 
+            "Wetin dey Mzungu.\n" ..
+            "Why you do fucking up my trucks?\n" ..
+            "You take this empty gas can.\n" ..
+            "I say you can borrow, is not a gift!")
+
+            local emptyGasCan = ItemFactory.createItem("empty-gas-can")
+            _player:addItem(emptyGasCan)
+
+    else
+
+        Utils.showModal(
+            scene, 
+            "Hey Mzungu hobo guy man.\n" ..
+            "You fatass go fix a trucks.\n" ..
+            "I say you can borrow, is not a gift!")
+
+    end
+
+end
+
+
+--
+-- Fix Covfefe's truck
+--
+local truckState = 0
+local truckStateMap = {
+    [0] = "This truck is fucked up.",
+    [1] = "Probably needs more gas.",
+    [2] = "I'm sure more gas will fix it.",
+    [3] = "You really fucked this thing up."
+}
+function covfefeTruck_select(scene, item)
+
+
+    if (_player:hasItemByName("gas-can")) then
+
+        Utils.showModal(scene, "You put in some gas.")
+        _player:removeItemByName("gas-can")
+
+        if (truckState < 3) then
+            truckState = truckState + 1; 
+        end
+
+    end
+
+    local msg = truckStateMap[truckState]
+    Utils.showModal(scene, msg)
+
+end
+
+
+

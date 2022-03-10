@@ -194,6 +194,37 @@
                 "enabled": true
             }
         },
+ 
+        {
+            "name": "Gas Station",
+            "description": "Got Gas?",
+            "rects":
+            [
+                "4,56,13,56"
+            ],
+            "onSelect": "gasStation_onSelect"
+        },
+
+        {
+            "name": "Gas Station",
+            "description": "Gas, Grass, or Ass. Nobody rides for free.",
+            "rects":
+            [
+                "119,37,127,37"
+            ],
+            "onSelect": "gasStation_onSelect"
+        },
+
+        {
+            "name": "Gas Station",
+            "description": "I can't believe it's not diesel!",
+            "rects":
+            [
+                "95,139,103,140"
+            ],
+            "onSelect": "gasStation_onSelect"
+        },
+
 
         {
             "name": "Rape River",
@@ -236,17 +267,16 @@
                 { "x":"random", "y":"random"}
             ]
         },
-        
-        "zyklon-b": 
+
+        "chief-covfefe": 
         {
+            "scale": { "x": 0.5, "y": 0.33 },
             "instances":
             [    
-                { "x": 31, "y": 37 },
-                { "x": 22, "y": 56 },
-                { "x": 19, "y": 92 }
+                { "x": 5, "y": 80, "onSelect": "covfefe_select" }
             ]
         },
-        
+
         "sevan": 
         {
             "scale": { "x": 1.25, "y": 1.5 },
@@ -340,12 +370,22 @@
         
         "nissan-truck":
         {
+            "scale": { "x": 0.5, "y": 0.5 },
             "instances":
             [
                 { "x": 30, "y": 138 }
             ]
         },
-        
+
+        "covfefe-truck":
+        {
+            "scale": { "x": 1.0, "y": 1.0 },
+            "instances":
+            [
+                { "x": 63, "y": 77, "onSelect": "covfefeTruck_select" }
+            ]
+        },
+
         "key":
         {
             "instances":
