@@ -771,6 +771,8 @@ void Scene::pickupItem(Items::iterator itemIt)
 
     bool removeItem = item->obtainable();
 
+    bool addToInventory = true;
+
     if (item->callbacks().onSelect.has_value() 
         && item->callbacks().onSelect->size() > 0)
     {
@@ -785,12 +787,16 @@ void Scene::pickupItem(Items::iterator itemIt)
         if (results.has_value() && results->size() > 0)
         {
             removeItem = tt::GetLuaValue<bool>(results->at(0));
+            addToInventory = false;
         }
     }
 
     if (removeItem)
     {
-        _player->addItem(item);
+        if(addToInventory) {
+            _player->addItem(item);
+        }
+
         _items.erase(itemIt);
 
         if (auto respawn = item->respawn(); respawn > 0)
