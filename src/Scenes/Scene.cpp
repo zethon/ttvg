@@ -793,7 +793,8 @@ void Scene::pickupItem(Items::iterator itemIt)
 
     if (removeItem)
     {
-        if(addToInventory) {
+        if(addToInventory) 
+        {
             _player->addItem(item);
         }
 
