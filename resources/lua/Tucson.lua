@@ -84,7 +84,17 @@ end
 --
 -- Talk to Chief Covfefe
 --
+local truckFixed = false
 function covfefe_select(scene, item)
+
+    if truckFixed then
+        
+        Utils.showModal(
+            scene, 
+            "The Chief has put you on ignore.")
+
+        return
+    end
 
     if not (_player:hasItemByName("empty-gas-can")) then
         Utils.showModal(
@@ -122,7 +132,42 @@ local truckStateMap = {
 }
 function covfefeTruck_select(scene, item)
 
+    --
+    -- This if branch completes the quest.
+    --
+    if (_player:hasItemByName("zyklon-b") and truckState == 3) then
 
+        local w = scene:createModal(ModalType.Messages)
+
+        w:pushMessage(
+            "You put in some gift gas.")
+
+        w:pushMessage(
+            "A voice rings out\n" ..
+            "from beyond the ether.")
+
+        w:pushMessage(
+            "Wetin dey m'hobo!\n" ..
+            "You murtherforker do fuck my truck\n" ..
+            "for a last time!\n" ..
+            "May this curse be upon you 1000 times!" )
+
+        w:exec()
+
+        _player:removeItemByName("zyklon-b")
+        local zuluCurse = ItemFactory.createItem("curse-of-the-zulu")
+        _player:addItem(zuluCurse)
+        
+        truckFixed = true;
+
+        -- return true to remove the item (truck) from the scene
+
+        return true
+    end
+
+    --
+    -- Add more gas.
+    --
     if (_player:hasItemByName("gas-can")) then
 
         Utils.showModal(scene, "You put in some gas.")
