@@ -74,9 +74,9 @@ jobs:
         cpack -G ZIP -C Release --config TTVGCPackConfig.cmake --verbose
         ls -alR
 
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@master
-      with:
-        name: tooter-*.zip
-        path: ${{github.workspace}}/build
+    # - name: Upload Artifacts
+    #   uses: actions/upload-artifact@master
+    #   with:
+    #     name: tooter-*.zip
+    #     path: ${{github.workspace}}/build
 
