@@ -15,6 +15,7 @@ on:
       - CMake/**
       - src/**
       - tests/**
+      - .github/workflows/macos.yml
 
 jobs:
   build-macos:
