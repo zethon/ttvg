@@ -68,7 +68,7 @@ jobs:
 
     - name: Build Artifacts
       working-directory:  ${{github.workspace}}/build
-      if: $BUILD_TYPE == "Release"
+      if: ${{ matrix.build_type }} == "Release"
       shell: bash
       run: |
         cpack -G ZIP -C Release --config TTVGCPackConfig.cmake --verbose
