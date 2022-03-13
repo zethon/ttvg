@@ -184,5 +184,22 @@ function covfefeTruck_select(scene, item)
 
 end
 
+--
+-- Talk to John Belushi
+--
+function belushi_select(scene, item)
+
+    local w = scene:createModal(ModalType.Messages)
+
+    w:pushMessage(
+        "I've been doing \n" ..
+        "a lot of cocaine lately. \n")
+
+    w:pushMessage(
+        "I could sure use a fish tank.\n" )
+
+    w:exec()
+
+end
 
 

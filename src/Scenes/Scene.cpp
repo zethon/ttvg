@@ -807,7 +807,11 @@ void Scene::pickupItem(Items::iterator itemIt)
         }
         
         _pickupSound->play();
-        _descriptionText.setText("Picked up " + item->getName());
+
+        if(addToInventory) {
+            _descriptionText.setText("Picked up " + item->getName());
+        }
+
     }
 }
 

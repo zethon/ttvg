@@ -6,12 +6,26 @@
         "camera": "fixed" 
     },
 
+    "items":
+    {
+		"fish-tank":
+        {
+            "scale": { "x": 1.0, "y": 0.9 },
+            "instances":
+            [
+                { "x": 3, "y": 5 }
+            ]
+        }
+ 
+    },
+
     "player":
     {
         "start":    { "x": 0, "y": 460 },
         "scale":    { "x": 2.75, "y": 2.75 },
         "source":   { "x": 0, "y": 2 },
         "origin":   { "x": 0, "y": 0 },
+        "state":    "down",
         "stepsize": 16.0
     },
 

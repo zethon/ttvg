@@ -277,6 +277,16 @@
             ]
         },
 
+        "john-belushi": 
+        {
+            "scale": { "x": 0.5, "y": 0.33 },
+            "instances":
+            [    
+                { "x": 65, "y": 139, "onSelect": "belushi_select" }
+            ]
+        },
+
+
         "sevan": 
         {
             "scale": { "x": 1.25, "y": 1.5 },
