@@ -83,7 +83,7 @@ bool loadSceneLuaFile(SceneT& scene, const std::string& filename, lua_State* L)
         if (lua_pcall(L, 0, 0, 0) != 0) // 1:tbl
         {
             auto error = lua_tostring(L, -1);
-            logger->error("could not load scene lua file because: {}", filename, error);
+            logger->error("could not load scene lua file '{}' because: {}", filename, error);
             lua_settop(L, 0);
             return false;
         }

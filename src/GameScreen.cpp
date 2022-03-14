@@ -8,6 +8,33 @@
 namespace tt
 {
 
+int tt_lua_require(lua_State* L)
+{
+    auto modulename = luaL_checkstring(L, -1); // -1: module
+    auto gamescreen = tt::GameScreen::l_get(L);
+    const auto luafile = gamescreen->resources().getFilename(fmt::format("lua/{}",modulename));
+
+    auto logger = log::initializeLogger("Lua");
+    logger->debug("loading 'require' file '{}'", luafile);
+
+    auto status = luaL_loadfile(L, luafile.c_str());
+    if (status || lua_pcall(L, 0, 0, 0))
+    {
+        auto error = lua_tostring(L, -1);
+        logger->error("could not load 'require' lua file '{}' because: {}", luafile, error);
+
+        lua_settop(L, 0);
+        return 0;
+    }
+
+    // make sure we're balanced by manually clearing the stack,
+    // the only thing on the stack should be the return value
+    // from `lua_pcall()`
+    lua_pop(L, 1);
+    assert(lua_gettop(L) == 0);
+    return 1;
+}
+
 GameScreen* GameScreen::l_get(lua_State * L)
 {
     lua_rawgeti(L, LUA_REGISTRYINDEX, GAMESCREEN_LUA_IDX);
@@ -31,7 +58,7 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
       _itemFactory{std::make_shared<ItemFactory>(resmgr)}
 {
     _luaState = luaL_newstate();
-        initLua(_luaState, *this, static_cast<void*>(_itemFactory.get()));
+    initLua(_luaState, *this, static_cast<void*>(_itemFactory.get()));
 
     _playerObjectInfo.id = "@player";
     _playerObjectInfo.size = sf::Vector2u{ 64, 64 };
