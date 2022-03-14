@@ -78,11 +78,9 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
 
     luaL_openlibs(L);
 
-//    lua_pushliteral(L, "require");
+    // override `require` with our own version
     lua_pushcfunction(L, tt_lua_require);
     lua_setglobal(L, "require");
-
-//    lua_rawset(L, LUA_REGISTRYINDEX, LUA_GLOBALSINDEX);
 
     // push a reference to `this` into the registry, it should
     // always be the 3rd entry
