@@ -51,7 +51,9 @@ struct TestHarness
         _itemFactory = std::make_shared<ItemFactory>(_resources);
 
         GameScreenStub stub;
-        tt::initLua(_lua, stub, static_cast<void*>(_itemFactory.get()));
+        tt::initLua(_lua, stub,
+            static_cast<void*>(_itemFactory.get()),
+            static_cast<void*>(&_resources));
     }
 
     tt::SceneSetup setup()
@@ -91,7 +93,7 @@ BOOST_AUTO_TEST_CASE(loadTestCase)
     GameScreenStub stub;
     lua_State* lua = luaL_newstate();
 
-    tt::initLua(lua, stub, nullptr);
+    tt::initLua(lua, stub, nullptr, nullptr);
     BOOST_TEST_REQUIRE(lua != nullptr);
 
     auto path = tt::tempFolder();
@@ -119,6 +121,47 @@ BOOST_AUTO_TEST_CASE(loadTestCase)
     BOOST_TEST(rv2.has_value());
     BOOST_TEST(rv2->size() == 1);
     BOOST_TEST(tt::GetLuaValue<std::string>(rv2->front()) == "mylua2");
+}
+
+constexpr auto main_file = R"lua(
+require "libs/includefile.lua"
+function mainFunction()
+return includeFunction()
+end
+)lua";
+
+constexpr auto include_file = R"lua(
+function includeFunction()
+return "test1234"
+end
+)lua";
+
+BOOST_AUTO_TEST_CASE(luaIncludeTest)
+{
+    GameScreenStub stub;
+    lua_State* lua = luaL_newstate();
+
+    auto path = tt::tempFolder();
+    tt::ResourceManager resources { path / "resources" };
+
+    tt::initLua(lua, stub, nullptr, &resources);
+    BOOST_TEST_REQUIRE(lua != nullptr);
+
+    const auto mainfile = (path / "resources" / "lua" / "scene1.lua").string();
+    const auto incfile = (path / "resources" / "lua" / "libs" / "includefile.lua").string();
+
+    writeFile(mainfile, main_file);
+    writeFile(incfile, include_file);
+
+    SceneStub s1{ "scene1" };
+    auto s1idx = tt::registerObject(lua, s1);
+
+    BOOST_TEST(tt::loadSceneLuaFile(s1, mainfile, lua));
+
+    auto rv1 = tt::CallLuaFunction(lua, "mainFunction", "scene1", {{ LUA_REGISTRYINDEX, s1idx}});
+    BOOST_REQUIRE(rv1.has_value());
+    BOOST_REQUIRE(rv1->size() == 1);
+    BOOST_TEST(tt::GetLuaValue<std::string>(rv1->front()) == "test1234");
 }
 
 constexpr auto playerTestFile = R"lua(

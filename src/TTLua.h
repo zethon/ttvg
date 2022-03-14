@@ -44,6 +44,7 @@ inline static void dumpstack(lua_State* L)
 
 constexpr auto GAMESCREEN_LUA_IDX = 4;
 constexpr auto ITEMFACTORY_LUA_IDX = 5;
+constexpr auto RESOURCEMGR_LUA_IDX = 6;
 
 template<typename T>
 [[maybe_unused]] T* checkObject(lua_State* L)

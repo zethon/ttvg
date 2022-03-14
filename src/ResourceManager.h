@@ -2,6 +2,8 @@
 #include <optional>
 #include <iostream>
 
+#include <lua.hpp>
+
 #include <boost/filesystem.hpp>
 
 #include <nlohmann/json.hpp>
@@ -25,6 +27,8 @@ class ResourceManager
 
 public:
     explicit ResourceManager(const boost::filesystem::path& path);
+
+    static ResourceManager* l_get(lua_State* L);
 
     /// \brief Loads a texture into the cache
     ///

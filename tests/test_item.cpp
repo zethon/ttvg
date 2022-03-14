@@ -54,7 +54,7 @@ struct TestHarness
         _itemFactory = std::make_shared<ItemFactory>(_resources);
 
         GameScreenStub stub;
-        tt::initLua(_lua, stub, static_cast<void*>(_itemFactory.get()));
+        tt::initLua(_lua, stub, static_cast<void*>(_itemFactory.get()), nullptr);
     }
 
     tt::SceneSetup setup()
