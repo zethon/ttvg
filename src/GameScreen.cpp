@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include <lua.hpp>
 
 #include "Scenes/Scene.h"
@@ -7,6 +9,21 @@
 
 namespace tt
 {
+
+int tt_lua_require(lua_State* L)
+{
+    auto modulename = luaL_checkstring(L, -1); // -1: module
+    auto gamescreen = tt::GameScreen::l_get(L);
+    const auto luafile = gamescreen->resources().getFilename(fmt::format("lua/libs/{}",modulename));
+
+    auto status = luaL_loadfile(L, luafile.c_str());
+    if (status || lua_pcall(L, 0, 0, 0))
+    {
+        return 0;
+    }
+
+    return 1;
+}
 
 GameScreen* GameScreen::l_get(lua_State * L)
 {
@@ -31,7 +48,7 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
       _itemFactory{std::make_shared<ItemFactory>(resmgr)}
 {
     _luaState = luaL_newstate();
-        initLua(_luaState, *this, static_cast<void*>(_itemFactory.get()));
+    initLua(_luaState, *this, static_cast<void*>(_itemFactory.get()));
 
     _playerObjectInfo.id = "@player";
     _playerObjectInfo.size = sf::Vector2u{ 64, 64 };
