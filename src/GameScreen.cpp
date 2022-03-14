@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include <lua.hpp>
 
 #include "Scenes/Scene.h"
@@ -16,12 +14,24 @@ int tt_lua_require(lua_State* L)
     auto gamescreen = tt::GameScreen::l_get(L);
     const auto luafile = gamescreen->resources().getFilename(fmt::format("lua/libs/{}",modulename));
 
+    auto logger = log::initializeLogger("Lua");
+    logger->debug("loading 'require' file '{}'", luafile);
+
     auto status = luaL_loadfile(L, luafile.c_str());
     if (status || lua_pcall(L, 0, 0, 0))
     {
+        auto error = lua_tostring(L, -1);
+        logger->error("could not load 'require' lua file '{}' because: {}", luafile, error);
+
+        lua_settop(L, 0);
         return 0;
     }
 
+    // make sure we're balanced by manually clearing the stack,
+    // the only thing on the stack should be the return value
+    // from `lua_pcall()`
+    lua_pop(L, 1);
+    assert(lua_gettop(L) == 0);
     return 1;
 }
 
