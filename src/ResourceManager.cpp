@@ -1,9 +1,28 @@
 #include <fmt/core.h>
 
 #include "ResourceManager.h"
+#include "TTLua.h"
 
 namespace tt
 {
+
+ResourceManager* ResourceManager::l_get(lua_State * L)
+{
+    lua_rawgeti(L, LUA_REGISTRYINDEX, RESOURCEMGR_LUA_IDX);
+    int type = lua_type(L, -1);
+    if (type != LUA_TLIGHTUSERDATA)
+    {
+        return nullptr;
+    }
+
+    ResourceManager* state = static_cast<ResourceManager*>(lua_touserdata(L, -1));
+    lua_pop(L, 1); // -1
+    if (!state)
+    {
+        return nullptr;
+    }
+    return state;
+}
 
 ResourceManager::ResourceManager(const boost::filesystem::path& path)
     : _resourceFolder{ path }

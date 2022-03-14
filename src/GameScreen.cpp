@@ -11,8 +11,8 @@ namespace tt
 int tt_lua_require(lua_State* L)
 {
     auto modulename = luaL_checkstring(L, -1); // -1: module
-    auto gamescreen = tt::GameScreen::l_get(L);
-    const auto luafile = gamescreen->resources().getFilename(fmt::format("lua/{}",modulename));
+    auto resources = tt::ResourceManager::l_get(L);
+    const auto luafile = resources->getFilename(fmt::format("lua/{}", modulename));
 
     auto logger = log::initializeLogger("Lua");
     logger->debug("loading 'require' file '{}'", luafile);
@@ -58,7 +58,11 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
       _itemFactory{std::make_shared<ItemFactory>(resmgr)}
 {
     _luaState = luaL_newstate();
-    initLua(_luaState, *this, static_cast<void*>(_itemFactory.get()));
+    initLua(
+        _luaState,
+        *this,
+        static_cast<void*>(_itemFactory.get()),
+        static_cast<void*>(&resmgr));
 
     _playerObjectInfo.id = "@player";
     _playerObjectInfo.size = sf::Vector2u{ 64, 64 };

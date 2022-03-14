@@ -71,7 +71,7 @@ const struct luaL_Reg Utils_LuaMethods[] =
 int tt_lua_require(lua_State* L);
 
 template<typename T>
-void initLua(lua_State* L, T& screen, void* itemFactory)
+void initLua(lua_State* L, T& screen, void* itemFactory, void* resourceManager)
 {
     auto logger = log::initializeLogger("Lua");
     logger->info("initializing Lua subsystem");
@@ -89,13 +89,15 @@ void initLua(lua_State* L, T& screen, void* itemFactory)
     [[maybe_unused]] int reference = luaL_ref(L, LUA_REGISTRYINDEX);
     assert(GAMESCREEN_LUA_IDX == reference);
 
-    if (itemFactory != nullptr)
-    {
-        lua_pushlightuserdata(L, itemFactory);
-        luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-        reference = luaL_ref(L, LUA_REGISTRYINDEX);
-        assert(ITEMFACTORY_LUA_IDX == reference);
-    }
+    lua_pushlightuserdata(L, itemFactory);
+    luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+    reference = luaL_ref(L, LUA_REGISTRYINDEX);
+    assert(ITEMFACTORY_LUA_IDX == reference);
+
+    lua_pushlightuserdata(L, resourceManager);
+    luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+    reference = luaL_ref(L, LUA_REGISTRYINDEX);
+    assert(RESOURCEMGR_LUA_IDX == reference);
 
     // register static methods for `ItemFactory`
     {

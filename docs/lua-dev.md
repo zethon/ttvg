@@ -620,7 +620,7 @@ The *Inventory Modal Window* shows the player's inventory. This window uses the 
 
 <br/>
 
-# 6. Logging
+# 7. Logging
 
 Lua's logging mechanism hooks into the same logging mechanism as the C++ code, and therefore will use the same settings, logfile, etc.
 
@@ -642,7 +642,7 @@ end
 
 <br/>
 
-# 6. Utilities
+# 8. Utilities
 
 The `Utils` namespace offers a group of helper functions.
 
@@ -652,7 +652,7 @@ The `Utils` namespace offers a group of helper functions.
 
 Opens the system's default browser to the passed in `url`.
 
-<hr/>
+<br/>
 
 ### `[void] Utils.showModal(scene, text)`
 
@@ -676,7 +676,7 @@ function scene_onInit(scene)
 end
 ```
 
-<hr/>
+<br/>
 
 ### `[bool] Utils.showYesNo(scene, text)`
 
@@ -692,3 +692,11 @@ else
     -- code not to continue
 end
 ```
+# 9. Include Files
+
+Lua code can be separated into multiple files and then be included in the Scene's Lua file with the `require` command. For example:
+
+```lua
+require "quests/weed-quest.lua"
+```
+will include the file as though it was contained in the scene file itself. The paths are relative to the `resources/lua` folder where the scene Lua files live.
