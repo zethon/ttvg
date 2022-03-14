@@ -12,7 +12,7 @@ int tt_lua_require(lua_State* L)
 {
     auto modulename = luaL_checkstring(L, -1); // -1: module
     auto gamescreen = tt::GameScreen::l_get(L);
-    const auto luafile = gamescreen->resources().getFilename(fmt::format("lua/libs/{}",modulename));
+    const auto luafile = gamescreen->resources().getFilename(fmt::format("lua/{}",modulename));
 
     auto logger = log::initializeLogger("Lua");
     logger->debug("loading 'require' file '{}'", luafile);
