@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 
 project(ttvg)
 set(CMAKE_CXX_STANDARD 17)
-
 set(CMAKE_MACOSX_RPATH 1)
 
 # optional configuration
