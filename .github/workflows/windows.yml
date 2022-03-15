@@ -7,12 +7,14 @@ on:
     paths:
       - CMakeLists.txt
       - CMake/**
+      - .github/workflows/windows.yml
       - src/**
       - tests/**
   pull_request:
     paths:
       - CMakeLists.txt
       - CMake/**
+      - .github/workflows/windows.yml
       - src/**
       - tests/**
 
