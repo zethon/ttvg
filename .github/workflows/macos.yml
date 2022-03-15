@@ -83,10 +83,11 @@ jobs:
 
     - name: 📂 FTP Installer
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      if: "env.BUILD_TYPE == 'Release' && github.ref == 'refs/heads/master'"
+      if: "env.BUILD_TYPE == 'Release'"
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         server-dir: /public_html/downloads/
         local-dir: ${{github.workspace}}/build/stage/
+        exclude: tooter-*.exe
