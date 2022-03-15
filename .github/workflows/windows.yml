@@ -80,3 +80,4 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         server-dir: /public_html/downloads/
         local-dir: ${{github.workspace}}/build/stage/
+        exclude: tooter-*.zip
