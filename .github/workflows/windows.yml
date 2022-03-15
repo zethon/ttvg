@@ -62,7 +62,7 @@ jobs:
       run: |
         cpack -G NSIS -C Release --config TTVGCPackConfig.cmake --verbose
         cmake -E make_directory ${{github.workspace}}/build/stage
-        cp ${{github.workspace}}/build/tooter-*.exe ${{github.workspace}}/build/stage
+        cmake -E copy ${{github.workspace}}/build/tooter-*.exe ${{github.workspace}}/build/stage
         
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
