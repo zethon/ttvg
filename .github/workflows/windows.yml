@@ -7,12 +7,14 @@ on:
     paths:
       - CMakeLists.txt
       - CMake/**
+      - .github/workflows/windows.yml
       - src/**
       - tests/**
   pull_request:
     paths:
       - CMakeLists.txt
       - CMake/**
+      - .github/workflows/windows.yml
       - src/**
       - tests/**
 
@@ -52,3 +54,29 @@ jobs:
       working-directory: ${{github.workspace}}/build
       shell: bash
       run: ctest --rerun-failed --output-on-failure -C $BUILD_TYPE
+
+    - name: Build Artifacts
+      working-directory:  ${{github.workspace}}/build
+      if: "env.BUILD_TYPE == 'Release'"
+      shell: bash
+      run: |
+        cpack -G NSIS -C Release --config TTVGCPackConfig.cmake --verbose
+        mkdir stage
+        cp tooter-*.exe stage
+        
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      if: "env.BUILD_TYPE == 'Release'"
+      with:
+        name: windows_artficats
+        path: ${{github.workspace}}/build/tooter-*.exe
+
+    - name: 📂 FTP Installer
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      if: "env.BUILD_TYPE == 'Release' && github.ref == 'refs/heads/master'"
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: /public_html/downloads/
+        local-dir: ${{github.workspace}}/build/stage/
