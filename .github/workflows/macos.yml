@@ -81,9 +81,9 @@ jobs:
         name: mac_artficats
         path: ${{github.workspace}}/build/tooter-*.zip
 
-    - name: 📂 Sync files
+    - name: 📂 FTP Installer
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      if: "env.BUILD_TYPE == 'Release'"
+      if: "env.BUILD_TYPE == 'Release' && github.ref == 'refs/heads/master'"
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
