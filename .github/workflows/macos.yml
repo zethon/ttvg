@@ -33,14 +33,19 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Copy CMake
+      run: |
+        mkdir ${{github.workspace}}/stage
+        cp ${{github.workspace}}/CMakeLists.txt ${{github.workspace}}/stage
+
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /public_html/downloads
-        local-dir: ${{github.workspace}}/CMakeLists.txt
+        server-dir: /public_html/downloads/
+        local-dir: ${{github.workspace}}/stage/
 
     - name: Set Xcode 12.4
       run: sudo xcode-select -s /Applications/Xcode_12.4.app/Contents/Developer
