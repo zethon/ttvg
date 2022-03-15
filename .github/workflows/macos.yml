@@ -29,12 +29,18 @@ jobs:
       BUILD_TYPE: ${{ matrix.build_type }}
 
     steps:
-    - name: Set Xcode 12.4
-      run: sudo xcode-select -s /Applications/Xcode_12.4.app/Contents/Developer
-
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
+
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: /public_html/downloads
+        local-dir: ${{github.workspace}}/CMakeLists.txt
 
     - name: Set Xcode 12.4
       run: sudo xcode-select -s /Applications/Xcode_12.4.app/Contents/Developer
@@ -72,14 +78,13 @@ jobs:
       working-directory:  ${{github.workspace}}/build
       if: "env.BUILD_TYPE == 'Release'"
       shell: bash
-      run: |
-        cpack -G ZIP -C Release --config TTVGCPackConfig.cmake --verbose
-        ls -alR
+      run: cpack -G ZIP -C Release --config TTVGCPackConfig.cmake --verbose
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
+      if: "env.BUILD_TYPE == 'Release'"
       with:
-        name: my-artifact
+        name: mac_artficats
         path: ${{github.workspace}}/build/tooter-*.zip
 
 
