@@ -66,7 +66,7 @@ jobs:
       run: ctest --rerun-failed --output-on-failure
 
     - name: Build Artifacts
-      working-directory:  ${{github.workspace}}/build
+      working-directory: ${{github.workspace}}/build
       if: "env.BUILD_TYPE == 'Release'"
       shell: bash
       run: |
@@ -74,21 +74,20 @@ jobs:
         mkdir ${{github.workspace}}/build/stage
         cp ${{github.workspace}}/build/tooter-*.zip ${{github.workspace}}/build/stage
         
-    - name: Upload Artifacts
+    - name: Artifacts Upload
       uses: actions/upload-artifact@v3
       if: "env.BUILD_TYPE == 'Release'"
       with:
         name: mac_artficats
         path: ${{github.workspace}}/build/tooter-*.zip
 
-    - name: 📂 FTP Installer
-      uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      if: "env.BUILD_TYPE == 'Release' && github.ref == 'refs/heads/master'"
+    - name: FTP Upload
+      uses: kevinpainchaud/simple-ftp-deploy-action@v1.2.1
+      if: "env.BUILD_TYPE == 'Release'"
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /public_html/downloads/
-        local-dir: ${{github.workspace}}/build/stage/
-
-
+        ftp_host: ${{ secrets.FTP_SERVER }}
+        ftp_username: ${{ secrets.FTP_USERNAME }}
+        ftp_password: ${{ secrets.FTP_PASSWORD }}
+        local_source_dir: "${{github.workspace}}/build/stage"
+        dist_target_dir: "/public_html/downloads"
+        delete: "false"

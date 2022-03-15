@@ -71,12 +71,13 @@ jobs:
         name: windows_artficats
         path: ${{github.workspace}}/build/tooter-*.exe
 
-    - name: 📂 FTP Installer
-      uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      if: "env.BUILD_TYPE == 'Release' && github.ref == 'refs/heads/master'"
+    - name: FTP Upload
+      uses: kevinpainchaud/simple-ftp-deploy-action@v1.2.1
+      if: "env.BUILD_TYPE == 'Release'"
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /public_html/downloads/
-        local-dir: ${{github.workspace}}/build/stage/
+        ftp_host: ${{ secrets.FTP_SERVER }}
+        ftp_username: ${{ secrets.FTP_USERNAME }}
+        ftp_password: ${{ secrets.FTP_PASSWORD }}
+        local_source_dir: "${{github.workspace}}/build/stage"
+        dist_target_dir: "/public_html/downloads"
+        delete: "false"
