@@ -1,9 +1,24 @@
 {
-    "name":         "Chief Covfefe",
+    "name":             "Chief Covfefe",
 
     "description":  
         "\nAncient warrior king of mystical motor vehicles.",
 
-    "obtainable":   false
+    "obtainable":       false,
+
+    "size":             { "x": 130, "y": 346 },
+
+    "frame-count":      3,
+    "time-step":        55,
+
+    "default-state":    "idle",
+
+    "states":
+  	[
+            {   "id":       "idle", 	
+                "source":   { "x": 0, "y": 0 }, "time-step": 250 }
+
+	]
+
 }
 
