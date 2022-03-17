@@ -22,21 +22,6 @@ void createMenu(TextList& menuItems,
         menuItems.push_back(temp);
     }
 
-    /*
-    auto largest = std::max_element(menuItems.begin(), menuItems.end(),
-        [](TextPtr a, TextPtr b) 
-        { 
-            return a->getLocalBounds().width < b->getLocalBounds().width; 
-        });
-
-    assert(largest != menuItems.end());
-    */
-
-    // auto xpos = window.getSize().x - item->getLocalBounds().width;
-    
-    // auto xpos = window.getSize().x - 
-    //                    ((*largest)->getLocalBounds().width + 250.f);
-
     auto ypos = 300.0f;
 
     for (const auto& item: menuItems)
