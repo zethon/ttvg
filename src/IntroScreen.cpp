@@ -15,31 +15,34 @@ void createMenu(TextList& menuItems,
     sf::RenderTarget& window, 
     sf::Font& font)
 {
-    // first add all the items keeping track of the
-    // largest one
+
     for (const auto& text : textlist)
     {
         auto temp = std::make_shared<sf::Text>(text, font);
         menuItems.push_back(temp);
     }
 
-    auto largest = std::max_element(menuItems.begin(), menuItems.end(),
-        [](TextPtr a, TextPtr b) 
-        { 
-            return a->getLocalBounds().width < b->getLocalBounds().width; 
-        });
-
-    assert(largest != menuItems.end());
-
-    auto xpos = window.getSize().x - ((*largest)->getLocalBounds().width + 250.f);
     auto ypos = 300.0f;
 
-    for (const auto& item : menuItems)
+    for (const auto& item: menuItems)
     {
         item->setCharacterSize(40);
+
+        //
+        // Calculate xpos (right align)
+        //
+        auto winWidth       = window.getSize().x;
+        auto itemWidth      = item->getLocalBounds().width;
+        auto xpos           = (winWidth - itemWidth) - 50.f;
+
         item->setPosition(xpos, ypos);
+       
+        //
+        // Increment ypos to the next item position
+        //
         ypos += item->getLocalBounds().height + 20.0f;
     }
+
 }
 
 void updateMenu(std::uint16_t selection, TextList& menuItems)
@@ -69,12 +72,33 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
         throw std::runtime_error("hobo.ttf could not be loaded!");
     }
 
-    auto textobj = std::make_shared<sf::Text>("The Tommy Tucson\nVideo Game", _font);
-    textobj->setPosition(730, 10);
-    textobj->setFillColor(sf::Color(255, 215, 9));
-    textobj->setCharacterSize(70);
+    //
+    // This textobj is the title text
+    //
+    auto textobj = std::make_shared<sf::Text>(
+                    "The Tommy Tucson\nVideo Game", _font);
 
+    textobj->setCharacterSize(70);
+    textobj->setFillColor(sf::Color(255, 215, 9));
+
+    //
+    // Get coords for title from window size. (i.e. xpos)
+    //
+    auto winWidth       = _window.getSize().x;
+
+    auto titleWidth     = textobj->getLocalBounds().width;
+    auto titleXpos      = (winWidth - titleWidth) - 100.f;
+
+    //
+    // Set coords for title text
+    //
+    textobj->setPosition(titleXpos - 20, 10);
+
+    //
+    // Load the scrolling Tom image.
+    //
     auto bgt = _resources.load<sf::Texture>("images/tommy-1.png");
+
     if (!bgt)
     {
         throw std::runtime_error("tommy-1.png could not be loaded!");
@@ -88,34 +112,52 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     
     float xpos = 0;
     float ypos = (_bgt.getSize().y - _window.getSize().y) * -1.0f;
+
     _sprite->setPosition(xpos, ypos);
     
     _bgsong = _resources.openUniquePtr<sf::Music>("music/intro.wav");
+
     if (!_bgsong)
     {
         throw std::runtime_error("music/intro.mp3 could not be loaded!");
     }
+
+    //
+    // Add the scrolling Tom image.
+    //
+    addDrawable(_sprite);
     _bgsong->setLoop(true);
     _bgsong->play();
 
+    //
+    // Add the title text
+    //
+    addDrawable(textobj);
+
+    //
+    // Add the menu items
+    //
     createMenu(_menuItems, 
         { 
             "Play Game", 
             "Settings", 
             "Exit Game" 
         }, _window, _font);
+
     updateMenu(_selected, _menuItems);
-    for (const auto& item : _menuItems)
+
+    for (const auto& item: _menuItems)
     {
         addDrawable(item);
     }
 
-    addDrawable(_sprite);
-    addDrawable(textobj);
-
+    //
     // load sounds
-    _selectorBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/selector.wav");
+    //
+    _selectorBuffer = 
+        _resources.loadPtr<sf::SoundBuffer>("sounds/selector.wav");
     _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
+
 }
 
 PollResult IntroScreen::poll(const sf::Event& e)
