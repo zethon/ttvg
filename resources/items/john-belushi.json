@@ -2,9 +2,24 @@
     "name":         "John Belushi",
 
     "description":  
-        "\n American comedian, actor, and musician.\n He was one of the seven original cast members\n of the NBC sketch comedy show Saturday Night Live.",
+        "\n American comedian, actor, and musician.\n He was one of the seven original cast members\n of the NBC sketch comedy show Saturday Night Live.\n\n Do not give drugs to John Belushi.",
 
-    "obtainable":   false
+    "obtainable":   false,
+
+    "size":         { "x": 150, "y": 250 },
+
+    "frame-count":  3,
+    "time-step":    400,
+
+    "default-state": "not-on-cocaine",
+
+    "states":
+        		[
+            		{   "id":       "not-on-cocaine", 
+						"source":   { "x": 0, "y": 0 } 
+					}
+				]
+
 }
 
 
