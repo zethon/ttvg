@@ -367,12 +367,6 @@ void Scene::enter()
         });
 		
     if (_bgmusic) _bgmusic->play();		
-	
-    _player->onMoveTimer.connect(
-        [this]()
-        {
-            animeCallback();
-        });
 
     tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _sceneName,
                         { { LUA_REGISTRYINDEX, _luaIdx } });
