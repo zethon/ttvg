@@ -247,6 +247,9 @@ public:
         _highlight.setPosition(hpos);
     }
 
+    void pushState(const std::string& state);
+//    void queueState(const std::string& state);
+
 public: // signals
     
     boost::signals2::signal<void(void)> onFrameChange;

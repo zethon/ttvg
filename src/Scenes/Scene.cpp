@@ -1080,6 +1080,12 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 _player->increaseHealth(10);
             }
             break;
+
+            case sf::Keyboard::P:
+            {
+//                _player->doPunch();
+//                _player->interruptState()
+            }
         }
     }
 

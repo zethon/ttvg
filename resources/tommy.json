@@ -1,0 +1,20 @@
+{
+    "name": "Tommy",
+    "texture": "textures/tommy.png",
+    "description": "Hobo",
+    "obtainable": false,
+
+    "size": { "x": 64, "y": 64 },
+    "frame-count": 9,
+    "time-step": 55,
+
+    "default-state": "down",
+
+    "states":
+    [
+        { "id":"up", "source": { "x": 0, "y": 0 } },
+        { "id":"left", "source": { "x": 0, "y": 1 } },
+        { "id":"down", "source": { "x": 0, "y": 2 } },
+        { "id":"right", "source": { "x": 0, "y": 3 } }
+    ]
+}

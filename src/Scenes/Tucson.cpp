@@ -93,7 +93,7 @@ PollResult Tucson::poll(const sf::Event& e)
             default:
             break;
 
-            case sf::Keyboard::P:
+            case sf::Keyboard::Num7:
             {
                 _updateTraffic = !_updateTraffic;
             }

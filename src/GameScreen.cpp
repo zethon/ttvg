@@ -64,21 +64,18 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
         static_cast<void*>(_itemFactory.get()),
         static_cast<void*>(&resmgr));
 
-    _playerObjectInfo.id = "@player";
-    _playerObjectInfo.size = sf::Vector2u{ 64, 64 };
-    _playerObjectInfo.framecount = 9;
-    _playerObjectInfo.states.emplace("up", ItemState{ "up", sf::Vector2i{0,0}, 9, 55 });
-    _playerObjectInfo.states.emplace("left", ItemState{ "left", sf::Vector2i{0,1}, 9, 55 });
-    _playerObjectInfo.states.emplace("down", ItemState{ "down", sf::Vector2i{0,2}, 9, 55 });
-    _playerObjectInfo.states.emplace("right", ItemState{ "right", sf::Vector2i{0,3}, 9, 55 });
-    _playerObjectInfo.defaultState = "down";
+    // loading the player object is a little wonky
+    auto jsonptr = _resources.getJson("tommy.json");
+    if (!jsonptr)
+    {
+        throw std::runtime_error("could not load player file");
+    }
 
-    // the `Player` object is shared among all the `Scene` objects
-    auto textptr = _resources.cacheTexture("textures/tommy.png");
-    assert(textptr);
-    textptr->setSmooth(true);
+    _playerObjectInfo = jsonptr->get<ItemInfo>();
+    _playerObjectInfo.texture = _resources.cacheTexture("textures/tommy.png");
 
-    _playerObjectInfo.texture = textptr;
+    assert(_playerObjectInfo.texture);
+    _playerObjectInfo.texture->setSmooth(true);
 
     _player = std::make_shared<Player>(_playerObjectInfo, ItemInstanceInfo{});
     _player->setAnimated(false); // TODO: set this in the Player class
