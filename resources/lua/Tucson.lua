@@ -1,4 +1,4 @@
-require "libs/fire_example.lua"
+require "libs/fire_onselect.lua"
 
 local _player = nil     -- shortcut to player object, refereshed in every `onEnter` call
 
