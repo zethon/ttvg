@@ -197,12 +197,11 @@
  
         {
             "name": "Gas Station",
-            "description": "Got Gas?",
+            "description": "I can't believe it's not diesel!",
             "rects":
             [
                 "4,56,13,56"
-            ],
-            "onSelect": "gasStation_onSelect"
+            ]
         },
 
         {
@@ -217,7 +216,7 @@
 
         {
             "name": "Gas Station",
-            "description": "I can't believe it's not diesel!",
+            "description": "Got Gas?",
             "rects":
             [
                 "95,139,103,140"
@@ -242,6 +241,7 @@
             "rects":[ "131,75,149,94"]
         }
     ],
+
     "items":
     {
         "fire":
@@ -251,6 +251,7 @@
                 { "x": 55, "y": 79, "default-state": "1", "scale": { "x": 0.75, "y": 1.15 }, "onSelect": "fire_onSelect" }
             ]
         },
+
         "dumpster":
         {
             "scale": { "x": 2.125, "y": 2.125 },
@@ -259,12 +260,30 @@
                 { "x": 53, "y": 80 }
             ]
         },
+
         "sax": 
         {
             "instances":
             [    
                 { "x": 5, "y": 5 },
                 { "x":"random", "y":"random"}
+            ]
+        },
+
+        "empty-gas-can": 
+        {
+            "instances":
+            [    
+                { "x": 105, "y": 140 },
+                { "x":"random", "y":"random"}
+            ]
+        },
+
+        "gas-can": 
+        {
+            "instances":
+            [    
+                { "x": 31, "y": 36 }
             ]
         },
 
