@@ -12,9 +12,9 @@
 
     "states":
     [
-        { "id":"up", "source": { "x": 0, "y": 0 } },
-        { "id":"left", "source": { "x": 0, "y": 1 } },
-        { "id":"down", "source": { "x": 0, "y": 2 } },
-        { "id":"right", "source": { "x": 0, "y": 3 } }
+        { "id":"up", "source": { "x": 0, "y": 8 } },
+        { "id":"left", "source": { "x": 0, "y": 9 } },
+        { "id":"down", "source": { "x": 0, "y": 10 } },
+        { "id":"right", "source": { "x": 0, "y": 11 } }
     ]
 }

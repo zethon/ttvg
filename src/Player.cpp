@@ -105,7 +105,7 @@ int Player_setState(lua_State* L)
 {
     auto item = tt::checkObject<Player>(L);
     const auto state = lua_tostring(L, 2);
-    item->setState(state);
+    item->setBaseState(state);
     return 0;
 }
 
@@ -127,7 +127,7 @@ const struct luaL_Reg Player::LuaMethods[] =
     {"setPosition", Player_setPosition},
     {"getPosition", Player_getPosition},
 
-    {"setState", Player_setState},
+    {"setBaseState", Player_setState},
 
     {nullptr, nullptr}
 };

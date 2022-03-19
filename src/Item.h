@@ -202,7 +202,9 @@ public:
     void setGlobalTop(float top);
     void setGlobalBottom(float bottom);
 
-    void setState(const std::string& statename);
+    void setBaseState(const std::string& statename);
+    void pushState(const std::string& state);
+    //    void queueState(const std::string& state);
     
     void setHighlighted(bool h);
     bool highlighted() const { return _highlight.getSize().x != 0; }
@@ -246,9 +248,6 @@ public:
         hpos.y += (_hitboxes.at(_currentState).top * getScale().y);
         _highlight.setPosition(hpos);
     }
-
-    void pushState(const std::string& state);
-//    void queueState(const std::string& state);
 
 public: // signals
     

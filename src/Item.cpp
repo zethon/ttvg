@@ -232,7 +232,7 @@ int Item_setState(lua_State* L)
 {
     auto item = tt::checkObject<Item>(L);
     const auto state = lua_tostring(L, 2);
-    item->setState(state);
+    item->setBaseState(state);
     return 0;
 }
 
@@ -245,7 +245,7 @@ const struct luaL_Reg Item::LuaMethods[] =
         {"description", Item_getDescription},
         {"obtainable", Item_isObtainable},
         {"setObtainable", Item_setObtainable},
-        {"setState", Item_setState},
+        {"setBaseState", Item_setState},
         {nullptr, nullptr}
     };
 
@@ -304,7 +304,7 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
     if (defaultState.size() > 0)
     {
         _animated = true;
-        setState(defaultState);
+        setBaseState(defaultState);
     }
     else
     {
@@ -384,7 +384,7 @@ void Item::initStateHitboxes(const std::string &defaultstate)
     }
 }
 
-void Item::setState(const std::string& statename)
+void Item::setBaseState(const std::string& statename)
 {
     if (_objectInfo.states.find(statename) == _objectInfo.states.end())
     {

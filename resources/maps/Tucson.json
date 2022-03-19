@@ -1,7 +1,7 @@
 {
     "background":
     {
-        "scale": { "x": 2.25, "y": 2.25 },
+        "scale": { "x": 2.5, "y": 2.5 },
         "tiles": { "x": 16, "y": 16 },
         "camera": "follow"
     },
@@ -13,7 +13,7 @@
     "player":
     {
         "start": { "x": 1660, "y": 2855 },
-        "scale": { "x": 1.5, "y": 1.5 },
+        "scale": { "x": 1.65, "y": 1.65 },
         "state": "down",
         "origin": { "x": 0, "y": 0 },
         "stepsize" : 16.0

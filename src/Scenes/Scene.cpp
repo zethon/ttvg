@@ -337,7 +337,7 @@ void Scene::enter()
     _player->setScale(_playerAvatarInfo.scale);
     _player->setOrigin(_playerAvatarInfo.origin);
 
-    _player->setState(_playerAvatarInfo.state);
+    _player->setBaseState(_playerAvatarInfo.state);
 
     _player->onMoveTimer.connect(
         [this]()
@@ -862,7 +862,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
                 _player->setWalking(true);
                 _player->setAnimated(true);
-                _player->setState("left");
+                _player->setBaseState("left");
                 _player->setDirection(Direction::LEFT);
                 return { true, {} };
             }
@@ -877,7 +877,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
                 _player->setWalking(true);
                 _player->setAnimated(true);
-                _player->setState("right");
+                _player->setBaseState("right");
                 _player->setDirection(Direction::RIGHT);
                 return { true, {} };
             }
@@ -892,7 +892,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
                 _player->setWalking(true);
                 _player->setAnimated(true);
-                _player->setState("up");
+                _player->setBaseState("up");
                 _player->setDirection(Direction::UP);
                 return { true, {} };
             }
@@ -907,7 +907,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
                 _player->setWalking(true);
                 _player->setAnimated(true);
-                _player->setState("down");
+                _player->setBaseState("down");
                 _player->setDirection(Direction::DOWN);
                 return { true, {} };
             }

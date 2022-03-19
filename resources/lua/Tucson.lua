@@ -44,7 +44,7 @@ function sevan_select(scene, item)
             Utils.showModal(scene, "Hey thanks man! Here's another $20")
             _player:removeItemByName('bag-of-weed')
             _player:setBalance(_player:getBalance() + 20)
-            item:setState("flip")
+            item:setBaseState("flip")
         end
     end
 end
