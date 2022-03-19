@@ -10,6 +10,7 @@ namespace tt
 namespace
 {
 
+
 void createMenu(TextList& menuItems,
     const std::vector<std::string>& textlist,
     sf::RenderTarget& window, 
@@ -62,14 +63,14 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     : Screen(resmgr, target)
 {
     
-    if (auto temp = _resources.load<sf::Font>("fonts/hobo.ttf"); 
+    if (auto temp = _resources.load<sf::Font>("fonts/pricedown.ttf"); 
         temp.has_value())
     {
         _font = *temp;
     }
     else
     {
-        throw std::runtime_error("hobo.ttf could not be loaded!");
+        throw std::runtime_error("fonts/pricedown.ttf could not be loaded!");
     }
 
     //
@@ -85,9 +86,8 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     // Get coords for title from window size. (i.e. xpos)
     //
     auto winWidth       = _window.getSize().x;
-
     auto titleWidth     = textobj->getLocalBounds().width;
-    auto titleXpos      = (winWidth - titleWidth) - 100.f;
+    auto titleXpos      = (winWidth - titleWidth) - 25.f;
 
     //
     // Set coords for title text
@@ -267,7 +267,8 @@ SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
     
     addDrawable(sprite);
 
-    _font = *(_resources.load<sf::Font>("fonts/hobo.ttf"));
+    _font = *(_resources.load<sf::Font>("fonts/pricedown.ttf"));
+
     auto logoText = std::make_shared<sf::Text>("Dog Finger Studios", _font);
     logoText->setCharacterSize(100);
 
