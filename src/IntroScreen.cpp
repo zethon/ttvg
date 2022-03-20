@@ -38,6 +38,9 @@ void createMenu(TextList& menuItems,
 
         item->setPosition(xpos, ypos);
        
+        item->setOutlineColor(sf::Color(0,0,0,255));
+        item->setOutlineThickness(5);
+
         //
         // Increment ypos to the next item position
         //
@@ -81,6 +84,9 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
 
     textobj->setCharacterSize(70);
     textobj->setFillColor(sf::Color(255, 215, 9));
+
+    textobj->setOutlineColor(sf::Color(0,0,0,255));
+    textobj->setOutlineThickness(5);
 
     //
     // Get coords for title from window size. (i.e. xpos)
@@ -271,6 +277,9 @@ SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
 
     auto logoText = std::make_shared<sf::Text>("Dog Finger Studios", _font);
     logoText->setCharacterSize(100);
+
+    logoText->setOutlineColor(sf::Color(0,0,0,255));
+    logoText->setOutlineThickness(5);
 
     auto txpos = (_window.getSize().x / 2) - ((logoText->getLocalBounds().width) / 2);
     logoText->setPosition(txpos, _window.getSize().y - 150.0f);
