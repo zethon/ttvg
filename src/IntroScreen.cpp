@@ -80,7 +80,7 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     // This textobj is the title text
     //
     auto textobj = std::make_shared<sf::Text>(
-                    "Grand Theft Hobo", _font);
+                    "tommy tucson video game", _font);
 
     textobj->setCharacterSize(70);
     textobj->setFillColor(sf::Color(255, 215, 9));
