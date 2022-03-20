@@ -80,7 +80,7 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     // This textobj is the title text
     //
     auto textobj = std::make_shared<sf::Text>(
-                    "The Tommy Tucson\nVideo Game", _font);
+                    "Grand Theft Hobo", _font);
 
     textobj->setCharacterSize(70);
     textobj->setFillColor(sf::Color(255, 215, 9));
@@ -92,6 +92,7 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     // Get coords for title from window size. (i.e. xpos)
     //
     auto winWidth       = _window.getSize().x;
+    auto winHeight      = _window.getSize().y;
     auto titleWidth     = textobj->getLocalBounds().width;
     auto titleXpos      = (winWidth - titleWidth) - 25.f;
 
@@ -122,16 +123,23 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
             throw std::runtime_error("tommy-1.png could not be loaded!");
         }
 
-        _bgt[i] = *bgt; // copy!!!
+        _bgt[i] = *bgt; // copy?
 
         _sprite[i] = std::make_shared<sf::Sprite>();
         _sprite[i]->setTexture(_bgt[i]);
 
         _sprite[i]->setPosition(0, 0);
         _sprite[i]->setColor(sf::Color(0, 0, 0, 0));
-     
+
         //
-        // Add the intro image.
+        // Fit this imate to the window size.
+        //
+        _sprite[i]->setScale(
+            winWidth / _sprite[i]->getLocalBounds().width, 
+            winHeight / _sprite[i]->getLocalBounds().height);
+ 
+        //
+        // Add this intro image.
         //
         addDrawable(_sprite[i]);
     }
