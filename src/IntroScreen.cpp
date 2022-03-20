@@ -101,26 +101,44 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     textobj->setPosition(titleXpos - 20, 10);
 
     //
-    // Load the scrolling Tom image.
+    // Load background images
     //
-    auto bgt = _resources.load<sf::Texture>("images/tommy-1.png");
+    for(int i = 0; i < 8; i++) {
 
-    if (!bgt)
-    {
-        throw std::runtime_error("tommy-1.png could not be loaded!");
+        //
+        // Generate file name strings.
+        //
+        std::string prefix  = "images/ttvg-intro-screen-";
+        std::string index   = std::to_string(i+1);
+        std::string suffix  = ".png";
+        
+        //
+        // Load the intro images.
+        //
+        auto bgt = _resources.load<sf::Texture>(prefix + index + suffix);
+
+        if (!bgt)
+        {
+            throw std::runtime_error("tommy-1.png could not be loaded!");
+        }
+
+        _bgt[i] = *bgt; // copy!!!
+
+        _sprite[i] = std::make_shared<sf::Sprite>();
+        _sprite[i]->setTexture(_bgt[i]);
+
+        _sprite[i]->setPosition(0, 0);
+        _sprite[i]->setColor(sf::Color(0, 0, 0, 0));
+     
+        //
+        // Add the intro image.
+        //
+        addDrawable(_sprite[i]);
     }
 
-    _bgt = *bgt; // copy!!!
-    _bgt.setRepeated(true);
-
-    _sprite = std::make_shared<sf::Sprite>();
-    _sprite->setTexture(_bgt);
-    
-    float xpos = 0;
-    float ypos = (_bgt.getSize().y - _window.getSize().y) * -1.0f;
-
-    _sprite->setPosition(xpos, ypos);
-    
+    //
+    // Load intro song
+    //
     _bgsong = _resources.openUniquePtr<sf::Music>("music/intro.wav");
 
     if (!_bgsong)
@@ -129,9 +147,8 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     }
 
     //
-    // Add the scrolling Tom image.
+    // Set loop on song.
     //
-    addDrawable(_sprite);
     _bgsong->setLoop(true);
     _bgsong->play();
 
@@ -233,18 +250,59 @@ PollResult IntroScreen::poll(const sf::Event& e)
 
 ScreenAction IntroScreen::timestep()
 {
-    auto[x, y] = _sprite->getPosition();
+    static int  alpha           = 0;
+    static bool increaseAlpha   = true;
+    static int  imageIndex      = 0;
+
+    // int imageHeight = 394;  // This will depend on the height of the
+    //                        // individual frames. Should probably put these
+    //                        // in seperate files.
+
+    // auto[x, y] = _sprite->getPosition();
 
     if (auto elapsed = _clock.getElapsedTime();
-        elapsed.asMilliseconds() > 15)
+        elapsed.asMilliseconds() > 150)
     {
-        y += 5;
-        if (y > _window.getSize().y)
+        //
+        // Fade image in and out.
+        //
+        if(increaseAlpha) 
         {
-            y = _bgt.getSize().y * -1.0f;
-        }
+            alpha += 16;
+            if(alpha > 255) 
+            {
+                increaseAlpha = false;
+                alpha = 255;
+            }
+        } 
+        else 
+        { 
+            alpha -= 16;
+            if(alpha < 0) 
+            {
+                increaseAlpha = true;
+                alpha = 0;
 
-        _sprite->setPosition(x, y);
+                _sprite[imageIndex]->setColor(sf::Color(0, 0, 0, 0));
+
+                //
+                // Move to new image.
+                //
+                imageIndex++;
+
+                if(imageIndex > 7) 
+                {
+                    //
+                    // Reset to initial image 
+                    //
+                    imageIndex = 0;
+                }
+
+                _sprite[imageIndex]->setColor(sf::Color(255, 255, 255, alpha));
+            }
+        }
+        _sprite[imageIndex]->setColor(sf::Color(255, 255, 255, alpha));
+
         _clock.restart();
     }
 

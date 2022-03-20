@@ -13,7 +13,7 @@ using TextList = std::vector<TextPtr>;
 class IntroScreen : public Screen
 {
     sf::Font        _font;
-    sf::Texture     _bgt;
+    sf::Texture     _bgt[8];
     sf::Sound       _tomWillKillSound;
     
     std::shared_ptr<sf::SoundBuffer>    _selectorBuffer;
@@ -22,7 +22,7 @@ class IntroScreen : public Screen
     std::uint16_t               _selected = 0;
     TextList                    _menuItems;
     
-    std::shared_ptr<sf::Sprite>  _sprite;
+    std::shared_ptr<sf::Sprite>  _sprite[8];
     std::unique_ptr<sf::Music>   _bgsong;
 
     sf::Clock   _clock;
