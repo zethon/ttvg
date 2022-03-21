@@ -305,8 +305,6 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
         _logger->debug("No scene luafile found at {}", luafile);
     }
 
-    _lastPlayerPos = _playerAvatarInfo.start;
-
     _background = std::make_shared<Background>(_sceneName, _resources, _window);
     addDrawable(_background);
 
@@ -316,6 +314,7 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
 
     _walkSound = DelayedSound::create("sounds/walking.wav", 275.f, _resources);
     _pickupSound = DelayedSound::create("sounds/pickup.wav", 250.f, _resources);
+    _lastPlayerPos = _background->getGlobalFromTile(_playerAvatarInfo.start);
 }
 
 void Scene::init()

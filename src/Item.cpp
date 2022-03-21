@@ -379,10 +379,7 @@ void Item::initStateHitboxes(const std::string &defaultstate)
     if (_hitboxes.size() == 0)
     {
         _hitboxes.emplace("@default", HitBox{ 0, 0, _size.x, _size.y });
-        return "@default";
     }
-
-    return defaultstate;
 }
 
 void Item::setBaseState(const std::string& statename)
