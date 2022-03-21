@@ -72,13 +72,13 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     }
 
     _playerObjectInfo = jsonptr->get<ItemInfo>();
+    _playerObjectInfo.id = "@player";
     _playerObjectInfo.texture = _resources.cacheTexture("textures/tommy.png");
 
     assert(_playerObjectInfo.texture);
     _playerObjectInfo.texture->setSmooth(true);
 
     _player = std::make_shared<Player>(_playerObjectInfo, ItemInstanceInfo{});
-    _player->setAnimated(false); // TODO: set this in the Player class
 
     SceneSetup setup{ _resources, _window, _player, _luaState, _itemFactory };
 

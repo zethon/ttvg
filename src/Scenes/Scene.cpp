@@ -406,7 +406,25 @@ PollResult Scene::poll(const sf::Event& e)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         _player->setWalking(false);
-        _player->setAnimated(false);
+        switch (_player->direction())
+        {
+            case tt::Direction::UP:
+                _player->setBaseState("up");
+            break;
+
+            case tt::Direction::LEFT:
+                _player->setBaseState("left");
+            break;
+
+            case tt::Direction::RIGHT:
+                _player->setBaseState("right");
+            break;
+
+            // tt::Direction::DOWN and tt::Direction::NONE
+            default:
+                _player->setBaseState("down");
+            break;
+        }
     }
 
     return {};
@@ -861,8 +879,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setBaseState("left");
+                _player->setBaseState("left_walking");
                 _player->setDirection(Direction::LEFT);
                 return { true, {} };
             }
@@ -876,8 +893,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setBaseState("right");
+                _player->setBaseState("right_walking");
                 _player->setDirection(Direction::RIGHT);
                 return { true, {} };
             }
@@ -891,8 +907,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setBaseState("up");
+                _player->setBaseState("up_walking");
                 _player->setDirection(Direction::UP);
                 return { true, {} };
             }
@@ -906,8 +921,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setBaseState("down");
+                _player->setBaseState("down_walking");
                 _player->setDirection(Direction::DOWN);
                 return { true, {} };
             }

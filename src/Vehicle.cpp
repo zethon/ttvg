@@ -85,7 +85,6 @@ Vehicle::Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg)
       _bg{ bg }
 {
     setBaseState("down");
-    setAnimated(true);
 }
 
 std::uint16_t Vehicle::timestep()

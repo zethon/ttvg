@@ -214,9 +214,6 @@ public:
     sf::FloatRect getGlobalHitBox() const;
     std::uint16_t timestep() override;
 
-    bool animated() const { return _animated; }
-    void setAnimated(bool v);
-
     bool obtainable() const { return _obtainable; }
     void setObtainable(bool o) { _obtainable = o; }
 
@@ -280,7 +277,6 @@ protected:
     const ItemInstanceInfo    _instanceInfo;  // copy of the instance info
 
     // properties that can change
-    bool    _animated = false;
     bool    _obtainable = false;
     float   _respawn = 0.0;
 

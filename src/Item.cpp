@@ -300,10 +300,8 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
 
     initStateHitboxes(defaultState);
 
-    // TODO: this should be refacotered out
     if (defaultState.size() > 0)
     {
-        _animated = true;
         setBaseState(defaultState);
     }
     else
@@ -381,7 +379,10 @@ void Item::initStateHitboxes(const std::string &defaultstate)
     if (_hitboxes.size() == 0)
     {
         _hitboxes.emplace("@default", HitBox{ 0, 0, _size.x, _size.y });
+        return "@default";
     }
+
+    return defaultstate;
 }
 
 void Item::setBaseState(const std::string& statename)
@@ -422,8 +423,7 @@ void Item::setBaseState(const std::string& statename)
 
 std::uint16_t Item::timestep()
 {
-    if (_animated
-        && _framecount > 0
+    if (_framecount > 1
         && _timer.getElapsedTime().asMilliseconds() > static_cast<int>(_timestep))
     {
         auto[left, top] = _source;
@@ -489,12 +489,6 @@ void Item::setHighlighted(bool h)
     {
         _highlight.setSize(sf::Vector2f{ 0.f, 0.f });
     }
-}
-
-void Item::setAnimated(bool v)
-{
-    _animated = v;
-    _timer.restart();
 }
 
 void Item::draw(sf::RenderTarget & target, sf::RenderStates states) const
