@@ -526,7 +526,7 @@ void Scene::updateCurrentTile(const TileInfo& info)
         {
             _descriptionText.setText(
                 item->getName() + ": " +
-                item->getDescription());
+                        item->description());
 
             handled = true;
             break;

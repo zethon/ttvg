@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <optional>
+#include <queue>
 
 #include <boost/signals2.hpp>
 
@@ -165,6 +166,16 @@ struct ItemInstanceInfo
     }
 };
 
+enum class StateChangeType
+{
+    QUEUE,
+    INTERRUPT
+};
+
+// 0: state name
+// 1: how to change
+using StateChange = std::tuple<std::string, StateChangeType>;
+
 class Item :
     public sf::Drawable,
     public sf::Transformable,
@@ -203,9 +214,9 @@ public:
     void setGlobalBottom(float bottom);
 
     void setBaseState(const std::string& statename);
-    void pushState(const std::string& state);
-    //    void queueState(const std::string& state);
-    
+    void queueState(const std::string& state);
+    void interruptState(const std::string& state);
+
     void setHighlighted(bool h);
     bool highlighted() const { return _highlight.getSize().x != 0; }
     
@@ -230,7 +241,7 @@ public:
         return _objectInfo.name;
     }
 
-    std::string getDescription() const
+    std::string description() const
     {
         return _objectInfo.description;
     }
@@ -241,8 +252,8 @@ public:
     void updateHighlight()
     {
         auto hpos = getPosition();
-        hpos.x += (_hitboxes.at(_currentState).left * getScale().x);
-        hpos.y += (_hitboxes.at(_currentState).top * getScale().y);
+        hpos.x += (_hitboxes.at(_currentBaseState).left * getScale().x);
+        hpos.y += (_hitboxes.at(_currentBaseState).top * getScale().y);
         _highlight.setPosition(hpos);
     }
 
@@ -254,8 +265,13 @@ protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override final;
     void initStateHitboxes(const std::string &defaultstate);
 
-    sf::Vector2u    _size; // fixed cell size of each frame within the sprite 
-    sf::Clock       _timer;
+    const ItemInfo&           _objectInfo;    // ref to the cached info
+    const ItemInstanceInfo    _instanceInfo;  // copy of the instance info
+
+    sf::Sprite          _sprite;
+    sf::Vector2u        _size;          // fixed cell size of each frame within the sprite
+    sf::Clock           _timer;
+    int                 _luaIdx = 0;    // all items must be registered with the Lua system
 
     // some sprite sheets have different frames per row
     // so this allows us to adjust how many frames get
@@ -264,23 +280,16 @@ protected:
     std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
     sf::Vector2i    _source;                        // of current state
     std::map<std::string, HitBox>   _hitboxes;
-
-    sf::Sprite          _sprite;
     sf::RectangleShape  _highlight;
-    bool                _showHighlight = false;
-    std::string         _currentState;
 
-    // 2022-02-10: The idea right now is that a `Item` has a reference
-    // to a `ItemInfo` structs, and to also a `ItemInstance` struct
-    // to let it know about the instance of the `Item`
-    const ItemInfo&           _objectInfo;    // ref to the cached info
-    const ItemInstanceInfo    _instanceInfo;  // copy of the instance info
+    std::queue<StateChange> _stateQueue;
 
     // properties that can change
-    bool    _obtainable = false;
-    float   _respawn = 0.0;
+    bool            _obtainable = false;
+    float           _respawn = 0.0;
+    bool            _showHighlight = false;
+    std::string     _currentBaseState;
 
-    int     _luaIdx = 0;
 };
 
 } // namespace tt
