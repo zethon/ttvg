@@ -448,7 +448,16 @@ std::uint16_t Item::timestep()
 
         if (static_cast<std::uint32_t>(left * _size.x) >= textureWidth)
         {
-            left = 0;
+             left = _objectInfo.states.at(_currentBaseState).source.x;
+//            if (_stateQueue.size() > 0)
+//            {
+//                auto[statename, type] = _stateQueue.pop();
+//                this->setBaseState(statename);
+//            }
+//            else
+//            {
+//                left = _objectInfo.states.at(_currentBaseState).source.x;
+//            }
         }
 
         _source.x = left;
