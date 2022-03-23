@@ -1,8 +1,10 @@
-#include "IntroScreen.h"
-
 #include <cassert>
 #include <thread>
 #include <iostream>
+
+#include <fmt/core.h>
+
+#include "IntroScreen.h"
 
 namespace tt
 {
@@ -80,7 +82,7 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     // This textobj is the title text
     //
     auto textobj = std::make_shared<sf::Text>(
-                    "Grand Theft Hobo", _font);
+                    "Tommy Tucson", _font);
 
     textobj->setCharacterSize(70);
     textobj->setFillColor(sf::Color(255, 215, 9));
@@ -104,44 +106,40 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     //
     // Load background images
     //
-    for(int i = 0; i < 8; i++) {
-
-        //
-        // Generate file name strings.
-        //
-        std::string prefix  = "images/ttvg-intro-screen-";
-        std::string index   = std::to_string(i+1);
-        std::string suffix  = ".png";
-        
+    for(int i = 0; i < 8; i++)
+    {
         //
         // Load the intro images.
         //
-        auto bgt = _resources.load<sf::Texture>(prefix + index + suffix);
+        const auto filename = fmt::format("images/ttvg-intro-screen-{}.png", i+1);
+        auto bgt = _resources.load<sf::Texture>(filename);
 
         if (!bgt)
         {
             throw std::runtime_error("tommy-1.png could not be loaded!");
         }
 
-        _bgt[i] = *bgt; // copy?
+        _bgt.push_back(std::move(*bgt));
 
-        _sprite[i] = std::make_shared<sf::Sprite>();
-        _sprite[i]->setTexture(_bgt[i]);
+        auto sprite = std::make_shared<sf::Sprite>();
 
-        _sprite[i]->setPosition(0, 0);
-        _sprite[i]->setColor(sf::Color(0, 0, 0, 0));
+        sprite->setTexture(_bgt[i]);
+        sprite->setPosition(0, 0);
+        sprite->setColor(sf::Color(0, 0, 0, 0));
 
         //
         // Fit this imate to the window size.
         //
-        _sprite[i]->setScale(
-            winWidth / _sprite[i]->getLocalBounds().width, 
-            winHeight / _sprite[i]->getLocalBounds().height);
+        sprite->setScale(
+                winWidth / sprite->getLocalBounds().width,
+                winHeight / sprite->getLocalBounds().height);
  
         //
         // Add this intro image.
         //
-        addDrawable(_sprite[i]);
+        addDrawable(sprite);
+
+        _sprite.push_back(sprite);
     }
 
     //
