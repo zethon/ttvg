@@ -167,7 +167,7 @@ void Tucson::timestepTraffic(sf::Time elapsed)
         }
         else if (_vehicleCollision && ptr->isBlocked(playerBounds))
         {
-            if (ptr->vehicleState() == Vehicle::MOVING)
+            if (ptr->vehicleState() == tt::Vehicle::VehicleState::MOVING)
             {
                 _player->reduceHealth(ptr->damage());
                 ptr->playHornSound();
@@ -185,11 +185,11 @@ void Tucson::timestepTraffic(sf::Time elapsed)
                 }
             }
 
-            ptr->setVehicleState(Vehicle::STOPPED);
+            ptr->setVehicleState(tt::Vehicle::VehicleState::STOPPED);
         }
-        else if (ptr->vehicleState() == Vehicle::STOPPED)
+        else if (ptr->vehicleState() == tt::Vehicle::VehicleState::STOPPED)
         {
-            ptr->setVehicleState(Vehicle::MOVING);
+            ptr->setVehicleState(tt::Vehicle::VehicleState::MOVING);
         }
 
         vi++;

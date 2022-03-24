@@ -14,7 +14,7 @@ namespace tt
 struct Transition
 {
     sf::Vector2f    position;
-    bool            enabled;
+    bool            enabled = false;
     std::string     newscene;
     std::string     selectEvent;
 

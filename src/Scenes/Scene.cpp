@@ -1099,6 +1099,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 //                _player->doPunch();
 //                _player->interruptState()
             }
+            break;
         }
     }
 
