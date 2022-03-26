@@ -171,6 +171,19 @@
             }
         },
 
+        {
+            "name": "Enter the Desert",
+            "description": "Press SPACE to enter the desert.",
+            "rects": 
+            [
+                "148,5,148,8"
+            ],
+            "transition":
+            {
+                "scene": "ArizonaDesert",
+                "enabled": true
+            }
+        },
 
         {
             "name": "Spooky Graveyard",
