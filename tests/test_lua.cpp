@@ -212,7 +212,7 @@ BOOST_AUTO_TEST_CASE(playerPositionTest)
     writeFile((mappath / "scene1.json").string(), 
         R"({"onEnter":"onEnter",
             "background":{"tiles":{ "x": 16, "y": 16 }},
-            "player":{"state":"up","start": { "x": 35, "y": 35 }}})");
+            "player":{"state":"up","start": { "x": 2, "y": 2 }}})");
 
     writeFile((luapath / "scene1.lua").string(),
         R"(s = nil
@@ -256,8 +256,8 @@ end
     auto results = tt::CallLuaFunction(L, "global_getter", "scene1");
     BOOST_TEST(results.has_value());
     BOOST_TEST(results->size() == 2);
-    BOOST_TEST(tt::GetLuaValue<float>(results->at(0)) == 35.f, boost::test_tools::tolerance(0.001));
-    BOOST_TEST(tt::GetLuaValue<float>(results->at(1)) == 35.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(0)) == 32.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(1)) == 32.f, boost::test_tools::tolerance(0.001));
     results->clear();
 
     results = tt::CallLuaFunction(L, "tile_getter", "scene1");
@@ -523,8 +523,7 @@ BOOST_AUTO_TEST_CASE(itemPropertyTest)
         R"x({
     "name":         "Bag of Crack",
     "description":  "This is good for your blood pressure.",
-    "obtainable":   false,
-    "size": { "x": 64, "y": 64 }
+    "obtainable":   false
 })x");
 
     writeFile((mappath / "scene1.json").string(),
