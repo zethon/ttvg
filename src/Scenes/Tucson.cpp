@@ -14,7 +14,7 @@
 namespace tt
 {
 
-constexpr auto MAX_VEHICLES = 25u;
+constexpr auto MAX_VEHICLES = 0u;
 constexpr auto VEHICLE_SPAWN_RATE = 5u; // every X seconds
     
 Tucson::Tucson(const SceneSetup& setup)

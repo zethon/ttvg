@@ -271,14 +271,29 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
 
     if (_objectInfo.size.has_value())
     {
-        _size = *(_objectInfo.size);
-        _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
+        _framesize = *(_objectInfo.size);
+        _sprite.setTextureRect(sf::IntRect(0, 0, _framesize.x, _framesize.y));
     }
     else
     {
-        _size = _sprite.getTexture()->getSize();
+        _framesize = _sprite.getTexture()->getSize();
     }
 
+    // either point us to the object info's statemap or
+    // create a dummy statemap if there is not one defined for
+    // the object and then point us to that
+    if (_objectInfo.states.size() > 0)
+    {
+        _states = &(_objectInfo.states);
+    }
+    else
+    {
+        ItemState defaultState{ "@default", {0,0}, 1, DEFAULT_TIMESTEP, {} };
+        _defaultStates.emplace("@default", std::move(defaultState));
+        _states = &(_defaultStates);
+    }
+
+    // try to determine the starting state
     std::string defaultState;
     if (_instanceInfo.defaultState.size() > 0)
     {
@@ -288,12 +303,12 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
     {
         defaultState = _objectInfo.defaultState;
     }
-    else if (_objectInfo.states.size() == 1)
+    else if (_states->size() == 1)
     {
         // default to the only state
-        defaultState = _objectInfo.states.begin()->first;
+        defaultState = _states->begin()->first;
     }
-    else if (_objectInfo.states.size() > 1)
+    else if (_states->size() > 1)
     {
         // in this case the item has multiple states defined
         // but there is no default state, so we don't know
@@ -303,18 +318,10 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
 
     // now that we've defined the states, let's initiate the hitboxes, which
     // will be used for collision detection
-    initStateHitboxes(defaultState);
+    initStateHitboxes();
 
-    if (defaultState.size() > 0)
-    {
-        // `setBaseState` will set `_currentBaseState` for us
-        setBaseState(defaultState);
-    }
-    else
-    {
-        // the idea here is that
-        _currentBaseState = "@default";
-    }
+    // set the base state *after* we've initialized the hitboxes
+    setBaseState(defaultState);
 
     _obtainable = _objectInfo.obtainable;
     if (_instanceInfo.obtainable.has_value())
@@ -333,9 +340,9 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
     _highlight.setOutlineColor(sf::Color(255, 255, 255));
 }
 
-void Item::initStateHitboxes(const std::string &defaultstate)
+void Item::initStateHitboxes()
 {
-    for (const auto& [key, value] : _objectInfo.states)
+    for (const auto& [key, value] : *_states)
     {
         if (value.hitbox.has_value())
         {
@@ -349,10 +356,10 @@ void Item::initStateHitboxes(const std::string &defaultstate)
             std::optional<std::uint32_t> left, right, top, bottom;
             std::uint32_t x = 0;
             std::uint32_t y = 0;
-            for (auto startX = (value.source.x * _size.x); startX < (value.source.x * _size.x) + _size.x; startX++, x++)
+            for (auto startX = (value.source.x * _framesize.x); startX < (value.source.x * _framesize.x) + _framesize.x; startX++, x++)
             {
                 y=0;
-                for (auto startY = (value.source.y * _size.y); startY < (value.source.y * _size.y) + _size.y; startY++, y++)
+                for (auto startY = (value.source.y * _framesize.y); startY < (value.source.y * _framesize.y) + _framesize.y; startY++, y++)
                 {
                     sf::Color pixel = image.getPixel(startX, startY);
                     if (pixel.a == 0) continue;
@@ -383,15 +390,17 @@ void Item::initStateHitboxes(const std::string &defaultstate)
         }
     }
 
-    if (_hitboxes.size() == 0)
-    {
-        _hitboxes.emplace("@default", HitBox{ 0, 0, _size.x, _size.y });
-    }
+//    // use the defaultState
+//    if (_hitboxes.size() == 0)
+//    {
+//        _hitboxes.emplace("@default", HitBox{0, 0, _framesize.x, _framesize.y });
+////        _framecount = 1;
+//    }
 }
 
 void Item::setBaseState(const std::string& statename)
 {
-    if (_objectInfo.states.find(statename) == _objectInfo.states.end())
+    if (_states->find(statename) == _states->end())
     {
         throw std::runtime_error(
             fmt::format("object '{}' does not contain state '{}", this->objectInfo().id, statename));
@@ -404,12 +413,11 @@ void Item::setBaseState(const std::string& statename)
     }
 
     _currentBaseState = statename;
+    _currentFrame = 0;
+    _currentState = &(_states->at(_currentBaseState));
 
-    const auto& state = _objectInfo.states.at(statename);
-    _source = state.source;
-
-    _framecount = *(state.framecount);
-    _timestep = *(state.timestep);
+    assert(_currentState->timestep.has_value());
+    assert(_currentState->framecount.has_value());
 
     if (_showHighlight)
     {
@@ -421,8 +429,11 @@ void Item::setBaseState(const std::string& statename)
         updateHighlight();
     }
 
-    _sprite.setTextureRect(sf::IntRect(
-        _source.x * _size.x, _source.y * _size.y, _size.x, _size.y));
+
+    const auto xOffset = (_currentFrame * _framesize.x) + _currentState->source.x;
+    const auto yOffset = _framesize.y + _currentState->source.y;
+
+    _sprite.setTextureRect(sf::IntRect(xOffset, yOffset, _framesize.x, _framesize.y));
 }
 
 void Item::queueState(const std::string& state)
@@ -437,40 +448,115 @@ void Item::interruptState(const std::string& state)
 
 std::uint16_t Item::timestep()
 {
-    if (_framecount > 1
-        && _timer.getElapsedTime().asMilliseconds() > static_cast<int>(_timestep))
+//    return 0;
+    if (getID() == "bag")
     {
-        auto[left, top] = _source;
-        left++;
-
-        auto textureWidth = _framecount > 0 ?
-            _framecount * _size.x : _sprite.getTexture()->getSize().x;
-
-        if (static_cast<std::uint32_t>(left * _size.x) >= textureWidth)
-        {
-             left = _objectInfo.states.at(_currentBaseState).source.x;
-//            if (_stateQueue.size() > 0)
-//            {
-//                auto[statename, type] = _stateQueue.pop();
-//                this->setBaseState(statename);
-//            }
-//            else
-//            {
-//                left = _objectInfo.states.at(_currentBaseState).source.x;
-//            }
-        }
-
-        _source.x = left;
-        _source.y = top;
-        _sprite.setTextureRect(sf::IntRect(
-            _source.x * _size.x, _source.y * _size.y, _size.x, _size.y));
-        
-        onFrameChange();
-
-        _timer.restart();
+        std::cout << 123;
     }
 
+    assert(_currentState->framecount.has_value() && (*(_currentState->framecount) > 0));
+    if (_timer.getElapsedTime().asMilliseconds() < static_cast<int>(*(_currentState->timestep)))
+    {
+        return 0;
+    }
+
+    if (false)
+    {
+        // TODO: logic for interrupt state
+    }
+    else
+    {
+        _currentFrame++;
+        if (_currentFrame >= *(_currentState->framecount))
+        {
+            if (false)
+            {
+                // TODO: logic for queued state
+            }
+            else
+            {
+                _currentState = &(_states->at(_currentBaseState));
+            }
+
+            _currentFrame = 0;
+        }
+    }
+
+    const auto xOffset = (_currentFrame * _framesize.x) + _currentState->source.x;
+    const auto yOffset = _framesize.y + _currentState->source.y;
+
+    _sprite.setTextureRect(sf::IntRect(xOffset, yOffset, _framesize.x, _framesize.y));
+
+    onFrameChange(); // TODO: is this used? do we want this?
+    _timer.restart();
+
+    // NEED TO REFACTOR HOW _source IS USED, I ADDED A MEMBER VARIABLE CALLED
+    // `_currentFrame` BUT HAVE NOT DONE ANYTHING WITH IT
+
+//    auto[left, top] = _source;
+//    left++;
+//
+//    auto textureWidth = _framecount > 0 ?
+//            _framecount * _framesize.x : _sprite.getTexture()->getSize().x;
+//
+//    if (static_cast<std::uint32_t>(left * _framesize.x) >= textureWidth)
+//    {
+//        left = 0;
+//    }
+//
+//    _source.x = left;
+//    _source.y = top;
+//    _sprite.setTextureRect(sf::IntRect(
+//            _source.x * _framesize.x, _source.y * _framesize.y, _framesize.x, _framesize.y));
+//
+//    onFrameChange();
+//
+//    _timer.restart();
+
     return 0;
+
+//    assert(_framecount > 0);
+//    if (_framecount > 1
+//        && _timer.getElapsedTime().asMilliseconds() > static_cast<int>(_timestep))
+//    {
+//        auto[left, top] = _source;
+//        left++;
+//
+//        auto textureWidth = _framecount > 0 ?
+//                            _framecount * _framesize.x : _sprite.getTexture()->getSize().x;
+//
+//        if (static_cast<std::uint32_t>(left * _framesize.x) >= textureWidth)
+//        {
+//             left = _objectInfo.states.at(_currentBaseState).source.x;
+////            if (_stateQueue.size() > 0)
+////            {
+////                auto[statename, type] = _stateQueue.pop();
+////                this->setBaseState(statename);
+////            }
+////            else
+////            {
+////                left = _objectInfo.states.at(_currentBaseState).source.x;
+////            }
+//        }
+//
+//        _source.x = left;
+//        _source.y = top;
+//
+//        const auto xOffset = (left * _framesize.x) + _source.x;
+//        const auto yOffset = (top * _framesize.y) + _source.y;
+//
+//        assert(xOffset == (_source.x * _framesize.x));
+//        assert(yOffset == (_source.y * _framesize.y));
+//
+//        _sprite.setTextureRect(sf::IntRect(
+//                _source.x * _framesize.x, _source.y * _framesize.y, _framesize.x, _framesize.y));
+//
+//        onFrameChange();
+//
+//        _timer.restart();
+//    }
+//
+//    return 0;
 }
 
 sf::FloatRect Item::getGlobalBounds() const

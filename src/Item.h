@@ -263,22 +263,28 @@ public: // signals
 
 protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override final;
-    void initStateHitboxes(const std::string &defaultstate);
+    void initStateHitboxes();
 
     const ItemInfo&           _objectInfo;    // ref to the cached info
     const ItemInstanceInfo    _instanceInfo;  // copy of the instance info
 
     sf::Sprite          _sprite;
-    sf::Vector2u        _size;          // fixed cell size of each frame within the sprite
+    sf::Vector2u        _framesize;          // fixed cell size of each frame within the sprite
     sf::Clock           _timer;
     int                 _luaIdx = 0;    // all items must be registered with the Lua system
 
     // some sprite sheets have different frames per row
     // so this allows us to adjust how many frames get
     // animated in a particular row
-    std::uint32_t   _framecount = 0;                // of current state
-    std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
+//    std::uint32_t   _framecount = 0;                // of current state
+//    std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
     sf::Vector2i    _source;                        // of current state
+
+    const ItemState*    _currentState = nullptr;    // current state being displayed
+    std::uint32_t       _currentFrame = 0;          // current frame of the current state
+    const ItemStates*   _states = nullptr;          // a reference to the active state map
+    ItemStates          _defaultStates;             // used when item has no defined states
+
     std::map<std::string, HitBox>   _hitboxes;
     sf::RectangleShape  _highlight;
 
