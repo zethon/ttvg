@@ -279,7 +279,7 @@ protected:
     std::map<std::string, HitBox>   _hitboxes;
     sf::RectangleShape              _highlight;
 
-    std::queue<std::string> _stateQueue2;
+    std::queue<std::string> _stateQueue;
     std::string             _stateInterrupt;
 
     bool            _obtainable = false;

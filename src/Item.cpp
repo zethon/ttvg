@@ -236,6 +236,22 @@ int Item_setState(lua_State* L)
     return 0;
 }
 
+int Item_interruptState(lua_State* L)
+{
+    auto item = tt::checkObject<Item>(L);
+    const auto state = lua_tostring(L, 2);
+    item->interruptState(state);
+    return 0;
+}
+
+int Item_queueState(lua_State* L)
+{
+    auto item = tt::checkObject<Item>(L);
+    const auto state = lua_tostring(L, 2);
+    item->queueState(state);
+    return 0;
+}
+
 }
 
 const struct luaL_Reg Item::LuaMethods[] =
@@ -246,6 +262,8 @@ const struct luaL_Reg Item::LuaMethods[] =
         {"obtainable", Item_isObtainable},
         {"setObtainable", Item_setObtainable},
         {"setBaseState", Item_setState},
+        {"interruptState", Item_interruptState},
+        {"queueState", Item_queueState},
         {nullptr, nullptr}
     };
 
@@ -433,7 +451,7 @@ void Item::setBaseState(const std::string& statename)
 
 void Item::queueState(const std::string& state)
 {
-    _stateQueue2.push(state);
+    _stateQueue.push(state);
 }
 
 void Item::interruptState(const std::string& state)
@@ -457,15 +475,20 @@ std::uint16_t Item::timestep()
         assert(_currentState->framecount.has_value());
 
         _stateInterrupt.clear();
+        _stateQueue = std::queue<std::string>{};
     }
     else
     {
         _currentFrame++;
         if (_currentFrame >= *(_currentState->framecount))
         {
-            if (false)
+            if (_stateQueue.size() > 0)
             {
-                // TODO: logic for queued state
+                _currentState = &(_states->at(_stateQueue.front()));
+                _stateQueue.pop();
+
+                assert(_currentState->timestep.has_value());
+                assert(_currentState->framecount.has_value());
             }
             else
             {

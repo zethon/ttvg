@@ -257,7 +257,7 @@ void Player::punch()
 void Player::spellcast()
 {
     const auto state = fmt::format("{}_spellcast", tt::DirectionToString(this->direction()));
-    this->interruptState(state);
+    this->queueState(state);
 }
 
 void Player::arrow()
@@ -269,7 +269,7 @@ void Player::arrow()
 void Player::dance()
 {
     const auto state = fmt::format("{}_dance", tt::DirectionToString(this->direction()));
-    this->interruptState(state);
+    this->queueState(state);
 }
 
 std::uint16_t Player::timestep()
