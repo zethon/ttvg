@@ -357,10 +357,12 @@ void Item::initStateHitboxes()
             std::optional<std::uint32_t> left, right, top, bottom;
             std::uint32_t x = 0;
             std::uint32_t y = 0;
-            for (auto startX = (value.source.x * _framesize.x); startX < (value.source.x * _framesize.x) + _framesize.x; startX++, x++)
+            auto endX = std::min((value.source.x * _framesize.x) + _framesize.x, image.getSize().x);
+            for (auto startX = (value.source.x * _framesize.x); startX < endX; startX++, x++)
             {
                 y=0;
-                for (auto startY = (value.source.y * _framesize.y); startY < (value.source.y * _framesize.y) + _framesize.y; startY++, y++)
+                auto endY = std::min((value.source.y * _framesize.y) + _framesize.y, image.getSize().y);
+                for (auto startY = (value.source.y * _framesize.y); startY < endY; startY++, y++)
                 {
                     sf::Color pixel = image.getPixel(startX, startY);
                     if (pixel.a == 0) continue;
