@@ -1,0 +1,56 @@
+{
+    "background":
+    {
+        "scale": { "x": 2.25, "y": 2.25 },
+        "tiles": { "x": 16, "y": 16 },
+        "camera": "follow"
+    },
+
+    "background-music":
+    {
+        "file": "music/background_music1.wav",
+        "volume": 20
+    },
+
+    "player":
+    {
+
+        "start":        { "x":  5300,   "y": 5100 }, 
+
+        "scale":        { "x": 1.5,     "y": 1.5 },
+        "origin":       { "x": 0,       "y": 0 },
+        "state":        "down",
+        "stepsize" :    16.0
+    },
+
+    "zones":
+    [
+        { 
+            "name" : "Go back to Tucson",
+            "description": "Press SPACE to go back to Tucson.",
+            "rects" :
+            [ 
+                "148,141,148,143"
+            ],
+            "transition":
+            {
+                "scene": "Tucson",
+                "enabled": true
+            }
+        }
+    ],
+
+    "items":
+    {
+        "dumpster":
+        {
+            "scale": { "x": 2.125, "y": 2.125 },
+            "instances":
+            [
+                { "x": 53, "y": 80 }
+            ]
+        }
+
+    }
+
+}

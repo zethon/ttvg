@@ -171,6 +171,20 @@
             }
         },
 
+        {
+            "name": "Road to Tucson Airport",
+            "description": "Press SPACE to fly out of this shit hole.",
+            "rects": 
+            [
+                "1,140,1,142"
+            ],
+            "transition":
+            {
+                "scene": "TucsonAirport",
+                "enabled": true
+            }
+        },
+
 
         {
             "name": "Spooky Graveyard",
