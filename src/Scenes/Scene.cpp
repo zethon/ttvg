@@ -1116,6 +1116,11 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             }
             break;
 
+            case sf::Keyboard::K:
+            {
+                _player->dance();
+            }
+            break;
         }
     }
 
