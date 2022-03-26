@@ -248,6 +248,30 @@ void Player::setWalking(bool walking)
     _movingTimer.restart();
 }
 
+void Player::punch()
+{
+    const auto state = fmt::format("{}_punch", tt::DirectionToString(this->direction()));
+    this->interruptState(state);
+}
+
+void Player::spellcast()
+{
+    const auto state = fmt::format("{}_spellcast", tt::DirectionToString(this->direction()));
+    this->interruptState(state);
+}
+
+void Player::arrow()
+{
+    const auto state = fmt::format("{}_arrow", tt::DirectionToString(this->direction()));
+    this->interruptState(state);
+}
+
+void Player::dance()
+{
+    const auto state = fmt::format("{}_dance", tt::DirectionToString(this->direction()));
+    this->interruptState(state);
+}
+
 std::uint16_t Player::timestep()
 {
     // handle the base class animation

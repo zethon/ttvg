@@ -264,7 +264,8 @@ namespace tt
 {
 
 Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
-    : _objectInfo{ obj }, _instanceInfo{ inst }
+    : _objectInfo{ obj }, _instanceInfo{ inst },
+      _logger{ log::initializeLogger("Item") }
 {
     assert(obj.texture);
     _sprite.setTexture(*obj.texture);
@@ -389,13 +390,6 @@ void Item::initStateHitboxes()
             _hitboxes.emplace(key, HitBox{*left, *top, *right - *left, *bottom - *top });
         }
     }
-
-//    // use the defaultState
-//    if (_hitboxes.size() == 0)
-//    {
-//        _hitboxes.emplace("@default", HitBox{0, 0, _framesize.x, _framesize.y });
-////        _framecount = 1;
-//    }
 }
 
 void Item::setBaseState(const std::string& statename)
@@ -429,40 +423,38 @@ void Item::setBaseState(const std::string& statename)
         updateHighlight();
     }
 
-
     const auto xOffset = (_currentFrame * _framesize.x) + _currentState->source.x;
-    const auto yOffset = _framesize.y + _currentState->source.y;
+    const auto yOffset = _framesize.y * _currentState->source.y;
 
     _sprite.setTextureRect(sf::IntRect(xOffset, yOffset, _framesize.x, _framesize.y));
 }
 
 void Item::queueState(const std::string& state)
 {
-    _stateQueue.emplace(state, tt::StateChangeType::QUEUE);
+    _stateQueue2.push(state);
 }
 
 void Item::interruptState(const std::string& state)
 {
-    _stateQueue.emplace(state, tt::StateChangeType::INTERRUPT);
+    _stateInterrupt = state;
 }
 
 std::uint16_t Item::timestep()
 {
-//    return 0;
-    if (getID() == "bag")
-    {
-        std::cout << 123;
-    }
-
     assert(_currentState->framecount.has_value() && (*(_currentState->framecount) > 0));
     if (_timer.getElapsedTime().asMilliseconds() < static_cast<int>(*(_currentState->timestep)))
     {
         return 0;
     }
 
-    if (false)
+    if (_stateInterrupt.size() > 0)
     {
-        // TODO: logic for interrupt state
+        _currentFrame = 0;
+        _currentState = &(_states->at(_stateInterrupt));
+        assert(_currentState->timestep.has_value());
+        assert(_currentState->framecount.has_value());
+
+        _stateInterrupt.clear();
     }
     else
     {
@@ -483,80 +475,14 @@ std::uint16_t Item::timestep()
     }
 
     const auto xOffset = (_currentFrame * _framesize.x) + _currentState->source.x;
-    const auto yOffset = _framesize.y + _currentState->source.y;
+    const auto yOffset = _framesize.y * _currentState->source.y;
 
     _sprite.setTextureRect(sf::IntRect(xOffset, yOffset, _framesize.x, _framesize.y));
 
     onFrameChange(); // TODO: is this used? do we want this?
     _timer.restart();
 
-    // NEED TO REFACTOR HOW _source IS USED, I ADDED A MEMBER VARIABLE CALLED
-    // `_currentFrame` BUT HAVE NOT DONE ANYTHING WITH IT
-
-//    auto[left, top] = _source;
-//    left++;
-//
-//    auto textureWidth = _framecount > 0 ?
-//            _framecount * _framesize.x : _sprite.getTexture()->getSize().x;
-//
-//    if (static_cast<std::uint32_t>(left * _framesize.x) >= textureWidth)
-//    {
-//        left = 0;
-//    }
-//
-//    _source.x = left;
-//    _source.y = top;
-//    _sprite.setTextureRect(sf::IntRect(
-//            _source.x * _framesize.x, _source.y * _framesize.y, _framesize.x, _framesize.y));
-//
-//    onFrameChange();
-//
-//    _timer.restart();
-
     return 0;
-
-//    assert(_framecount > 0);
-//    if (_framecount > 1
-//        && _timer.getElapsedTime().asMilliseconds() > static_cast<int>(_timestep))
-//    {
-//        auto[left, top] = _source;
-//        left++;
-//
-//        auto textureWidth = _framecount > 0 ?
-//                            _framecount * _framesize.x : _sprite.getTexture()->getSize().x;
-//
-//        if (static_cast<std::uint32_t>(left * _framesize.x) >= textureWidth)
-//        {
-//             left = _objectInfo.states.at(_currentBaseState).source.x;
-////            if (_stateQueue.size() > 0)
-////            {
-////                auto[statename, type] = _stateQueue.pop();
-////                this->setBaseState(statename);
-////            }
-////            else
-////            {
-////                left = _objectInfo.states.at(_currentBaseState).source.x;
-////            }
-//        }
-//
-//        _source.x = left;
-//        _source.y = top;
-//
-//        const auto xOffset = (left * _framesize.x) + _source.x;
-//        const auto yOffset = (top * _framesize.y) + _source.y;
-//
-//        assert(xOffset == (_source.x * _framesize.x));
-//        assert(yOffset == (_source.y * _framesize.y));
-//
-//        _sprite.setTextureRect(sf::IntRect(
-//                _source.x * _framesize.x, _source.y * _framesize.y, _framesize.x, _framesize.y));
-//
-//        onFrameChange();
-//
-//        _timer.restart();
-//    }
-//
-//    return 0;
 }
 
 sf::FloatRect Item::getGlobalBounds() const

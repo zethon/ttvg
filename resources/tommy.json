@@ -32,14 +32,14 @@
         { "id":"down", "source": { "x": 0, "y": 10 }, "frame-count": 1 },
         { "id":"right", "source": { "x": 0, "y": 11 }, "frame-count": 1 },
 
-        { "id":"up_punch", "source": { "x": 0, "y": 8 }, "frame-count": 6  },
-        { "id":"left_punch", "source": { "x": 0, "y": 9 }, "frame-count": 6  },
-        { "id":"down_punch", "source": { "x": 0, "y": 10 }, "frame-count": 6  },
-        { "id":"right_punch", "source": { "x": 0, "y": 11 }, "frame-count": 6  },
+        { "id":"up_punch", "source": { "x": 0, "y": 12 }, "frame-count": 6, "time-step": 35  },
+        { "id":"left_punch", "source": { "x": 0, "y": 13 }, "frame-count": 6, "time-step": 35 },
+        { "id":"down_punch", "source": { "x": 0, "y": 14 }, "frame-count": 6, "time-step": 35 },
+        { "id":"right_punch", "source": { "x": 0, "y": 15 }, "frame-count": 6, "time-step": 35 },
 
-        { "id":"up_arrow", "source": { "x": 0, "y": 8 }, "frame-count": 13  },
-        { "id":"left_arrow", "source": { "x": 0, "y": 9 }, "frame-count": 13  },
-        { "id":"down_arrow", "source": { "x": 0, "y": 10 }, "frame-count": 13  },
-        { "id":"right_arrow", "source": { "x": 0, "y": 11 }, "frame-count": 13  }
+        { "id":"up_arrow", "source": { "x": 0, "y": 16 }, "frame-count": 13  },
+        { "id":"left_arrow", "source": { "x": 0, "y": 17 }, "frame-count": 13  },
+        { "id":"down_arrow", "source": { "x": 0, "y": 18 }, "frame-count": 13  },
+        { "id":"right_arrow", "source": { "x": 0, "y": 19 }, "frame-count": 13  }
     ]
 }

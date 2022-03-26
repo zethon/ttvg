@@ -11,6 +11,7 @@
 
 #include "GameTypes.h"
 #include "IUpdateable.h"
+#include "TooterLogger.h"
 
 namespace nl = nlohmann;
 
@@ -166,16 +167,6 @@ struct ItemInstanceInfo
     }
 };
 
-enum class StateChangeType
-{
-    QUEUE,
-    INTERRUPT
-};
-
-// 0: state name
-// 1: how to change
-using StateChange = std::tuple<std::string, StateChangeType>;
-
 class Item :
     public sf::Drawable,
     public sf::Transformable,
@@ -268,34 +259,32 @@ protected:
     const ItemInfo&           _objectInfo;    // ref to the cached info
     const ItemInstanceInfo    _instanceInfo;  // copy of the instance info
 
+    log::SpdLogPtr      _logger;
+
     sf::Sprite          _sprite;
     sf::Vector2u        _framesize;          // fixed cell size of each frame within the sprite
     sf::Clock           _timer;
     int                 _luaIdx = 0;    // all items must be registered with the Lua system
 
-    // some sprite sheets have different frames per row
-    // so this allows us to adjust how many frames get
-    // animated in a particular row
-//    std::uint32_t   _framecount = 0;                // of current state
-//    std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
-    sf::Vector2i    _source;                        // of current state
-
+    std::string         _currentBaseState;
     const ItemState*    _currentState = nullptr;    // current state being displayed
     std::uint32_t       _currentFrame = 0;          // current frame of the current state
+
+    // we refer to the state map through a pointer, this way we do not require that
+    // static Items have a state map because instead we can create a "default" state
+    // map and point to it
     const ItemStates*   _states = nullptr;          // a reference to the active state map
     ItemStates          _defaultStates;             // used when item has no defined states
 
     std::map<std::string, HitBox>   _hitboxes;
-    sf::RectangleShape  _highlight;
+    sf::RectangleShape              _highlight;
 
-    std::queue<StateChange> _stateQueue;
+    std::queue<std::string> _stateQueue2;
+    std::string             _stateInterrupt;
 
-    // properties that can change
     bool            _obtainable = false;
     float           _respawn = 0.0;
     bool            _showHighlight = false;
-    std::string     _currentBaseState;
-
 };
 
 } // namespace tt

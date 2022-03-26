@@ -419,9 +419,11 @@ PollResult Scene::poll(const sf::Event& e)
                 _player->setBaseState("right");
             break;
 
-            // tt::Direction::DOWN and tt::Direction::NONE
-            default:
+            case tt::Direction::DOWN:
                 _player->setBaseState("down");
+            break;
+
+            default:
             break;
         }
     }
@@ -458,9 +460,11 @@ ScreenAction Scene::update(sf::Time elapsed)
     }
 
     std::stringstream ss1;
-    ss1 << getPlayerTile();
-    auto posText = fmt::format("P({}) T({})", ss1.str(), elapsed.asSeconds());
-    _debugWindow.setText(posText);
+    ss1 << "P(" << getPlayerTile()
+        << ") G(" << _player->getGlobalCenter()
+        << ") T(" << elapsed.asSeconds() << ")";
+
+    _debugWindow.setText(ss1.str());
 	
     return Screen::timestep();
 }
@@ -1096,10 +1100,22 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
             case sf::Keyboard::P:
             {
-//                _player->doPunch();
-//                _player->interruptState()
+                _player->punch();
             }
             break;
+
+            case sf::Keyboard::O:
+            {
+                _player->spellcast();
+            }
+            break;
+
+            case sf::Keyboard::L:
+            {
+                _player->arrow();
+            }
+            break;
+
         }
     }
 
