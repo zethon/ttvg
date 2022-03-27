@@ -1,0 +1,35 @@
+{
+    "background":
+    {
+        "scale":    { "x": 2.25, "y": 2.25 },
+        "tiles":    { "x": 16, "y": 16 },
+        "camera":   "follow"
+    },
+
+    "player":
+    {
+        "start":    { "x": 46,  "y": 63 },
+        "scale":    { "x": 1.5, "y": 1.5 },
+        "state":    "down",
+        "origin":   { "x": 0, "y": 0 },
+        "stepsize": 16.0
+    },
+
+    "zones":
+    [
+        { 
+            "name":         "Africa",
+            "description":  " Seems kind of warm here.\n If only I had brought potable water.",
+            "rects" :
+            [ 
+                "0,0,148,148"
+            ]
+        }
+    ],
+
+    "items":
+    {
+        
+    }
+
+}

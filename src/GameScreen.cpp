@@ -102,6 +102,11 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
         "TucsonAirport", 
         std::make_shared<Scene>("TucsonAirport", setup));
 
+    _scenes.emplace(
+        "Africa", 
+        std::make_shared<Scene>("Africa", setup));
+
+
     //
     // Would be so nice if lines didn't wrap in source code.
     // I think 80 characters is a fair line size.

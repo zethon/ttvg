@@ -34,13 +34,19 @@
         },
 
         { 
-            "name" : "Tucson International Airport",
-            "description": " It's \"international\" because \n we had a flight to Nogales one time.",
+            "name" :        "Tucson International Airport",
+            "description":  " It's \"international\" because \n we had a flight to Nogales one time.",
             "rects" :
             [ 
                 "91,132,129,138"
             ],
-            "onSelect": "airport_onSelect"
+            
+            "transition":
+            {
+                "scene": 	"Africa",
+                "enabled": 	true
+            }
+
         }
     ],
 
