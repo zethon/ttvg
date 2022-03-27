@@ -20,7 +20,7 @@ enum class TileType
 
 struct TileInfo
 {
-    TileType        type;
+    TileType        type = tt::TileType::NONE;
     boost::any      data;
     Tile            tile;
 };

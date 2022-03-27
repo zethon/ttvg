@@ -305,8 +305,6 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
         _logger->debug("No scene luafile found at {}", luafile);
     }
 
-    _lastPlayerPos = _playerAvatarInfo.start;
-
     _background = std::make_shared<Background>(_sceneName, _resources, _window);
     addDrawable(_background);
 
@@ -316,6 +314,7 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
 
     _walkSound = DelayedSound::create("sounds/walking.wav", 275.f, _resources);
     _pickupSound = DelayedSound::create("sounds/pickup.wav", 250.f, _resources);
+    _lastPlayerPos = _background->getGlobalFromTile(_playerAvatarInfo.start);
 }
 
 void Scene::init()
@@ -337,7 +336,7 @@ void Scene::enter()
     _player->setScale(_playerAvatarInfo.scale);
     _player->setOrigin(_playerAvatarInfo.origin);
 
-    _player->setState(_playerAvatarInfo.state);
+    _player->setBaseState(_playerAvatarInfo.state);
 
     _player->onMoveTimer.connect(
         [this]()
@@ -406,7 +405,27 @@ PollResult Scene::poll(const sf::Event& e)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         _player->setWalking(false);
-        _player->setAnimated(false);
+        switch (_player->direction())
+        {
+            case tt::Direction::UP:
+                _player->setBaseState("up");
+            break;
+
+            case tt::Direction::LEFT:
+                _player->setBaseState("left");
+            break;
+
+            case tt::Direction::RIGHT:
+                _player->setBaseState("right");
+            break;
+
+            case tt::Direction::DOWN:
+                _player->setBaseState("down");
+            break;
+
+            default:
+            break;
+        }
     }
 
     return {};
@@ -441,9 +460,11 @@ ScreenAction Scene::update(sf::Time elapsed)
     }
 
     std::stringstream ss1;
-    ss1 << getPlayerTile();
-    auto posText = fmt::format("P({}) T({})", ss1.str(), elapsed.asSeconds());
-    _debugWindow.setText(posText);
+    ss1 << "P(" << getPlayerTile()
+        << ") G(" << _player->getGlobalCenter()
+        << ") T(" << elapsed.asSeconds() << ")";
+
+    _debugWindow.setText(ss1.str());
 	
     return Screen::timestep();
 }
@@ -509,7 +530,7 @@ void Scene::updateCurrentTile(const TileInfo& info)
         {
             _descriptionText.setText(
                 item->getName() + ": " +
-                item->getDescription());
+                        item->description());
 
             handled = true;
             break;
@@ -861,8 +882,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setState("left");
+                _player->setBaseState("left_walking");
                 _player->setDirection(Direction::LEFT);
                 return { true, {} };
             }
@@ -876,8 +896,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setState("right");
+                _player->setBaseState("right_walking");
                 _player->setDirection(Direction::RIGHT);
                 return { true, {} };
             }
@@ -891,8 +910,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setState("up");
+                _player->setBaseState("up_walking");
                 _player->setDirection(Direction::UP);
                 return { true, {} };
             }
@@ -906,8 +924,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setState("down");
+                _player->setBaseState("down_walking");
                 _player->setDirection(Direction::DOWN);
                 return { true, {} };
             }
@@ -1078,6 +1095,30 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             case sf::Keyboard::RBracket:
             {
                 _player->increaseHealth(10);
+            }
+            break;
+
+            case sf::Keyboard::P:
+            {
+                _player->punch();
+            }
+            break;
+
+            case sf::Keyboard::O:
+            {
+                _player->spellcast();
+            }
+            break;
+
+            case sf::Keyboard::L:
+            {
+                _player->arrow();
+            }
+            break;
+
+            case sf::Keyboard::K:
+            {
+                _player->dance();
             }
             break;
         }

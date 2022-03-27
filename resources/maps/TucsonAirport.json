@@ -1,15 +1,15 @@
 {
     "background":
     {
-        "scale": { "x": 2.25, "y": 2.25 },
-        "tiles": { "x": 16, "y": 16 },
-        "camera": "follow"
+        "scale":    { "x": 2.25,    "y": 2.25 },
+        "tiles":    { "x": 16,      "y": 16 },
+        "camera":   "follow"
     },
 
     "player":
     {
 
-        "start":        { "x":  5300,   "y": 5080 }, 
+        "start":        { "x": 148,     "y": 140 }, 
 
         "scale":        { "x": 1.5,     "y": 1.5 },
         "origin":       { "x": 0,       "y": 0 },

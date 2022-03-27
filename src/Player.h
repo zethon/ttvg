@@ -48,6 +48,11 @@ public:
     Direction direction() const { return _direction; }
     void setDirection(Direction val) { _direction = val; }
 
+    void punch();
+    void spellcast();
+    void arrow();
+    void dance();
+
     std::uint16_t timestep() override;
 
 public: // signals

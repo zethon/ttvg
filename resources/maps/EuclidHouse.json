@@ -12,7 +12,7 @@
     },
     "player":
     {
-        "start": { "x": 600, "y": 560 },
+        "start": { "x": 10, "y": 14 },
         "scale": { "x": 2.5, "y": 2.5 },
         "state": "down",
         "origin": { "x": 0, "y": 0 },

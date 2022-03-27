@@ -8,15 +8,13 @@
 
 This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for multimedia. This game runs on Windows, Mac and Linux.
 
-## Downloads
+## Website
 
-### Windows
+[ttvg.online](http://www.ttvg.online)
 
-[Download Windows Installer](https://anothermessageboard.com/downloads/)
+## Wiki
 
-### Mac and Ubuntu
-
-Currently there is no installer for Mac or Ubuntu.
+[https://github.com/zethon/ttvg/wiki](https://github.com/zethon/ttvg/wiki)
 
 ## How to Build
 
