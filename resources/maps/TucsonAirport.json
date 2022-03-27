@@ -15,7 +15,7 @@
     "player":
     {
 
-        "start":        { "x":  5300,   "y": 5100 }, 
+        "start":        { "x":  5300,   "y": 5080 }, 
 
         "scale":        { "x": 1.5,     "y": 1.5 },
         "origin":       { "x": 0,       "y": 0 },
@@ -27,7 +27,7 @@
     [
         { 
             "name" : "Go back to Tucson",
-            "description": "Press SPACE to go back to Tucson.",
+            "description": "Press SPACE to go back to shit hole Tucson.",
             "rects" :
             [ 
                 "148,141,148,143"
@@ -37,6 +37,15 @@
                 "scene": "Tucson",
                 "enabled": true
             }
+        },
+
+        { 
+            "name" : "Tucson International Airport",
+            "description": " It's \"international\" because \n we had a flight to Nogales one time.",
+            "rects" :
+            [ 
+                "91,132,129,138"
+            ]
         }
     ],
 
