@@ -301,6 +301,15 @@
             ]
         },
 
+        "ticket-to-africa": 
+        {
+            "scale":        { "x": 0.1, "y": 0.1 },
+            "instances":
+            [    
+                { "x": 3, "y": 83 }
+            ]
+        },
+
         "chief-covfefe": 
         {
             "scale": { "x": 0.5, "y": 0.33 },

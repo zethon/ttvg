@@ -6,12 +6,6 @@
         "camera": "follow"
     },
 
-    "background-music":
-    {
-        "file": "music/background_music1.wav",
-        "volume": 20
-    },
-
     "player":
     {
 
@@ -45,7 +39,8 @@
             "rects" :
             [ 
                 "91,132,129,138"
-            ]
+            ],
+            "onSelect": "airport_onSelect"
         }
     ],
 

@@ -1,0 +1,9 @@
+{
+    "name":         "Ticket to Africa",
+    "description":  "They will respect your gender there.",
+
+    "scale":        { "x": 0.2, "y": 0.2 },
+
+    "obtainable":   true,
+    "attributes":   { }
+}
