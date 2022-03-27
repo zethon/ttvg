@@ -1,0 +1,45 @@
+{
+    "name": "Tommy",
+    "texture": "textures/tommy.png",
+    "description": "Hobo",
+    "obtainable": false,
+
+    "size": { "x": 64, "y": 64 },
+    "frame-count": 9,
+    "time-step": 55,
+
+    "default-state": "down",
+
+    "states":
+    [
+        { "id":"up_spellcast", "source": { "x": 0, "y": 0 }, "frame-count": 7 },
+        { "id":"left_spellcast", "source": { "x": 0, "y": 1 }, "frame-count": 7 },
+        { "id":"down_spellcast", "source": { "x": 0, "y": 2 }, "frame-count": 7 },
+        { "id":"right_spellcast", "source": { "x": 0, "y": 3 }, "frame-count": 7 },
+
+        { "id":"up_dance", "source": { "x": 0, "y": 4 }, "frame-count": 8 },
+        { "id":"left_dance", "source": { "x": 0, "y": 5 }, "frame-count": 8 },
+        { "id":"down_dance", "source": { "x": 0, "y": 6 }, "frame-count": 8 },
+        { "id":"right_dance", "source": { "x": 0, "y": 7 }, "frame-count": 8 },
+
+        { "id":"up_walking", "source": { "x": 0, "y": 8 } },
+        { "id":"left_walking", "source": { "x": 0, "y": 9 } },
+        { "id":"down_walking", "source": { "x": 0, "y": 10 } },
+        { "id":"right_walking", "source": { "x": 0, "y": 11 } },
+
+        { "id":"up", "source": { "x": 0, "y": 8 }, "frame-count": 1 },
+        { "id":"left", "source": { "x": 0, "y": 9 }, "frame-count": 1 },
+        { "id":"down", "source": { "x": 0, "y": 10 }, "frame-count": 1 },
+        { "id":"right", "source": { "x": 0, "y": 11 }, "frame-count": 1 },
+
+        { "id":"up_punch", "source": { "x": 0, "y": 12 }, "frame-count": 6, "time-step": 35  },
+        { "id":"left_punch", "source": { "x": 0, "y": 13 }, "frame-count": 6, "time-step": 35 },
+        { "id":"down_punch", "source": { "x": 0, "y": 14 }, "frame-count": 6, "time-step": 35 },
+        { "id":"right_punch", "source": { "x": 0, "y": 15 }, "frame-count": 6, "time-step": 35 },
+
+        { "id":"up_arrow", "source": { "x": 0, "y": 16 }, "frame-count": 13  },
+        { "id":"left_arrow", "source": { "x": 0, "y": 17 }, "frame-count": 13  },
+        { "id":"down_arrow", "source": { "x": 0, "y": 18 }, "frame-count": 13  },
+        { "id":"right_arrow", "source": { "x": 0, "y": 19 }, "frame-count": 13  }
+    ]
+}

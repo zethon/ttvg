@@ -78,7 +78,7 @@ public:
 
     sf::FloatRect getObservableRect() const
     {
-        const auto view = _window.getView();
+        const auto& view = _window.getView();
         const auto size = view.getSize();
         const auto center = view.getCenter();
         auto x = center.x - (size.x / 2);

@@ -92,8 +92,8 @@ private:
     float                       _speed = 10.0f;  // Pixels per timestep
     std::uint16_t               _damage = 0;
 
-    Direction                   _direction = DOWN;  // Current direction of the object
-    VehicleState                _vehicleState = MOVING;
+    Direction                   _direction = tt::Direction::DOWN;  // Current direction of the object
+    VehicleState                _vehicleState = tt::Vehicle::VehicleState::MOVING;
 
     bool                _finishedPath = false;
 

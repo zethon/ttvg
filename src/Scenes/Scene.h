@@ -19,13 +19,15 @@
 namespace tt
 {
 
+constexpr auto DEFAULT_STEPSIZE = 16.0f;
+
 struct AvatarInfo
 {
     sf::Vector2f    start;
     sf::Vector2f    scale;
     sf::Vector2f    source;
     sf::Vector2f    origin;
-    float           stepsize;
+    float           stepsize = DEFAULT_STEPSIZE;
     std::string     state;
 };
 
