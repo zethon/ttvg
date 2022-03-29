@@ -100,6 +100,9 @@ else()
     set(APP_BUILD_NUMBER "0")
 endif()
 
+add_subdirectory(date)
+include_directories(${CMAKE_SOURCE_DIR}/date/include)
+
 add_subdirectory(src)
 
 if(BUILD_UNIT_TESTS)

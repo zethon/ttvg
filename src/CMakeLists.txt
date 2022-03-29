@@ -3,6 +3,7 @@ set(SOURCE_FILES
     Background.cpp
     DelayedSound.cpp
     Engine.cpp
+        GameWorld.cpp
     GameOverScreen.cpp
     GameScreen.cpp
     Intersection.cpp
@@ -40,6 +41,7 @@ set(HEADER_FILES
     Engine.h
     Item.h
     ItemFactory.h
+        GameWorld.h
     GameOverScreen.h
     GameScreen.h
     GameTypes.h

@@ -2,12 +2,30 @@
 
 #include "../Screen.h"
 #include "../Player.h"
+#include "../GameWorld.h"
 
 namespace tt
 {
 
 class Hud : public Screen
 {
+public: 
+    Hud(ResourceManager& resmgr, sf::RenderTarget& target, GameCalendarPtr calendar)
+        : Hud(resmgr, target, calendar, true)
+    {
+        // nothing to do
+    }
+
+    Hud(ResourceManager& resmgr, sf::RenderTarget& target, GameCalendarPtr calendar, bool visible);
+
+    void setZoneText(const std::string& zone);
+
+    void setHealth(std::uint32_t health);
+    void setBalance(float cash);
+
+private:
+    void createCalendarWidgets();
+
     sf::Font    _statusFont;
 
     std::shared_ptr<sf::RectangleShape> _background;
@@ -16,19 +34,10 @@ class Hud : public Screen
     std::shared_ptr<sf::Text>           _healthText;
     std::shared_ptr<sf::Text>           _balanceText;
 
-    PlayerPtr   _player;
+    std::shared_ptr<sf::Text>           _dateText;
+    std::shared_ptr<sf::Text>           _timeText;
 
-public: 
-    Hud(ResourceManager& resmgr, sf::RenderTarget& target)
-        : Hud(resmgr, target, true)
-    {}
-
-    Hud(ResourceManager& resmgr, sf::RenderTarget& target, bool visible);
-
-    void setZoneText(const std::string& zone);
-
-    void setHealth(std::uint32_t health);
-    void setBalance(float cash);
+    GameCalendarPtr                     _calendar;
 };
 
 } // namespace
