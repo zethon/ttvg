@@ -1,7 +1,5 @@
 #pragma once
 
-#include <chrono>
-
 #include <lua.hpp>
 
 #include <SFML/Graphics.hpp>
@@ -203,7 +201,7 @@ private:
     std::shared_ptr<ItemFactory>    _itemFactory;
 
     sf::Clock                       _gameClock;
-    std::shared_ptr<GameWorld>   _gameCalendar;
+    std::shared_ptr<GameWorld>      _gameCalendar;
 
     std::shared_ptr<Hud>            _hud;
 };
