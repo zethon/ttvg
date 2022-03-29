@@ -15,10 +15,9 @@ Hud::Hud(ResourceManager & resmgr, sf::RenderTarget & target, GameCalendarPtr ca
     _background->setSize(sf::Vector2f{ _window.getSize().x - 10.f, 60.f });
     addDrawable(_background);
 
-    if (auto temp = _resources.load<sf::Font>("fonts/mono_bold.ttf");
-            !temp.has_value())
+    if (auto temp = _resources.load<sf::Font>("fonts/mono_bold.ttf"); !temp.has_value())
     {
-        throw std::runtime_error("could not load font mono_body.ttf");
+        return;
     }
     else
     {

@@ -51,7 +51,7 @@ struct SceneSetup
     PlayerPtr                       player;
     lua_State*                      lua;
     std::shared_ptr<ItemFactory>    itemFactory;
-    std::shared_ptr<GameWorld>   calendar;
+    std::shared_ptr<GameWorld>      calendar;
     std::shared_ptr<Hud>            hud;
 };
 
