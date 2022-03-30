@@ -13,6 +13,7 @@
 #include "TTLua.h"
 #include "TTUtils.h"
 #include "TooterLogger.h"
+#include "GameWorld.h"
 
 namespace tt
 {
@@ -188,6 +189,8 @@ public:
     const SceneMap& scenes() const { return _scenes; }
 
 private:
+    void createScenes();
+
     SceneSharedPtr                  _currentScene;
     SceneMap                        _scenes;
 
@@ -196,7 +199,11 @@ private:
 
     lua_State*                      _luaState;
     std::shared_ptr<ItemFactory>    _itemFactory;
+
     sf::Clock                       _gameClock;
+    std::shared_ptr<GameWorld>      _gameCalendar;
+
+    std::shared_ptr<Hud>            _hud;
 };
 
 } // namespace tt

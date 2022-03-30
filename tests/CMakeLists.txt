@@ -77,6 +77,9 @@ set(HARNESS_FILES
     ../src/GameScreen.h
     ../src/GameScreen.cpp
 
+    ../src/GameWorld.h
+    ../src/GameWorld.cpp
+
     ../src/Item.h
     ../src/Item.cpp
 

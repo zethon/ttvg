@@ -9,6 +9,7 @@
 #include "../src/GameScreen.h"
 #include "../src/TTLua.h"
 #include "../src/Scenes/Scene.h"
+#include "../src/GameWorld.h"
 
 #include "Test.h"
 
@@ -30,6 +31,8 @@ struct TestHarness
     std::shared_ptr<ItemFactory> _itemFactory;
     sf::Texture _playerTexture;
     tt::ItemInfo _playerObjInfo;
+    tt::GameCalendarPtr _calendar;
+    std::shared_ptr<tt::Hud> _hud;
 
     TestHarness(const std::string& resfolder)
         : _resources{ resfolder }
@@ -47,7 +50,8 @@ struct TestHarness
         _playerObjInfo.defaultState = "up";
 
         _player = std::make_shared<tt::Player>(_playerObjInfo, ItemInstanceInfo{});
-
+        _calendar = std::make_shared<tt::GameWorld>();
+        _hud = std::make_shared<tt::Hud>(_resources, _window, _calendar);
         _itemFactory = std::make_shared<ItemFactory>(_resources);
 
         GameScreenStub stub;
@@ -64,7 +68,9 @@ struct TestHarness
             _window,
             _player,
             _lua,
-            _itemFactory 
+            _itemFactory,
+            _calendar,
+            _hud
         };
     }
 };
