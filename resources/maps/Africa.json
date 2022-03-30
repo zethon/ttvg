@@ -27,7 +27,6 @@
             ]
         },
 
-
         { 
             "name":         "Lagos International Airport",
             "description":  "Press SPACE to return to Tucson.",
@@ -45,8 +44,15 @@
     ],
 
     "items":
-    {
-        
-    }
+    { 
+		"nigerian-oil-rig":
+        {
+            "scale":        { "x": 0.75, "y": 0.75 },
+            "instances":
+            [
+                			{ "x": 34, "y": 65 }
+            ]
+        }
+    } 
 
 }
