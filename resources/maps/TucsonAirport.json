@@ -35,7 +35,7 @@
 
         { 
             "name" :        "Tucson International Airport",
-            "description":  " It's \"international\" because \n we had a flight to Nogales one time. \n Press SPACE to fly to Africa.",
+            "description":  " It's \"international\" because \n we had a flight to Nogales one time. \n \n Press SPACE to fly to Africa.",
             "rects" :
             [ 
                 "91,132,129,138"
