@@ -467,10 +467,13 @@ ScreenAction Scene::update(sf::Time elapsed)
         }
     }
 
+    sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(&_window);
+
     std::stringstream ss1;
-    ss1 << "P(" << getPlayerTile()
-        << ") G(" << _player->getGlobalCenter()
-        << ") T(" << elapsed.asSeconds() << ")";
+    ss1 << "P(" << getPlayerTile() << ") "
+        << "G(" << _player->getGlobalCenter() << ") "
+        << "T(" << elapsed.asSeconds() << ")"
+    ;
 
     _debugWindow.setText(ss1.str());
 	

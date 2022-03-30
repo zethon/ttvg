@@ -4,6 +4,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include <SFML/Graphics/CircleShape.hpp>
+
 #include "Item.h"
 
 namespace tt
@@ -19,7 +21,7 @@ public:
     static constexpr auto CLASS_NAME = "Player";
     static const struct luaL_Reg LuaMethods[];
 
-    using Item::Item;
+    Player(const ItemInfo& obj, const ItemInstanceInfo& inst);
 
     sf::Vector2f getGlobalCenter() const;
 
@@ -55,6 +57,9 @@ public:
 
     std::uint16_t timestep() override;
 
+protected:
+    void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
+
 public: // signals
 
     boost::signals2::signal<void(void)> onMoveTimer;
@@ -67,6 +72,9 @@ private:
 
     sf::Clock               _movingTimer;
     bool                    _moving = false;
+
+    using CirclePtr = std::unique_ptr<sf::CircleShape>;
+    CirclePtr               _circle;
 
 };
 

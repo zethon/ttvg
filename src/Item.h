@@ -253,7 +253,7 @@ public: // signals
     boost::signals2::signal<void(void)> onFrameChange;
 
 protected:
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override final;
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
     void initStateHitboxes();
 
     const ItemInfo&           _objectInfo;    // ref to the cached info

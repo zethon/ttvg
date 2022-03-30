@@ -132,6 +132,19 @@ const struct luaL_Reg Player::LuaMethods[] =
     {nullptr, nullptr}
 };
 
+Player::Player(const ItemInfo& obj, const ItemInstanceInfo& inst)
+    : Item(obj, inst),
+      _circle{std::make_unique<sf::CircleShape>()}
+{
+    _circle->setRadius(15.5f);
+    _circle->setFillColor(sf::Color::Transparent);
+    _circle->setOutlineColor(sf::Color::Yellow);
+    _circle->setOutlineThickness(2.0f);
+
+
+    _circle->setRadius(this->getGlobalBounds().width / 2);
+}
+
 sf::Vector2f Player::getGlobalCenter() const
 {
     const auto rect = getGlobalBounds();
@@ -284,9 +297,19 @@ std::uint16_t Player::timestep()
     {
         onMoveTimer();
         _movingTimer.restart();
+
+        _circle->setPosition(getPosition());
     }
 
     return std::uint16_t();
+}
+
+void Player::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+    states.transform *= getTransform();
+    target.draw(_sprite, states);
+    target.draw(_highlight);
+    target.draw(*_circle);
 }
 
 } // namespace tt
