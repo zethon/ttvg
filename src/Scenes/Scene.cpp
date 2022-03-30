@@ -246,10 +246,10 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
     : Screen(setup.resources, setup.window),
       _sceneName{name },
       _luaState{setup.lua},
-      _hud{ setup.resources, setup.window },
       _descriptionText{ setup.resources, setup.window },
       _debugWindow{ setup.resources, setup.window },
       _weakPlayer{ setup.player },
+      _weakHud{ setup.hud },
       _itemFactory{ *(setup.itemFactory) },
       _logger { log::initializeLogger("Scene") }
 {
@@ -329,8 +329,14 @@ void Scene::init()
 void Scene::enter()
 {
     _logger->debug("entering scene '{}'", _sceneName);
+
     assert(!_player);
     _player = _weakPlayer.lock();
+    assert(_player);
+
+    assert(!_hudPtr);
+    _hudPtr = _weakHud.lock();
+    assert(_hudPtr);
 
     _player->setPosition(_lastPlayerPos);
     _player->setScale(_playerAvatarInfo.scale);
@@ -350,19 +356,19 @@ void Scene::enter()
     auto tileinfo = _background->getTileInfo(tile);
     updateCurrentTile(tileinfo);
 
-    _hud.setHealth(_player->health());
-    _hud.setBalance(_player->balance());
+    _hudPtr->setHealth(_player->health());
+    _hudPtr->setBalance(_player->balance());
 
     _player->onSetHealth.connect(
         [this](std::uint32_t health)
         {
-            _hud.setHealth(health);
+            _hudPtr->setHealth(health);
         });
 
     _player->onSetCash.connect(
         [this](float cash)
         {
-            _hud.setBalance(cash);
+            _hudPtr->setBalance(cash);
         });
 		
     if (_bgmusic) _bgmusic->play();		
@@ -386,6 +392,8 @@ void Scene::exit()
     _lastPlayerPos = _player->getPosition();
     removeUpdateable(_player);
     _player.reset();
+
+    _hudPtr.reset();
 
     if (_bgmusic) _bgmusic->pause();
 }
@@ -485,7 +493,7 @@ void Scene::draw()
 
     _window.draw(*_player);
     _window.setView(_window.getDefaultView());
-    _hud.draw();
+    _hudPtr->draw();
     _descriptionText.draw();
     _debugWindow.draw();
 
@@ -549,14 +557,14 @@ void Scene::updateCurrentTile(const TileInfo& info)
         switch (_currentTile.type)
         {
             default:
-                _hud.setZoneText({});
+                _hudPtr->setZoneText({});
                 _descriptionText.setText({});
             break;
 
             case TileType::ZONE:
             {
                 const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
-                _hud.setZoneText(zoneinfo.name);
+                _hudPtr->setZoneText(zoneinfo.name);
                 if (!zoneinfo.description.empty())
                 {
                     _descriptionText.setText(zoneinfo.description);
@@ -998,7 +1006,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
             case sf::Keyboard::Period:
             {
-                _hud.setVisible(!_hud.visible());
+                _hudPtr->setVisible(!_hudPtr->visible());
             }
             break;
 

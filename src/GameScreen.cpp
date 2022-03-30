@@ -55,7 +55,8 @@ GameScreen* GameScreen::l_get(lua_State * L)
 
 GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     : Screen(resmgr, target),
-      _itemFactory{std::make_shared<ItemFactory>(resmgr)}
+      _itemFactory{std::make_shared<ItemFactory>(resmgr)},
+      _gameCalendar{std::make_shared<GameWorld>()}
 {
     _luaState = luaL_newstate();
     initLua(
@@ -79,34 +80,9 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     _playerObjectInfo.texture->setSmooth(true);
 
     _player = std::make_shared<Player>(_playerObjectInfo, ItemInstanceInfo{});
+    _hud = std::make_shared<Hud>(resmgr, target, _gameCalendar);
 
-    SceneSetup setup{ _resources, _window, _player, _luaState, _itemFactory };
-
-    // TODO: as the game grows these constructions will take longer
-    // and should probably be done in parallel and/or with a loading screen
-    _scenes.emplace(Tucson::SCENE_NAME, std::make_shared<Tucson>(setup));
-    _scenes.emplace("EuclidHouse", std::make_shared<Scene>("EuclidHouse", setup));
-    _scenes.emplace("Hospital", std::make_shared<Scene>("Hospital", setup));
-    _scenes.emplace("CourthouseInterior", std::make_shared<Scene>("CourthouseInterior", setup));
-    _scenes.emplace("PoliceStationInterior", std::make_shared<Scene>("PoliceStationInterior", setup));
-    _scenes.emplace("FireStationInterior", std::make_shared<Scene>("FireStationInterior", setup));
-
-    _scenes.emplace(
-        "ChineseRestaurantInterior", 
-        std::make_shared<Scene>("ChineseRestaurantInterior", setup));
-
-    //
-    // Would be so nice if lines didn't wrap in source code.
-    // I think 80 characters is a fair line size.
-    //
-    // I used to get into this debate with a developer at my old job, and I'll ask you what I asked him: who still uses an editor that's only 80 characters wide? What is this, 1992? 80x254lyfe?!
-    //
-    _scenes.emplace("DeathCampInterior", 
-                    std::make_shared<Scene>("DeathCampInterior", setup));
-
-    _scenes.emplace(
-        "ArizonaDesert", 
-        std::make_shared<Scene>("ArizonaDesert", setup));
+    createScenes();
 
     _currentScene = _scenes["Tucson"];
 
@@ -129,6 +105,36 @@ GameScreen::~GameScreen()
 
     // destroy the lua state
     lua_close(_luaState);
+}
+
+void GameScreen::createScenes()
+{
+    SceneSetup setup { _resources, _window, _player,
+        _luaState, _itemFactory, _gameCalendar, _hud };
+
+    _scenes.emplace(Tucson::SCENE_NAME, std::make_shared<Tucson>(setup));
+    _scenes.emplace("EuclidHouse", std::make_shared<Scene>("EuclidHouse", setup));
+    _scenes.emplace("Hospital", std::make_shared<Scene>("Hospital", setup));
+    _scenes.emplace("CourthouseInterior", std::make_shared<Scene>("CourthouseInterior", setup));
+    _scenes.emplace("PoliceStationInterior", std::make_shared<Scene>("PoliceStationInterior", setup));
+    _scenes.emplace("FireStationInterior", std::make_shared<Scene>("FireStationInterior", setup));
+
+    _scenes.emplace(
+            "ChineseRestaurantInterior",
+            std::make_shared<Scene>("ChineseRestaurantInterior", setup));
+
+    //
+    // Would be so nice if lines didn't wrap in source code.
+    // I think 80 characters is a fair line size.
+    //
+    // I used to get into this debate with a developer at my old job, and I'll ask you what I asked him: who still uses an editor that's only 80 characters wide? What is this, 1992? 80x254lyfe?!
+    //
+    _scenes.emplace("DeathCampInterior",
+                    std::make_shared<Scene>("DeathCampInterior", setup));
+
+    _scenes.emplace(
+            "ArizonaDesert",
+            std::make_shared<Scene>("ArizonaDesert", setup));
 }
 
 void GameScreen::draw()
@@ -166,6 +172,8 @@ PollResult GameScreen::poll(const sf::Event& e)
 
 ScreenAction GameScreen::timestep()
 {
+    _gameCalendar->timestep(_gameClock.getElapsedTime());
+
     assert(_currentScene);
     return _currentScene->update(_gameClock.getElapsedTime());
 }

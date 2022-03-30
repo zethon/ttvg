@@ -20,6 +20,7 @@ inline std::string DirectionToString(tt::Direction d)
         case tt::Direction::DOWN: return "down"; break;
         case tt::Direction::LEFT: return "left"; break;
         case tt::Direction::RIGHT: return "right"; break;
+        default: break;
     }
 
     return {};

@@ -10,6 +10,7 @@
 #include "../ItemFactory.h"
 #include "../TooterLogger.h"
 #include "../DelayedSound.h"
+#include "../GameWorld.h"
 
 #include "Hud.h"
 #include "DescriptionText.h"
@@ -50,6 +51,8 @@ struct SceneSetup
     PlayerPtr                       player;
     lua_State*                      lua;
     std::shared_ptr<ItemFactory>    itemFactory;
+    std::shared_ptr<GameWorld>      calendar;
+    std::shared_ptr<Hud>            hud;
 };
 
 void from_json(const nl::json& j, AvatarInfo& av);
@@ -164,7 +167,7 @@ public:
 
     int luaIdx() const { return _luaIdx; }
 
-    Hud& hud() { return _hud; }
+//    Hud& hud() { return _hud; }
     DescriptionText& descriptionText() { return _descriptionText; }
 
     void addItem(ItemPtr item);
@@ -191,7 +194,6 @@ protected:
     int             _luaIdx = 0;    // the index for `this` object in the Lua registry
     CallbackInfo    _callbackNames;
 
-    Hud             _hud;
     DescriptionText _descriptionText;
     DebugWindow     _debugWindow;
 
@@ -200,6 +202,10 @@ protected:
 
     std::weak_ptr<Player>   _weakPlayer;
     PlayerPtr               _player;
+
+    std::weak_ptr<Hud>      _weakHud;
+    std::shared_ptr<Hud>    _hudPtr;
+
     sf::Vector2f            _lastPlayerPos;
     AvatarInfo              _playerAvatarInfo;
     TileInfo                _currentTile;
