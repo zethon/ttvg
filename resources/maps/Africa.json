@@ -8,7 +8,7 @@
 
     "player":
     {
-        "start":    { "x": 46,  "y": 63 },
+        "start":    { "x": 45,  "y": 62 },
         "scale":    { "x": 1.5, "y": 1.5 },
         "state":    "down",
         "origin":   { "x": 0, "y": 0 },
@@ -17,14 +17,31 @@
 
     "zones":
     [
+
         { 
             "name":         "Africa",
             "description":  " Seems kind of warm here.\n If only I had brought potable water.",
             "rects" :
             [ 
-                "0,0,148,148"
+                "55,0,148,148"
             ]
+        },
+
+
+        { 
+            "name":         "Lagos International Airport",
+            "description":  "Press SPACE to return to Tucson.",
+            "rects" :
+            [ 
+                "42,60,46,62"
+            ],
+            "transition":
+            {
+                "scene": "TucsonAirport",
+                "enabled": true
+            }
         }
+
     ],
 
     "items":
