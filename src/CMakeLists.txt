@@ -10,6 +10,7 @@ set(SOURCE_FILES
     IntroScreen.cpp
     Item.cpp
     ItemFactory.cpp
+    LoadingScreen.cpp
     main.cpp
     PathFactory.cpp
     Player.cpp
@@ -41,6 +42,7 @@ set(HEADER_FILES
     Engine.h
     Item.h
     ItemFactory.h
+    LoadingScreen.h
     GameWorld.h
     GameOverScreen.h
     GameScreen.h

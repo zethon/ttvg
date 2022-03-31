@@ -104,6 +104,7 @@ int main(int argc, char *argv[])
         // leading spaces can cause problems on macOS
         boost::algorithm::trim(logfile);
     }
+
     initLogging(logfile);
     auto logger = tt::log::rootLogger();
     if (vm.count("loglevel"))

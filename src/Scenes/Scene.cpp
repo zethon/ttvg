@@ -705,6 +705,8 @@ void Scene::createItems()
                 continue;
             }
 
+            _logger->trace("loading item '{}'", itemid);
+
             // default info for the item
             ItemInstanceInfo groupinfo = data.get<ItemInstanceInfo>();
             groupinfo.objid = itemid; // we don't want to require the objid to be set in json
