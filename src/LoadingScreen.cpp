@@ -36,12 +36,23 @@ LoadingScreen::LoadingScreen(ResourceManager& res, sf::RenderTarget& target)
     auto lsinktxt = std::make_shared<sf::Text>("THIS IS A TEST", _monofont);
     lsinktxt->setCharacterSize(20);
     lsinktxt->setFillColor(sf::Color::White);
-    lsinktxt->setPosition(_window.getSize().x / 3, 300);
+    lsinktxt->setPosition(static_cast<float>(_window.getSize().x / 3), 300);
 
     _logsink = std::make_shared<SFTextLogSink>(lsinktxt, target.getSize().x);
 
     _originalLogLevel = spdlog::get_level();
+
+    auto logsinkit = std::find_if(tt::log::rootLogger()->sinks().begin(),
+        tt::log::rootLogger()->sinks().end(),
+        [this](auto other) { return other == _logsink; });
+    assert(logsinkit == tt::log::rootLogger()->sinks().end());
+
     tt::log::rootLogger()->sinks().push_back(_logsink);
+
+    logsinkit = std::find_if(tt::log::rootLogger()->sinks().begin(),
+        tt::log::rootLogger()->sinks().end(),
+        [this](auto other) { return other == _logsink; });
+    assert(logsinkit != tt::log::rootLogger()->sinks().end());
 
     addDrawable(lsinktxt);
     addDrawable(textobj);
@@ -68,12 +79,15 @@ void LoadingScreen::loadGameScreen()
 
 void LoadingScreen::close()
 {
-    auto logsinkit = std::find_if(tt::log::rootLogger()->sinks().begin(),
-                              tt::log::rootLogger()->sinks().end(),
-                              [this](auto other) { return other == _logsink; });
+    //auto logsinkit = std::find_if(tt::log::rootLogger()->sinks().begin(),
+    //                          tt::log::rootLogger()->sinks().end(),
+    //                          [this](auto other) { return other == _logsink; });
 
-    assert(logsinkit != tt::log::rootLogger()->sinks().end());
-    tt::log::rootLogger()->sinks().erase(logsinkit);
+    //assert(logsinkit != tt::log::rootLogger()->sinks().end());
+    //(*logsinkit).reset();
+    //tt::log::rootLogger()->sinks().erase(logsinkit);
+    _logsink.reset();
+    tt::log::rootLogger()->sinks().pop_back();
     spdlog::set_level(_originalLogLevel);
 }
 
