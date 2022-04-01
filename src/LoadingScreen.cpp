@@ -65,17 +65,28 @@ LoadingScreen::LoadingScreen(ResourceManager& res, sf::RenderTarget& target)
     addDrawable(_statusTxt);
     addDrawable(textobj);
 
-    _statusWorker = std::thread(&tt::LoadingScreen::statusWork, this);
+    updateStatusText(*(tt::select_randomly(StatusTexts)));
+
     _worker = std::thread(&tt::LoadingScreen::loadGameScreen, this);
+    _lastUpdate = std::chrono::system_clock::now();
 }
 
 ScreenAction LoadingScreen::timestep()
 {
+    namespace ch = std::chrono;
+
     if (_loadingComplete)
     {
         _worker.join();
-        _statusWorker.join();
         return {ScreenActionType::CHANGE_GAMESCREEN, _gameScreen};
+    }
+    
+    const auto nowt = ch::system_clock::now();
+    const auto mst = ch::milliseconds{ tt::RandomNumber(350, 1750) };
+    if (ch::duration_cast<ch::milliseconds>(nowt - _lastUpdate) > mst)
+    {
+        updateStatusText(*(tt::select_randomly(StatusTexts)));
+        _lastUpdate = nowt;
     }
 
     return {};
@@ -96,15 +107,15 @@ void LoadingScreen::updateStatusText(const std::string& text)
     }
 }
 
-void LoadingScreen::statusWork()
-{
-    while (!_loadingComplete)
-    {
-        updateStatusText(*(tt::select_randomly(StatusTexts)));
-        std::uint32_t seconds = tt::RandomNumber(500,1750);
-        std::this_thread::sleep_for(std::chrono::milliseconds {seconds});
-    }
-}
+//void LoadingScreen::statusWork()
+//{
+//    while (!_loadingComplete)
+//    {
+//        updateStatusText(*(tt::select_randomly(StatusTexts)));
+//        std::uint32_t seconds = tt::RandomNumber(500,1750);
+//        std::this_thread::sleep_for(std::chrono::milliseconds {seconds});
+//    }
+//}
 
 void LoadingScreen::loadGameScreen()
 {
