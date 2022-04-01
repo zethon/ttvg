@@ -172,6 +172,21 @@
         },
 
         {
+
+            "name": "Road to Tucson Airport",
+            "description": "Press SPACE to fly out of this shit hole.",
+            "rects": 
+            [
+                "1,140,1,142"
+            ],
+            "transition":
+            {
+                "scene": "TucsonAirport",
+                "enabled": true
+            }
+        },
+
+        {
             "name": "Enter the Desert",
             "description": "Press SPACE to enter the desert.",
             "rects": 
@@ -296,6 +311,15 @@
             "instances":
             [    
                 { "x": 31, "y": 36 }
+            ]
+        },
+
+        "ticket-to-africa": 
+        {
+            "scale":        { "x": 0.1, "y": 0.1 },
+            "instances":
+            [    
+                { "x": 3, "y": 83 }
             ]
         },
 

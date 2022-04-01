@@ -1,0 +1,66 @@
+{
+    "background":
+    {
+        "scale":    { "x": 2.25,    "y": 2.25 },
+        "tiles":    { "x": 16,      "y": 16 },
+        "camera":   "follow"
+    },
+
+    "player":
+    {
+
+        "start":        { "x": 148,     "y": 140 }, 
+
+        "scale":        { "x": 1.5,     "y": 1.5 },
+        "origin":       { "x": 0,       "y": 0 },
+        "state":        "down",
+        "stepsize" :    16.0
+    },
+
+    "zones":
+    [
+        { 
+            "name" : "Go back to Tucson",
+            "description": "Press SPACE to go back to shit hole Tucson.",
+            "rects" :
+            [ 
+                "148,141,148,143"
+            ],
+            "transition":
+            {
+                "scene": "Tucson",
+                "enabled": true
+            }
+        },
+
+        { 
+            "name" :        "Tucson International Airport",
+            "description":  " It's \"international\" because \n we had a flight to Nogales one time. \n \n Press SPACE to fly to Africa.",
+            "rects" :
+            [ 
+                "91,132,129,138"
+            ],
+            
+            "transition":
+            {
+                "scene": 	"Africa",
+                "enabled": 	true
+            }
+
+        }
+    ],
+
+    "items":
+    {
+        "dumpster":
+        {
+            "scale": { "x": 2.125, "y": 2.125 },
+            "instances":
+            [
+                { "x": 53, "y": 80 }
+            ]
+        }
+
+    }
+
+}

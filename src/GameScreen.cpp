@@ -129,12 +129,23 @@ void GameScreen::createScenes()
     //
     // I used to get into this debate with a developer at my old job, and I'll ask you what I asked him: who still uses an editor that's only 80 characters wide? What is this, 1992? 80x254lyfe?!
     //
-    _scenes.emplace("DeathCampInterior",
-                    std::make_shared<Scene>("DeathCampInterior", setup));
+    
+    _scenes.emplace(
+            "DeathCampInterior",
+            std::make_shared<Scene>("DeathCampInterior", setup));
 
     _scenes.emplace(
             "ArizonaDesert",
             std::make_shared<Scene>("ArizonaDesert", setup));
+
+    _scenes.emplace(
+            "TucsonAirport", 
+            std::make_shared<Scene>("TucsonAirport", setup));
+
+    _scenes.emplace(
+            "Africa", 
+            std::make_shared<Scene>("Africa", setup));
+
 }
 
 void GameScreen::draw()
