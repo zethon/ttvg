@@ -20,18 +20,17 @@ public:
 
 private:
     void loadGameScreen();
-    void statusWork();
     void updateStatusText(const std::string& text);
 
     sf::Font            _font;
     sf::Font            _monofont;
     std::thread         _worker;
 
-    std::thread             _statusWorker;
-
     std::atomic_bool            _loadingComplete = false;
     std::shared_ptr<GameScreen> _gameScreen;
     std::shared_ptr<sf::Text>   _statusTxt;
+    
+    std::chrono::system_clock::time_point   _lastUpdate;
 };
 
 } // namespace tt
