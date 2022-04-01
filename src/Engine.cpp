@@ -2,6 +2,7 @@
 #include "IntroScreen.h"
 #include "GameScreen.h"
 #include "GameOverScreen.h"
+#include "LoadingScreen.h"
 
 namespace tt
 {
@@ -47,6 +48,15 @@ void TooterEngine::timestep()
         _logger->debug("changing screen from timestep result");
         changeScreen(boost::any_cast<std::uint16_t>(action.data));
     }
+    else if (action.type == ScreenActionType::CHANGE_GAMESCREEN)
+    {
+        _logger->debug("loading game screen");
+
+        auto gamescreen = boost::any_cast<std::shared_ptr<GameScreen>>(action.data);
+        _currentScreen->close();
+        _currentScreen.reset();
+        _currentScreen = gamescreen;
+    }
 }
 
 void TooterEngine::changeScreen(std::uint16_t id)
@@ -81,6 +91,14 @@ void TooterEngine::changeScreen(std::uint16_t id)
             _currentScreen->close();
             _currentScreen.reset();
             _currentScreen = std::make_shared<GameOverScreen>(_resourceManager, *_renderTarget);
+        }
+        break;
+
+        case SCREEN_LOADING:
+        {
+            _currentScreen->close();
+            _currentScreen.reset();
+            _currentScreen = std::make_shared<LoadingScreen>(_resourceManager, *_renderTarget);
         }
         break;
     }
