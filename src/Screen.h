@@ -14,7 +14,7 @@ namespace tt
 
 constexpr std::uint16_t SCREEN_SPLASH = 10;
 constexpr std::uint16_t SCREEN_INTRO = 20;
-constexpr std::uint16_t SCREEN_SHART = 30;
+constexpr std::uint16_t SCREEN_LOADING = 30;
 constexpr std::uint16_t SCREEN_GAME = 40;
 constexpr std::uint16_t SCREEN_GAMEOVER = 50;
 
@@ -26,7 +26,8 @@ enum class ScreenActionType
     EXIT_GAME,
     CHANGE_SCREEN,
     CHANGE_SCENE,
-    CLOSE_MODAL
+    CLOSE_MODAL,
+    CHANGE_GAMESCREEN
 };
 
 struct ScreenAction
@@ -78,7 +79,7 @@ public:
 
     sf::FloatRect getObservableRect() const
     {
-        const auto view = _window.getView();
+        const auto& view = _window.getView();
         const auto size = view.getSize();
         const auto center = view.getCenter();
         auto x = center.x - (size.x / 2);

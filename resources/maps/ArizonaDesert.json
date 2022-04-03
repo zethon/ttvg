@@ -1,0 +1,54 @@
+{
+    "background":
+    {
+        "scale": { "x": 2.25, "y": 2.25 },
+        "tiles": { "x": 16, "y": 16 },
+        "camera": "follow"
+    },
+
+    "player":
+    {
+        "start":    { "x": 1, "y": 105 },
+
+        "scale":    { "x": 1.5, "y": 1.5 },
+
+        "state":    "down",
+        "origin":   { "x": 0, "y": 0 },
+        "stepsize": 16.0
+    },
+
+	"zones":
+    [
+        {
+            "name": "Return to Tucson",
+            "description": "Press SPACE to return to Tucson.",
+            "rects": 
+            [
+                "1,104,1,107"
+            ],
+            "transition":
+            {
+                "scene": "Tucson",
+                "enabled": true
+            }
+        },
+
+        {
+            "name": "The Road to Sun City",
+            "rects": 
+            [
+                "2,104,68,107"
+            ]
+        },
+
+        {
+            "name": "Space Jew Mountain",
+            "rects": 
+            [
+                "69,105,148,148"
+            ]
+        }
+
+
+	]
+}

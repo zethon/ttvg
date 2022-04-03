@@ -9,6 +9,7 @@
 #include "../src/GameScreen.h"
 #include "../src/TTLua.h"
 #include "../src/Scenes/Scene.h"
+#include "../src/GameWorld.h"
 
 #include "Test.h"
 
@@ -30,6 +31,8 @@ struct TestHarness
     std::shared_ptr<ItemFactory> _itemFactory;
     sf::Texture _playerTexture;
     tt::ItemInfo _playerObjInfo;
+    tt::GameCalendarPtr _calendar;
+    std::shared_ptr<tt::Hud> _hud;
 
     TestHarness(const std::string& resfolder)
         : _resources{ resfolder }
@@ -47,7 +50,8 @@ struct TestHarness
         _playerObjInfo.defaultState = "up";
 
         _player = std::make_shared<tt::Player>(_playerObjInfo, ItemInstanceInfo{});
-
+        _calendar = std::make_shared<tt::GameWorld>();
+        _hud = std::make_shared<tt::Hud>(_resources, _window, _calendar);
         _itemFactory = std::make_shared<ItemFactory>(_resources);
 
         GameScreenStub stub;
@@ -64,7 +68,9 @@ struct TestHarness
             _window,
             _player,
             _lua,
-            _itemFactory 
+            _itemFactory,
+            _calendar,
+            _hud
         };
     }
 };
@@ -212,7 +218,7 @@ BOOST_AUTO_TEST_CASE(playerPositionTest)
     writeFile((mappath / "scene1.json").string(), 
         R"({"onEnter":"onEnter",
             "background":{"tiles":{ "x": 16, "y": 16 }},
-            "player":{"state":"up","start": { "x": 35, "y": 35 }}})");
+            "player":{"state":"up","start": { "x": 2, "y": 2 }}})");
 
     writeFile((luapath / "scene1.lua").string(),
         R"(s = nil
@@ -256,8 +262,8 @@ end
     auto results = tt::CallLuaFunction(L, "global_getter", "scene1");
     BOOST_TEST(results.has_value());
     BOOST_TEST(results->size() == 2);
-    BOOST_TEST(tt::GetLuaValue<float>(results->at(0)) == 35.f, boost::test_tools::tolerance(0.001));
-    BOOST_TEST(tt::GetLuaValue<float>(results->at(1)) == 35.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(0)) == 32.f, boost::test_tools::tolerance(0.001));
+    BOOST_TEST(tt::GetLuaValue<float>(results->at(1)) == 32.f, boost::test_tools::tolerance(0.001));
     results->clear();
 
     results = tt::CallLuaFunction(L, "tile_getter", "scene1");
@@ -523,8 +529,7 @@ BOOST_AUTO_TEST_CASE(itemPropertyTest)
         R"x({
     "name":         "Bag of Crack",
     "description":  "This is good for your blood pressure.",
-    "obtainable":   false,
-    "size": { "x": 64, "y": 64 }
+    "obtainable":   false
 })x");
 
     writeFile((mappath / "scene1.json").string(),

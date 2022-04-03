@@ -246,10 +246,10 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
     : Screen(setup.resources, setup.window),
       _sceneName{name },
       _luaState{setup.lua},
-      _hud{ setup.resources, setup.window },
       _descriptionText{ setup.resources, setup.window },
       _debugWindow{ setup.resources, setup.window },
       _weakPlayer{ setup.player },
+      _weakHud{ setup.hud },
       _itemFactory{ *(setup.itemFactory) },
       _logger { log::initializeLogger("Scene") }
 {
@@ -305,8 +305,6 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
         _logger->debug("No scene luafile found at {}", luafile);
     }
 
-    _lastPlayerPos = _playerAvatarInfo.start;
-
     _background = std::make_shared<Background>(_sceneName, _resources, _window);
     addDrawable(_background);
 
@@ -316,6 +314,7 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
 
     _walkSound = DelayedSound::create("sounds/walking.wav", 275.f, _resources);
     _pickupSound = DelayedSound::create("sounds/pickup.wav", 250.f, _resources);
+    _lastPlayerPos = _background->getGlobalFromTile(_playerAvatarInfo.start);
 }
 
 void Scene::init()
@@ -330,14 +329,20 @@ void Scene::init()
 void Scene::enter()
 {
     _logger->debug("entering scene '{}'", _sceneName);
+
     assert(!_player);
     _player = _weakPlayer.lock();
+    assert(_player);
+
+    assert(!_hudPtr);
+    _hudPtr = _weakHud.lock();
+    assert(_hudPtr);
 
     _player->setPosition(_lastPlayerPos);
     _player->setScale(_playerAvatarInfo.scale);
     _player->setOrigin(_playerAvatarInfo.origin);
 
-    _player->setState(_playerAvatarInfo.state);
+    _player->setBaseState(_playerAvatarInfo.state);
 
     _player->onMoveTimer.connect(
         [this]()
@@ -351,19 +356,19 @@ void Scene::enter()
     auto tileinfo = _background->getTileInfo(tile);
     updateCurrentTile(tileinfo);
 
-    _hud.setHealth(_player->health());
-    _hud.setBalance(_player->balance());
+    _hudPtr->setHealth(_player->health());
+    _hudPtr->setBalance(_player->balance());
 
     _player->onSetHealth.connect(
         [this](std::uint32_t health)
         {
-            _hud.setHealth(health);
+            _hudPtr->setHealth(health);
         });
 
     _player->onSetCash.connect(
         [this](float cash)
         {
-            _hud.setBalance(cash);
+            _hudPtr->setBalance(cash);
         });
 		
     if (_bgmusic) _bgmusic->play();		
@@ -388,6 +393,8 @@ void Scene::exit()
     removeUpdateable(_player);
     _player.reset();
 
+    _hudPtr.reset();
+
     if (_bgmusic) _bgmusic->pause();
 }
 
@@ -406,7 +413,27 @@ PollResult Scene::poll(const sf::Event& e)
         && !sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         _player->setWalking(false);
-        _player->setAnimated(false);
+        switch (_player->direction())
+        {
+            case tt::Direction::UP:
+                _player->setBaseState("up");
+            break;
+
+            case tt::Direction::LEFT:
+                _player->setBaseState("left");
+            break;
+
+            case tt::Direction::RIGHT:
+                _player->setBaseState("right");
+            break;
+
+            case tt::Direction::DOWN:
+                _player->setBaseState("down");
+            break;
+
+            default:
+            break;
+        }
     }
 
     return {};
@@ -441,9 +468,11 @@ ScreenAction Scene::update(sf::Time elapsed)
     }
 
     std::stringstream ss1;
-    ss1 << getPlayerTile();
-    auto posText = fmt::format("P({}) T({})", ss1.str(), elapsed.asSeconds());
-    _debugWindow.setText(posText);
+    ss1 << "P(" << getPlayerTile()
+        << ") G(" << _player->getGlobalCenter()
+        << ") T(" << elapsed.asSeconds() << ")";
+
+    _debugWindow.setText(ss1.str());
 	
     return Screen::timestep();
 }
@@ -464,7 +493,7 @@ void Scene::draw()
 
     _window.draw(*_player);
     _window.setView(_window.getDefaultView());
-    _hud.draw();
+    _hudPtr->draw();
     _descriptionText.draw();
     _debugWindow.draw();
 
@@ -509,7 +538,7 @@ void Scene::updateCurrentTile(const TileInfo& info)
         {
             _descriptionText.setText(
                 item->getName() + ": " +
-                item->getDescription());
+                        item->description());
 
             handled = true;
             break;
@@ -528,14 +557,14 @@ void Scene::updateCurrentTile(const TileInfo& info)
         switch (_currentTile.type)
         {
             default:
-                _hud.setZoneText({});
+                _hudPtr->setZoneText({});
                 _descriptionText.setText({});
             break;
 
             case TileType::ZONE:
             {
                 const auto zoneinfo = boost::any_cast<Zone>(_currentTile.data);
-                _hud.setZoneText(zoneinfo.name);
+                _hudPtr->setZoneText(zoneinfo.name);
                 if (!zoneinfo.description.empty())
                 {
                     _descriptionText.setText(zoneinfo.description);
@@ -675,6 +704,8 @@ void Scene::createItems()
             {
                 continue;
             }
+
+            _logger->trace("loading item '{}'", itemid);
 
             // default info for the item
             ItemInstanceInfo groupinfo = data.get<ItemInstanceInfo>();
@@ -861,8 +892,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setState("left");
+                _player->setBaseState("left_walking");
                 _player->setDirection(Direction::LEFT);
                 return { true, {} };
             }
@@ -876,8 +906,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setState("right");
+                _player->setBaseState("right_walking");
                 _player->setDirection(Direction::RIGHT);
                 return { true, {} };
             }
@@ -891,8 +920,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setState("up");
+                _player->setBaseState("up_walking");
                 _player->setDirection(Direction::UP);
                 return { true, {} };
             }
@@ -906,8 +934,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
                 }
 
                 _player->setWalking(true);
-                _player->setAnimated(true);
-                _player->setState("down");
+                _player->setBaseState("down_walking");
                 _player->setDirection(Direction::DOWN);
                 return { true, {} };
             }
@@ -981,7 +1008,7 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
 
             case sf::Keyboard::Period:
             {
-                _hud.setVisible(!_hud.visible());
+                _hudPtr->setVisible(!_hudPtr->visible());
             }
             break;
 
@@ -1078,6 +1105,30 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             case sf::Keyboard::RBracket:
             {
                 _player->increaseHealth(10);
+            }
+            break;
+
+            case sf::Keyboard::P:
+            {
+                _player->punch();
+            }
+            break;
+
+            case sf::Keyboard::O:
+            {
+                _player->spellcast();
+            }
+            break;
+
+            case sf::Keyboard::L:
+            {
+                _player->arrow();
+            }
+            break;
+
+            case sf::Keyboard::K:
+            {
+                _player->dance();
             }
             break;
         }

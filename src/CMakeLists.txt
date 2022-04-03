@@ -3,12 +3,14 @@ set(SOURCE_FILES
     Background.cpp
     DelayedSound.cpp
     Engine.cpp
+    GameWorld.cpp
     GameOverScreen.cpp
     GameScreen.cpp
     Intersection.cpp
     IntroScreen.cpp
     Item.cpp
     ItemFactory.cpp
+    LoadingScreen.cpp
     main.cpp
     PathFactory.cpp
     Player.cpp
@@ -40,6 +42,8 @@ set(HEADER_FILES
     Engine.h
     Item.h
     ItemFactory.h
+    LoadingScreen.h
+    GameWorld.h
     GameOverScreen.h
     GameScreen.h
     GameTypes.h

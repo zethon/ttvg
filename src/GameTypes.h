@@ -12,4 +12,18 @@ enum Direction
     RIGHT   = 0x08
 };
 
+inline std::string DirectionToString(tt::Direction d)
+{
+    switch (d)
+    {
+        case tt::Direction::UP: return "up"; break;
+        case tt::Direction::DOWN: return "down"; break;
+        case tt::Direction::LEFT: return "left"; break;
+        case tt::Direction::RIGHT: return "right"; break;
+        default: break;
+    }
+
+    return {};
+}
+
 } // namespace

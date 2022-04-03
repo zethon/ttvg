@@ -1,4 +1,4 @@
-require "libs/fire_example.lua"
+require "libs/fire_onselect.lua"
 
 local _player = nil     -- shortcut to player object, refereshed in every `onEnter` call
 
@@ -44,7 +44,7 @@ function sevan_select(scene, item)
             Utils.showModal(scene, "Hey thanks man! Here's another $20")
             _player:removeItemByName('bag-of-weed')
             _player:setBalance(_player:getBalance() + 20)
-            item:setState("flip")
+            item:interruptState("flip")
         end
     end
 end
@@ -203,5 +203,6 @@ function belushi_select(scene, item)
     w:exec()
 
 end
+
 
 

@@ -86,6 +86,11 @@ jobs:
     - name: Create Build Environment
       run: cmake -E make_directory ${{github.workspace}}/build
 
+    - name: Init Git Submodules
+      shell: bash
+      working-directory: ${{github.workspace}}
+      run: git submodule update --init --recursive
+
     - name: Configure CMake
       shell: bash
       working-directory: ${{github.workspace}}/build

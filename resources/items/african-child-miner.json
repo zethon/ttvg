@@ -1,0 +1,24 @@
+{
+    "name":         	"African Child",
+
+    "description":  	"Sir, I am hungry.",
+
+    "obtainable":   	false,
+
+    "size":             { "x": 49, "y": 112 },
+
+    "frame-count":      4,
+    "time-step":        555,
+
+    "default-state":    "idle",
+
+    "states":
+    [
+            {   "id":       "idle",
+                "source":   { "x": 0, "y": 0 }, "time-step": 550 }
+
+    ]
+
+}
+
+

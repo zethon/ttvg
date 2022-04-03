@@ -209,7 +209,7 @@ int Item_getName(lua_State* L)
 int Item_getDescription(lua_State* L)
 {
     auto item = tt::checkObject<Item>(L);
-    lua_pushstring(L, item->getDescription().c_str());
+    lua_pushstring(L, item->description().c_str());
     return 1;
 }
 
@@ -232,7 +232,23 @@ int Item_setState(lua_State* L)
 {
     auto item = tt::checkObject<Item>(L);
     const auto state = lua_tostring(L, 2);
-    item->setState(state);
+    item->setBaseState(state);
+    return 0;
+}
+
+int Item_interruptState(lua_State* L)
+{
+    auto item = tt::checkObject<Item>(L);
+    const auto state = lua_tostring(L, 2);
+    item->interruptState(state);
+    return 0;
+}
+
+int Item_queueState(lua_State* L)
+{
+    auto item = tt::checkObject<Item>(L);
+    const auto state = lua_tostring(L, 2);
+    item->queueState(state);
     return 0;
 }
 
@@ -245,7 +261,9 @@ const struct luaL_Reg Item::LuaMethods[] =
         {"description", Item_getDescription},
         {"obtainable", Item_isObtainable},
         {"setObtainable", Item_setObtainable},
-        {"setState", Item_setState},
+        {"setBaseState", Item_setState},
+        {"interruptState", Item_interruptState},
+        {"queueState", Item_queueState},
         {nullptr, nullptr}
     };
 
@@ -264,21 +282,37 @@ namespace tt
 {
 
 Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
-    : _objectInfo{ obj }, _instanceInfo{ inst }
+    : _objectInfo{ obj }, _instanceInfo{ inst },
+      _logger{ log::initializeLogger("Item") }
 {
     assert(obj.texture);
     _sprite.setTexture(*obj.texture);
 
     if (_objectInfo.size.has_value())
     {
-        _size = *(_objectInfo.size);
-        _sprite.setTextureRect(sf::IntRect(0, 0, _size.x, _size.y));
+        _framesize = *(_objectInfo.size);
+        _sprite.setTextureRect(sf::IntRect(0, 0, _framesize.x, _framesize.y));
     }
     else
     {
-        _size = _sprite.getTexture()->getSize();
+        _framesize = _sprite.getTexture()->getSize();
     }
 
+    // either point us to the object info's statemap or
+    // create a dummy statemap if there is not one defined for
+    // the object and then point us to that
+    if (_objectInfo.states.size() > 0)
+    {
+        _states = &(_objectInfo.states);
+    }
+    else
+    {
+        ItemState defaultState{ "@default", {0,0}, 1, DEFAULT_TIMESTEP, {} };
+        _defaultStates.emplace("@default", std::move(defaultState));
+        _states = &(_defaultStates);
+    }
+
+    // try to determine the starting state
     std::string defaultState;
     if (_instanceInfo.defaultState.size() > 0)
     {
@@ -288,28 +322,25 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
     {
         defaultState = _objectInfo.defaultState;
     }
-    else if (_objectInfo.states.size() == 1)
+    else if (_states->size() == 1)
     {
         // default to the only state
-        defaultState = _objectInfo.states.begin()->first;
+        defaultState = _states->begin()->first;
     }
-    else if (_objectInfo.states.size() > 0)
+    else if (_states->size() > 1)
     {
+        // in this case the item has multiple states defined
+        // but there is no default state, so we don't know
+        // what to do
         throw std::runtime_error(fmt::format("object '{}' requires a 'default-state'", _objectInfo.id));
     }
 
-    initStateHitboxes(defaultState);
+    // now that we've defined the states, let's initiate the hitboxes, which
+    // will be used for collision detection
+    initStateHitboxes();
 
-    // TODO: this should be refacotered out
-    if (defaultState.size() > 0)
-    {
-        _animated = true;
-        setState(defaultState);
-    }
-    else
-    {
-        _currentState = "@default";
-    }
+    // set the base state *after* we've initialized the hitboxes
+    setBaseState(defaultState);
 
     _obtainable = _objectInfo.obtainable;
     if (_instanceInfo.obtainable.has_value())
@@ -328,9 +359,9 @@ Item::Item(const ItemInfo& obj, const ItemInstanceInfo& inst)
     _highlight.setOutlineColor(sf::Color(255, 255, 255));
 }
 
-void Item::initStateHitboxes(const std::string &defaultstate)
+void Item::initStateHitboxes()
 {
-    for (const auto& [key, value] : _objectInfo.states)
+    for (const auto& [key, value] : *_states)
     {
         if (value.hitbox.has_value())
         {
@@ -344,10 +375,12 @@ void Item::initStateHitboxes(const std::string &defaultstate)
             std::optional<std::uint32_t> left, right, top, bottom;
             std::uint32_t x = 0;
             std::uint32_t y = 0;
-            for (auto startX = (value.source.x * _size.x); startX < (value.source.x * _size.x) + _size.x; startX++, x++)
+            auto endX = std::min((value.source.x * _framesize.x) + _framesize.x, image.getSize().x);
+            for (auto startX = (value.source.x * _framesize.x); startX < endX; startX++, x++)
             {
                 y=0;
-                for (auto startY = (value.source.y * _size.y); startY < (value.source.y * _size.y) + _size.y; startY++, y++)
+                auto endY = std::min((value.source.y * _framesize.y) + _framesize.y, image.getSize().y);
+                for (auto startY = (value.source.y * _framesize.y); startY < endY; startY++, y++)
                 {
                     sf::Color pixel = image.getPixel(startX, startY);
                     if (pixel.a == 0) continue;
@@ -377,16 +410,11 @@ void Item::initStateHitboxes(const std::string &defaultstate)
             _hitboxes.emplace(key, HitBox{*left, *top, *right - *left, *bottom - *top });
         }
     }
-
-    if (_hitboxes.size() == 0)
-    {
-        _hitboxes.emplace("@default", HitBox{ 0, 0, _size.x, _size.y });
-    }
 }
 
-void Item::setState(const std::string& statename)
+void Item::setBaseState(const std::string& statename)
 {
-    if (_objectInfo.states.find(statename) == _objectInfo.states.end())
+    if (_states->find(statename) == _states->end())
     {
         throw std::runtime_error(
             fmt::format("object '{}' does not contain state '{}", this->objectInfo().id, statename));
@@ -398,54 +426,86 @@ void Item::setState(const std::string& statename)
                 fmt::format("object '{}' missing hitbox for state '{}", this->objectInfo().id, statename));
     }
 
-    _currentState = statename;
+    _currentBaseState = statename;
+    _currentFrame = 0;
+    _currentState = &(_states->at(_currentBaseState));
 
-    const auto& state = _objectInfo.states.at(statename);
-    _source = state.source;
-
-    _framecount = *(state.framecount);
-    _timestep = *(state.timestep);
+    assert(_currentState->timestep.has_value());
+    assert(_currentState->framecount.has_value());
 
     if (_showHighlight)
     {
-        auto width = _hitboxes.at(_currentState).width * this->getScale().x;
-        auto height = _hitboxes.at(_currentState).height * getScale().y;
+        auto width = _hitboxes.at(_currentBaseState).width * this->getScale().x;
+        auto height = _hitboxes.at(_currentBaseState).height * getScale().y;
         _highlight.setSize(sf::Vector2f{
             static_cast<float>(width), static_cast<float>(height) });
 
         updateHighlight();
     }
 
-    _sprite.setTextureRect(sf::IntRect(
-        _source.x * _size.x, _source.y * _size.y, _size.x, _size.y));
+    const auto xOffset = (_currentFrame * _framesize.x) + _currentState->source.x;
+    const auto yOffset = _framesize.y * _currentState->source.y;
+
+    _sprite.setTextureRect(sf::IntRect(xOffset, yOffset, _framesize.x, _framesize.y));
+}
+
+void Item::queueState(const std::string& state)
+{
+    _stateQueue.push(state);
+}
+
+void Item::interruptState(const std::string& state)
+{
+    _stateInterrupt = state;
 }
 
 std::uint16_t Item::timestep()
 {
-    if (_animated
-        && _framecount > 0
-        && _timer.getElapsedTime().asMilliseconds() > static_cast<int>(_timestep))
+    assert(_currentState->framecount.has_value() && (*(_currentState->framecount) > 0));
+    if (_timer.getElapsedTime().asMilliseconds() < static_cast<int>(*(_currentState->timestep)))
     {
-        auto[left, top] = _source;
-        left++;
-
-        auto textureWidth = _framecount > 0 ?
-            _framecount * _size.x : _sprite.getTexture()->getSize().x;
-
-        if (static_cast<std::uint32_t>(left * _size.x) >= textureWidth)
-        {
-            left = 0;
-        }
-
-        _source.x = left;
-        _source.y = top;
-        _sprite.setTextureRect(sf::IntRect(
-            _source.x * _size.x, _source.y * _size.y, _size.x, _size.y));
-        
-        onFrameChange();
-
-        _timer.restart();
+        return 0;
     }
+
+    if (_stateInterrupt.size() > 0)
+    {
+        _currentFrame = 0;
+        _currentState = &(_states->at(_stateInterrupt));
+        assert(_currentState->timestep.has_value());
+        assert(_currentState->framecount.has_value());
+
+        _stateInterrupt.clear();
+        _stateQueue = std::queue<std::string>{};
+    }
+    else
+    {
+        _currentFrame++;
+        if (_currentFrame >= *(_currentState->framecount))
+        {
+            if (_stateQueue.size() > 0)
+            {
+                _currentState = &(_states->at(_stateQueue.front()));
+                _stateQueue.pop();
+
+                assert(_currentState->timestep.has_value());
+                assert(_currentState->framecount.has_value());
+            }
+            else
+            {
+                _currentState = &(_states->at(_currentBaseState));
+            }
+
+            _currentFrame = 0;
+        }
+    }
+
+    const auto xOffset = (_currentFrame * _framesize.x) + _currentState->source.x;
+    const auto yOffset = _framesize.y * _currentState->source.y;
+
+    _sprite.setTextureRect(sf::IntRect(xOffset, yOffset, _framesize.x, _framesize.y));
+
+    onFrameChange(); // TODO: is this used? do we want this?
+    _timer.restart();
 
     return 0;
 }
@@ -464,10 +524,10 @@ sf::FloatRect Item::getGlobalHitBox() const
 
     // TODO: this information could be cached each time the item moves
     const auto hpos = getPosition();
-    retval.left = hpos.x + _hitboxes.at(_currentState).left;
-    retval.top = hpos.y + _hitboxes.at(_currentState).top;
-    retval.width = static_cast<float>(_hitboxes.at(_currentState).width * this->getScale().x);
-    retval.height = static_cast<float>(_hitboxes.at(_currentState).height * this->getScale().y);
+    retval.left = hpos.x + _hitboxes.at(_currentBaseState).left;
+    retval.top = hpos.y + _hitboxes.at(_currentBaseState).top;
+    retval.width = static_cast<float>(_hitboxes.at(_currentBaseState).width * this->getScale().x);
+    retval.height = static_cast<float>(_hitboxes.at(_currentBaseState).height * this->getScale().y);
 
     return retval;
 }
@@ -478,8 +538,8 @@ void Item::setHighlighted(bool h)
 
     if (_showHighlight)
     {
-        auto width = _hitboxes[_currentState].width * this->getScale().x;
-        auto height = _hitboxes[_currentState].height * getScale().y;
+        auto width = _hitboxes[_currentBaseState].width * this->getScale().x;
+        auto height = _hitboxes[_currentBaseState].height * getScale().y;
         _highlight.setSize(sf::Vector2f{
             static_cast<float>(width), static_cast<float>(height) });
 
@@ -489,12 +549,6 @@ void Item::setHighlighted(bool h)
     {
         _highlight.setSize(sf::Vector2f{ 0.f, 0.f });
     }
-}
-
-void Item::setAnimated(bool v)
-{
-    _animated = v;
-    _timer.restart();
 }
 
 void Item::draw(sf::RenderTarget & target, sf::RenderStates states) const

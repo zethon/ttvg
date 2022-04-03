@@ -84,8 +84,7 @@ Vehicle::Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg)
     : Item(info, info.instinfo),
       _bg{ bg }
 {
-    setState("down");
-    setAnimated(true);
+    setBaseState("down");
 }
 
 std::uint16_t Vehicle::timestep()
@@ -194,25 +193,25 @@ void Vehicle::setDirection(std::uint32_t dir)
         case DOWN:
         default:
         {
-            setState("down");
+            setBaseState("down");
         }
         break;
 
         case UP:
         {
-            setState("up");
+            setBaseState("up");
         }
         break;
 
         case LEFT:
         {
-            setState("left");
+            setBaseState("left");
         }
         break;
 
         case RIGHT:
         {
-            setState("right");
+            setBaseState("right");
         }
         break;
     }

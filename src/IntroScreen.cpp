@@ -228,7 +228,7 @@ PollResult IntroScreen::poll(const sf::Event& e)
 
             case 0: // play game
             {
-                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_GAME }};
+                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_LOADING }};
             }
 
             case 2: // exit

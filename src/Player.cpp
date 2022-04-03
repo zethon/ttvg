@@ -105,7 +105,7 @@ int Player_setState(lua_State* L)
 {
     auto item = tt::checkObject<Player>(L);
     const auto state = lua_tostring(L, 2);
-    item->setState(state);
+    item->setBaseState(state);
     return 0;
 }
 
@@ -127,7 +127,7 @@ const struct luaL_Reg Player::LuaMethods[] =
     {"setPosition", Player_setPosition},
     {"getPosition", Player_getPosition},
 
-    {"setState", Player_setState},
+    {"setBaseState", Player_setState},
 
     {nullptr, nullptr}
 };
@@ -246,6 +246,30 @@ void Player::setWalking(bool walking)
 { 
     _moving = walking;
     _movingTimer.restart();
+}
+
+void Player::punch()
+{
+    const auto state = fmt::format("{}_punch", tt::DirectionToString(this->direction()));
+    this->interruptState(state);
+}
+
+void Player::spellcast()
+{
+    const auto state = fmt::format("{}_spellcast", tt::DirectionToString(this->direction()));
+    this->queueState(state);
+}
+
+void Player::arrow()
+{
+    const auto state = fmt::format("{}_arrow", tt::DirectionToString(this->direction()));
+    this->interruptState(state);
+}
+
+void Player::dance()
+{
+    const auto state = fmt::format("{}_dance", tt::DirectionToString(this->direction()));
+    this->queueState(state);
 }
 
 std::uint16_t Player::timestep()

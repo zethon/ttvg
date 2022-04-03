@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <optional>
+#include <queue>
 
 #include <boost/signals2.hpp>
 
@@ -10,6 +11,7 @@
 
 #include "GameTypes.h"
 #include "IUpdateable.h"
+#include "TooterLogger.h"
 
 namespace nl = nlohmann;
 
@@ -202,8 +204,10 @@ public:
     void setGlobalTop(float top);
     void setGlobalBottom(float bottom);
 
-    void setState(const std::string& statename);
-    
+    void setBaseState(const std::string& statename);
+    void queueState(const std::string& state);
+    void interruptState(const std::string& state);
+
     void setHighlighted(bool h);
     bool highlighted() const { return _highlight.getSize().x != 0; }
     
@@ -211,9 +215,6 @@ public:
     sf::FloatRect getGlobalBounds() const;
     sf::FloatRect getGlobalHitBox() const;
     std::uint16_t timestep() override;
-
-    bool animated() const { return _animated; }
-    void setAnimated(bool v);
 
     bool obtainable() const { return _obtainable; }
     void setObtainable(bool o) { _obtainable = o; }
@@ -231,7 +232,7 @@ public:
         return _objectInfo.name;
     }
 
-    std::string getDescription() const
+    std::string description() const
     {
         return _objectInfo.description;
     }
@@ -242,8 +243,8 @@ public:
     void updateHighlight()
     {
         auto hpos = getPosition();
-        hpos.x += (_hitboxes.at(_currentState).left * getScale().x);
-        hpos.y += (_hitboxes.at(_currentState).top * getScale().y);
+        hpos.x += (_hitboxes.at(_currentBaseState).left * getScale().x);
+        hpos.y += (_hitboxes.at(_currentBaseState).top * getScale().y);
         _highlight.setPosition(hpos);
     }
 
@@ -253,36 +254,37 @@ public: // signals
 
 protected:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override final;
-    void initStateHitboxes(const std::string &defaultstate);
+    void initStateHitboxes();
 
-    sf::Vector2u    _size; // fixed cell size of each frame within the sprite 
-    sf::Clock       _timer;
-
-    // some sprite sheets have different frames per row
-    // so this allows us to adjust how many frames get
-    // animated in a particular row
-    std::uint32_t   _framecount = 0;                // of current state
-    std::uint32_t   _timestep = DEFAULT_TIMESTEP;   // of current state
-    sf::Vector2i    _source;                        // of current state
-    std::map<std::string, HitBox>   _hitboxes;
-
-    sf::Sprite          _sprite;
-    sf::RectangleShape  _highlight;
-    bool                _showHighlight = false;
-    std::string         _currentState;
-
-    // 2022-02-10: The idea right now is that a `Item` has a reference
-    // to a `ItemInfo` structs, and to also a `ItemInstance` struct
-    // to let it know about the instance of the `Item`
     const ItemInfo&           _objectInfo;    // ref to the cached info
     const ItemInstanceInfo    _instanceInfo;  // copy of the instance info
 
-    // properties that can change
-    bool    _animated = false;
-    bool    _obtainable = false;
-    float   _respawn = 0.0;
+    log::SpdLogPtr      _logger;
 
-    int     _luaIdx = 0;
+    sf::Sprite          _sprite;
+    sf::Vector2u        _framesize;          // fixed cell size of each frame within the sprite
+    sf::Clock           _timer;
+    int                 _luaIdx = 0;    // all items must be registered with the Lua system
+
+    std::string         _currentBaseState;
+    const ItemState*    _currentState = nullptr;    // current state being displayed
+    std::uint32_t       _currentFrame = 0;          // current frame of the current state
+
+    // we refer to the state map through a pointer, this way we do not require that
+    // static Items have a state map because instead we can create a "default" state
+    // map and point to it
+    const ItemStates*   _states = nullptr;          // a reference to the active state map
+    ItemStates          _defaultStates;             // used when item has no defined states
+
+    std::map<std::string, HitBox>   _hitboxes;
+    sf::RectangleShape              _highlight;
+
+    std::queue<std::string> _stateQueue;
+    std::string             _stateInterrupt;
+
+    bool            _obtainable = false;
+    float           _respawn = 0.0;
+    bool            _showHighlight = false;
 };
 
 } // namespace tt

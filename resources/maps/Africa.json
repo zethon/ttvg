@@ -1,0 +1,68 @@
+{
+    "background":
+    {
+        "scale":    { "x": 2.25, "y": 2.25 },
+        "tiles":    { "x": 16, "y": 16 },
+        "camera":   "follow"
+    },
+
+    "player":
+    {
+        "start":    { "x": 45,  "y": 62 },
+        "scale":    { "x": 1.5, "y": 1.5 },
+        "state":    "down",
+        "origin":   { "x": 0, "y": 0 },
+        "stepsize": 16.0
+    },
+
+    "zones":
+    [
+
+        { 
+            "name":         "Africa",
+            "description":  " Seems kind of warm here.\n If only I had brought potable water.",
+            "rects" :
+            [ 
+                "55,0,148,148"
+            ]
+        },
+
+        { 
+            "name":         "Lagos International Airport",
+            "description":  "Press SPACE to return to Tucson.",
+            "rects" :
+            [ 
+                "42,60,46,62"
+            ],
+            "transition":
+            {
+                "scene": "TucsonAirport",
+                "enabled": true
+            }
+        }
+
+    ],
+
+    "items":
+    { 
+		"nigerian-oil-rig":
+        {
+            "scale":        { "x": 0.75, "y": 0.75 },
+            "instances":
+            [
+                			{ "x": 34, "y": 65 }
+            ]
+        },
+
+        "african-child-miner":
+        {
+            "scale":        { "x": 0.75, "y": 0.75 },
+            "instances":
+            [
+                			{ "x": 54, "y": 61 }
+            ]
+        }
+
+    } 
+
+}

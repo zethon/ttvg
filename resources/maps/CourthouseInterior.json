@@ -8,7 +8,7 @@
 
     "player":
     {
-        "start": { "x": 400, "y": 550 },
+        "start": { "x": 5, "y": 5 },
         "scale": { "x": 2.5, "y": 2.5 },
         "state": "down",
         "origin": { "x": 0, "y": 0 },
