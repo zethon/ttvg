@@ -45,12 +45,38 @@
 
     "items":
     { 
-		"nigerian-oil-rig":
+        "nigerian-oil-rig":
         {
             "scale":        { "x": 0.75, "y": 0.75 },
             "instances":
             [
-                			{ "x": 34, "y": 65 }
+                            { "x": 34, "y": 65 }
+            ]
+        },
+
+        "pyramids":
+        {
+            "scale":        { "x": 0.25, "y": 0.25 },
+            "instances":
+            [
+                            { "x": 83, "y": 38 }
+            ]
+        },
+
+        "mine-entrance":
+        {
+            "scale":        { "x": 0.25, "y": 0.25 },
+            "instances":
+            [
+                            { "x": 75, "y": 61 }
+            ]
+        },
+
+        "shovel":
+        {
+            "instances":
+            [
+                { "x": 74, "y": 66 }
             ]
         },
 
@@ -59,7 +85,9 @@
             "scale":        { "x": 0.75, "y": 0.75 },
             "instances":
             [
-                			{ "x": 54, "y": 61 }
+                            { "x": 79, "y": 63 },
+                            { "x": 79, "y": 58 },
+                            { "x": 78, "y": 62 }
             ]
         }
 
