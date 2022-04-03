@@ -6,6 +6,14 @@
         "camera":   "follow"
     },
 
+    "background-music":
+    {
+        "file":     "music/arms-of-an-angel.wav",
+        "volume":   20,
+        "loop":     false,
+        "enabled":  true
+    },
+
     "player":
     {
         "start":    { "x": 45,  "y": 62 },
@@ -85,9 +93,9 @@
             "scale":        { "x": 0.75, "y": 0.75 },
             "instances":
             [
-                            { "x": 79, "y": 63 },
-                            { "x": 79, "y": 58 },
-                            { "x": 78, "y": 62 }
+                { "x": 79, "y": 63, "onSelect": "starvingChild_select" },
+                { "x": 79, "y": 58, "onSelect": "starvingChild_select" },
+                { "x": 78, "y": 62, "onSelect": "starvingChild_select" }
             ]
         }
 

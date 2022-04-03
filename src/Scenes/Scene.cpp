@@ -77,6 +77,17 @@ void from_json(const nl::json& j, BackgroundMusic& bm)
     {
         j.at("volume").get_to(bm.volume);
     }
+
+    if (j.contains("loop"))
+    {
+        j.at("loop").get_to(bm.loop);
+    }
+
+    if (j.contains("enabled"))
+    {
+        j.at("enabled").get_to(bm.enabled);
+    }
+
 }
 
 int Scene_name(lua_State* L)
@@ -271,13 +282,17 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
             BackgroundMusic bgmusic = json["background-music"].get<BackgroundMusic>();
             if (!bgmusic.file.empty())
             {
-                _bgmusic = _resources.openUniquePtr<sf::Music>(bgmusic.file);
-                _bgmusic->setLoop(true);
-                _bgmusic->setVolume(bgmusic.volume);
+                _logger->debug("Adding bg music file '{}'", bgmusic.file);
 
-#               ifndef RELEASE
-                _bgmusic->setVolume(0);
-#               endif
+                _bgmusic = _resources.openUniquePtr<sf::Music>(bgmusic.file);
+                _bgmusic->setLoop(bgmusic.loop);
+                _bgmusic->setVolume(bgmusic.volume);
+                
+                if (!bgmusic.enabled) 
+                {
+                    _logger->debug("Disabling music for '{}'", bgmusic.file);
+                    _bgmusic->setVolume(0);
+                }
 
             }
         }
@@ -371,7 +386,11 @@ void Scene::enter()
             _hudPtr->setBalance(cash);
         });
 		
-    if (_bgmusic) _bgmusic->play();		
+    if (_bgmusic) 
+    {
+        _logger->debug("Playing scene music.");
+        _bgmusic->play();		
+    }
 
     tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _sceneName,
                         { { LUA_REGISTRYINDEX, _luaIdx } });
