@@ -15,10 +15,12 @@
 #include <spdlog/sinks/rotating_file_sink.h>
 
 #include <SFML/Graphics.hpp>
+#include <TGUI/TGUI.hpp>
+
+#include "Screens/Screen.h"
 
 #include "ResourceManager.h"
 #include "TTUtils.h"
-#include "Screen.h"
 #include "Engine.h"
 #include "core.h"
 #include "TooterLogger.h"
@@ -168,6 +170,8 @@ int main(int argc, char *argv[])
     {
         engine.changeScreen(vm["screen"].as<std::uint16_t>());
     }
+
+    tgui::Gui gui(*win);
 
     while (win->isOpen()) 
     {

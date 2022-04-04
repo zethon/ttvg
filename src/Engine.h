@@ -4,8 +4,9 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Screens/Screen.h"
+
 #include "ResourceManager.h"
-#include "Screen.h"
 #include "TooterLogger.h"
 
 namespace tt

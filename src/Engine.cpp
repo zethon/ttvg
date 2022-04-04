@@ -1,8 +1,8 @@
 #include "Engine.h"
-#include "IntroScreen.h"
-#include "GameScreen.h"
-#include "GameOverScreen.h"
-#include "LoadingScreen.h"
+#include "Screens/IntroScreen.h"
+#include "Screens/GameScreen.h"
+#include "Screens/GameOverScreen.h"
+#include "Screens/LoadingScreen.h"
 
 namespace tt
 {

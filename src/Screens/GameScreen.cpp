@@ -1,7 +1,7 @@
 #include <lua.hpp>
 
-#include "Scenes/Scene.h"
-#include "Scenes/Tucson.h"
+#include "../Scenes/Scene.h"
+#include "../Scenes/Tucson.h"
 
 #include "GameScreen.h"
 

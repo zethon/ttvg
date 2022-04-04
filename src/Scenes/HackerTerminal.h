@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Screen.h"
+#include "../Screens/Screen.h"
 
 namespace tt
 {

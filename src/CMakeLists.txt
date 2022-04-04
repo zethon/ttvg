@@ -4,18 +4,13 @@ set(SOURCE_FILES
     DelayedSound.cpp
     Engine.cpp
     GameWorld.cpp
-    GameOverScreen.cpp
-    GameScreen.cpp
     Intersection.cpp
-    IntroScreen.cpp
     Item.cpp
     ItemFactory.cpp
-    LoadingScreen.cpp
     main.cpp
     PathFactory.cpp
     Player.cpp
     ResourceManager.cpp
-    Screen.cpp
     SpriteFactory.cpp
     TooterLogger.cpp
     Transition.cpp
@@ -32,6 +27,12 @@ set(SOURCE_FILES
     Scenes/ModalWindow.cpp
     Scenes/Tucson.cpp
     Scenes/Scene.cpp
+
+    Screens/GameOverScreen.cpp
+    Screens/GameScreen.cpp
+    Screens/IntroScreen.cpp
+    Screens/LoadingScreen.cpp
+    Screens/Screen.cpp
 )
 
 set(HEADER_FILES
@@ -42,18 +43,13 @@ set(HEADER_FILES
     Engine.h
     Item.h
     ItemFactory.h
-    LoadingScreen.h
     GameWorld.h
-    GameOverScreen.h
-    GameScreen.h
     GameTypes.h
     Intersection.h
-    IntroScreen.h
     Path.hpp
     PathFactory.h
     Player.h
     ResourceManager.h
-    Screen.h
     SpriteFactory.h
     Tiles.hpp
     TooterLogger.h
@@ -72,6 +68,12 @@ set(HEADER_FILES
     Scenes/ModalWindow.h
     Scenes/Tucson.h
     Scenes/Scene.h
+
+    Screens/LoadingScreen.h
+    Screens/GameOverScreen.h
+    Screens/GameScreen.h
+    Screens/IntroScreen.h
+    Screens/Screen.h
 )
 
 if(WIN32)

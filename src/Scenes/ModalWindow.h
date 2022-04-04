@@ -1,7 +1,7 @@
 #pragma once
 #include <deque>
 
-#include "../Screen.h"
+#include "../Screens/Screen.h"
 
 namespace tt
 {

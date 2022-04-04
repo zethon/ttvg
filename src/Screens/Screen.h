@@ -6,8 +6,8 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "ResourceManager.h"
-#include "IUpdateable.h"
+#include "../ResourceManager.h"
+#include "../IUpdateable.h"
 
 namespace tt
 {

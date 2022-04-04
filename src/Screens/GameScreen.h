@@ -4,16 +4,17 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Scenes/Scene.h"
-#include "Scenes/ModalWindow.h"
+#include "../Scenes/Scene.h"
+#include "../Scenes/ModalWindow.h"
+
+#include "../Item.h"
+#include "../Player.h"
+#include "../TTLua.h"
+#include "../TTUtils.h"
+#include "../TooterLogger.h"
+#include "../GameWorld.h"
 
 #include "Screen.h"
-#include "Item.h"
-#include "Player.h"
-#include "TTLua.h"
-#include "TTUtils.h"
-#include "TooterLogger.h"
-#include "GameWorld.h"
 
 namespace tt
 {

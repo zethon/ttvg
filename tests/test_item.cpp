@@ -7,8 +7,9 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../src/Screens/GameScreen.h"
+
 #include "../src/ResourceManager.h"
-#include "../src/GameScreen.h"
 #include "../src/TTLua.h"
 #include "../src/Scenes/Scene.h"
 #include "../src/Item.h"

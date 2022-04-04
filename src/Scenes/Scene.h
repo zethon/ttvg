@@ -4,7 +4,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include "../Screen.h"
+#include "../Screens/Screen.h"
+
 #include "../Player.h"
 #include "../Background.h"
 #include "../ItemFactory.h"
