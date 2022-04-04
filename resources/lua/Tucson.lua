@@ -6,6 +6,18 @@ function onEnter(scene)
     _player = scene:getPlayer()
 end 
 
+function guidingSpirit_onSelect(scene, item)
+    local w = scene:createModal(ModalType.Messages)
+    w:pushMessage("Hello, I am one of the messengers sent by the\nplanetary landlords!")
+    w:pushMessage("Soon the landlords will be returning to destroy\nthe earth and return to the motherland\nwith the choosen planetary royalty!")
+    w:pushMessage("If you wish to be considered for the\nchoosen planetary royalty, you must\nfirst prove your loyalty to the planet!")
+    w:pushMessage("You must stop the intellecutally inferior\nminions at AMB and KF!")
+    w:pushMessage("Find a lawyer who will help you!")
+    w:pushMessage("It won't be cheap, so first you will have\nto find a way to earn some money")
+    w:pushMessage("Once you have brought down AMB and KF,\nreturn to me and I will give you\ninformation about the choosen planetary\nroyalty!")
+    w:exec()
+end
+
 function treasureChest_onSelect(scene, item)
     local w = scene:createModal(ModalType.Default)
     

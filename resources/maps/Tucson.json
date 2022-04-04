@@ -271,6 +271,15 @@
     ],
     "items":
     {
+        "ghost":
+        {
+            "onSelect": "guidingSpirit_onSelect",
+            "scale": { "x": 1.5, "y": 1.5 },
+            "instances":
+            [
+                { "x": 40, "y": 81 }
+            ]
+        },
         "fire":
         {
             "instances":
@@ -549,7 +558,7 @@
             [
                 { "x": 234, "y": 82 },
                 { "x": 91, "y": 104 },
-                { "x": 126, "y": 25 },
+                { "x": 126, "y": 30 },
                 { "x": "random", "y": "random" },
                 { "x": "random", "y": "random" },
                 { "x": "random", "y": "random" },

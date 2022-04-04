@@ -167,7 +167,6 @@ public:
 
     int luaIdx() const { return _luaIdx; }
 
-//    Hud& hud() { return _hud; }
     DescriptionText& descriptionText() { return _descriptionText; }
 
     void addItem(ItemPtr item);

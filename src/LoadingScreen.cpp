@@ -24,7 +24,13 @@ const std::vector<std::string> StatusTexts
     "loading rolling papers and $50 weed"s,
     "normalizing sax audio files"s,
     "projecting fetishes"s,
-    "reearching the dunning kruger effect"s
+    "reearching the dunning kruger effect"s,
+    "rage posting on kiwifarms"s,
+    "rage posting on AMB"s,
+    "initializing communication with planetary management"s,
+    "contacting microsoft tech support"s,
+    "gathering intel"s,
+    "contacting Region 16, the traveling family"s
 };
 
 LoadingScreen::LoadingScreen(ResourceManager& res, sf::RenderTarget& target)
@@ -82,7 +88,7 @@ ScreenAction LoadingScreen::timestep()
     }
     
     const auto nowt = ch::system_clock::now();
-    const auto mst = ch::milliseconds{ tt::RandomNumber(350, 1750) };
+    const auto mst = ch::milliseconds{ tt::RandomNumber(450, 2750) };
     if (ch::duration_cast<ch::milliseconds>(nowt - _lastUpdate) > mst)
     {
         updateStatusText(*(tt::select_randomly(StatusTexts)));
@@ -106,16 +112,6 @@ void LoadingScreen::updateStatusText(const std::string& text)
         _statusTxt->setPosition(posx, _statusTxt->getPosition().y);
     }
 }
-
-//void LoadingScreen::statusWork()
-//{
-//    while (!_loadingComplete)
-//    {
-//        updateStatusText(*(tt::select_randomly(StatusTexts)));
-//        std::uint32_t seconds = tt::RandomNumber(500,1750);
-//        std::this_thread::sleep_for(std::chrono::milliseconds {seconds});
-//    }
-//}
 
 void LoadingScreen::loadGameScreen()
 {

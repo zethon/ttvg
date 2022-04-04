@@ -1,0 +1,17 @@
+{
+    "name":         	"Guiding Ghost",
+    "description":  	"This ghost is here to guide you. Press A to speak to him.",
+    "obtainable":   	false,
+    "size":             { "x": 48, "y": 48 },
+    "frame-count":      12,
+    "time-step":        250,
+    "default-state":    "idle",
+    "hitbox": { "x": 0, "y": 0, "width": 64, "height": 48 },
+    "states":
+    [
+        { "id": "idle", "source": { "x": 0, "y": 0 } },
+        { "id": "walking_left", "source": { "x": 0, "y": 1 } }
+    ]
+}
+
+
