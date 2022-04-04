@@ -6,6 +6,8 @@
 
 #include "IntroScreen.h"
 
+#include "TooterLogger.h"
+
 namespace tt
 {
 
@@ -107,9 +109,14 @@ IntroScreen::IntroScreen(       ResourceManager& resmgr,
     textobj->setPosition(titleXpos - 20, 10);
 
     //
+    // See https://en.sfml-dev.org/forums/index.php?topic=10276.0
+    //
+    _bgt.reserve(INTRO_IMAGES);
+
+    //
     // Load background images
     //
-    for(int i = 0; i < 8; i++)
+    for(int i = 0; i < INTRO_IMAGES; i++)
     {
         //
         // Load the intro images.
@@ -127,14 +134,12 @@ IntroScreen::IntroScreen(       ResourceManager& resmgr,
             throw std::runtime_error(filename);
         }
 
-        // _bgt.push_back(std::move(*bgt));
+        _bgt.push_back(std::move(*bgt));
+        // _bgt.push_back(*bgt);
         
-        _bgt[i] = *bgt;
-
         auto sprite = std::make_shared<sf::Sprite>();
 
-        // sprite->setTexture(_bgt.at(i));
-        sprite->setTexture(_bgt[i]);
+        sprite->setTexture(_bgt.at(i));
 
         sprite->setPosition(0, 0);
         sprite->setColor(sf::Color(0, 0, 0, 0));
@@ -152,6 +157,7 @@ IntroScreen::IntroScreen(       ResourceManager& resmgr,
         addDrawable(sprite);
 
         _sprite.push_back(sprite);
+
     }
 
     //
@@ -272,16 +278,8 @@ ScreenAction IntroScreen::timestep()
     static bool increaseAlpha   = true;
     static int  imageIndex      = 0;
 
-    //
-    // Super hack. Meed to figure out why
-    // this workaround is required.
-    //
-    // int size = _bgt.size()  
-
-    // imageIndex = imageIndex / 2;
-
-    // auto logger = log::initializeLogger("IntroScreen::timestep()");
-    // logger->debug("IntroScreen::timestep() imageIndex {}", imageIndex);
+    auto winWidth       = _window.getSize().x;
+    auto winHeight      = _window.getSize().y;
 
     if (auto elapsed = _clock.getElapsedTime();
         elapsed.asMilliseconds() > 150)
@@ -291,6 +289,10 @@ ScreenAction IntroScreen::timestep()
         //
         if(increaseAlpha) 
         {
+            // _sprite[imageIndex]->setScale(
+            //    winWidth    / _sprite[imageIndex]->getLocalBounds().width,
+            //    winHeight   / _sprite[imageIndex]->getLocalBounds().height );
+
             alpha += 16;
             if(alpha > 255) 
             {
@@ -313,14 +315,17 @@ ScreenAction IntroScreen::timestep()
                 //
                 imageIndex++;
 
-                // if(imageIndex > (_bgt.size() - 1) ) 
-                if(imageIndex > 7 ) 
+
+                if(imageIndex > (_bgt.size() - 1) ) 
                 {
                     //
                     // Reset to initial image 
                     //
                     imageIndex = 0;
                 }
+
+                auto logger = log::initializeLogger("Intro");
+                logger->debug("Change intro image: {}", imageIndex);
 
                 _sprite[imageIndex]->setColor(sf::Color(255, 255, 255, alpha));
             }

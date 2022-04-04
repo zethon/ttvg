@@ -14,9 +14,9 @@ using TextList = std::vector<TextPtr>;
 
 class IntroScreen : public Screen
 {
-    sf::Font                    _font;
+    static const int INTRO_IMAGES = 8;
 
-    // std::vector<sf::Texture>    _bgt;
+    sf::Font                    _font;
 
     sf::Sound                   _tomWillKillSound;
     
@@ -26,9 +26,7 @@ class IntroScreen : public Screen
     std::uint16_t               _selected = 0;
     TextList                    _menuItems;
 
-    // std::vector<sf::Texture>    _bgt;
-    
-    sf::Texture                     _bgt[8];
+    std::vector<sf::Texture>    _bgt;
 
     using SpritePtr             = std::shared_ptr<sf::Sprite>;
     std::vector<SpritePtr>      _sprite;
