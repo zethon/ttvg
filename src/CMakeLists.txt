@@ -101,11 +101,16 @@ add_executable(tooter ${GUI_TYPE}
     ${RESOURCE_FILES}
 )
 
+
 target_link_libraries(tooter
-PUBLIC
-    ${CONAN_LIBS}
-    ${SFML_Libraries}
-    ${CONAN_LIBS_FRAMEWORKS_LUADIST}
+    PUBLIC
+        ${CONAN_LIBS}
+        ${SFML_Libraries}
+        ${CONAN_LIBS_FRAMEWORKS_LUADIST}
+    PRIVATE 
+        # TGUI::TGUI
+        # ${TGUI_LIBRARY}
+        tgui
 )
 
 target_link_directories(tooter
