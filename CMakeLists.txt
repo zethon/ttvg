@@ -93,13 +93,13 @@ string(STRIP ${APP_VERSION_PATCH} APP_VERSION_PATCH)
 set(APP_VERSION "${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}.")
 
 # get the git commit hash
-execute_process(COMMAND git log --pretty=format:'%h' -n 1
+execute_process(COMMAND git log --pretty=format:%h -n 1
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 OUTPUT_VARIABLE GIT_REV
                 ERROR_QUIET)
 
 if (NOT "${GIT_REV}" STREQUAL "")
-    set(APP_BUILD_NUMBER "$ENV{APPVEYOR_BUILD_NUMBER}")
+    set(APP_BUILD_NUMBER "${GIT_REV}")
 else()
     set(APP_BUILD_NUMBER "0")
 endif()
