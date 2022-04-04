@@ -6,6 +6,8 @@
 
 #include "IntroScreen.h"
 
+#include "TooterLogger.h"
+
 namespace tt
 {
 
@@ -64,8 +66,11 @@ void updateMenu(std::uint16_t selection, TextList& menuItems)
 
 }
 
-IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
-    : Screen(resmgr, target)
+IntroScreen::IntroScreen(       ResourceManager& resmgr, 
+                                sf::RenderTarget& target )
+
+                            :   Screen(resmgr, target)
+
 {
     
     if (auto temp = _resources.load<sf::Font>("fonts/pricedown.ttf"); 
@@ -106,33 +111,40 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     //
     // Load background images
     //
-    for(int i = 0; i < 8; i++)
+    // for(int i = 0; i < 8; i++)
+    for(int i = 0; i < 4; i++)
     {
         //
         // Load the intro images.
         //
-        const auto filename = fmt::format("images/ttvg-intro-screen-{}.png", i+1);
-        auto bgt = _resources.load<sf::Texture>(filename);
+        auto filename = fmt::format("images/ttvg-intro-screen-{}.png", i+1);
+      
+        auto logger = log::initializeLogger("Intro");
+        logger->debug("Loading intro file {}", filename);
+
+        // auto bgt = _resources.load<sf::Texture>(filename);
+        auto bgt = _resources.loadPtr<sf::Texture>(filename);
 
         if (!bgt)
         {
-            throw std::runtime_error("tommy-1.png could not be loaded!");
+            throw std::runtime_error(filename);
         }
 
         _bgt.push_back(std::move(*bgt));
-
+        
         auto sprite = std::make_shared<sf::Sprite>();
 
-        sprite->setTexture(_bgt[i]);
+        sprite->setTexture(_bgt.at(i));
+
         sprite->setPosition(0, 0);
         sprite->setColor(sf::Color(0, 0, 0, 0));
 
         //
-        // Fit this imate to the window size.
+        // Fit this image to the window size.
         //
         sprite->setScale(
-                winWidth / sprite->getLocalBounds().width,
-                winHeight / sprite->getLocalBounds().height);
+                winWidth    / sprite->getLocalBounds().width,
+                winHeight   / sprite->getLocalBounds().height );
  
         //
         // Add this intro image.
@@ -260,11 +272,15 @@ ScreenAction IntroScreen::timestep()
     static bool increaseAlpha   = true;
     static int  imageIndex      = 0;
 
-    // int imageHeight = 394;  // This will depend on the height of the
-    //                        // individual frames. Should probably put these
-    //                        // in seperate files.
+    // int imageHeight = 394;   // This will depend on the height of the
+    //                          // individual frames. Should probably put these
+    //                          // in seperate files.
 
     // auto[x, y] = _sprite->getPosition();
+
+
+    // auto logger = log::initializeLogger("IntroScreen::timestep()");
+    // logger->debug("IntroScreen::timestep() imageIndex {}", imageIndex);
 
     if (auto elapsed = _clock.getElapsedTime();
         elapsed.asMilliseconds() > 150)
@@ -296,7 +312,7 @@ ScreenAction IntroScreen::timestep()
                 //
                 imageIndex++;
 
-                if(imageIndex > 7) 
+                if(imageIndex > (_bgt.size() - 1) ) 
                 {
                     //
                     // Reset to initial image 
