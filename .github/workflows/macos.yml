@@ -27,6 +27,7 @@ jobs:
         build_type: [Debug, Release]
     env:
       BUILD_TYPE: ${{ matrix.build_type }}
+      BUILD_NUMBER: ${{github.run_number}}
 
     steps:
     - uses: actions/checkout@v2
