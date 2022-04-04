@@ -6,8 +6,6 @@
 
 #include "IntroScreen.h"
 
-#include "TooterLogger.h"
-
 namespace tt
 {
 
@@ -111,8 +109,7 @@ IntroScreen::IntroScreen(       ResourceManager& resmgr,
     //
     // Load background images
     //
-    // for(int i = 0; i < 8; i++)
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 8; i++)
     {
         //
         // Load the intro images.
@@ -130,11 +127,14 @@ IntroScreen::IntroScreen(       ResourceManager& resmgr,
             throw std::runtime_error(filename);
         }
 
-        _bgt.push_back(std::move(*bgt));
+        // _bgt.push_back(std::move(*bgt));
         
+        _bgt[i] = *bgt;
+
         auto sprite = std::make_shared<sf::Sprite>();
 
-        sprite->setTexture(_bgt.at(i));
+        // sprite->setTexture(_bgt.at(i));
+        sprite->setTexture(_bgt[i]);
 
         sprite->setPosition(0, 0);
         sprite->setColor(sf::Color(0, 0, 0, 0));
@@ -272,12 +272,13 @@ ScreenAction IntroScreen::timestep()
     static bool increaseAlpha   = true;
     static int  imageIndex      = 0;
 
-    // int imageHeight = 394;   // This will depend on the height of the
-    //                          // individual frames. Should probably put these
-    //                          // in seperate files.
+    //
+    // Super hack. Meed to figure out why
+    // this workaround is required.
+    //
+    // int size = _bgt.size()  
 
-    // auto[x, y] = _sprite->getPosition();
-
+    // imageIndex = imageIndex / 2;
 
     // auto logger = log::initializeLogger("IntroScreen::timestep()");
     // logger->debug("IntroScreen::timestep() imageIndex {}", imageIndex);
@@ -312,7 +313,8 @@ ScreenAction IntroScreen::timestep()
                 //
                 imageIndex++;
 
-                if(imageIndex > (_bgt.size() - 1) ) 
+                // if(imageIndex > (_bgt.size() - 1) ) 
+                if(imageIndex > 7 ) 
                 {
                     //
                     // Reset to initial image 

@@ -4,6 +4,8 @@
 
 #include "Screen.h"
 
+#include "TooterLogger.h"
+
 namespace tt
 {
 
@@ -24,7 +26,9 @@ class IntroScreen : public Screen
     std::uint16_t               _selected = 0;
     TextList                    _menuItems;
 
-    std::vector<sf::Texture>    _bgt;
+    // std::vector<sf::Texture>    _bgt;
+    
+    sf::Texture                     _bgt[8];
 
     using SpritePtr             = std::shared_ptr<sf::Sprite>;
     std::vector<SpritePtr>      _sprite;
