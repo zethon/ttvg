@@ -13,7 +13,9 @@ using TextList = std::vector<TextPtr>;
 class IntroScreen : public Screen
 {
     sf::Font                    _font;
-    std::vector<sf::Texture>    _bgt;
+
+    // std::vector<sf::Texture>    _bgt;
+
     sf::Sound                   _tomWillKillSound;
     
     std::shared_ptr<sf::SoundBuffer>    _selectorBuffer;
@@ -22,8 +24,11 @@ class IntroScreen : public Screen
     std::uint16_t               _selected = 0;
     TextList                    _menuItems;
 
-    using SpritePtr = std::shared_ptr<sf::Sprite>;
-    std::vector<SpritePtr>  _sprite;
+    std::vector<sf::Texture>    _bgt;
+
+    using SpritePtr             = std::shared_ptr<sf::Sprite>;
+    std::vector<SpritePtr>      _sprite;
+
 
     std::unique_ptr<sf::Music>   _bgsong;
 
