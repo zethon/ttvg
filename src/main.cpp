@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        engine.timestep();
+        engine.update();
 
         win->clear();
         engine.drawScreen();

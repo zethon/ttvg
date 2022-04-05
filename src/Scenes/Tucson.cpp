@@ -158,7 +158,7 @@ void Tucson::timestepTraffic(sf::Time elapsed)
     while (vi != _vehicles.end())
     {
         auto& ptr = *vi;
-        auto result = ptr->timestep();
+        auto result = ptr->update();
         if (result == Vehicle::DELETE_VEHICLE)
         {
             // remove it from our vehicle list

@@ -452,7 +452,7 @@ ScreenAction Scene::update(sf::Time elapsed)
     std::for_each(_items.begin(), _items.end(),
         [this](ItemPtr item)
         {
-            item->timestep();
+            item->update();
         });
 
     const auto taskIt = _itemTasks.lower_bound(elapsed);

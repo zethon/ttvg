@@ -29,7 +29,7 @@ public:
     
     void drawScreen();
     PollResult poll(const sf::Event& e);
-    void timestep();
+    void update();
     void changeScreen(std::uint16_t id);
 
 };

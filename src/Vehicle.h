@@ -47,7 +47,7 @@ public:
 
     Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg);
 
-    std::uint16_t timestep() override;
+    std::uint16_t update() override;
     bool isBlocked(const sf::FloatRect& point);
 
     VehicleState vehicleState() const { return _vehicleState; }

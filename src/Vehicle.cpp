@@ -87,9 +87,9 @@ Vehicle::Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg)
     setBaseState("down");
 }
 
-std::uint16_t Vehicle::timestep()
+std::uint16_t Vehicle::update()
 {
-    Item::timestep();
+    Item::update();
 
     if (_vehicleState == VehicleState::MOVING
         && _movementClock.getElapsedTime().asMilliseconds() > 100)

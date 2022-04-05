@@ -183,7 +183,7 @@ PollResult GameScreen::poll(const sf::Event& e)
 
 ScreenAction GameScreen::update()
 {
-    _gameCalendar->timestep(_gameClock.getElapsedTime());
+    _gameCalendar->update(_gameClock.getElapsedTime());
 
     assert(_currentScene);
     return _currentScene->update(_gameClock.getElapsedTime());

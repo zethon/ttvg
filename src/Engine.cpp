@@ -41,7 +41,7 @@ PollResult TooterEngine::poll(const sf::Event& e)
     return {};
 }
 
-void TooterEngine::timestep()
+void TooterEngine::update()
 {
     if (auto action = _currentScreen->update();
         action.type == ScreenActionType::CHANGE_SCREEN)

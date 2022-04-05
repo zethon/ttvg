@@ -11,7 +11,7 @@ class IUpdateable
 {
 public:
     virtual ~IUpdateable() = default;
-    virtual std::uint16_t timestep() = 0;
+    virtual std::uint16_t update() = 0;
 };
 
 } // namespace

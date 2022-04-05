@@ -272,10 +272,10 @@ void Player::dance()
     this->queueState(state);
 }
 
-std::uint16_t Player::timestep()
+std::uint16_t Player::update()
 {
     // handle the base class animation
-    Item::timestep();
+    Item::update();
 
     // check to see if we're walking and if it's time
     // to signal

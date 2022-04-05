@@ -47,7 +47,7 @@ void GameWorld::pickRandomTime()
     _now -= std::chrono::minutes{10};
 }
 
-void GameWorld::timestep(const sf::Time& currentTime)
+void GameWorld::update(const sf::Time& currentTime)
 {
     auto elapsedTime{ currentTime - _lastUpdate };
     if (elapsedTime.asSeconds() > CLOCK_DELAY)
