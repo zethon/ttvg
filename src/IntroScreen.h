@@ -4,6 +4,8 @@
 
 #include "Screen.h"
 
+#include "TooterLogger.h"
+
 namespace tt
 {
 
@@ -12,17 +14,24 @@ using TextList = std::vector<TextPtr>;
 
 class IntroScreen : public Screen
 {
-    sf::Font        _font;
-    sf::Texture     _bgt;
-    sf::Sound       _tomWillKillSound;
+    static const int INTRO_IMAGES = 8;
+
+    sf::Font                    _font;
+
+    sf::Sound                   _tomWillKillSound;
     
     std::shared_ptr<sf::SoundBuffer>    _selectorBuffer;
     std::shared_ptr<sf::SoundBuffer>    _twkBuffer;
     
     std::uint16_t               _selected = 0;
     TextList                    _menuItems;
-    
-    std::shared_ptr<sf::Sprite>  _sprite;
+
+    std::vector<sf::Texture>    _bgt;
+
+    using SpritePtr             = std::shared_ptr<sf::Sprite>;
+    std::vector<SpritePtr>      _sprite;
+
+
     std::unique_ptr<sf::Music>   _bgsong;
 
     sf::Clock   _clock;
