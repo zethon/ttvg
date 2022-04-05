@@ -31,7 +31,7 @@ LoadingScreen::LoadingScreen(ResourceManager& res, sf::RenderTarget& target)
     : Screen(res, target)
 {
     // I guess I was worried about error handling at one point!
-    if (auto temp = _resources.load<sf::Font>("fonts/hobo.ttf");
+    if (auto temp = _resources.load<sf::Font>("fonts/pricedown.ttf");
         temp.has_value())
     {
         _font = *temp;
