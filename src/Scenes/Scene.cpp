@@ -474,7 +474,7 @@ ScreenAction Scene::update(sf::Time elapsed)
 
     _debugWindow.setText(ss1.str());
 	
-    return Screen::timestep();
+    return Screen::update();
 }
 
 void Scene::draw()

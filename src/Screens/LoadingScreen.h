@@ -16,7 +16,7 @@ class LoadingScreen : public Screen
 public:
     LoadingScreen(ResourceManager& res, sf::RenderTarget& target);
 
-    ScreenAction timestep() override;
+    ScreenAction update() override;
 
 private:
     void loadGameScreen();

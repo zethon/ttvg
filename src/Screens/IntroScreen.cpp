@@ -247,6 +247,11 @@ PollResult IntroScreen::poll(const sf::Event& e)
                 return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_LOADING }};
             }
 
+            case 1: // settings
+            {
+                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_SETTINGS }};
+            }
+
             case 2: // exit
             {
                 _bgsong->stop();
@@ -272,7 +277,7 @@ PollResult IntroScreen::poll(const sf::Event& e)
     return {};
 }
 
-ScreenAction IntroScreen::timestep()
+ScreenAction IntroScreen::update()
 {
     static int  alpha           = 0;
     static bool increaseAlpha   = true;
@@ -392,7 +397,7 @@ PollResult SplashScreen::poll(const sf::Event& e)
     return {};
 }
 
-ScreenAction SplashScreen::timestep()
+ScreenAction SplashScreen::update()
 {
     if (auto elapsed = _clock.getElapsedTime();
         elapsed.asMilliseconds() > 1500)

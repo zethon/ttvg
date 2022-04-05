@@ -89,7 +89,7 @@ private:
 
     Path                        _path;
     std::vector<sf::Vector2f>   _globalPoints;
-    float                       _speed = 10.0f;  // Pixels per timestep
+    float                       _speed = 10.0f;  // Pixels per update
     std::uint16_t               _damage = 0;
 
     Direction                   _direction = tt::Direction::DOWN;  // Current direction of the object

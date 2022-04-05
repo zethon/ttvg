@@ -3,6 +3,7 @@
 #include "Screens/GameScreen.h"
 #include "Screens/GameOverScreen.h"
 #include "Screens/LoadingScreen.h"
+#include "Screens/SettingsScreen.h"
 
 namespace tt
 {
@@ -42,10 +43,10 @@ PollResult TooterEngine::poll(const sf::Event& e)
 
 void TooterEngine::timestep()
 {
-    if (auto action = _currentScreen->timestep(); 
+    if (auto action = _currentScreen->update();
         action.type == ScreenActionType::CHANGE_SCREEN)
     {
-        _logger->debug("changing screen from timestep result");
+        _logger->debug("changing screen from update result");
         changeScreen(boost::any_cast<std::uint16_t>(action.data));
     }
     else if (action.type == ScreenActionType::CHANGE_GAMESCREEN)
@@ -99,6 +100,14 @@ void TooterEngine::changeScreen(std::uint16_t id)
             _currentScreen->close();
             _currentScreen.reset();
             _currentScreen = std::make_shared<LoadingScreen>(_resourceManager, *_renderTarget);
+        }
+        break;
+
+        case SCREEN_SETTINGS:
+        {
+            _currentScreen->close();
+            _currentScreen.reset();
+            _currentScreen = std::make_shared<SettingsScreen>(_resourceManager, *_renderTarget);
         }
         break;
     }

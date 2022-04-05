@@ -55,7 +55,7 @@ void Screen::draw()
     }
 }
 
-ScreenAction Screen::timestep()
+ScreenAction Screen::update()
 {
     std::for_each(_updateables.begin(), _updateables.end(),
         [](IUpdateablePtr i) { i->timestep(); });

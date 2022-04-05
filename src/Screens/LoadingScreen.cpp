@@ -71,7 +71,7 @@ LoadingScreen::LoadingScreen(ResourceManager& res, sf::RenderTarget& target)
     _lastUpdate = std::chrono::system_clock::now();
 }
 
-ScreenAction LoadingScreen::timestep()
+ScreenAction LoadingScreen::update()
 {
     namespace ch = std::chrono;
 

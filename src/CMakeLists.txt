@@ -33,6 +33,7 @@ set(SOURCE_FILES
     Screens/IntroScreen.cpp
     Screens/LoadingScreen.cpp
     Screens/Screen.cpp
+    Screens/SettingsScreen.cpp
 )
 
 set(HEADER_FILES
@@ -74,6 +75,7 @@ set(HEADER_FILES
     Screens/GameScreen.h
     Screens/IntroScreen.h
     Screens/Screen.h
+    Screens/SettingsScreen.h
 )
 
 if(WIN32)

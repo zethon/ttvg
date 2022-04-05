@@ -184,7 +184,7 @@ public:
 
     void draw() override;
     PollResult poll(const sf::Event&) override;
-    ScreenAction timestep() override;
+    ScreenAction update() override;
 
     lua_State* lua() const { return _luaState; }
     const SceneMap& scenes() const { return _scenes; }

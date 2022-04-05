@@ -71,9 +71,9 @@ void from_json(const nl::json& j, ItemInfo& i)
                 state.framecount = i.framecount;
             }
 
-            if (!state.timestep.has_value())
+            if (!state.update.has_value())
             {
-                state.timestep = i.timestep;
+                state.update = i.timestep;
             }
 
             if (!state.hitbox.has_value() && i.hitbox.has_value())
