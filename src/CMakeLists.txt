@@ -11,6 +11,7 @@ set(SOURCE_FILES
     PathFactory.cpp
     Player.cpp
     ResourceManager.cpp
+    Settings.cpp
     SpriteFactory.cpp
     TooterLogger.cpp
     Transition.cpp
@@ -51,6 +52,7 @@ set(HEADER_FILES
     PathFactory.h
     Player.h
     ResourceManager.h
+    Settings.h
     SpriteFactory.h
     Tiles.hpp
     TooterLogger.h

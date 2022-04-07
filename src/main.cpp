@@ -23,6 +23,7 @@
 #include "Engine.h"
 #include "core.h"
 #include "TooterLogger.h"
+#include "Settings.h"
 
 namespace po = boost::program_options;
 namespace x3 = boost::spirit::x3;
@@ -36,6 +37,44 @@ bool validateResourceFolder(std::string_view folder)
     fs::path f{ folder.data() };
     f = f / "images" / "splash.jpg";
     return fs::exists(f);
+}
+
+std::string getDefaultConfigFile()
+{
+    fs::path folder = tt::getUserFolder();
+    return fs::path{folder / ".ttvg_config"}.string();
+}
+
+amb::SettingsPtr registerSettings()
+{
+    auto retval = std::make_unique<amb::Settings>();
+
+    constexpr auto musicVolume = 100u;
+    constexpr auto sfxVolume = 100u;
+
+    retval->registerUInt("audio.volume.music", 100,
+        std::make_shared<amb::RangeValidator<std::uint64_t>>(0, 100));
+
+    retval->registerUInt("audio.volume.sfx", 100,
+        std::make_shared<amb::RangeValidator<std::uint64_t>>(0, 100));
+
+    return retval;
+}
+
+amb::SettingsPtr initSettings(std::string_view filename)
+{
+    auto settings = registerSettings();
+    boost::filesystem::path configFile{ filename.data() };
+    if (boost::filesystem::exists(configFile))
+    {
+        settings->load(filename);
+    }
+    else
+    {
+        settings->save(filename);
+    }
+
+    return settings;
 }
 
 void initLogging(std::string_view logfile)
@@ -116,6 +155,13 @@ int main(int argc, char *argv[])
     logger->info("Starting {} v{}",APP_NAME_LONG, VERSION);
     logger->info("built on {} for {}", BUILDTIMESTAMP, tt::getOsString());
 
+    std::string configFile = getDefaultConfigFile();
+    if (vm.count("config") > 0)
+    {
+        configFile = vm["config"].as<std::string>();
+    }
+    auto settings = initSettings(configFile);
+
     std::string resourceFolder = tt::defaultResourceFolder();
     if (vm.count("resources") > 0)
     {
@@ -163,7 +209,7 @@ int main(int argc, char *argv[])
 
     win->setFramerateLimit(60);
 
-    tt::TooterEngine engine{ fs::path{resourceFolder}, win };
+    tt::TooterEngine engine{ fs::path{resourceFolder}, settings, win };
 
     if (vm.count("screen") > 0)
     {

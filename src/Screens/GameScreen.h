@@ -13,6 +13,7 @@
 #include "../TTUtils.h"
 #include "../TooterLogger.h"
 #include "../GameWorld.h"
+#include "../Settings.h"
 
 #include "Screen.h"
 
@@ -200,6 +201,7 @@ private:
 
     lua_State*                      _luaState;
     std::shared_ptr<ItemFactory>    _itemFactory;
+    amb::SettingsPtr                _settings;
 
     sf::Clock                       _gameClock;
     std::shared_ptr<GameWorld>      _gameCalendar;

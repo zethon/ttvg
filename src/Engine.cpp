@@ -8,8 +8,8 @@
 namespace tt
 {
 
-TooterEngine::TooterEngine(const boost::filesystem::path& respath, RenderTargetPtr render)
-    : _resourceManager{ respath },
+TooterEngine::TooterEngine(const boost::filesystem::path& respath, const amb::SettingsPtr& settings, RenderTargetPtr render)
+    : _resourceManager{ respath, settings },
       _renderTarget { render },
       _logger { log::initializeLogger("Engine") }
 {

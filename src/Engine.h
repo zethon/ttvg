@@ -9,6 +9,8 @@
 #include "ResourceManager.h"
 #include "TooterLogger.h"
 
+namespace fs = boost::filesystem;
+
 namespace tt
 {
 
@@ -20,11 +22,12 @@ class TooterEngine
     RenderTargetPtr     _renderTarget;
 
     std::shared_ptr<Screen> _currentScreen;
-    log::SpdLogPtr               _logger;
+    log::SpdLogPtr          _logger;
     
 public:
     TooterEngine(
-        const boost::filesystem::path& respath,
+        const fs::path& respath,
+        const amb::SettingsPtr& settings,
         RenderTargetPtr render);
     
     void drawScreen();

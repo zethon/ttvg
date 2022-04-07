@@ -11,6 +11,8 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio.hpp>
 
+#include "Settings.h"
+
 namespace nl = nlohmann;
 
 namespace tt
@@ -25,8 +27,11 @@ class ResourceManager
     TextureCache                _textcache;
     SoundCache                  _soundcache;
 
+    amb::SettingsPtr            _config;
+
 public:
-    explicit ResourceManager(const boost::filesystem::path& path);
+    explicit ResourceManager(const boost::filesystem::path& path,
+                             const amb::SettingsPtr& settings);
 
     static ResourceManager* l_get(lua_State* L);
 
@@ -120,6 +125,17 @@ public:
     /// \return An optional with the loaded JSON object if loaded
     ///
     std::optional<nl::json> getJson(const std::string& name);
+
+    /// \brief Return a copy of the game settings
+    amb::SettingsPtr settings() const
+    {
+        return _config;
+    }
+
+    amb::SettingsPtr settings()
+    {
+        return _config;
+    }
 };
 
 } // namespace tt
