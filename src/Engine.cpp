@@ -15,10 +15,8 @@ TooterEngine::TooterEngine(const boost::filesystem::path& respath, const amb::Se
       _renderTarget { render },
       _logger { log::initializeLogger("Engine") }
 {
+    initAudioService();
     _currentScreen = std::make_shared<SplashScreen>(_resourceManager, *_renderTarget);
-
-    tt::AudioLocator::setMusic(std::make_shared<tt::MusicAudio>(_resourceManager));
-    tt::AudioLocator::setSound(std::make_shared<tt::SfxAudio>(_resourceManager));
 }
 
 void TooterEngine::drawScreen()
@@ -58,6 +56,8 @@ void TooterEngine::update()
     {
         _logger->debug("loading game screen");
 
+        refreshAudioService();
+
         auto gamescreen = boost::any_cast<std::shared_ptr<GameScreen>>(action.data);
         _currentScreen->close();
         _currentScreen.reset();
@@ -68,6 +68,8 @@ void TooterEngine::update()
 void TooterEngine::changeScreen(std::uint16_t id)
 {
     _logger->info("changing to screen {}", id);
+
+    refreshAudioService();
 
     switch (id)
     {
@@ -116,6 +118,44 @@ void TooterEngine::changeScreen(std::uint16_t id)
         }
         break;
     }
+}
+
+void TooterEngine::initAudioService()
+{
+    const auto settings = _resourceManager.settings();
+
+    if (auto value = settings->value("audio.volume.music",100); value > 0)
+    {
+        auto temp = std::make_shared<tt::MusicAudio>(_resourceManager);
+        tt::AudioLocator::setMusic(std::make_shared<tt::LoggedAudio>(temp));
+        tt::AudioLocator::music()->setAllVolume(value);
+    }
+    else
+    {
+        tt::AudioLocator::setMusic(std::make_shared<tt::NullAudio>());
+    }
+
+    if (auto value = settings->value("audio.volume.sfx",100); value > 0)
+    {
+        auto temp = std::make_shared<tt::SfxAudio>(_resourceManager);
+        tt::AudioLocator::setSound(std::make_shared<tt::LoggedAudio>(temp));
+        tt::AudioLocator::sound()->setAllVolume(value);
+    }
+    else
+    {
+        AudioLocator::setSound(std::make_shared<tt::NullAudio>());
+    }
+}
+
+void TooterEngine::refreshAudioService()
+{
+    const auto settings = _resourceManager.settings();
+
+    auto value = settings->value("audio.volume.music", 100);
+    tt::AudioLocator::music()->setAllVolume(value);
+
+    value = settings->value("audio.volume.sfx", 100);
+    tt::AudioLocator::sound()->setAllVolume(value);
 }
 
 } // namespace tt

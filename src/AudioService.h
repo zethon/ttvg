@@ -12,20 +12,20 @@ namespace tt
 class ResourceManager;
 
 class IAudio;
-using AudioPtr = std::shared_ptr<IAudio>;
+using IAudioPtr = std::shared_ptr<IAudio>;
 
 class AudioLocator
 {
 public:
-    static AudioPtr music() { return _music; }
-    static void setMusic(AudioPtr audio) { _music = audio; }
+    static IAudioPtr music() { return _music; }
+    static void setMusic(IAudioPtr audio) { _music = audio; }
 
-    static AudioPtr sound() { return _sound; }
-    static void setSound(AudioPtr audio) { _sound = audio; }
+    static IAudioPtr sound() { return _sound; }
+    static void setSound(IAudioPtr audio) { _sound = audio; }
 
 private: 
-    inline static AudioPtr _music;
-    inline static AudioPtr _sound;
+    inline static IAudioPtr _music;
+    inline static IAudioPtr _sound;
 };
 
 class IAudio
@@ -40,6 +40,11 @@ public:
     virtual void pause(const std::string& name) = 0;
 
     virtual void setLoop(const std::string& name, bool doLoop) = 0;
+
+    // set overall volume for all audio
+    virtual void setAllVolume(float volume) = 0;
+
+    // set volume for one specific audio sound
     virtual void setVolume(const std::string& name, float volume) = 0;
 
     virtual sf::SoundSource::Status getStatus(const std::string& name) = 0;
@@ -55,6 +60,8 @@ public:
     void pause(const std::string& name) override { }
 
     void setLoop(const std::string&, bool) override { }
+
+    void setAllVolume(float volume) override { };
     void setVolume(const std::string& name, float volume) override { }
 
     sf::SoundSource::Status getStatus(const std::string& name) override
@@ -67,9 +74,9 @@ public:
 class LoggedAudio : public IAudio
 {
 public:
-    LoggedAudio(IAudio& wrapped)
+    LoggedAudio(IAudioPtr wrapped)
         : _wrapped{ wrapped },
-          _logger { log::initializeLogger("Audio") }
+          _logger{ log::initializeLogger("Audio") }
     {
         // do nothing
     }
@@ -77,47 +84,52 @@ public:
     void cacheAudio(const std::string& name) override
     {
         _logger->trace("caching audio '{}'", name);
-        _wrapped.cacheAudio(name);
+        _wrapped->cacheAudio(name);
     }
 
     void play(const std::string& name) override
     {
         _logger->trace("playing audio '{}'", name);
-        _wrapped.play(name);
+        _wrapped->play(name);
     }
 
     void stop(const std::string& name) override
     {
         _logger->trace("stopping audio '{}'", name);
-        _wrapped.stop(name);
+        _wrapped->stop(name);
     }
 
     void pause(const std::string& name) override
     {
         _logger->trace("pausing audio '{}'", name);
-        _wrapped.pause(name);
+        _wrapped->pause(name);
     }
 
     void setLoop(const std::string& name, bool doLoop) override
     {
         _logger->trace("setting loop of '{}' to '{}'", name, doLoop);
-        _wrapped.setLoop(name, doLoop);
+        _wrapped->setLoop(name, doLoop);
+    }
+
+    void setAllVolume(float volume) override
+    {
+        _logger->trace("setting all volume to '{}'", volume);
+        _wrapped->setAllVolume(volume);
     }
 
     void setVolume(const std::string& name, float volume) override
     {
         _logger->trace("setting volume of '{}' to '{}'", name, volume);
-        _wrapped.setVolume(name, volume);
+        _wrapped->setVolume(name, volume);
     }
 
     sf::SoundSource::Status getStatus(const std::string& name) override
     {
-        _logger->trace("getting status of '{}'", name);
-        return _wrapped.getStatus(name);
+        return _wrapped->getStatus(name);
     }
 
 private:
-    IAudio& _wrapped;
+    IAudioPtr _wrapped;
     log::SpdLogPtr  _logger;
 };
 
@@ -152,6 +164,15 @@ public:
         _sounds.at(name)->setLoop(doLoop);
     }
 
+    void setAllVolume(float volume) override
+    {
+        _volume = volume;
+        for(auto&[name, sound] : _sounds)
+        {
+            sound->setVolume(_volume);
+        }
+    }
+
     void setVolume(const std::string &name, float volume) override
     {
         _sounds.at(name)->setVolume(volume);
@@ -163,7 +184,8 @@ public:
     }
 
 private:
-    ResourceManager& _resources;
+    ResourceManager&    _resources;
+    float               _volume = 100.f;
 
     using SoundPtr = std::shared_ptr<sf::Sound>;
     std::map<std::string, SoundPtr> _sounds;
@@ -182,36 +204,52 @@ public:
 
     void play(const std::string &name) override
     {
+        assert(_music.find(name) != _music.end());
         _music.at(name)->play();
     }
 
     void stop(const std::string &name) override
     {
+        assert(_music.find(name) != _music.end());
         _music.at(name)->stop();
     }
 
     void pause(const std::string &name) override
     {
+        assert(_music.find(name) != _music.end());
         _music.at(name)->pause();
     }
 
     void setLoop(const std::string &name, bool doLoop) override
     {
+        assert(_music.find(name) != _music.end());
         _music.at(name)->setLoop(doLoop);
+    }
+
+    void setAllVolume(float volume) override
+    {
+        _volume = volume;
+        for(auto&[name, song] : _music)
+        {
+            song->setVolume(_volume);
+        }
     }
 
     void setVolume(const std::string &name, float volume) override
     {
+        assert(_music.find(name) != _music.end());
         _music.at(name)->setVolume(volume);
     }
 
     sf::SoundSource::Status getStatus(const std::string &name) override
     {
+        assert(_music.find(name) != _music.end());
         return _music.at(name)->getStatus();
     }
 
 private:
-    ResourceManager& _resources;
+    ResourceManager&    _resources;
+    float               _volume = 100.f;
 
     using MusicPtr = std::unique_ptr<sf::Music>;
     std::map<std::string, MusicPtr> _music;

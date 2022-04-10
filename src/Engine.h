@@ -29,6 +29,9 @@ public:
         const fs::path& respath,
         const amb::SettingsPtr& settings,
         RenderTargetPtr render);
+
+    void initAudioService();
+    void refreshAudioService();
     
     void drawScreen();
     PollResult poll(const sf::Event& e);

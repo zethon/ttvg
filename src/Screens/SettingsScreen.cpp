@@ -122,7 +122,7 @@ void SettingsScreen::saveSettings()
 PollResult SettingsScreen::poll(const sf::Event& e)
 {
     if (e.type == sf::Event::KeyReleased
-        && e.key.code == sf::Keyboard::Space)
+        && e.key.code == sf::Keyboard::Escape)
     {
         return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO }};
     }

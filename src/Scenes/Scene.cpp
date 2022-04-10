@@ -271,6 +271,7 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
             BackgroundMusic bgmusic = json["background-music"].get<BackgroundMusic>();
             if (!bgmusic.file.empty())
             {
+
                 _bgmusic = _resources.openUniquePtr<sf::Music>(bgmusic.file);
                 _bgmusic->setLoop(true);
                 _bgmusic->setVolume(bgmusic.volume);
@@ -445,7 +446,6 @@ ScreenAction Scene::update(sf::Time elapsed)
 
     if (_player->health() <= 0)
     {
-        //_bgsong->stop();
         return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
     }
 

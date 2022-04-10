@@ -4,6 +4,8 @@
 
 #include <spdlog/sinks/base_sink.h>
 
+#include "../TooterLogger.h"
+
 #include "Screen.h"
 #include "GameScreen.h"
 
@@ -31,6 +33,8 @@ private:
     std::shared_ptr<sf::Text>   _statusTxt;
     
     std::chrono::system_clock::time_point   _lastUpdate;
+
+    log::SpdLogPtr  _logger;
 };
 
 } // namespace tt
