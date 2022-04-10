@@ -77,7 +77,7 @@ BOOST_DATA_TEST_CASE(globalFromTileTest, data::make(globalFromTileData), textSiz
 
     tt::NullWindow window;
 
-    tt::ResourceManager mgr{ boost::filesystem::path{} };
+    tt::ResourceManager mgr{ boost::filesystem::path{}, nullptr };
     tt::Background bg{ "test", mgr, window, tileSize };
     bg.setTexture(texture, true);
     bg.setScale(bgScale);
@@ -119,7 +119,7 @@ BOOST_DATA_TEST_CASE(globalCenterFromTileTest, data::make(globalCenterFromTileDa
 
     tt::NullWindow window;
 
-    tt::ResourceManager mgr{ boost::filesystem::path{} };
+    tt::ResourceManager mgr{ boost::filesystem::path{}, nullptr };
     tt::Background bg{ "test", mgr, window, tileSize };
     bg.setTexture(texture, true);
     bg.setScale(bgScale);

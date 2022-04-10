@@ -11,6 +11,7 @@
 #include "../src/TTLua.h"
 #include "../src/Scenes/Scene.h"
 #include "../src/GameWorld.h"
+#include "../src/AudioService.h"
 
 #include "Test.h"
 
@@ -36,8 +37,11 @@ struct TestHarness
     std::shared_ptr<tt::Hud> _hud;
 
     TestHarness(const std::string& resfolder)
-        : _resources{ resfolder }
+        : _resources{ resfolder, nullptr }
     {
+        tt::AudioLocator::setMusic(std::make_shared<tt::NullAudio>());
+        tt::AudioLocator::setSound(std::make_shared<tt::NullAudio>());
+
         _lua = luaL_newstate();
         _playerTexture.create(100, 100);
 
@@ -149,7 +153,7 @@ BOOST_AUTO_TEST_CASE(luaIncludeTest)
     lua_State* lua = luaL_newstate();
 
     auto path = tt::tempFolder();
-    tt::ResourceManager resources { path / "resources" };
+    tt::ResourceManager resources { path / "resources", nullptr };
 
     tt::initLua(lua, stub, nullptr, &resources);
     BOOST_TEST_REQUIRE(lua != nullptr);

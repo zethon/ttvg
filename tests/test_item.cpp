@@ -14,6 +14,7 @@
 #include "../src/Scenes/Scene.h"
 #include "../src/Item.h"
 #include "../src/ItemFactory.h"
+#include "../src/AudioService.h"
 
 #include "Test.h"
 
@@ -40,10 +41,12 @@ struct TestHarness
     sf::Texture _playerTexture;
 
     TestHarness(const std::string& resfolder)
-        : _resources{ resfolder }
+        : _resources{ resfolder, nullptr }
     {
-        _lua = luaL_newstate();
+        tt::AudioLocator::setMusic(std::make_shared<tt::NullAudio>());
+        tt::AudioLocator::setSound(std::make_shared<tt::NullAudio>());
 
+        _lua = luaL_newstate();
         _playerTexture.create(100, 100);
 
         tt::ItemInfo playerObjInfo;
@@ -75,7 +78,7 @@ struct TestHarness
 BOOST_AUTO_TEST_CASE(loadItemTest)
 {
     const auto resfolder = fmt::format("{}/resources", TT_SRC_DIRECTORY_);
-    tt::ResourceManager resmgr{ resfolder };
+    tt::ResourceManager resmgr{ resfolder, nullptr };
 
     tt::ItemFactory itemf{ resmgr };
 
