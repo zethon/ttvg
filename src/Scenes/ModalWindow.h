@@ -93,6 +93,8 @@ public:
 
 class OptionsWindow : public ModalWindow
 {
+    static inline auto SELECT2 = "sounds/selector2.wav";
+    static inline auto SELECT3 = "sounds/selector3.wav";
 
 public:
     using TextPtr = std::shared_ptr<sf::Text>;
@@ -124,8 +126,6 @@ private:
     sf::Text    _indicator;
 
     std::optional<std::size_t>  _selection = 0;
-    sf::Sound                   _selectSound;
-    sf::Sound                   _selectionMadeSound;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

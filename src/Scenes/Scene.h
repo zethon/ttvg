@@ -199,7 +199,7 @@ protected:
     DebugWindow     _debugWindow;
 
     BackgroundSharedPtr         _background;
-    std::unique_ptr<sf::Music>  _bgmusic;
+    std::string     _bgSongName;
 
     std::weak_ptr<Player>   _weakPlayer;
     PlayerPtr               _player;

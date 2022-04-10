@@ -3,6 +3,8 @@
 #include <fmt/core.h>
 
 #include "../TTLua.h"
+#include "../AudioService.h"
+
 #include "Scene.h"
 
 using namespace std::string_literals;
@@ -271,15 +273,9 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
             BackgroundMusic bgmusic = json["background-music"].get<BackgroundMusic>();
             if (!bgmusic.file.empty())
             {
-
-                _bgmusic = _resources.openUniquePtr<sf::Music>(bgmusic.file);
-                _bgmusic->setLoop(true);
-                _bgmusic->setVolume(bgmusic.volume);
-
-#               ifndef RELEASE
-                _bgmusic->setVolume(0);
-#               endif
-
+                _bgSongName = bgmusic.file;
+                tt::AudioLocator::music()->cacheAudio(_bgSongName);
+                tt::AudioLocator::music()->setLoop(_bgSongName, true);
             }
         }
 
@@ -371,8 +367,8 @@ void Scene::enter()
         {
             _hudPtr->setBalance(cash);
         });
-		
-    if (_bgmusic) _bgmusic->play();		
+
+    tt::AudioLocator::music()->play(_bgSongName);
 
     tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _sceneName,
                         { { LUA_REGISTRYINDEX, _luaIdx } });
@@ -396,7 +392,7 @@ void Scene::exit()
 
     _hudPtr.reset();
 
-    if (_bgmusic) _bgmusic->pause();
+    tt::AudioLocator::music()->pause(_bgSongName);
 }
 
 PollResult Scene::poll(const sf::Event& e)

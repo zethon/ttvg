@@ -98,6 +98,10 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
 
 GameScreen::~GameScreen()
 {
+    // properly shut down the current screen, this is mostly
+    // being called to stop any audio that is being played
+    _currentScene->exit();
+
     if (!_luaState) return;
 
     // collect all garbage
