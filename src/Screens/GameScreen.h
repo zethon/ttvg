@@ -4,16 +4,18 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Scenes/Scene.h"
-#include "Scenes/ModalWindow.h"
+#include "../Scenes/Scene.h"
+#include "../Scenes/ModalWindow.h"
+
+#include "../Item.h"
+#include "../Player.h"
+#include "../TTLua.h"
+#include "../TTUtils.h"
+#include "../TooterLogger.h"
+#include "../GameWorld.h"
+#include "../Settings.h"
 
 #include "Screen.h"
-#include "Item.h"
-#include "Player.h"
-#include "TTLua.h"
-#include "TTUtils.h"
-#include "TooterLogger.h"
-#include "GameWorld.h"
 
 namespace tt
 {
@@ -183,7 +185,7 @@ public:
 
     void draw() override;
     PollResult poll(const sf::Event&) override;
-    ScreenAction timestep() override;
+    ScreenAction update() override;
 
     lua_State* lua() const { return _luaState; }
     const SceneMap& scenes() const { return _scenes; }
@@ -199,6 +201,7 @@ private:
 
     lua_State*                      _luaState;
     std::shared_ptr<ItemFactory>    _itemFactory;
+    amb::SettingsPtr                _settings;
 
     sf::Clock                       _gameClock;
     std::shared_ptr<GameWorld>      _gameCalendar;

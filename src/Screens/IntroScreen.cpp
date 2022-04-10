@@ -4,9 +4,10 @@
 
 #include <fmt/core.h>
 
-#include "IntroScreen.h"
+#include "../TooterLogger.h"
+#include "../AudioService.h"
 
-#include "TooterLogger.h"
+#include "IntroScreen.h"
 
 namespace tt
 {
@@ -160,21 +161,11 @@ IntroScreen::IntroScreen(       ResourceManager& resmgr,
 
     }
 
-    //
-    // Load intro song
-    //
-    _bgsong = _resources.openUniquePtr<sf::Music>("music/intro.wav");
+    auto music = tt::AudioLocator::music();
+    music->cacheAudio(BACKGROUND_SONG);
 
-    if (!_bgsong)
-    {
-        throw std::runtime_error("music/intro.mp3 could not be loaded!");
-    }
-
-    //
-    // Set loop on song.
-    //
-    _bgsong->setLoop(true);
-    _bgsong->play();
+    music->setLoop(BACKGROUND_SONG, true);
+    music->play(BACKGROUND_SONG);
 
     //
     // Add the title text
@@ -198,13 +189,8 @@ IntroScreen::IntroScreen(       ResourceManager& resmgr,
         addDrawable(item);
     }
 
-    //
-    // load sounds
-    //
-    _selectorBuffer = 
-        _resources.loadPtr<sf::SoundBuffer>("sounds/selector.wav");
-    _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
-
+    tt::AudioLocator::sound()->cacheAudio(SELECTOR_SOUND);
+    tt::AudioLocator::sound()->cacheAudio(TOMWILLKILL_SOUND);
 }
 
 PollResult IntroScreen::poll(const sf::Event& e)
@@ -216,9 +202,7 @@ PollResult IntroScreen::poll(const sf::Event& e)
         {
             _selected--;
             updateMenu(_selected, _menuItems);
-
-            _tomWillKillSound.setBuffer(*_selectorBuffer);
-            _tomWillKillSound.play();
+            tt::AudioLocator::sound()->play(SELECTOR_SOUND);
         }
     }
     else if (e.type == sf::Event::KeyReleased
@@ -229,8 +213,7 @@ PollResult IntroScreen::poll(const sf::Event& e)
             _selected++;
             updateMenu(_selected, _menuItems);
 
-            _tomWillKillSound.setBuffer(*_selectorBuffer);
-            _tomWillKillSound.play();
+            tt::AudioLocator::sound()->play(SELECTOR_SOUND);
         }
     }
     else if (e.type == sf::Event::KeyPressed
@@ -247,16 +230,17 @@ PollResult IntroScreen::poll(const sf::Event& e)
                 return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_LOADING }};
             }
 
+            case 1: // settings
+            {
+                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_SETTINGS }};
+            }
+
             case 2: // exit
             {
-                _bgsong->stop();
+                tt::AudioLocator::music()->stop(BACKGROUND_SONG);
+                tt::AudioLocator::sound()->play(TOMWILLKILL_SOUND);
 
-                _tomWillKillSound.setBuffer(*_twkBuffer);
-                _tomWillKillSound.setLoop(false);
-                _tomWillKillSound.play();
-                _tomWillKillSound.setVolume(50);
-
-                while (_tomWillKillSound.getStatus() == sf::Sound::Playing)
+                while (tt::AudioLocator::sound()->getStatus(TOMWILLKILL_SOUND) == sf::Sound::Playing)
                 {
                     std::this_thread::yield();
                 }
@@ -272,7 +256,7 @@ PollResult IntroScreen::poll(const sf::Event& e)
     return {};
 }
 
-ScreenAction IntroScreen::timestep()
+ScreenAction IntroScreen::update()
 {
     static int  alpha           = 0;
     static bool increaseAlpha   = true;
@@ -341,7 +325,7 @@ ScreenAction IntroScreen::timestep()
 void IntroScreen::close()
 {
     Screen::close();
-    _bgsong->stop();
+    tt::AudioLocator::music()->stop(BACKGROUND_SONG);
 }
 
 SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
@@ -373,10 +357,7 @@ SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
 
     addDrawable(logoText);
 
-    _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
-    _tomWillKillSound.setBuffer(*_twkBuffer);
-    _tomWillKillSound.setVolume(50);
-    _tomWillKillSound.play();
+    tt::AudioLocator::sound()->cacheAudio(tt::IntroScreen::TOMWILLKILL_SOUND);
 
     _clock.restart();
 }
@@ -392,12 +373,12 @@ PollResult SplashScreen::poll(const sf::Event& e)
     return {};
 }
 
-ScreenAction SplashScreen::timestep()
+ScreenAction SplashScreen::update()
 {
     if (auto elapsed = _clock.getElapsedTime();
         elapsed.asMilliseconds() > 1500)
     {
-        _tomWillKillSound.stop();
+        tt::AudioLocator::sound()->stop(tt::IntroScreen::TOMWILLKILL_SOUND);
         return { ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO };
     }
 

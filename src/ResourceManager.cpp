@@ -24,9 +24,12 @@ ResourceManager* ResourceManager::l_get(lua_State * L)
     return state;
 }
 
-ResourceManager::ResourceManager(const boost::filesystem::path& path)
-    : _resourceFolder{ path }
+ResourceManager::ResourceManager(const boost::filesystem::path& path,
+                                 const amb::SettingsPtr& settings)
+    : _resourceFolder{ path },
+      _config{ settings }
 {
+    // nothing to do
 }
 
 ////////////////////////////////////////////////////////////

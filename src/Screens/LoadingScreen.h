@@ -4,6 +4,8 @@
 
 #include <spdlog/sinks/base_sink.h>
 
+#include "../TooterLogger.h"
+
 #include "Screen.h"
 #include "GameScreen.h"
 
@@ -16,7 +18,7 @@ class LoadingScreen : public Screen
 public:
     LoadingScreen(ResourceManager& res, sf::RenderTarget& target);
 
-    ScreenAction timestep() override;
+    ScreenAction update() override;
 
 private:
     void loadGameScreen();
@@ -31,6 +33,8 @@ private:
     std::shared_ptr<sf::Text>   _statusTxt;
     
     std::chrono::system_clock::time_point   _lastUpdate;
+
+    log::SpdLogPtr  _logger;
 };
 
 } // namespace tt

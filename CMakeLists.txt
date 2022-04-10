@@ -22,6 +22,7 @@ conan_cmake_run(REQUIRES
     spdlog/1.9.2
     nlohmann_json/3.10.5
     lua/5.4.3
+    zlib/1.2.12
     BASIC_SETUP CMAKE_TARGETS
     GENERATORS cmake_find_package cmake_paths
     BUILD missing
@@ -106,6 +107,16 @@ endif()
 
 add_subdirectory(date)
 include_directories(${CMAKE_SOURCE_DIR}/date/include)
+
+# include TGUI and build only what we need
+set(TGUI_BUILD_GUI_BUILDER FALSE)
+set(TGUI_BUILD_EXAMPLES FALSE)
+set(TGUI_BUILD_TESTS FALSE)
+set(TGUI_STATIC_LIBRARIES TRUE)
+set(TGUI_SHARED_LIBS FALSE)
+set(TGUI_BUILD_FRAMEWORK FALSE)
+add_subdirectory(TGUI)
+include_directories(TGUI/include)
 
 add_subdirectory(src)
 

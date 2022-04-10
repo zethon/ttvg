@@ -56,7 +56,7 @@ void VehicleFactory::loadVehicles(const nl::json& json)
         const auto soundname = fmt::format("sounds/{}.wav",
             item.value().at("horn").get<std::string>());
 
-        info.sound = _resources.cacheSound(soundname);
+        info.soundid = soundname;
         info.texture = _resources.cacheTexture(info.texturefile);
         info.defaultState = "right";
 
@@ -77,7 +77,7 @@ VehiclePtr VehicleFactory::createVehicle()
     auto vinfo = tt::select_randomly(_vehicles);
     auto vehicle = std::make_shared<Vehicle>(*vinfo, _background);
 
-    vehicle->setHornSound(vinfo->sound);
+    vehicle->setHornSound(vinfo->soundid);
 
     std::uniform_real_distribution<float> dis(vinfo->speed.x, vinfo->speed.y);
     vehicle->setSpeed(dis(gen));

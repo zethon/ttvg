@@ -53,7 +53,7 @@ public:
     void arrow();
     void dance();
 
-    std::uint16_t timestep() override;
+    std::uint16_t update() override;
 
 public: // signals
 

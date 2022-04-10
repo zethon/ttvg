@@ -1,3 +1,6 @@
+#include <SFML/System/Clock.hpp>
+#include <SFML/System/Time.hpp>
+
 #include "LoadingScreen.h"
 
 using namespace std::string_literals;
@@ -11,9 +14,9 @@ const std::vector<std::string> StatusTexts
     "filing lawsuits"s,
     "rendering full eggsacks, dad"s,
     "preparing to call fbi"s,
-    "tracking ogue government psy-ops cyberwarriors"s,
+    "tracking rogue government psy-ops cyberwarriors"s,
     "securing privacy by misappropriation and defamation under false light"s,
-    "publishing PI"s,
+    "preparing guest room for the ascended ancestors"s,
     "siccing hackers on troll sites"s,
     "calling captain dufy"s,
     "loading demon spawn wireframes"s,
@@ -23,12 +26,26 @@ const std::vector<std::string> StatusTexts
     "repairing spleen injuries"s,
     "loading rolling papers and $50 weed"s,
     "normalizing sax audio files"s,
-    "projecting fetishes"s,
-    "reearching the dunning kruger effect"s
+    "updating gender assignment"s,
+    "researching the dunning kruger effect"s,
+    "rage posting on kiwifarms"s,
+    "rage posting on AMB"s,
+    "initializing communication with planetary management"s,
+    "contacting microsoft tech support"s,
+    "clearing cache of family pictures"s,
+    "contacting Region 16, the traveling family"s,
+    "initializing shart vectors"s,
+    "modifying avatar gender assignment"s,
+    "optimizing dumpster looting system"s,
+    "loading arrest warrant for hoffman and associates"s,
+    "informing website hosts of mean things said on their servers"s,
+    "initializing prescribes hormones"s,
+    "initializing gateway 2000 vga webcam"s
 };
 
 LoadingScreen::LoadingScreen(ResourceManager& res, sf::RenderTarget& target)
-    : Screen(res, target)
+    : Screen(res, target),
+      _logger { log::initializeLogger("LoadingScreen") }
 {
     // I guess I was worried about error handling at one point!
     if (auto temp = _resources.load<sf::Font>("fonts/hobo.ttf");
@@ -71,18 +88,18 @@ LoadingScreen::LoadingScreen(ResourceManager& res, sf::RenderTarget& target)
     _lastUpdate = std::chrono::system_clock::now();
 }
 
-ScreenAction LoadingScreen::timestep()
+ScreenAction LoadingScreen::update()
 {
     namespace ch = std::chrono;
 
     if (_loadingComplete)
     {
         _worker.join();
-        return {ScreenActionType::CHANGE_GAMESCREEN, _gameScreen};
+        return { ScreenActionType::CHANGE_GAMESCREEN, _gameScreen };
     }
     
     const auto nowt = ch::system_clock::now();
-    const auto mst = ch::milliseconds{ tt::RandomNumber(350, 1750) };
+    const auto mst = ch::milliseconds{ tt::RandomNumber(1500, 3250) };
     if (ch::duration_cast<ch::milliseconds>(nowt - _lastUpdate) > mst)
     {
         updateStatusText(*(tt::select_randomly(StatusTexts)));
@@ -107,19 +124,13 @@ void LoadingScreen::updateStatusText(const std::string& text)
     }
 }
 
-//void LoadingScreen::statusWork()
-//{
-//    while (!_loadingComplete)
-//    {
-//        updateStatusText(*(tt::select_randomly(StatusTexts)));
-//        std::uint32_t seconds = tt::RandomNumber(500,1750);
-//        std::this_thread::sleep_for(std::chrono::milliseconds {seconds});
-//    }
-//}
-
 void LoadingScreen::loadGameScreen()
 {
+    sf::Clock timer;
     _gameScreen = std::make_shared<GameScreen>(_resources, _window);
+    sf::Time elp = timer.getElapsedTime();
+    _logger->debug("Game screen took {} milliseconds", elp.asMilliseconds());
+
     _loadingComplete = true;
 }
 

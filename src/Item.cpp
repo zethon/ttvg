@@ -459,7 +459,7 @@ void Item::interruptState(const std::string& state)
     _stateInterrupt = state;
 }
 
-std::uint16_t Item::timestep()
+std::uint16_t Item::update()
 {
     assert(_currentState->framecount.has_value() && (*(_currentState->framecount) > 0));
     if (_timer.getElapsedTime().asMilliseconds() < static_cast<int>(*(_currentState->timestep)))

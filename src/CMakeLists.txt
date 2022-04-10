@@ -1,21 +1,18 @@
 set(SOURCE_FILES
+    AudioService.cpp
     Item.cpp
     Background.cpp
     DelayedSound.cpp
     Engine.cpp
     GameWorld.cpp
-    GameOverScreen.cpp
-    GameScreen.cpp
     Intersection.cpp
-    IntroScreen.cpp
     Item.cpp
     ItemFactory.cpp
-    LoadingScreen.cpp
     main.cpp
     PathFactory.cpp
     Player.cpp
     ResourceManager.cpp
-    Screen.cpp
+    Settings.cpp
     SpriteFactory.cpp
     TooterLogger.cpp
     Transition.cpp
@@ -32,9 +29,17 @@ set(SOURCE_FILES
     Scenes/ModalWindow.cpp
     Scenes/Tucson.cpp
     Scenes/Scene.cpp
+
+    Screens/GameOverScreen.cpp
+    Screens/GameScreen.cpp
+    Screens/IntroScreen.cpp
+    Screens/LoadingScreen.cpp
+    Screens/Screen.cpp
+    Screens/SettingsScreen.cpp
 )
 
 set(HEADER_FILES
+    AudioService.h
     Item.h
     Background.h
     core.h
@@ -42,18 +47,14 @@ set(HEADER_FILES
     Engine.h
     Item.h
     ItemFactory.h
-    LoadingScreen.h
     GameWorld.h
-    GameOverScreen.h
-    GameScreen.h
     GameTypes.h
     Intersection.h
-    IntroScreen.h
     Path.hpp
     PathFactory.h
     Player.h
     ResourceManager.h
-    Screen.h
+    Settings.h
     SpriteFactory.h
     Tiles.hpp
     TooterLogger.h
@@ -72,6 +73,13 @@ set(HEADER_FILES
     Scenes/ModalWindow.h
     Scenes/Tucson.h
     Scenes/Scene.h
+
+    Screens/LoadingScreen.h
+    Screens/GameOverScreen.h
+    Screens/GameScreen.h
+    Screens/IntroScreen.h
+    Screens/Screen.h
+    Screens/SettingsScreen.h
 )
 
 if(WIN32)
@@ -101,11 +109,16 @@ add_executable(tooter ${GUI_TYPE}
     ${RESOURCE_FILES}
 )
 
+
 target_link_libraries(tooter
-PUBLIC
-    ${CONAN_LIBS}
-    ${SFML_Libraries}
-    ${CONAN_LIBS_FRAMEWORKS_LUADIST}
+    PUBLIC
+        ${CONAN_LIBS}
+        ${SFML_Libraries}
+        ${CONAN_LIBS_FRAMEWORKS_LUADIST}
+    PRIVATE 
+        # TGUI::TGUI
+        # ${TGUI_LIBRARY}
+        tgui
 )
 
 target_link_directories(tooter

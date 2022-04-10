@@ -9,6 +9,7 @@
 #include "Item.h"
 #include "Intersection.h"
 #include "Tiles.hpp"
+#include "AudioService.h"
 
 namespace tt
 {
@@ -21,7 +22,7 @@ using VehiclePtr = std::shared_ptr<Vehicle>;
 
 struct VehicleInfo : public ItemInfo
 {
-    sf::SoundBuffer*        sound = nullptr;
+    std::string             soundid;
 
     sf::Vector2f            speed;  // the car's speed is randomly selected within this range
     std::uint16_t           damage;
@@ -47,7 +48,7 @@ public:
 
     Vehicle(const VehicleInfo& info, BackgroundSharedPtr bg);
 
-    std::uint16_t timestep() override;
+    std::uint16_t update() override;
     bool isBlocked(const sf::FloatRect& point);
 
     VehicleState vehicleState() const { return _vehicleState; }
@@ -67,15 +68,15 @@ public:
 
     tt::Tile currentTile() const;
 
-    void setHornSound(sf::SoundBuffer* v) 
-    { 
-        _hornbuffer = v; 
-        _hornsound.setBuffer(*_hornbuffer);
+    void setHornSound(const std::string& hornsound)
+    {
+        _hornsound = hornsound;
+        tt::AudioLocator::sound()->cacheAudio(_hornsound);
     }
 
     void playHornSound()
     {
-        _hornsound.play();
+        tt::AudioLocator::sound()->play(_hornsound);
     }
 
     void move();
@@ -89,7 +90,7 @@ private:
 
     Path                        _path;
     std::vector<sf::Vector2f>   _globalPoints;
-    float                       _speed = 10.0f;  // Pixels per timestep
+    float                       _speed = 10.0f;  // Pixels per update
     std::uint16_t               _damage = 0;
 
     Direction                   _direction = tt::Direction::DOWN;  // Current direction of the object
@@ -97,8 +98,7 @@ private:
 
     bool                _finishedPath = false;
 
-    sf::SoundBuffer*    _hornbuffer = nullptr;
-    sf::Sound           _hornsound;
+    std::string _hornsound;
 
 };
 
