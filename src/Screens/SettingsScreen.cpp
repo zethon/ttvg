@@ -68,7 +68,7 @@ void SettingsScreen::initGui()
     _musicSlider->setSize(200,20);
     _musicSlider->setMinimum(0);
     _musicSlider->setMaximum(100);
-    _musicSlider->setValue(tempValue);
+    _musicSlider->setValue(static_cast<float>(tempValue));
     _musicSlider->setPosition(_musicValLbl->getPosition().x, 250);
     _musicSlider->onValueChange([=](float value)
         {
@@ -90,7 +90,7 @@ void SettingsScreen::initGui()
     _sfxSlider->setMinimum(0);
     _sfxSlider->setMaximum(100);
     _sfxSlider->setValue(100.f);
-    _sfxSlider->setValue(tempValue);
+    _sfxSlider->setValue(static_cast<float>(tempValue));
     _sfxSlider->setPosition(_sfxValLbl->getPosition().x, 310);
     _sfxSlider->onValueChange([=](float value)
         {
