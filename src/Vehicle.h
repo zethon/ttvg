@@ -9,6 +9,7 @@
 #include "Item.h"
 #include "Intersection.h"
 #include "Tiles.hpp"
+#include "AudioService.h"
 
 namespace tt
 {
@@ -21,7 +22,7 @@ using VehiclePtr = std::shared_ptr<Vehicle>;
 
 struct VehicleInfo : public ItemInfo
 {
-    sf::SoundBuffer*        sound = nullptr;
+    std::string             soundid;
 
     sf::Vector2f            speed;  // the car's speed is randomly selected within this range
     std::uint16_t           damage;
@@ -67,15 +68,15 @@ public:
 
     tt::Tile currentTile() const;
 
-    void setHornSound(sf::SoundBuffer* v) 
-    { 
-        _hornbuffer = v; 
-        _hornsound.setBuffer(*_hornbuffer);
+    void setHornSound(const std::string& hornsound)
+    {
+        _hornsound = hornsound;
+        tt::AudioLocator::sound()->cacheAudio(_hornsound);
     }
 
     void playHornSound()
     {
-        _hornsound.play();
+        tt::AudioLocator::sound()->play(_hornsound);
     }
 
     void move();
@@ -97,8 +98,7 @@ private:
 
     bool                _finishedPath = false;
 
-    sf::SoundBuffer*    _hornbuffer = nullptr;
-    sf::Sound           _hornsound;
+    std::string _hornsound;
 
 };
 
