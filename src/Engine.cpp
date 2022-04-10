@@ -124,27 +124,43 @@ void TooterEngine::initAudioService()
 {
     const auto settings = _resourceManager.settings();
 
+    IAudioPtr musicptr;
     if (auto value = settings->value("audio.volume.music",100); value > 0)
     {
-        auto temp = std::make_shared<tt::MusicAudio>(_resourceManager);
-        tt::AudioLocator::setMusic(std::make_shared<tt::LoggedAudio>(temp));
-        tt::AudioLocator::music()->setAllVolume(value);
+        musicptr = std::make_shared<tt::MusicAudio>(_resourceManager);
+        musicptr->setAllVolume(value);
     }
     else
     {
-        tt::AudioLocator::setMusic(std::make_shared<tt::NullAudio>());
+        musicptr = std::make_shared<tt::NullAudio>();
     }
 
+    if (settings->value("logs.music.enabled", false))
+    {
+        musicptr = std::make_shared<tt::LoggedAudio>(musicptr);
+    }
+
+    IAudioPtr soundptr;
     if (auto value = settings->value("audio.volume.sfx",100); value > 0)
     {
-        auto temp = std::make_shared<tt::SfxAudio>(_resourceManager);
-        tt::AudioLocator::setSound(std::make_shared<tt::LoggedAudio>(temp));
-        tt::AudioLocator::sound()->setAllVolume(value);
+        soundptr = std::make_shared<tt::SfxAudio>(_resourceManager);
+        soundptr->setAllVolume(value);
     }
     else
     {
-        AudioLocator::setSound(std::make_shared<tt::NullAudio>());
+        soundptr = std::make_shared<tt::NullAudio>();
     }
+
+    if (settings->value("logs.sfx.enabled", false))
+    {
+        soundptr = std::make_shared<tt::LoggedAudio>(soundptr);
+    }
+
+    assert(musicptr);
+    assert(soundptr);
+
+    tt::AudioLocator::setMusic(musicptr);
+    tt::AudioLocator::setSound(soundptr);
 }
 
 void TooterEngine::refreshAudioService()

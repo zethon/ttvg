@@ -58,6 +58,9 @@ amb::SettingsPtr registerSettings()
     retval->registerUInt("audio.volume.sfx", 100,
         std::make_shared<amb::RangeValidator<std::uint64_t>>(0, 100));
 
+    retval->registerBool("logs.music.enabled", false);
+    retval->registerBool("logs.sfx.enabled", false);
+
     return retval;
 }
 
