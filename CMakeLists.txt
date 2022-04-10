@@ -22,6 +22,7 @@ conan_cmake_run(REQUIRES
     spdlog/1.9.2
     nlohmann_json/3.10.5
     lua/5.4.3
+    zlib/1.2.12
     BASIC_SETUP CMAKE_TARGETS
     GENERATORS cmake_find_package cmake_paths
     BUILD missing
