@@ -1,3 +1,4 @@
+#include "AudioService.h"
 #include "DelayedSound.h"
 
 namespace tt
@@ -5,33 +6,22 @@ namespace tt
 
 DelayedSoundPtr DelayedSound::create(const std::string& name, float delay, ResourceManager& resources)
 {
-    auto buffer = resources.cacheSound(name);
-    
-    DelayedSoundPtr retval;
-    if (buffer)
-    {
-        retval = std::make_unique<DelayedSound>(*buffer);
-    }
-    else
-    {
-        retval = std::make_unique<DelayedSound>();
-    }
-
+    auto retval = std::make_unique<DelayedSound>(name);
     retval->setDelay(delay);
-
-    return std::move(retval);
+    return retval;
 }
 
-DelayedSound::DelayedSound(const sf::SoundBuffer& buffer)
+DelayedSound::DelayedSound(const std::string& name)
+    : _name{ name }
 {
-    _thesound.setBuffer(buffer);
+    AudioLocator::sound()->cacheAudio(name);
 }
 
 void DelayedSound::play()
 {
     if (_clock.getElapsedTime().asMilliseconds() > _delay)
     {
-        _thesound.play();
+        AudioLocator::sound()->play(_name);
         _clock.restart();
     }
 }

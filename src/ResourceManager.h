@@ -35,26 +35,8 @@ public:
 
     static ResourceManager* l_get(lua_State* L);
 
-    /// \brief Loads a texture into the cache
-    ///
-    /// \param name The relative path of the texture from the
-    ///             resource folder (e.g. "items/sax.png").
-    ///
-    /// \ see getTexture
-    ///
-    /// \return Pointer to the object in the container, or null
-    ///
     sf::Texture* cacheTexture(const std::string& name);
 
-    /// \brief Returns a pointer to the texture
-    ///
-    /// \param name The relative path of the texture
-    ///             (e.g. "items/sax.png").
-    ///
-    /// \ see cacheTexture
-    ///
-    /// \return A pointer to the texture or NULL
-    ///
     sf::Texture* getTexture(const std::string& name);
     void clearTextureCache() { _textcache.clear(); }
 
@@ -116,17 +98,8 @@ public:
     }
 
     std::string getFilename(const std::string& name);
-
-    /// \brief Return a loaded JSON file
-    ///
-    /// \param name Filename and relative path of the JSON file
-    ///             (e.g. "maps/tucson.json").
-    ///
-    /// \return An optional with the loaded JSON object if loaded
-    ///
     std::optional<nl::json> getJson(const std::string& name);
 
-    /// \brief Return a copy of the game settings
     amb::SettingsPtr settings() const
     {
         return _config;

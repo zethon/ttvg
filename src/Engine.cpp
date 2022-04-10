@@ -1,9 +1,11 @@
-#include "Engine.h"
 #include "Screens/IntroScreen.h"
 #include "Screens/GameScreen.h"
 #include "Screens/GameOverScreen.h"
 #include "Screens/LoadingScreen.h"
 #include "Screens/SettingsScreen.h"
+
+#include "AudioService.h"
+#include "Engine.h"
 
 namespace tt
 {
@@ -14,6 +16,9 @@ TooterEngine::TooterEngine(const boost::filesystem::path& respath, const amb::Se
       _logger { log::initializeLogger("Engine") }
 {
     _currentScreen = std::make_shared<SplashScreen>(_resourceManager, *_renderTarget);
+
+    tt::AudioLocator::setMusic(std::make_shared<tt::MusicAudio>(_resourceManager));
+    tt::AudioLocator::setSound(std::make_shared<tt::SfxAudio>(_resourceManager));
 }
 
 void TooterEngine::drawScreen()

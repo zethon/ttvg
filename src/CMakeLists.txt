@@ -1,4 +1,5 @@
 set(SOURCE_FILES
+    AudioService.cpp
     Item.cpp
     Background.cpp
     DelayedSound.cpp
@@ -38,6 +39,7 @@ set(SOURCE_FILES
 )
 
 set(HEADER_FILES
+    AudioService.h
     Item.h
     Background.h
     core.h
