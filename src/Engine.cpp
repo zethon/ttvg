@@ -125,10 +125,10 @@ void TooterEngine::initAudioService()
     const auto settings = _resourceManager.settings();
 
     IAudioPtr musicptr;
-    if (auto value = settings->value("audio.volume.music",100); value > 0)
+    if (auto value = settings->value("audio.volume.music", 100u); value > 0)
     {
         musicptr = std::make_shared<tt::MusicAudio>(_resourceManager);
-        musicptr->setAllVolume(value);
+        musicptr->setAllVolume(static_cast<float>(value));
     }
     else
     {
@@ -141,10 +141,10 @@ void TooterEngine::initAudioService()
     }
 
     IAudioPtr soundptr;
-    if (auto value = settings->value("audio.volume.sfx",100); value > 0)
+    if (auto value = settings->value("audio.volume.sfx",100u); value > 0)
     {
         soundptr = std::make_shared<tt::SfxAudio>(_resourceManager);
-        soundptr->setAllVolume(value);
+        soundptr->setAllVolume(static_cast<float>(value));
     }
     else
     {
@@ -167,11 +167,11 @@ void TooterEngine::refreshAudioService()
 {
     const auto settings = _resourceManager.settings();
 
-    auto value = settings->value("audio.volume.music", 100);
-    tt::AudioLocator::music()->setAllVolume(value);
+    auto value = settings->value("audio.volume.music", 100u);
+    tt::AudioLocator::music()->setAllVolume(static_cast<float>(value));
 
-    value = settings->value("audio.volume.sfx", 100);
-    tt::AudioLocator::sound()->setAllVolume(value);
+    value = settings->value("audio.volume.sfx", 100u);
+    tt::AudioLocator::sound()->setAllVolume(static_cast<float>(value));
 }
 
 } // namespace tt
