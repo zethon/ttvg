@@ -67,7 +67,7 @@ int AudioLocator_pauseSound(lua_State* L)
 
 const struct luaL_Reg AudioLocator::MusicLuaMethods[] =
 {
-    {"cacheAudio", AudioLocator_cacheMusic},
+    {"cache", AudioLocator_cacheMusic},
     {"play", AudioLocator_playMusic},
     {"stop", AudioLocator_stopMusic},
     {"pause", AudioLocator_pauseMusic},
@@ -76,7 +76,7 @@ const struct luaL_Reg AudioLocator::MusicLuaMethods[] =
 
 const struct luaL_Reg AudioLocator::SoundLuaMethods[] =
 {
-    {"cacheAudio", AudioLocator_cacheSound},
+    {"cache", AudioLocator_cacheSound},
     {"play", AudioLocator_playSound},
     {"stop", AudioLocator_stopSound},
     {"pause", AudioLocator_pauseSound},

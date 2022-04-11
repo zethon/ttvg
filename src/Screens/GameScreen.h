@@ -103,16 +103,19 @@ void initLua(lua_State* L, T& screen, void* itemFactory, void* resourceManager)
     reference = luaL_ref(L, LUA_REGISTRYINDEX);
     assert(RESOURCEMGR_LUA_IDX == reference);
 
+    // register Audio API
     {
+        lua_createtable(L, 0, 0); // global table
+
         lua_newtable(L);
         luaL_setfuncs(L, AudioLocator::MusicLuaMethods, 0);
-        lua_setglobal(L, "MusicService");
-    }
+        lua_setfield(L, -2, "Music");
 
-    {
         lua_newtable(L);
         luaL_setfuncs(L, AudioLocator::SoundLuaMethods, 0);
-        lua_setglobal(L, "SoundService");
+        lua_setfield(L, -2, "Sound");
+
+        lua_setglobal(L, "Audio");
     }
 
     // register static methods for `ItemFactory`
