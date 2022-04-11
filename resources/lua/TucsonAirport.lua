@@ -1,5 +1,3 @@
-require "libs/fire_example.lua"
-
 local _player = nil     -- shortcut to player object, refereshed in every `onEnter` call
 
 function onEnter(scene)
