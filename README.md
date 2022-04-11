@@ -169,3 +169,6 @@ Tools used to make this game were:
 * [Bosca Ceoil](https://boscaceoil.net/)
 
 <!-- For more information visit [Dog Finger Studios](https://dogfinger.com). -->
+
+  [wiki-img]: https://img.shields.io/badge/docs-Wiki-blue.svg
+  [wiki]: https://github.com/zethon/ttvg/wiki
