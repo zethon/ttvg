@@ -1,5 +1,6 @@
 # The Tommy Tucson Video Game
 
+[![Wiki][wiki-img]][wiki]
 ![Windows Build](https://github.com/zethon/ttvg/actions/workflows/windows.yml/badge.svg)
 ![MacOS Build](https://github.com/zethon/ttvg/actions/workflows/macos.yml/badge.svg)
 ![Ubuntu Build](https://github.com/zethon/ttvg/actions/workflows/ubuntu.yml/badge.svg)
