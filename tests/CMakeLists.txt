@@ -118,6 +118,9 @@ set(HARNESS_FILES
 
     ../src/Screens/Screen.h
     ../src/Screens/Screen.cpp
+
+    ../src/AudioService.cpp
+    ../src/AudioService.h
 )
 
 create_test("lua" "${HARNESS_FILES}")
