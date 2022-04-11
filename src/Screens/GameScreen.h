@@ -14,6 +14,7 @@
 #include "../TooterLogger.h"
 #include "../GameWorld.h"
 #include "../Settings.h"
+#include "../AudioService.h"
 
 #include "Screen.h"
 
@@ -101,6 +102,18 @@ void initLua(lua_State* L, T& screen, void* itemFactory, void* resourceManager)
     luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
     reference = luaL_ref(L, LUA_REGISTRYINDEX);
     assert(RESOURCEMGR_LUA_IDX == reference);
+
+    {
+        lua_newtable(L);
+        luaL_setfuncs(L, AudioLocator::MusicLuaMethods, 0);
+        lua_setglobal(L, "MusicService");
+    }
+
+    {
+        lua_newtable(L);
+        luaL_setfuncs(L, AudioLocator::SoundLuaMethods, 0);
+        lua_setglobal(L, "SoundService");
+    }
 
     // register static methods for `ItemFactory`
     {

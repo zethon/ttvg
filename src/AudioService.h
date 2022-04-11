@@ -17,6 +17,9 @@ using IAudioPtr = std::shared_ptr<IAudio>;
 class AudioLocator
 {
 public:
+    static const struct luaL_Reg MusicLuaMethods[];
+    static const struct luaL_Reg SoundLuaMethods[];
+
     static IAudioPtr music() { return _music; }
     static void setMusic(IAudioPtr audio) { _music = audio; }
 
