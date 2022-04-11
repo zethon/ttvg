@@ -145,25 +145,29 @@ public:
         // nothing to do
     }
 
-    void cacheAudio(const std::string &name) override;
+    void cacheAudio(const std::string& name) override;
 
-    void play(const std::string &name) override
+    void play(const std::string& name) override
     {
+        if (name.empty()) return;
         _sounds.at(name)->play();
     }
 
-    void stop(const std::string &name) override
+    void stop(const std::string& name) override
     {
+        if (name.empty()) return;
         _sounds.at(name)->stop();
     }
 
-    void pause(const std::string &name) override
+    void pause(const std::string& name) override
     {
+        if (name.empty()) return;
         _sounds.at(name)->pause();
     }
 
-    void setLoop(const std::string &name, bool doLoop) override
+    void setLoop(const std::string& name, bool doLoop) override
     {
+        if (name.empty()) return;
         _sounds.at(name)->setLoop(doLoop);
     }
 
@@ -176,13 +180,15 @@ public:
         }
     }
 
-    void setVolume(const std::string &name, float volume) override
+    void setVolume(const std::string& name, float volume) override
     {
+        if (name.empty()) return;
         _sounds.at(name)->setVolume(volume);
     }
 
-    sf::SoundSource::Status getStatus(const std::string &name) override
+    sf::SoundSource::Status getStatus(const std::string& name) override
     {
+        if (name.empty()) return sf::SoundSource::Status::Stopped;
         return _sounds.at(name)->getStatus();
     }
 
@@ -203,28 +209,32 @@ public:
         // nothing to do
     }
 
-    void cacheAudio(const std::string &name) override;
+    void cacheAudio(const std::string& name) override;
 
-    void play(const std::string &name) override
+    void play(const std::string& name) override
     {
+        if (name.empty()) return;
         assert(_music.find(name) != _music.end());
         _music.at(name)->play();
     }
 
-    void stop(const std::string &name) override
+    void stop(const std::string& name) override
     {
+        if (name.empty()) return;
         assert(_music.find(name) != _music.end());
         _music.at(name)->stop();
     }
 
-    void pause(const std::string &name) override
+    void pause(const std::string& name) override
     {
+        if (name.empty()) return;
         assert(_music.find(name) != _music.end());
         _music.at(name)->pause();
     }
 
-    void setLoop(const std::string &name, bool doLoop) override
+    void setLoop(const std::string& name, bool doLoop) override
     {
+        if (name.empty()) return;
         assert(_music.find(name) != _music.end());
         _music.at(name)->setLoop(doLoop);
     }
@@ -238,14 +248,16 @@ public:
         }
     }
 
-    void setVolume(const std::string &name, float volume) override
+    void setVolume(const std::string& name, float volume) override
     {
+        if (name.empty()) return;
         assert(_music.find(name) != _music.end());
         _music.at(name)->setVolume(volume);
     }
 
-    sf::SoundSource::Status getStatus(const std::string &name) override
+    sf::SoundSource::Status getStatus(const std::string& name) override
     {
+        if (name.empty()) return sf::SoundSource::Status::Stopped;
         assert(_music.find(name) != _music.end());
         return _music.at(name)->getStatus();
     }
