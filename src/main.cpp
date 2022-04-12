@@ -106,12 +106,13 @@ int main(int argc, char *argv[])
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help,?", "print help message")
-        ("version,v", "print version string")
-        ("resources,r", po::value<std::string>(), "path of resource folder")
+        ("config,c",po::value<std::string>(), "config file")
         ("logfile,l", po::value<std::string>(), "path of logfile")
+        ("loglevel", po::value<std::string>(), "trace,debug,info,warning,error,critical,off")
+        ("resources,r", po::value<std::string>(), "path of resource folder")
         ("screen,s", po::value<std::uint16_t>(), "start screen id")
         ("window-size,w", po::value<std::string>(), "window size")
-        ("loglevel", po::value<std::string>(), "trace,debug,info,warning,error,critical,off")
+        ("version,v", "print version string")
         ;
 
     po::variables_map vm;
