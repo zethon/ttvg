@@ -11,15 +11,21 @@ This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for mult
 
 ## Website
 
-The OFFICIAL website of Tommu Tucson: [http://ttvg.online](http://www.ttvg.online)
+The OFFICIAL website of Tommu Tucson.
+
+[http://ttvg.online](http://www.ttvg.online)
 
 ## Wiki
 
-For player and developer documentation, check out our Wiki at: [https://github.com/zethon/ttvg/wiki](https://github.com/zethon/ttvg/wiki)
+For information about gameply or how to compile then check out the Wiki page. 
+
+[https://github.com/zethon/ttvg/wiki](https://github.com/zethon/ttvg/wiki)
 
 ## Download
 
-The latest stable releases can be downloaded here: [http://ttvg.online](http://ttvg.online)
+The latest stable releases can be downloaded on the website.
+
+[http://ttvg.online](http://ttvg.online)
 
 ## Licensing
 
