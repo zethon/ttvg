@@ -22,6 +22,7 @@ conan_cmake_run(REQUIRES
     spdlog/1.9.2
     nlohmann_json/3.10.5
     lua/5.4.3
+    zlib/1.2.12
     BASIC_SETUP CMAKE_TARGETS
     GENERATORS cmake_find_package cmake_paths
     BUILD missing
@@ -92,16 +93,30 @@ set(APP_VERSION_PATCH ${CMAKE_MATCH_1})
 string(STRIP ${APP_VERSION_PATCH} APP_VERSION_PATCH)
 set(APP_VERSION "${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}.${APP_VERSION_PATCH}.")
 
-if (NOT "$ENV{APPVEYOR_BUILD_NUMBER}" STREQUAL "")
-    set(APP_BUILD_NUMBER "$ENV{APPVEYOR_BUILD_NUMBER}")
-elseif(NOT "$ENV{TRAVIS_BUILD_NUMBER}" STREQUAL "")
-    set(APP_BUILD_NUMBER "$ENV{TRAVIS_BUILD_NUMBER}")
+# get the git commit hash
+execute_process(COMMAND git log --pretty=format:%h -n 1
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                OUTPUT_VARIABLE GIT_REV
+                ERROR_QUIET)
+
+if (NOT "${GIT_REV}" STREQUAL "")
+    set(APP_BUILD_NUMBER "${GIT_REV}")
 else()
     set(APP_BUILD_NUMBER "0")
 endif()
 
 add_subdirectory(date)
 include_directories(${CMAKE_SOURCE_DIR}/date/include)
+
+# include TGUI and build only what we need
+set(TGUI_BUILD_GUI_BUILDER FALSE)
+set(TGUI_BUILD_EXAMPLES FALSE)
+set(TGUI_BUILD_TESTS FALSE)
+set(TGUI_STATIC_LIBRARIES TRUE)
+set(TGUI_SHARED_LIBS FALSE)
+set(TGUI_BUILD_FRAMEWORK FALSE)
+add_subdirectory(TGUI)
+include_directories(TGUI/include)
 
 add_subdirectory(src)
 

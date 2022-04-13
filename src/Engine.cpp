@@ -1,17 +1,21 @@
+#include "Screens/IntroScreen.h"
+#include "Screens/GameScreen.h"
+#include "Screens/GameOverScreen.h"
+#include "Screens/LoadingScreen.h"
+#include "Screens/SettingsScreen.h"
+
+#include "AudioService.h"
 #include "Engine.h"
-#include "IntroScreen.h"
-#include "GameScreen.h"
-#include "GameOverScreen.h"
-#include "LoadingScreen.h"
 
 namespace tt
 {
 
-TooterEngine::TooterEngine(const boost::filesystem::path& respath, RenderTargetPtr render)
-    : _resourceManager{ respath },
+TooterEngine::TooterEngine(const boost::filesystem::path& respath, const amb::SettingsPtr& settings, RenderTargetPtr render)
+    : _resourceManager{ respath, settings },
       _renderTarget { render },
       _logger { log::initializeLogger("Engine") }
 {
+    initAudioService();
     _currentScreen = std::make_shared<SplashScreen>(_resourceManager, *_renderTarget);
 }
 
@@ -40,17 +44,19 @@ PollResult TooterEngine::poll(const sf::Event& e)
     return {};
 }
 
-void TooterEngine::timestep()
+void TooterEngine::update()
 {
-    if (auto action = _currentScreen->timestep(); 
+    if (auto action = _currentScreen->update();
         action.type == ScreenActionType::CHANGE_SCREEN)
     {
-        _logger->debug("changing screen from timestep result");
+        _logger->debug("changing screen from update result");
         changeScreen(boost::any_cast<std::uint16_t>(action.data));
     }
     else if (action.type == ScreenActionType::CHANGE_GAMESCREEN)
     {
         _logger->debug("loading game screen");
+
+        refreshAudioService();
 
         auto gamescreen = boost::any_cast<std::shared_ptr<GameScreen>>(action.data);
         _currentScreen->close();
@@ -62,6 +68,8 @@ void TooterEngine::timestep()
 void TooterEngine::changeScreen(std::uint16_t id)
 {
     _logger->info("changing to screen {}", id);
+
+    refreshAudioService();
 
     switch (id)
     {
@@ -101,7 +109,69 @@ void TooterEngine::changeScreen(std::uint16_t id)
             _currentScreen = std::make_shared<LoadingScreen>(_resourceManager, *_renderTarget);
         }
         break;
+
+        case SCREEN_SETTINGS:
+        {
+            _currentScreen->close();
+            _currentScreen.reset();
+            _currentScreen = std::make_shared<SettingsScreen>(_resourceManager, *_renderTarget);
+        }
+        break;
     }
+}
+
+void TooterEngine::initAudioService()
+{
+    const auto settings = _resourceManager.settings();
+
+    IAudioPtr musicptr;
+    if (auto value = settings->value("audio.volume.music", 100u); value > 0)
+    {
+        musicptr = std::make_shared<tt::MusicAudio>(_resourceManager);
+        musicptr->setAllVolume(static_cast<float>(value));
+    }
+    else
+    {
+        musicptr = std::make_shared<tt::NullAudio>();
+    }
+
+    if (settings->value("logs.music.enabled", false))
+    {
+        musicptr = std::make_shared<tt::LoggedAudio>(musicptr);
+    }
+
+    IAudioPtr soundptr;
+    if (auto value = settings->value("audio.volume.sfx",100u); value > 0)
+    {
+        soundptr = std::make_shared<tt::SfxAudio>(_resourceManager);
+        soundptr->setAllVolume(static_cast<float>(value));
+    }
+    else
+    {
+        soundptr = std::make_shared<tt::NullAudio>();
+    }
+
+    if (settings->value("logs.sfx.enabled", false))
+    {
+        soundptr = std::make_shared<tt::LoggedAudio>(soundptr);
+    }
+
+    assert(musicptr);
+    assert(soundptr);
+
+    tt::AudioLocator::setMusic(musicptr);
+    tt::AudioLocator::setSound(soundptr);
+}
+
+void TooterEngine::refreshAudioService()
+{
+    const auto settings = _resourceManager.settings();
+
+    auto value = settings->value("audio.volume.music", 100u);
+    tt::AudioLocator::music()->setAllVolume(static_cast<float>(value));
+
+    value = settings->value("audio.volume.sfx", 100u);
+    tt::AudioLocator::sound()->setAllVolume(static_cast<float>(value));
 }
 
 } // namespace tt

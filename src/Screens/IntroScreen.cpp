@@ -1,14 +1,20 @@
-#include "IntroScreen.h"
-
 #include <cassert>
 #include <thread>
 #include <iostream>
+
+#include <fmt/core.h>
+
+#include "../TooterLogger.h"
+#include "../AudioService.h"
+
+#include "IntroScreen.h"
 
 namespace tt
 {
 
 namespace
 {
+
 
 void createMenu(TextList& menuItems,
     const std::vector<std::string>& textlist,
@@ -37,6 +43,9 @@ void createMenu(TextList& menuItems,
 
         item->setPosition(xpos, ypos);
        
+        item->setOutlineColor(sf::Color(0,0,0,255));
+        item->setOutlineThickness(5);
+
         //
         // Increment ypos to the next item position
         //
@@ -58,36 +67,42 @@ void updateMenu(std::uint16_t selection, TextList& menuItems)
 
 }
 
-IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
-    : Screen(resmgr, target)
+IntroScreen::IntroScreen(       ResourceManager& resmgr, 
+                                sf::RenderTarget& target )
+
+                            :   Screen(resmgr, target)
+
 {
     
-    if (auto temp = _resources.load<sf::Font>("fonts/hobo.ttf"); 
+    if (auto temp = _resources.load<sf::Font>("fonts/pricedown.ttf"); 
         temp.has_value())
     {
         _font = *temp;
     }
     else
     {
-        throw std::runtime_error("hobo.ttf could not be loaded!");
+        throw std::runtime_error("fonts/pricedown.ttf could not be loaded!");
     }
 
     //
     // This textobj is the title text
     //
     auto textobj = std::make_shared<sf::Text>(
-                    "The Tommy Tucson\nVideo Game", _font);
+                    "Tommy Tucson", _font);
 
     textobj->setCharacterSize(70);
     textobj->setFillColor(sf::Color(255, 215, 9));
+
+    textobj->setOutlineColor(sf::Color(0,0,0,255));
+    textobj->setOutlineThickness(5);
 
     //
     // Get coords for title from window size. (i.e. xpos)
     //
     auto winWidth       = _window.getSize().x;
-
+    auto winHeight      = _window.getSize().y;
     auto titleWidth     = textobj->getLocalBounds().width;
-    auto titleXpos      = (winWidth - titleWidth) - 100.f;
+    auto titleXpos      = (winWidth - titleWidth) - 25.f;
 
     //
     // Set coords for title text
@@ -95,39 +110,62 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
     textobj->setPosition(titleXpos - 20, 10);
 
     //
-    // Load the scrolling Tom image.
+    // See https://en.sfml-dev.org/forums/index.php?topic=10276.0
     //
-    auto bgt = _resources.load<sf::Texture>("images/tommy-1.png");
+    _bgt.reserve(INTRO_IMAGES);
 
-    if (!bgt)
+    //
+    // Load background images
+    //
+    for(int i = 0; i < INTRO_IMAGES; i++)
     {
-        throw std::runtime_error("tommy-1.png could not be loaded!");
+        //
+        // Load the intro images.
+        //
+        auto filename = fmt::format("images/ttvg-intro-screen-{}.png", i+1);
+      
+        auto logger = log::initializeLogger("Intro");
+        logger->debug("Loading intro file {}", filename);
+
+        // auto bgt = _resources.load<sf::Texture>(filename);
+        auto bgt = _resources.loadPtr<sf::Texture>(filename);
+
+        if (!bgt)
+        {
+            throw std::runtime_error(filename);
+        }
+
+        _bgt.push_back(std::move(*bgt));
+        // _bgt.push_back(*bgt);
+        
+        auto sprite = std::make_shared<sf::Sprite>();
+
+        sprite->setTexture(_bgt.at(i));
+
+        sprite->setPosition(0, 0);
+        sprite->setColor(sf::Color(0, 0, 0, 0));
+
+        //
+        // Fit this image to the window size.
+        //
+        sprite->setScale(
+                winWidth    / sprite->getLocalBounds().width,
+                winHeight   / sprite->getLocalBounds().height );
+ 
+        //
+        // Add this intro image.
+        //
+        addDrawable(sprite);
+
+        _sprite.push_back(sprite);
+
     }
 
-    _bgt = *bgt; // copy!!!
-    _bgt.setRepeated(true);
+    auto music = tt::AudioLocator::music();
+    music->cacheAudio(BACKGROUND_SONG);
 
-    _sprite = std::make_shared<sf::Sprite>();
-    _sprite->setTexture(_bgt);
-    
-    float xpos = 0;
-    float ypos = (_bgt.getSize().y - _window.getSize().y) * -1.0f;
-
-    _sprite->setPosition(xpos, ypos);
-    
-    _bgsong = _resources.openUniquePtr<sf::Music>("music/intro.wav");
-
-    if (!_bgsong)
-    {
-        throw std::runtime_error("music/intro.mp3 could not be loaded!");
-    }
-
-    //
-    // Add the scrolling Tom image.
-    //
-    addDrawable(_sprite);
-    _bgsong->setLoop(true);
-    _bgsong->play();
+    music->setLoop(BACKGROUND_SONG, true);
+    music->play(BACKGROUND_SONG);
 
     //
     // Add the title text
@@ -151,13 +189,8 @@ IntroScreen::IntroScreen(ResourceManager& resmgr, sf::RenderTarget& target)
         addDrawable(item);
     }
 
-    //
-    // load sounds
-    //
-    _selectorBuffer = 
-        _resources.loadPtr<sf::SoundBuffer>("sounds/selector.wav");
-    _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
-
+    tt::AudioLocator::sound()->cacheAudio(SELECTOR_SOUND);
+    tt::AudioLocator::sound()->cacheAudio(TOMWILLKILL_SOUND);
 }
 
 PollResult IntroScreen::poll(const sf::Event& e)
@@ -169,9 +202,7 @@ PollResult IntroScreen::poll(const sf::Event& e)
         {
             _selected--;
             updateMenu(_selected, _menuItems);
-
-            _tomWillKillSound.setBuffer(*_selectorBuffer);
-            _tomWillKillSound.play();
+            tt::AudioLocator::sound()->play(SELECTOR_SOUND);
         }
     }
     else if (e.type == sf::Event::KeyReleased
@@ -182,8 +213,7 @@ PollResult IntroScreen::poll(const sf::Event& e)
             _selected++;
             updateMenu(_selected, _menuItems);
 
-            _tomWillKillSound.setBuffer(*_selectorBuffer);
-            _tomWillKillSound.play();
+            tt::AudioLocator::sound()->play(SELECTOR_SOUND);
         }
     }
     else if (e.type == sf::Event::KeyPressed
@@ -200,16 +230,17 @@ PollResult IntroScreen::poll(const sf::Event& e)
                 return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_LOADING }};
             }
 
+            case 1: // settings
+            {
+                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_SETTINGS }};
+            }
+
             case 2: // exit
             {
-                _bgsong->stop();
+                tt::AudioLocator::music()->stop(BACKGROUND_SONG);
+                tt::AudioLocator::sound()->play(TOMWILLKILL_SOUND);
 
-                _tomWillKillSound.setBuffer(*_twkBuffer);
-                _tomWillKillSound.setLoop(false);
-                _tomWillKillSound.play();
-                _tomWillKillSound.setVolume(50);
-
-                while (_tomWillKillSound.getStatus() == sf::Sound::Playing)
+                while (tt::AudioLocator::sound()->getStatus(TOMWILLKILL_SOUND) == sf::Sound::Playing)
                 {
                     std::this_thread::yield();
                 }
@@ -225,20 +256,66 @@ PollResult IntroScreen::poll(const sf::Event& e)
     return {};
 }
 
-ScreenAction IntroScreen::timestep()
+ScreenAction IntroScreen::update()
 {
-    auto[x, y] = _sprite->getPosition();
+    static int  alpha           = 0;
+    static bool increaseAlpha   = true;
+    static int  imageIndex      = 0;
+
+    auto winWidth       = _window.getSize().x;
+    auto winHeight      = _window.getSize().y;
 
     if (auto elapsed = _clock.getElapsedTime();
-        elapsed.asMilliseconds() > 15)
+        elapsed.asMilliseconds() > 150)
     {
-        y += 5;
-        if (y > _window.getSize().y)
+        //
+        // Fade image in and out.
+        //
+        if(increaseAlpha) 
         {
-            y = _bgt.getSize().y * -1.0f;
-        }
+            // _sprite[imageIndex]->setScale(
+            //    winWidth    / _sprite[imageIndex]->getLocalBounds().width,
+            //    winHeight   / _sprite[imageIndex]->getLocalBounds().height );
 
-        _sprite->setPosition(x, y);
+            alpha += 16;
+            if(alpha > 255) 
+            {
+                increaseAlpha = false;
+                alpha = 255;
+            }
+        } 
+        else 
+        { 
+            alpha -= 16;
+            if(alpha < 0) 
+            {
+                increaseAlpha = true;
+                alpha = 0;
+
+                _sprite[imageIndex]->setColor(sf::Color(0, 0, 0, 0));
+
+                //
+                // Move to new image.
+                //
+                imageIndex++;
+
+
+                if(imageIndex > (_bgt.size() - 1) ) 
+                {
+                    //
+                    // Reset to initial image 
+                    //
+                    imageIndex = 0;
+                }
+
+                auto logger = log::initializeLogger("Intro");
+                logger->debug("Change intro image: {}", imageIndex);
+
+                _sprite[imageIndex]->setColor(sf::Color(255, 255, 255, alpha));
+            }
+        }
+        _sprite[imageIndex]->setColor(sf::Color(255, 255, 255, alpha));
+
         _clock.restart();
     }
 
@@ -248,7 +325,7 @@ ScreenAction IntroScreen::timestep()
 void IntroScreen::close()
 {
     Screen::close();
-    _bgsong->stop();
+    tt::AudioLocator::music()->stop(BACKGROUND_SONG);
 }
 
 SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
@@ -267,19 +344,20 @@ SplashScreen::SplashScreen(ResourceManager& res, sf::RenderTarget& target)
     
     addDrawable(sprite);
 
-    _font = *(_resources.load<sf::Font>("fonts/hobo.ttf"));
+    _font = *(_resources.load<sf::Font>("fonts/pricedown.ttf"));
+
     auto logoText = std::make_shared<sf::Text>("Dog Finger Studios", _font);
     logoText->setCharacterSize(100);
+
+    logoText->setOutlineColor(sf::Color(0,0,0,255));
+    logoText->setOutlineThickness(5);
 
     auto txpos = (_window.getSize().x / 2) - ((logoText->getLocalBounds().width) / 2);
     logoText->setPosition(txpos, _window.getSize().y - 150.0f);
 
     addDrawable(logoText);
 
-    _twkBuffer = _resources.loadPtr<sf::SoundBuffer>("sounds/tomwillkill.wav");
-    _tomWillKillSound.setBuffer(*_twkBuffer);
-    _tomWillKillSound.setVolume(50);
-    _tomWillKillSound.play();
+    tt::AudioLocator::sound()->cacheAudio(tt::IntroScreen::TOMWILLKILL_SOUND);
 
     _clock.restart();
 }
@@ -295,12 +373,12 @@ PollResult SplashScreen::poll(const sf::Event& e)
     return {};
 }
 
-ScreenAction SplashScreen::timestep()
+ScreenAction SplashScreen::update()
 {
     if (auto elapsed = _clock.getElapsedTime();
         elapsed.asMilliseconds() > 1500)
     {
-        _tomWillKillSound.stop();
+        tt::AudioLocator::sound()->stop(tt::IntroScreen::TOMWILLKILL_SOUND);
         return { ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO };
     }
 

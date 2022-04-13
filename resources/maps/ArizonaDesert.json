@@ -17,7 +17,7 @@
         "stepsize": 16.0
     },
 
-	"zones":
+    "zones":
     [
         {
             "name": "Return to Tucson",
@@ -48,7 +48,20 @@
                 "69,105,148,148"
             ]
         }
+    ],
 
+    "items":
+    {
+        "flying-saucer":
+        {
+            "instances":
+            [
+                {   "x": 98, "y": 129, 
+                    "default-state": "hovering", 
+                    "scale": { "x": 0.5, "y": 0.5 }
+                }
+            ]
+        }
+    }
 
-	]
 }

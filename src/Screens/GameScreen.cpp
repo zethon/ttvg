@@ -1,7 +1,7 @@
 #include <lua.hpp>
 
-#include "Scenes/Scene.h"
-#include "Scenes/Tucson.h"
+#include "../Scenes/Scene.h"
+#include "../Scenes/Tucson.h"
 
 #include "GameScreen.h"
 
@@ -98,6 +98,10 @@ GameScreen::GameScreen(ResourceManager& resmgr, sf::RenderTarget& target)
 
 GameScreen::~GameScreen()
 {
+    // properly shut down the current screen, this is mostly
+    // being called to stop any audio that is being played
+    _currentScene->exit();
+
     if (!_luaState) return;
 
     // collect all garbage
@@ -181,9 +185,9 @@ PollResult GameScreen::poll(const sf::Event& e)
     return result;
 }
 
-ScreenAction GameScreen::timestep()
+ScreenAction GameScreen::update()
 {
-    _gameCalendar->timestep(_gameClock.getElapsedTime());
+    _gameCalendar->update(_gameClock.getElapsedTime());
 
     assert(_currentScene);
     return _currentScene->update(_gameClock.getElapsedTime());

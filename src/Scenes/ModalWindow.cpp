@@ -10,6 +10,7 @@
 #include "../Player.h"
 #include "../TTLua.h"
 #include "../Scenes/Scene.h"
+#include "../AudioService.h"
 
 #include "ModalWindow.h"
 
@@ -316,11 +317,8 @@ OptionsWindow::OptionsWindow(Screen& parent)
     _indicator.setCharacterSize(25);
     _indicator.setFillColor(sf::Color::Yellow);
 
-    auto buffer = _parent.resources().cacheSound("sounds/selector2.wav");
-    _selectSound.setBuffer(*buffer);
-
-    buffer = _parent.resources().cacheSound("sounds/selector3.wav");
-    _selectionMadeSound.setBuffer(*buffer);
+    tt::AudioLocator::sound()->cacheAudio(SELECT2);
+    tt::AudioLocator::sound()->cacheAudio(SELECT3);
 }
 
 PollResult OptionsWindow::poll(const sf::Event& e)
@@ -335,14 +333,14 @@ PollResult OptionsWindow::poll(const sf::Event& e)
             case sf::Keyboard::Up:
             {
                 prevSelection();
-                _selectSound.play();
+                tt::AudioLocator::sound()->play(SELECT2);
             }
             break;
 
             case sf::Keyboard::Down:
             {
                 nextSelection();
-                _selectSound.play();
+                tt::AudioLocator::sound()->play(SELECT2);
             }
             break;
 
@@ -355,8 +353,8 @@ PollResult OptionsWindow::poll(const sf::Event& e)
             case sf::Keyboard::Enter:
             case sf::Keyboard::Space:
             {
-                _selectionMadeSound.play();
-                while (_selectionMadeSound.getStatus() == sf::SoundSource::Status::Playing)
+                tt::AudioLocator::sound()->play(SELECT3);
+                while (tt::AudioLocator::sound()->getStatus(SELECT3) == sf::SoundSource::Status::Playing)
                 {
                     std::this_thread::yield();
                 }

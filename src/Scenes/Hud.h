@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Screen.h"
+#include "../Screens/Screen.h"
+
 #include "../Player.h"
 #include "../GameWorld.h"
 

@@ -19,18 +19,19 @@ public:
         float delay, 
         ResourceManager& resources);
 
-    DelayedSound(const sf::SoundBuffer& buffer);
-    DelayedSound() = default;
+//    DelayedSound(const sf::SoundBuffer& buffer);
+    DelayedSound(const std::string& name);
 
-    float delay() const { return _delay; }
+    // float delay() const { return _delay; }
     void setDelay(float v) { _delay = v; }
 
-    void setVolume(float v) { _thesound.setVolume(v); }
+    // void setVolume(float v) { _thesound.setVolume(v); }
 
     void play();
 
 private:
-    sf::Sound   _thesound;
+//    sf::Sound   _thesound;
+    std::string _name;
     sf::Clock   _clock;
     float       _delay = 0.f;
 

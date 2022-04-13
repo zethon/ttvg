@@ -4,9 +4,12 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Screens/Screen.h"
+
 #include "ResourceManager.h"
-#include "Screen.h"
 #include "TooterLogger.h"
+
+namespace fs = boost::filesystem;
 
 namespace tt
 {
@@ -19,16 +22,20 @@ class TooterEngine
     RenderTargetPtr     _renderTarget;
 
     std::shared_ptr<Screen> _currentScreen;
-    log::SpdLogPtr               _logger;
+    log::SpdLogPtr          _logger;
     
 public:
     TooterEngine(
-        const boost::filesystem::path& respath,
+        const fs::path& respath,
+        const amb::SettingsPtr& settings,
         RenderTargetPtr render);
+
+    void initAudioService();
+    void refreshAudioService();
     
     void drawScreen();
     PollResult poll(const sf::Event& e);
-    void timestep();
+    void update();
     void changeScreen(std::uint16_t id);
 
 };

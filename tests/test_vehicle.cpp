@@ -22,8 +22,9 @@ BOOST_AUTO_TEST_CASE(vehicleTurnTest)
     texture.create(100, 100);
 
     tt::NullWindow window;
+    amb::SettingsPtr config = std::make_shared<amb::Settings>();
 
-    tt::ResourceManager mgr{ boost::filesystem::path{} };
+    tt::ResourceManager mgr{ boost::filesystem::path{}, config };
     auto bg = std::make_shared<tt::Background>("test", mgr, window, sf::Vector2f{ 5,5 });
     bg->setTexture(texture, true);
     bg->setScale(1.0f, 1.0f);
@@ -97,8 +98,9 @@ BOOST_AUTO_TEST_CASE(fastVehicleTest)
     texture.create(100, 100);
 
     tt::NullWindow window;
+    amb::SettingsPtr config = std::make_shared<amb::Settings>();
 
-    tt::ResourceManager mgr{ boost::filesystem::path{} };
+    tt::ResourceManager mgr{ boost::filesystem::path{}, config };
     auto bg = std::make_shared<tt::Background>("test", mgr, window, sf::Vector2f{ 5,5 });
     bg->setTexture(texture, true);
     bg->setScale(1.0f, 1.0f);

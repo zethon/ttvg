@@ -26,7 +26,7 @@ public:
     std::string datestr() const;
     std::string timestr() const;
 
-    void timestep(const sf::Time& currentTime);
+    void update(const sf::Time& currentTime);
 
 public: // signals
     boost::signals2::signal<void(const std::string& datestr, const std::string& timestr)> onUpdate;

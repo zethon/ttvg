@@ -1,3 +1,6 @@
 [submodule "date"]
 	path = date
 	url = https://github.com/HowardHinnant/date
+[submodule "TGUI"]
+	path = TGUI
+	url = https://github.com/texus/TGUI.git

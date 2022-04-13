@@ -214,7 +214,7 @@ public:
     sf::RectangleShape& highlight() { return _highlight; }
     sf::FloatRect getGlobalBounds() const;
     sf::FloatRect getGlobalHitBox() const;
-    std::uint16_t timestep() override;
+    std::uint16_t update() override;
 
     bool obtainable() const { return _obtainable; }
     void setObtainable(bool o) { _obtainable = o; }

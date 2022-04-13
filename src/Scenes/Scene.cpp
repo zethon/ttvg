@@ -3,6 +3,8 @@
 #include <fmt/core.h>
 
 #include "../TTLua.h"
+#include "../AudioService.h"
+
 #include "Scene.h"
 
 using namespace std::string_literals;
@@ -282,18 +284,9 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
             BackgroundMusic bgmusic = json["background-music"].get<BackgroundMusic>();
             if (!bgmusic.file.empty())
             {
-                _logger->debug("Adding bg music file '{}'", bgmusic.file);
-
-                _bgmusic = _resources.openUniquePtr<sf::Music>(bgmusic.file);
-                _bgmusic->setLoop(bgmusic.loop);
-                _bgmusic->setVolume(bgmusic.volume);
-                
-                if (!bgmusic.enabled) 
-                {
-                    _logger->debug("Disabling music for '{}'", bgmusic.file);
-                    _bgmusic->setVolume(0);
-                }
-
+                _bgSongName = bgmusic.file;
+                tt::AudioLocator::music()->cacheAudio(_bgSongName);
+                tt::AudioLocator::music()->setLoop(_bgSongName, true);
             }
         }
 
@@ -385,12 +378,17 @@ void Scene::enter()
         {
             _hudPtr->setBalance(cash);
         });
+<<<<<<< HEAD
 		
     if (_bgmusic) 
     {
         _logger->debug("Playing scene music.");
         _bgmusic->play();		
     }
+=======
+
+    tt::AudioLocator::music()->play(_bgSongName);
+>>>>>>> master
 
     tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _sceneName,
                         { { LUA_REGISTRYINDEX, _luaIdx } });
@@ -414,7 +412,7 @@ void Scene::exit()
 
     _hudPtr.reset();
 
-    if (_bgmusic) _bgmusic->pause();
+    tt::AudioLocator::music()->pause(_bgSongName);
 }
 
 PollResult Scene::poll(const sf::Event& e)
@@ -464,14 +462,13 @@ ScreenAction Scene::update(sf::Time elapsed)
 
     if (_player->health() <= 0)
     {
-        //_bgsong->stop();
         return ScreenAction{ ScreenActionType::CHANGE_SCREEN, SCREEN_GAMEOVER };
     }
 
     std::for_each(_items.begin(), _items.end(),
         [this](ItemPtr item)
         {
-            item->timestep();
+            item->update();
         });
 
     const auto taskIt = _itemTasks.lower_bound(elapsed);
@@ -493,7 +490,7 @@ ScreenAction Scene::update(sf::Time elapsed)
 
     _debugWindow.setText(ss1.str());
 	
-    return Screen::timestep();
+    return Screen::update();
 }
 
 void Scene::draw()

@@ -6,8 +6,8 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "ResourceManager.h"
-#include "IUpdateable.h"
+#include "../ResourceManager.h"
+#include "../IUpdateable.h"
 
 namespace tt
 {
@@ -17,6 +17,7 @@ constexpr std::uint16_t SCREEN_INTRO = 20;
 constexpr std::uint16_t SCREEN_LOADING = 30;
 constexpr std::uint16_t SCREEN_GAME = 40;
 constexpr std::uint16_t SCREEN_GAMEOVER = 50;
+constexpr std::uint16_t SCREEN_SETTINGS = 60;
 
 using DrawablePtr = std::shared_ptr<sf::Drawable>;
 
@@ -68,7 +69,7 @@ public:
     [[maybe_unused]] virtual PollResult poll(const sf::Event&);
 
     // update positions and state
-    [[maybe_unused]] virtual ScreenAction timestep();
+    [[maybe_unused]] virtual ScreenAction update();
 
     // clean up any resources
     virtual void close()

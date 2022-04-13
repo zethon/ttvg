@@ -4,16 +4,19 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Scenes/Scene.h"
-#include "Scenes/ModalWindow.h"
+#include "../Scenes/Scene.h"
+#include "../Scenes/ModalWindow.h"
+
+#include "../Item.h"
+#include "../Player.h"
+#include "../TTLua.h"
+#include "../TTUtils.h"
+#include "../TooterLogger.h"
+#include "../GameWorld.h"
+#include "../Settings.h"
+#include "../AudioService.h"
 
 #include "Screen.h"
-#include "Item.h"
-#include "Player.h"
-#include "TTLua.h"
-#include "TTUtils.h"
-#include "TooterLogger.h"
-#include "GameWorld.h"
 
 namespace tt
 {
@@ -100,6 +103,21 @@ void initLua(lua_State* L, T& screen, void* itemFactory, void* resourceManager)
     reference = luaL_ref(L, LUA_REGISTRYINDEX);
     assert(RESOURCEMGR_LUA_IDX == reference);
 
+    // register Audio API
+    {
+        lua_createtable(L, 0, 0); // global table
+
+        lua_newtable(L);
+        luaL_setfuncs(L, AudioLocator::MusicLuaMethods, 0);
+        lua_setfield(L, -2, "Music");
+
+        lua_newtable(L);
+        luaL_setfuncs(L, AudioLocator::SoundLuaMethods, 0);
+        lua_setfield(L, -2, "Sound");
+
+        lua_setglobal(L, "Audio");
+    }
+
     // register static methods for `ItemFactory`
     {
         lua_newtable(L);
@@ -183,7 +201,7 @@ public:
 
     void draw() override;
     PollResult poll(const sf::Event&) override;
-    ScreenAction timestep() override;
+    ScreenAction update() override;
 
     lua_State* lua() const { return _luaState; }
     const SceneMap& scenes() const { return _scenes; }
@@ -199,6 +217,7 @@ private:
 
     lua_State*                      _luaState;
     std::shared_ptr<ItemFactory>    _itemFactory;
+    amb::SettingsPtr                _settings;
 
     sf::Clock                       _gameClock;
     std::shared_ptr<GameWorld>      _gameCalendar;
