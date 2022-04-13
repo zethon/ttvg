@@ -378,17 +378,9 @@ void Scene::enter()
         {
             _hudPtr->setBalance(cash);
         });
-<<<<<<< HEAD
-		
-    if (_bgmusic) 
-    {
-        _logger->debug("Playing scene music.");
-        _bgmusic->play();		
-    }
-=======
+
 
     tt::AudioLocator::music()->play(_bgSongName);
->>>>>>> master
 
     tt::CallLuaFunction(_luaState, _callbackNames.onEnter, _sceneName,
                         { { LUA_REGISTRYINDEX, _luaIdx } });
