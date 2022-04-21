@@ -95,6 +95,9 @@ public:
 
     CameraType cameraType() const { return _cameraType; }
 
+    float minzoom() const { return _minzoom; }
+    float maxzoom() const { return _maxzoom; }
+
 protected:
     std::unique_ptr<sf::Texture>    _texture;
     ZoneSet                         _zones;
@@ -107,6 +110,10 @@ private:
     std::unique_ptr<nl::json>   _json;
     std::string                 _mapname;
     CameraType                  _cameraType = CameraType::FIXED;
+
+    float               _minzoom = 0.f;
+    float               _maxzoom = 0.f;
+
 };
 
 } // namespace tt

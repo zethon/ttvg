@@ -94,7 +94,7 @@ std::uint16_t Vehicle::update()
     if (_vehicleState == VehicleState::MOVING
         && _movementClock.getElapsedTime().asMilliseconds() > 100)
     {
-        move();
+        doMove();
         _movementClock.restart();
     }
 
@@ -106,7 +106,7 @@ std::uint16_t Vehicle::update()
     return TimeStep::NOOP;
 }
 
-void Vehicle::move()
+void Vehicle::doMove()
 {
     auto[xpos, ypos, h, w] = getGlobalBounds();
     auto currentTile = _bg->getTileFromGlobal(sf::Vector2f{ xpos, ypos });
