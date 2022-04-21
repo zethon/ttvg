@@ -3,7 +3,8 @@
     {
         "scale": { "x": 2.5, "y": 2.5 },
         "tiles": { "x": 16, "y": 16 },
-        "camera": "follow"
+        "camera": "follow",
+        "zoom": {"min": 0.25, "max": 2.5}
     },
     "background-music":
     {
@@ -594,7 +595,7 @@
                 "texture": "textures/car1.png",
                 "size": { "x": 77, "y": 41 },
                 "scale": { "x": 1.4, "y": 1.4 },
-                "frame-count": 3,
+                "frame-count": 1,
                 "states":
                 [
                     { "id": "down", "source": { "x": 0, "y": 0 } },
@@ -612,7 +613,7 @@
                 "texture": "textures/car2.png",
                 "size": { "x": 96, "y": 63 },
                 "scale": { "x": 1.0, "y": 1.0 },
-                "frame-count": 2,
+                "frame-count": 1,
                 "states":
                 [
                     { "id": "down", "source": { "x": 0, "y": 0 } },

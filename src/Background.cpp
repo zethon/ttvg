@@ -91,6 +91,14 @@ void Background::initBackground(const sf::RenderTarget& target)
             _cameraType = CameraType::FIXED;
         }
     }
+
+    if (bg.contains("zoom")
+        && bg["zoom"].contains("min")
+        && bg["zoom"].contains("max"))
+    {
+        _minzoom = bg["zoom"]["min"].get<float>();
+        _maxzoom = bg["zoom"]["max"].get<float>();
+    }
 }
 
 void Background::initZones()

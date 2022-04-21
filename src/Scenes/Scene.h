@@ -223,6 +223,8 @@ protected:
     DelayedSoundPtr _walkSound;
     DelayedSoundPtr _pickupSound;
 
+    sf::View        _gameView;
+
 private:
     void createItems();
     virtual void updateCurrentTile(const TileInfo& info);

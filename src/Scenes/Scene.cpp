@@ -253,7 +253,8 @@ Scene::Scene(std::string_view name, const SceneSetup& setup)
       _weakPlayer{ setup.player },
       _weakHud{ setup.hud },
       _itemFactory{ *(setup.itemFactory) },
-      _logger { log::initializeLogger("Scene") }
+      _logger { log::initializeLogger("Scene") },
+      _gameView { _window.getView() }
 {
     _logger->info("creating scene '{}'", _sceneName);
 
@@ -466,7 +467,9 @@ ScreenAction Scene::update(sf::Time elapsed)
     std::stringstream ss1;
     ss1 << "P(" << getPlayerTile()
         << ") G(" << _player->getGlobalCenter()
-        << ") T(" << elapsed.asSeconds() << ")";
+        << ") T(" << elapsed.asSeconds()
+        << ") V(" << _gameView.getSize()
+        << ")";
 
     _debugWindow.setText(ss1.str());
 	
@@ -475,19 +478,21 @@ ScreenAction Scene::update(sf::Time elapsed)
 
 void Scene::draw()
 {
-    // always adjust the view 
     adjustView();
-    Screen::draw();
+    _window.setView(_gameView);
+
+    Screen::draw(); // draws the background
 
     beforeDraw();
 
     std::for_each(_items.begin(), _items.end(),
-        [this](ItemPtr item) 
-        { 
-            _window.draw(*item); 
+        [this](ItemPtr item)
+        {
+            _window.draw(*item);
         });
 
     _window.draw(*_player);
+
     _window.setView(_window.getDefaultView());
     _hudPtr->draw();
     _descriptionText.draw();
@@ -842,32 +847,31 @@ void Scene::adjustView()
     {
         return;
     }
-    
-    auto view = _window.getView();
+
     auto [xpos,ypos] = _player->getGlobalCenter();
 
     if (xpos < (_window.getSize().x / 2))
     {
-        xpos = view.getCenter().x;
+        xpos = _gameView.getCenter().x;
     }
     else if (auto totalWidth = _background->getGlobalBounds().width;
                 xpos > (totalWidth - (_window.getSize().x / 2)))
     {
-        xpos = totalWidth - (view.getSize().x / 2);
+        xpos = totalWidth - (_gameView.getSize().x / 2);
     }
 
     if (ypos < (_window.getSize().y / 2))
     {
-        ypos = view.getCenter().y;
+        ypos = _gameView.getCenter().y;
     }
     else if (auto totalHeight = _background->getGlobalBounds().height;
                 ypos > (totalHeight - (_window.getSize().y / 2)))
     {
-        ypos = totalHeight - (view.getSize().y / 2);
+        ypos = totalHeight - (_gameView.getSize().y / 2);
     }
 
-    view.setCenter(xpos, ypos);
-    _window.setView(view);
+    _gameView.setCenter(xpos, ypos);
+//    _window.setView(view);
 }
 
 PollResult Scene::privatePollHandler(const sf::Event& e)
@@ -1125,6 +1129,38 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             case sf::Keyboard::K:
             {
                 _player->dance();
+            }
+            break;
+
+            case sf::Keyboard::Equal:
+            {
+                constexpr float ZOOM_AMOUNT = 0.05f;
+                if (_background->minzoom() == 0.f
+                    && _background->maxzoom() == 0.f)
+                {
+                    break;
+                }
+
+                auto viewSize = _gameView.getSize();
+                const auto defaultSize = _window.getDefaultView().getSize();
+
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
+                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
+                {
+                    viewSize.x += defaultSize.x * ZOOM_AMOUNT;
+                    viewSize.y += defaultSize.y * ZOOM_AMOUNT;
+                }
+                else
+                {
+                    viewSize.x -= defaultSize.x * ZOOM_AMOUNT;
+                    viewSize.y -= defaultSize.y * ZOOM_AMOUNT;
+                }
+
+                if (float ratio = (viewSize.x / defaultSize.x);
+                    ratio >= _background->minzoom() && ratio <= _background->maxzoom())
+                {
+                    _gameView.setSize(viewSize);
+                }
             }
             break;
         }

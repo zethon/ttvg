@@ -55,37 +55,37 @@ BOOST_AUTO_TEST_CASE(vehicleTurnTest)
     BOOST_TEST(vehicle.direction() == tt::Direction::RIGHT);
     BOOST_TEST(vehicle.currentTile() == (tt::Tile{ -1.0f, 0.0f }));
 
-    vehicle.move();
+    vehicle.doMove();
     BOOST_TEST(vehicle.getGlobalBounds().left == -1.0f);
     BOOST_TEST(vehicle.getGlobalBounds().top == 0.0f);
     BOOST_TEST(vehicle.direction() == tt::Direction::RIGHT);
     BOOST_TEST(vehicle.currentTile() == (tt::Tile{ -1.0f, 0.0f }));
 
-    vehicle.move();
+    vehicle.doMove();
     BOOST_TEST(vehicle.getGlobalBounds().left == 3.0f);
     BOOST_TEST(vehicle.getGlobalBounds().top == 0.0f);
     BOOST_TEST(vehicle.direction() == tt::Direction::RIGHT);
     BOOST_TEST(vehicle.currentTile() == (tt::Tile{ 0.0f, 0.0f }));
 
-    vehicle.move();
+    vehicle.doMove();
     BOOST_TEST(vehicle.getGlobalBounds().left == 7.0f);
     BOOST_TEST(vehicle.getGlobalBounds().top == 0.0f);
     BOOST_TEST(vehicle.direction() == tt::Direction::RIGHT);
     BOOST_TEST(vehicle.currentTile() == (tt::Tile{ 1.0f, 0.0f }));
 
-    vehicle.move();
+    vehicle.doMove();
     BOOST_TEST(vehicle.getGlobalBounds().left == 10.0f);
     BOOST_TEST(vehicle.getGlobalBounds().top == 0.0f);
     BOOST_TEST(vehicle.direction() == tt::Direction::DOWN);
     BOOST_TEST(vehicle.currentTile() == (tt::Tile{ 2.0f, 0.0f }));
 
-    vehicle.move();
+    vehicle.doMove();
     BOOST_TEST(vehicle.getGlobalBounds().left == 10.0f);
     BOOST_TEST(vehicle.getGlobalBounds().top == 4.0f);
     BOOST_TEST(vehicle.direction() == tt::Direction::DOWN);
     BOOST_TEST(vehicle.currentTile() == (tt::Tile{ 2.0f, 0.0f }));
 
-    vehicle.move();
+    vehicle.doMove();
     BOOST_TEST(vehicle.getGlobalBounds().left == 10.0f);
     BOOST_TEST(vehicle.getGlobalBounds().top == 8.0f);
     BOOST_TEST(vehicle.direction() == tt::Direction::DOWN);
@@ -131,25 +131,25 @@ BOOST_AUTO_TEST_CASE(fastVehicleTest)
     BOOST_TEST(vehicle.direction() == tt::Direction::RIGHT);
     BOOST_TEST(vehicle.currentTile() == (tt::Tile{ -1.0f, 0.0f }));
 
-    vehicle.move();
+    vehicle.doMove();
     BOOST_TEST(vehicle.getGlobalBounds().left == 2.0f);
     BOOST_TEST(vehicle.getGlobalBounds().top == 0.0f);
     BOOST_TEST(vehicle.direction() == tt::Direction::RIGHT);
     BOOST_TEST(vehicle.currentTile() == (tt::Tile{ 0.0f, 0.0f }));
 
-    vehicle.move();
+    vehicle.doMove();
     BOOST_TEST(vehicle.getGlobalBounds().left == 9.0f);
     BOOST_TEST(vehicle.getGlobalBounds().top == 0.0f);
     BOOST_TEST(vehicle.direction() == tt::Direction::RIGHT);
     BOOST_TEST(vehicle.currentTile() == (tt::Tile{ 1.0f, 0.0f }));
 
-    vehicle.move();
+    vehicle.doMove();
     BOOST_TEST(vehicle.getGlobalBounds().left == 10.0f);
     BOOST_TEST(vehicle.getGlobalBounds().top == 0.0f);
     BOOST_TEST(vehicle.direction() == tt::Direction::DOWN);
     BOOST_TEST(vehicle.currentTile() == (tt::Tile{ 2.0f, 0.0f }));
 
-    vehicle.move();
+    vehicle.doMove();
     BOOST_TEST(vehicle.getGlobalBounds().left == 10.0f);
     BOOST_TEST(vehicle.getGlobalBounds().top == 7.0f);
     BOOST_TEST(vehicle.direction() == tt::Direction::DOWN);

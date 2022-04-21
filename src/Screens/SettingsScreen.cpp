@@ -97,6 +97,13 @@ void SettingsScreen::initGui()
             _sfxValLbl->setText(fmt::format("Sound FX {}%", value));
         });
     _gui->add(_sfxSlider);
+
+    _fullscreenCB = tgui::CheckBox::create("Fullscreen");
+    _fullscreenCB->setPosition(_sfxValLbl->getPosition().x, 360);
+    _fullscreenCB->setChecked(settings->value("video.fullscreen", true));
+    _fullscreenCB->getRenderer()->setTextColor(sf::Color::White);
+    _fullscreenCB->setTextSize(20);
+    _gui->add(_fullscreenCB);
 }
 
 void SettingsScreen::draw()
@@ -114,6 +121,8 @@ void SettingsScreen::saveSettings()
 
     tempValue = static_cast<std::uint32_t>(_sfxSlider->getValue());
     settings->set("audio.volume.sfx", std::to_string(tempValue));
+
+    settings->set("video.fullscreen", _fullscreenCB->isChecked() ? "true" : "false");
 
     _resources.settings()->save();
     _result = ScreenAction{ScreenActionType::CHANGE_SCREEN, SCREEN_INTRO};

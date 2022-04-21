@@ -60,6 +60,8 @@ amb::SettingsPtr registerSettings()
 
     retval->registerBool("logs.music.enabled", false);
     retval->registerBool("logs.sfx.enabled", false);
+    retval->registerBool("logs.sfx.enabled", false);
+    retval->registerBool("video.fullscreen", true);
 
     return retval;
 }
@@ -204,12 +206,21 @@ int main(int argc, char *argv[])
     }
     logger->debug("initializing window size {}x{}", width, height);
 
-    auto win = std::make_shared<sf::RenderWindow>( 
-        sf::VideoMode(  static_cast<unsigned int>(width), 
-                        static_cast<unsigned int>(height) ),
-        APP_NAME_LONG,
-        sf::Style::Titlebar | sf::Style::Close
-    );
+    std::shared_ptr<sf::RenderWindow> win;
+    if (settings->value("video.fullscreen", true))
+    {
+        win = std::make_shared<sf::RenderWindow>(
+            sf::VideoMode(static_cast<unsigned int>(width), static_cast<unsigned int>(height)),
+            APP_NAME_LONG,
+            sf::Style::Fullscreen);
+    }
+    else
+    {
+        win = std::make_shared<sf::RenderWindow>(
+                sf::VideoMode(static_cast<unsigned int>(width), static_cast<unsigned int>(height)),
+                APP_NAME_LONG,
+                sf::Style::Titlebar | sf::Style::Close);
+    }
 
     win->setFramerateLimit(60);
 

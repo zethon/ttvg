@@ -27,6 +27,7 @@ private:
 
     tgui::Label::Ptr            _sfxValLbl;
     tgui::Slider::Ptr           _sfxSlider;
+    tgui::CheckBox::Ptr         _fullscreenCB;
 
     ScreenAction                _result;
     sf::Font                    _font;

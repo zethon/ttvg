@@ -79,7 +79,7 @@ public:
         tt::AudioLocator::sound()->play(_hornsound);
     }
 
-    void move();
+    void doMove();
 
 private:
     void setDirection(std::uint32_t dir);
