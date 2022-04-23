@@ -5,7 +5,7 @@
 
     "obtainable":   	false,
 
-    "size":             { "x": 49, "y": 112 },
+    "size":             { "x": 64, "y": 100 },
 
     "frame-count":      4,
     "time-step":        555,
