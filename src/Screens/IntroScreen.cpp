@@ -15,7 +15,6 @@ namespace tt
 namespace
 {
 
-
 void createMenu(TextList& menuItems,
     const std::vector<std::string>& textlist,
     sf::RenderTarget& window, 
@@ -177,7 +176,8 @@ IntroScreen::IntroScreen(       ResourceManager& resmgr,
     //
     createMenu(_menuItems, 
         { 
-            "Play Game", 
+            "New Game",
+            "Load Game",
             "Settings", 
             "Exit Game" 
         }, _window, _font);
@@ -193,8 +193,27 @@ IntroScreen::IntroScreen(       ResourceManager& resmgr,
     tt::AudioLocator::sound()->cacheAudio(TOMWILLKILL_SOUND);
 }
 
+void IntroScreen::draw()
+{
+    Screen::draw();
+    if (_gui) _gui->draw();
+}
+
 PollResult IntroScreen::poll(const sf::Event& e)
 {
+    if (_gui)
+    {
+        _gui->handleEvent(e);
+
+        if (e.type == sf::Event::KeyReleased
+            && e.key.code == sf::Keyboard::Escape)
+        {
+            _gui.reset();
+        }
+
+        return {};
+    }
+
     if (e.type == sf::Event::KeyReleased
         && e.key.code == sf::Keyboard::Up)
     {
@@ -225,17 +244,65 @@ PollResult IntroScreen::poll(const sf::Event& e)
             default:
             break;
 
-            case 0: // play game
+            case 0: // new game
             {
                 return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_LOADING }};
             }
 
-            case 1: // settings
+            case 1: // load game
+            {
+                _gui = std::make_unique<tgui::Gui>(_window);
+
+                auto windowSize = _window.getSize();
+                auto halfWindowWidth = windowSize.x / 2;
+
+                auto child = tgui::ChildWindow::create();
+                child->setClientSize({500, 200});
+                auto xpos = (_window.getSize().x / 2) - (child->getSize().x / 2);
+                auto ypos = (_window.getSize().y / 2) - (child->getSize().y / 2);
+                child->setPosition(xpos, ypos);
+                child->setTitleButtons(tgui::ChildWindow::TitleButton::None);
+                _gui->add(child);
+
+                auto editLbl = tgui::Label::create("Enter name for new game");
+                editLbl->setPosition(20,20);
+                editLbl->setTextSize(30);
+                child->add(editLbl);
+
+                auto editBox = tgui::EditBox::create();
+                editBox->setPosition(20,75);
+                editBox->setTextSize(30);
+                editBox->setSize(460,35);
+                child->add(editBox);
+
+                auto okBtn = tgui::Button::create("Ok");
+                okBtn->setWidgetName("sds");
+                okBtn->setSize(50, 45);
+                xpos = (child->getSize().x / 2) - (okBtn->getSize().x + 20);
+                okBtn->setPosition(xpos, 125);
+                child->add(okBtn);
+
+                auto cancelBtn = tgui::Button::create("Cancel");
+                cancelBtn->setSize(65, 45);
+                xpos = (child->getSize().x / 2) + 20;
+                cancelBtn->setPosition(xpos, 125);
+                cancelBtn->onPress([=]
+                    {
+                        _gui.reset();
+                    });
+                child->add(cancelBtn);
+
+                editBox->setFocused(true);
+
+                break;
+            }
+
+            case 2: // settings
             {
                 return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_SETTINGS }};
             }
 
-            case 2: // exit
+            case 3: // exit
             {
                 tt::AudioLocator::music()->stop(BACKGROUND_SONG);
                 tt::AudioLocator::sound()->play(TOMWILLKILL_SOUND);

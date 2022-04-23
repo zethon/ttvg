@@ -2,6 +2,8 @@
 
 #include <SFML/Audio.hpp>
 
+#include <TGUI/TGUI.hpp>
+
 #include "Screen.h"
 
 #include "../TooterLogger.h"
@@ -21,7 +23,9 @@ public:
 
     IntroScreen(ResourceManager& res, sf::RenderTarget& target);
 
+    void draw() override;
     PollResult poll(const sf::Event& e) override;
+
     ScreenAction update() override;
     void close() override;
 
@@ -39,6 +43,8 @@ private:
     std::vector<SpritePtr>      _sprite;
 
     sf::Clock   _clock;
+
+    std::unique_ptr<tgui::Gui>  _gui;
 };
 
 
