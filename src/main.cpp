@@ -209,8 +209,10 @@ int main(int argc, char *argv[])
     std::shared_ptr<sf::RenderWindow> win;
     if (settings->value("video.fullscreen", true))
     {
+        logger->debug("Using desktop window.");
+
         win = std::make_shared<sf::RenderWindow>(
-            sf::VideoMode(static_cast<unsigned int>(width), static_cast<unsigned int>(height)),
+            sf::VideoMode::getDesktopMode(),
             APP_NAME_LONG,
             sf::Style::Fullscreen);
     }
