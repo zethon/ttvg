@@ -2,6 +2,7 @@
 #   include <windows.h>
 #   include <shellapi.h>
 #   include <Shlobj.h>
+#   include <codecvt>
 #else
 #   include <unistd.h>
 #   include <sys/types.h>
@@ -151,6 +152,20 @@ std::string getUserFolder()
 #else
 struct passwd *pw = getpwuid(getuid());
 retval = pw->pw_dir;
+#endif
+
+    return retval;
+}
+
+std::string getDataFolder()
+{
+    std::string retval;
+
+#ifdef _WINDOWS
+    retval = getWindowsFolder(CSIDL_COMMON_APPDATA);
+#else
+    struct passwd *pw = getpwuid(getuid());
+    retval = pw->pw_dir;
 #endif
 
     return retval;
