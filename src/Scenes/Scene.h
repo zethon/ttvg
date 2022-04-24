@@ -132,7 +132,10 @@ int Scene_getDescriptionWindow(lua_State* L);
 struct BackgroundMusic
 {
     std::string file;
-    float volume = 100.f;
+
+    float volume    = 100.0f;
+    bool loop       = false;
+    bool enabled    = false;
 };
 
 void from_json(const nl::json& j, BackgroundMusic& bm);

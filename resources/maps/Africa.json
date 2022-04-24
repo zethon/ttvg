@@ -6,6 +6,14 @@
         "camera":   "follow"
     },
 
+    "background-music":
+    {
+        "file":     "music/arms-of-an-angel.wav",
+        "volume":   20,
+        "loop":     false,
+        "enabled":  true
+    },
+
     "player":
     {
         "start":    { "x": 45,  "y": 62 },
@@ -45,21 +53,49 @@
 
     "items":
     { 
-		"nigerian-oil-rig":
+        "nigerian-oil-rig":
         {
             "scale":        { "x": 0.75, "y": 0.75 },
             "instances":
             [
-                			{ "x": 34, "y": 65 }
+                            { "x": 34, "y": 65 }
             ]
         },
 
-        "african-child-miner":
+        "pyramids":
+        {
+            "scale":        { "x": 0.25, "y": 0.25 },
+            "instances":
+            [
+                            { "x": 83, "y": 38 }
+            ]
+        },
+
+        "mine-entrance":
+        {
+            "scale":        { "x": 0.25, "y": 0.25 },
+            "instances":
+            [
+                            { "x": 75, "y": 61 }
+            ]
+        },
+
+        "shovel":
+        {
+            "instances":
+            [
+                { "x": 74, "y": 66 }
+            ]
+        },
+
+        "starving-african-child":
         {
             "scale":        { "x": 0.75, "y": 0.75 },
             "instances":
             [
-                			{ "x": 54, "y": 61 }
+                { "x": 79, "y": 63, "onSelect": "starvingChild_select" },
+                { "x": 79, "y": 58, "onSelect": "starvingChild_select" },
+                { "x": 78, "y": 62, "onSelect": "starvingChild_select" }
             ]
         }
 

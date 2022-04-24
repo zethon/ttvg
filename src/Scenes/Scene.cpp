@@ -79,6 +79,17 @@ void from_json(const nl::json& j, BackgroundMusic& bm)
     {
         j.at("volume").get_to(bm.volume);
     }
+
+    if (j.contains("loop"))
+    {
+        j.at("loop").get_to(bm.loop);
+    }
+
+    if (j.contains("enabled"))
+    {
+        j.at("enabled").get_to(bm.enabled);
+    }
+
 }
 
 int Scene_name(lua_State* L)
@@ -368,6 +379,7 @@ void Scene::enter()
         {
             _hudPtr->setBalance(cash);
         });
+
 
     tt::AudioLocator::music()->play(_bgSongName);
 

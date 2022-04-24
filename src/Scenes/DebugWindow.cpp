@@ -15,7 +15,12 @@ DebugWindow::DebugWindow(ResourceManager & resmgr, sf::RenderTarget & target)
     }
 
     _debugText = std::make_shared<sf::Text>("", _debugFont);
+   
     _debugText->setFillColor(sf::Color::White);
+
+    _debugText->setOutlineColor(sf::Color(0,0,0,255));
+    _debugText->setOutlineThickness(1);
+
     _debugText->setPosition(10.f, _window.getSize().y - 35.f);
     _debugText->setCharacterSize(20);
     addDrawable(_debugText);

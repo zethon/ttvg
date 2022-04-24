@@ -1,9 +1,11 @@
-local _player = nil     -- shortcut to player object, refereshed in every `onEnter` call
+--
+-- shortcut to player object, refereshed in every `onEnter` call
+--
+local _player = nil     
 
 function onEnter(scene)
     _player = scene:getPlayer()
 end 
-
 
 --
 -- Airport
