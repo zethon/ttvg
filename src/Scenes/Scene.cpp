@@ -724,12 +724,14 @@ void Scene::createItems()
             ItemInstanceInfo groupinfo = data.get<ItemInstanceInfo>();
             groupinfo.objid = itemid; // we don't want to require the objid to be set in json
 
-            for (const auto& instance : data["instances"])
+            for (const auto& instance : (data["instances"] | boost::adaptors::indexed()))
             {
-                auto instanceinfo = instance.get<ItemInstanceInfo>();
+                auto instanceinfo = instance.value().get<ItemInstanceInfo>();
+                instanceinfo.index = instance.index();
+
                 instanceinfo.applyDefaults(groupinfo);
 
-                auto groupcallbacks = instance.get<ItemCallbacks>();
+                auto groupcallbacks = instance.value().get<ItemCallbacks>();
                 auto item = _itemFactory.createItem(instanceinfo);
                 if (item) placeItem(item);
             }

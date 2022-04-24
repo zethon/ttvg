@@ -246,11 +246,6 @@ PollResult IntroScreen::poll(const sf::Event& e)
 
             case 0: // new game
             {
-                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_LOADING }};
-            }
-
-            case 1: // load game
-            {
                 _gui = std::make_unique<tgui::Gui>(_window);
 
                 auto windowSize = _window.getSize();
@@ -295,6 +290,11 @@ PollResult IntroScreen::poll(const sf::Event& e)
                 editBox->setFocused(true);
 
                 break;
+            }
+
+            case 1: // load game
+            {
+                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_LOADING }};
             }
 
             case 2: // settings
