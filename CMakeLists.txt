@@ -71,6 +71,7 @@ if (MSVC)
     add_compile_options(
         # treat warnings as errors
         /WX
+        /wd4996
     )
 
     add_link_options(

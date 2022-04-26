@@ -133,6 +133,27 @@ std::string getOsString()
 #endif
 }
 
+#ifdef _WINDOWS
+std::string getWindowsFolder(int csidl)
+{
+    std::string retval;
+
+    WCHAR path[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPathW(NULL, csidl, NULL, 0, path)))
+    {
+        std::wstring temp(path);
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
+        retval = convert.to_bytes(temp);
+    }
+    else
+    {
+        throw std::runtime_error("could not retrieve user folder");
+    }
+
+    return retval;
+}
+#endif
+
 std::string getUserFolder()
 {
     std::string retval;
