@@ -727,7 +727,7 @@ void Scene::createItems()
             for (const auto& instance : (data["instances"] | boost::adaptors::indexed()))
             {
                 auto instanceinfo = instance.value().get<ItemInstanceInfo>();
-                instanceinfo.index = instance.index();
+                instanceinfo.index = static_cast<std::uint32_t>(instance.index());
 
                 instanceinfo.applyDefaults(groupinfo);
 
