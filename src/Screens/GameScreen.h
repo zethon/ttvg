@@ -15,6 +15,7 @@
 #include "../GameWorld.h"
 #include "../Settings.h"
 #include "../AudioService.h"
+#include "../GameState.h"
 
 #include "Screen.h"
 
@@ -221,6 +222,7 @@ private:
 
     sf::Clock                       _gameClock;
     std::shared_ptr<GameWorld>      _gameCalendar;
+    std::tt::GameState                   _gameState;
 
     std::shared_ptr<Hud>            _hud;
 };

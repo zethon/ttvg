@@ -64,6 +64,24 @@ void from_json(const nl::json& j, Vector2u& v)
     }
 }
 
+void to_json(nl::json& j, const Vector2f& v)
+{
+    j["x"] = v.x;
+    j["y"] = v.y;
+}
+
+void to_json(nl::json& j, const Vector2i& v)
+{
+    j["x"] = v.x;
+    j["y"] = v.y;
+}
+
+void to_json(nl::json& j, const Vector2u& v)
+{
+    j["x"] = v.x;
+    j["y"] = v.y;
+}
+
 }
 
 namespace tt

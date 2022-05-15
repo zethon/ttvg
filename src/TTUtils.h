@@ -33,6 +33,10 @@ void from_json(const nl::json& j, Vector2f& v);
 void from_json(const nl::json& j, Vector2i& v);
 void from_json(const nl::json& j, Vector2u& v);
 
+void to_json(nl::json& j, const Vector2f& v);
+void to_json(nl::json& j, const Vector2i& v);
+void to_json(nl::json& j, const Vector2u& v);
+
 template<typename T>
 void from_json(const nl::json& j, sf::Rect<T>& r)
 {

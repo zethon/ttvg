@@ -11,13 +11,17 @@ namespace tt
 
 class Player;
 using PlayerPtr = std::shared_ptr<Player>;
+
 void from_json(const nl::json& j, Player& i);
+void to_json(nl::json& j, const Player& p);
 
 class Player : public Item
 {
 public:
     static constexpr auto CLASS_NAME = "Player";
     static const struct luaL_Reg LuaMethods[];
+
+    friend void from_json(const nl::json& j, Player& i);
 
     using Item::Item;
 
