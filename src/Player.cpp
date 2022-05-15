@@ -6,8 +6,16 @@
 namespace tt
 {
 
-void from_json(const nl::json & j, Player & i)
+void from_json(const nl::json& j, Player& p)
 {
+    j["health"].get_to(p._health);
+    j["cash"].get_to(p._cash);
+}
+
+void to_json(nl::json& j, const Player& p)
+{
+    j["health"] = p.health();
+    j["cash"] = p.balance();
 }
 
 namespace

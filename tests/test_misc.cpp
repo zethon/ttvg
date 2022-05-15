@@ -13,12 +13,14 @@
 #include "../src/TTUtils.h"
 #include "../src/Intersection.h"
 #include "../src/PathFactory.h"
+#include "../src/GameState.h"
 
 #include "Test.h"
 
 using namespace std::string_literals;
 
 namespace data = boost::unit_test::data;
+namespace fs = boost::filesystem;
 
 namespace std
 {
@@ -421,6 +423,37 @@ BOOST_AUTO_TEST_CASE(oneBitSetTest)
 
     auto direction = tt::getDirection(sf::Vector2i{ -1,11 }, sf::Vector2i{ 10,11 });
     BOOST_TEST(tt::exactly_one_bit_set(direction) == true);
+}
+
+BOOST_AUTO_TEST_CASE(gameStateSave)
+{
+    const auto filename = tt::tempFolder() / "gamestate-test.json";
+
+    sf::Texture playerTexture;
+    tt::ItemInfo playerObjInfo;
+    playerObjInfo.size = sf::Vector2u{ 10, 10 };
+    playerObjInfo.texture = &playerTexture;
+
+    tt::GameState gameState;
+    gameState.playerstate.cash = 69.69;
+    gameState.playerstate.health = 12;
+
+    gameState.location.map = "TestMap";
+    gameState.location.cords = sf::Vector2f{12.34, 56.78};
+
+    {
+        std::ofstream o{ filename.c_str() };
+        nl::json json = gameState;
+        o << json.dump();
+    }
+
+    {
+        std::ifstream ifs(filename.c_str());
+        nl::json jf = nl::json::parse(ifs);
+        tt::GameState readState = jf.get<tt::GameState>();
+        BOOST_TEST(readState.playerstate.health == gameState.playerstate.health);
+    }
+//    const auto path{ };
 }
 
 BOOST_AUTO_TEST_SUITE_END() // tt
