@@ -222,7 +222,7 @@ private:
 
     sf::Clock                       _gameClock;
     std::shared_ptr<GameWorld>      _gameCalendar;
-    std::tt::GameState                   _gameState;
+    tt::GameState                   _gameState;
 
     std::shared_ptr<Hud>            _hud;
 };
