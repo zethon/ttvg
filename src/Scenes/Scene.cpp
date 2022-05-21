@@ -1,7 +1,5 @@
 #include <boost/range/adaptor/indexed.hpp>
 
-#include <lua.hpp>
-
 #include <fmt/core.h>
 
 #include "../TTLua.h"
@@ -726,14 +724,12 @@ void Scene::createItems()
             ItemInstanceInfo groupinfo = data.get<ItemInstanceInfo>();
             groupinfo.objid = itemid; // we don't want to require the objid to be set in json
 
-            for (const auto& instance : (data["instances"] | boost::adaptors::indexed()))
+            for (const auto& instance : data["instances"])
             {
-                auto instanceinfo = instance.value().get<ItemInstanceInfo>();
-                instanceinfo.index = static_cast<std::uint32_t>(instance.index());
-
+                auto instanceinfo = instance.get<ItemInstanceInfo>();
                 instanceinfo.applyDefaults(groupinfo);
 
-                auto groupcallbacks = instance.value().get<ItemCallbacks>();
+                auto groupcallbacks = instance.get<ItemCallbacks>();
                 auto item = _itemFactory.createItem(instanceinfo);
                 if (item) placeItem(item);
             }
