@@ -1,4 +1,4 @@
-#include <lua.hpp>
+#include <boost/range/adaptor/indexed.hpp>
 
 #include <fmt/core.h>
 
@@ -723,7 +723,7 @@ void Scene::createItems()
             // default info for the item
             ItemInstanceInfo groupinfo = data.get<ItemInstanceInfo>();
             groupinfo.objid = itemid; // we don't want to require the objid to be set in json
-            
+
             for (const auto& instance : data["instances"])
             {
                 auto instanceinfo = instance.get<ItemInstanceInfo>();
@@ -888,7 +888,36 @@ void Scene::adjustView()
 
 PollResult Scene::privatePollHandler(const sf::Event& e)
 {
-    if (e.type == sf::Event::KeyPressed)
+    if (e.type == sf::Event::MouseWheelScrolled)
+    {
+        constexpr float ZOOM_AMOUNT = 0.035f;
+        if ((_background->minzoom() == 0.f && _background->maxzoom() == 0.f)
+            || e.mouseWheelScroll.delta == 0)
+        {
+            return {};
+        }
+
+        auto viewSize = _gameView.getSize();
+        const auto defaultSize = _window.getDefaultView().getSize();
+
+        if (e.mouseWheelScroll.delta > 0)
+        {
+            viewSize.x -= defaultSize.x * ZOOM_AMOUNT;
+            viewSize.y -= defaultSize.y * ZOOM_AMOUNT;
+        }
+        else
+        {
+            viewSize.x += defaultSize.x * ZOOM_AMOUNT;
+            viewSize.y += defaultSize.y * ZOOM_AMOUNT;
+        }
+
+        if (float ratio = (viewSize.x / defaultSize.x);
+            ratio >= _background->minzoom() && ratio <= _background->maxzoom())
+        {
+            _gameView.setSize(viewSize);
+        }
+    }
+    else if (e.type == sf::Event::KeyPressed)
     {
         switch (e.key.code)
         {
@@ -1141,38 +1170,6 @@ PollResult Scene::privatePollHandler(const sf::Event& e)
             case sf::Keyboard::K:
             {
                 _player->dance();
-            }
-            break;
-
-            case sf::Keyboard::Equal:
-            {
-                constexpr float ZOOM_AMOUNT = 0.05f;
-                if (_background->minzoom() == 0.f
-                    && _background->maxzoom() == 0.f)
-                {
-                    break;
-                }
-
-                auto viewSize = _gameView.getSize();
-                const auto defaultSize = _window.getDefaultView().getSize();
-
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-                    || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
-                {
-                    viewSize.x += defaultSize.x * ZOOM_AMOUNT;
-                    viewSize.y += defaultSize.y * ZOOM_AMOUNT;
-                }
-                else
-                {
-                    viewSize.x -= defaultSize.x * ZOOM_AMOUNT;
-                    viewSize.y -= defaultSize.y * ZOOM_AMOUNT;
-                }
-
-                if (float ratio = (viewSize.x / defaultSize.x);
-                    ratio >= _background->minzoom() && ratio <= _background->maxzoom())
-                {
-                    _gameView.setSize(viewSize);
-                }
             }
             break;
         }
