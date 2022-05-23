@@ -12,59 +12,9 @@
 namespace tt
 {
 
-namespace
-{
-
-void createMenu(TextList& menuItems,
-    const std::vector<std::string>& textlist,
-    sf::RenderTarget& window, 
-    sf::Font& font)
-{
-
-    for (const auto& text : textlist)
-    {
-        auto temp = std::make_shared<sf::Text>(text, font);
-        menuItems.push_back(temp);
-    }
-
-    auto ypos = 300.0f;
-
-    for (const auto& item: menuItems)
-    {
-        item->setCharacterSize(40);
-
-        //
-        // Calculate xpos (right align)
-        //
-        auto winWidth       = window.getSize().x;
-        auto itemWidth      = item->getLocalBounds().width;
-        auto xpos           = (winWidth - itemWidth) - 50.f;
-
-        item->setPosition(xpos, ypos);
-       
-        item->setOutlineColor(sf::Color(0,0,0,255));
-        item->setOutlineThickness(5);
-
-        //
-        // Increment ypos to the next item position
-        //
-        ypos += item->getLocalBounds().height + 20.0f;
-    }
-
-}
-
-void updateMenu(std::uint16_t selection, TextList& menuItems)
-{
-    std::for_each(menuItems.begin(), menuItems.end(),
-        [](TextPtr item) { item->setFillColor(sf::Color(64, 64, 64)); });
-
-    if (selection < menuItems.size())
-    {
-        menuItems.at(selection)->setFillColor(sf::Color::Yellow);
-    }
-}
-
-}
+constexpr auto BUTTON_HEIGHT = 35u;
+constexpr auto BUTTON_WIDTH = 125u;
+constexpr auto BUTTON_PADDING = 25u;
 
 IntroScreen::IntroScreen(       ResourceManager& resmgr, 
                                 sf::RenderTarget& target )
@@ -171,26 +121,85 @@ IntroScreen::IntroScreen(       ResourceManager& resmgr,
     //
     addDrawable(textobj);
 
-    //
-    // Add the menu items
-    //
-    createMenu(_menuItems, 
-        { 
-            "New Game",
-            "Load Game",
-            "Settings", 
-            "Exit Game" 
-        }, _window, _font);
-
-    updateMenu(_selected, _menuItems);
-
-    for (const auto& item: _menuItems)
-    {
-        addDrawable(item);
-    }
-
     tt::AudioLocator::sound()->cacheAudio(SELECTOR_SOUND);
     tt::AudioLocator::sound()->cacheAudio(TOMWILLKILL_SOUND);
+
+    initGui();
+}
+
+void IntroScreen::initGui()
+{
+    auto xloc = _window.getSize().x - (BUTTON_WIDTH + BUTTON_PADDING);
+    auto yloc = (_window.getSize().y / 2) - ((BUTTON_HEIGHT + BUTTON_PADDING) * 2);
+
+    _gui = std::make_unique<tgui::Gui>(_window);
+
+    // New Game
+    auto tempbtn = tgui::Button::create();
+    tempbtn->setText("New Game");
+    tempbtn->setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+    tempbtn->setPosition(xloc, yloc);
+    tempbtn->getRenderer()->setBackgroundColor(tgui::Color::White);
+    tempbtn->getRenderer()->setBackgroundColorHover(tgui::Color::Green);
+    tempbtn->onMouseEnter([this]() { tt::AudioLocator::sound()->play(SELECTOR_SOUND); });
+    tempbtn->onPress([=]
+    {
+        _menuAction.action.type = ScreenActionType::CHANGE_SCREEN;
+        _menuAction.action.data = SCREEN_LOADING;
+    });
+    _gui->add(tempbtn);
+
+    // Load Game
+    tempbtn = tgui::Button::create();
+    tempbtn->setText("Load Game");
+    tempbtn->setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+    yloc += BUTTON_HEIGHT + BUTTON_PADDING;
+    tempbtn->setPosition(xloc, yloc);
+    tempbtn->getRenderer()->setBackgroundColor(tgui::Color::White);
+    tempbtn->getRenderer()->setBackgroundColorHover(tgui::Color::Green);
+    tempbtn->onMouseEnter([this]() { tt::AudioLocator::sound()->play(SELECTOR_SOUND); });
+    _gui->add(tempbtn);
+
+    // Options
+    tempbtn = tgui::Button::create();
+    tempbtn->setText("Options");
+    tempbtn->setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+    yloc += BUTTON_HEIGHT + BUTTON_PADDING;
+    tempbtn->setPosition(xloc, yloc);
+    tempbtn->getRenderer()->setBackgroundColor(tgui::Color::White);
+    tempbtn->getRenderer()->setBackgroundColorHover(tgui::Color::Green);
+    tempbtn->onMouseEnter([this]() { tt::AudioLocator::sound()->play(SELECTOR_SOUND); });
+    tempbtn->onPress([=]
+    {
+        _menuAction.action.type = ScreenActionType::CHANGE_SCREEN;
+        _menuAction.action.data = SCREEN_SETTINGS;
+    });
+    _gui->add(tempbtn);
+
+    // Exit
+    tempbtn = tgui::Button::create();
+    tempbtn->setText("Exit Game");
+    tempbtn->setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+    yloc += BUTTON_HEIGHT + BUTTON_PADDING;
+    tempbtn->setPosition(xloc, yloc);
+    tempbtn->getRenderer()->setBackgroundColor(tgui::Color::White);
+    tempbtn->getRenderer()->setBackgroundColorHover(tgui::Color::Green);
+    tempbtn->onMouseEnter([this]() { tt::AudioLocator::sound()->play(SELECTOR_SOUND); });
+    tempbtn->onPress([=]
+    {
+        tt::AudioLocator::music()->stop(BACKGROUND_SONG);
+        tt::AudioLocator::sound()->play(TOMWILLKILL_SOUND);
+
+        while (tt::AudioLocator::sound()->getStatus(TOMWILLKILL_SOUND) == sf::Sound::Playing)
+        {
+            std::this_thread::yield();
+        }
+
+        // super hack! I'm too lazy and don't care enough right now
+        sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(&_window);
+        window->close();
+    });
+    _gui->add(tempbtn);
 }
 
 void IntroScreen::draw()
@@ -211,114 +220,117 @@ PollResult IntroScreen::poll(const sf::Event& e)
             _gui.reset();
         }
 
-        return {};
-    }
-
-    if (e.type == sf::Event::KeyReleased
-        && e.key.code == sf::Keyboard::Up)
-    {
-        if (_selected > 0)
+        if (_menuAction.action.type != tt::ScreenActionType::NONE)
         {
-            _selected--;
-            updateMenu(_selected, _menuItems);
-            tt::AudioLocator::sound()->play(SELECTOR_SOUND);
+            return { true, _menuAction.action };
         }
     }
-    else if (e.type == sf::Event::KeyReleased
-        && e.key.code == sf::Keyboard::Down)
-    {
-        if (_selected < _menuItems.size() - 1)
-        {
-            _selected++;
-            updateMenu(_selected, _menuItems);
 
-            tt::AudioLocator::sound()->play(SELECTOR_SOUND);
-        }
-    }
-    else if (e.type == sf::Event::KeyPressed
-        && (e.key.code == sf::Keyboard::Space
-            || e.key.code == sf::Keyboard::Enter))
-    {
-        switch (_selected)
-        {
-            default:
-            break;
-
-            case 0: // new game
-            {
-                _gui = std::make_unique<tgui::Gui>(_window);
-
-                auto windowSize = _window.getSize();
-                auto halfWindowWidth = windowSize.x / 2;
-
-                auto child = tgui::ChildWindow::create();
-                child->setClientSize({500, 200});
-                auto xpos = (_window.getSize().x / 2) - (child->getSize().x / 2);
-                auto ypos = (_window.getSize().y / 2) - (child->getSize().y / 2);
-                child->setPosition(xpos, ypos);
-                child->setTitleButtons(tgui::ChildWindow::TitleButton::None);
-                _gui->add(child);
-
-                auto editLbl = tgui::Label::create("Enter name for new game");
-                editLbl->setPosition(20,20);
-                editLbl->setTextSize(30);
-                child->add(editLbl);
-
-                auto editBox = tgui::EditBox::create();
-                editBox->setPosition(20,75);
-                editBox->setTextSize(30);
-                editBox->setSize(460,35);
-                child->add(editBox);
-
-                auto okBtn = tgui::Button::create("Ok");
-                okBtn->setWidgetName("sds");
-                okBtn->setSize(50, 45);
-                xpos = (child->getSize().x / 2) - (okBtn->getSize().x + 20);
-                okBtn->setPosition(xpos, 125);
-                child->add(okBtn);
-
-                auto cancelBtn = tgui::Button::create("Cancel");
-                cancelBtn->setSize(65, 45);
-                xpos = (child->getSize().x / 2) + 20;
-                cancelBtn->setPosition(xpos, 125);
-                cancelBtn->onPress([=]
-                    {
-                        _gui.reset();
-                    });
-                child->add(cancelBtn);
-
-                editBox->setFocused(true);
-
-                break;
-            }
-
-            case 1: // load game
-            {
-                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_LOADING }};
-            }
-
-            case 2: // settings
-            {
-                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_SETTINGS }};
-            }
-
-            case 3: // exit
-            {
-                tt::AudioLocator::music()->stop(BACKGROUND_SONG);
-                tt::AudioLocator::sound()->play(TOMWILLKILL_SOUND);
-
-                while (tt::AudioLocator::sound()->getStatus(TOMWILLKILL_SOUND) == sf::Sound::Playing)
-                {
-                    std::this_thread::yield();
-                }
-
-                // super hack! I'm too lazy and don't care enough right now
-                sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(&_window);
-                window->close();
-            }
-            break;
-        }
-    }
+//    if (e.type == sf::Event::KeyReleased
+//        && e.key.code == sf::Keyboard::Up)
+//    {
+//        if (_selected > 0)
+//        {
+//            _selected--;
+//            updateMenu(_selected, _menuItems);
+//            tt::AudioLocator::sound()->play(SELECTOR_SOUND);
+//        }
+//    }
+//    else if (e.type == sf::Event::KeyReleased
+//        && e.key.code == sf::Keyboard::Down)
+//    {
+//        if (_selected < _menuItems.size() - 1)
+//        {
+//            _selected++;
+//            updateMenu(_selected, _menuItems);
+//
+//            tt::AudioLocator::sound()->play(SELECTOR_SOUND);
+//        }
+//    }
+//    else if (e.type == sf::Event::KeyPressed
+//        && (e.key.code == sf::Keyboard::Space
+//            || e.key.code == sf::Keyboard::Enter))
+//    {
+//        switch (_selected)
+//        {
+//            default:
+//            break;
+//
+//            case 0: // new game
+//            {
+//                _gui = std::make_unique<tgui::Gui>(_window);
+//
+//                auto windowSize = _window.getSize();
+//                auto halfWindowWidth = windowSize.x / 2;
+//
+//                auto child = tgui::ChildWindow::create();
+//                child->setClientSize({500, 200});
+//                auto xpos = (_window.getSize().x / 2) - (child->getSize().x / 2);
+//                auto ypos = (_window.getSize().y / 2) - (child->getSize().y / 2);
+//                child->setPosition(xpos, ypos);
+//                child->setTitleButtons(tgui::ChildWindow::TitleButton::None);
+//                _gui->add(child);
+//
+//                auto editLbl = tgui::Label::create("Enter name for new game");
+//                editLbl->setPosition(20,20);
+//                editLbl->setTextSize(30);
+//                child->add(editLbl);
+//
+//                auto editBox = tgui::EditBox::create();
+//                editBox->setPosition(20,75);
+//                editBox->setTextSize(30);
+//                editBox->setSize(460,35);
+//                child->add(editBox);
+//
+//                auto okBtn = tgui::Button::create("Ok");
+//                okBtn->setWidgetName("sds");
+//                okBtn->setSize(50, 45);
+//                xpos = (child->getSize().x / 2) - (okBtn->getSize().x + 20);
+//                okBtn->setPosition(xpos, 125);
+//                child->add(okBtn);
+//
+//                auto cancelBtn = tgui::Button::create("Cancel");
+//                cancelBtn->setSize(65, 45);
+//                xpos = (child->getSize().x / 2) + 20;
+//                cancelBtn->setPosition(xpos, 125);
+//                cancelBtn->onPress([=]
+//                    {
+//                        _gui.reset();
+//                    });
+//                child->add(cancelBtn);
+//
+//                editBox->setFocused(true);
+//
+//                break;
+//            }
+//
+//            case 1: // load game
+//            {
+//                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_LOADING }};
+//            }
+//
+//            case 2: // settings
+//            {
+//                return {true, { ScreenActionType::CHANGE_SCREEN, SCREEN_SETTINGS }};
+//            }
+//
+//            case 3: // exit
+//            {
+//                tt::AudioLocator::music()->stop(BACKGROUND_SONG);
+//                tt::AudioLocator::sound()->play(TOMWILLKILL_SOUND);
+//
+//                while (tt::AudioLocator::sound()->getStatus(TOMWILLKILL_SOUND) == sf::Sound::Playing)
+//                {
+//                    std::this_thread::yield();
+//                }
+//
+//                // super hack! I'm too lazy and don't care enough right now
+//                sf::RenderWindow* window = dynamic_cast<sf::RenderWindow*>(&_window);
+//                window->close();
+//            }
+//            break;
+//        }
+//    }
 
     return {};
 }
