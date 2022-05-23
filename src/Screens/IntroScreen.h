@@ -18,7 +18,7 @@ class IntroScreen : public Screen
 {
 public:
     inline static constexpr auto BACKGROUND_SONG = "music/intro.wav";
-    inline static constexpr auto SELECTOR_SOUND = "sounds/selector.wav";
+    inline static constexpr auto SELECTOR_SOUND = "sounds/selector2.wav";
     inline static constexpr auto TOMWILLKILL_SOUND = "sounds/tomwillkill.wav";
 
     IntroScreen(ResourceManager& res, sf::RenderTarget& target);
@@ -28,6 +28,9 @@ public:
 
     ScreenAction update() override;
     void close() override;
+
+private: // methods
+    void initGui();
 
 private:
     static const int INTRO_IMAGES = 8;
@@ -44,7 +47,10 @@ private:
 
     sf::Clock   _clock;
 
-    std::unique_ptr<tgui::Gui>  _gui;
+    tt::PollResult              _menuAction;
+
+    std::unique_ptr<tgui::Gui>      _gui;
+
 };
 
 
