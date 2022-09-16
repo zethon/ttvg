@@ -98,6 +98,12 @@ public:
     float minzoom() const { return _minzoom; }
     float maxzoom() const { return _maxzoom; }
 
+    //
+    // Get the "zones" in this background...
+    //
+    std::vector<Zone> getBlockedZones();
+
+
 protected:
     std::unique_ptr<sf::Texture>    _texture;
     ZoneSet                         _zones;

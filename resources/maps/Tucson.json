@@ -38,6 +38,27 @@
                 "enabled": true
             }
         },
+
+        { 
+            "name":             "blocking example",
+            "description":      "Do not walk here. This is blocked",
+            "blocking":         true,
+            "rects":
+            [ 
+                "47,83,52,87"
+            ]
+        },
+
+        { 
+            "name":             "blocking example 2",
+            "description":      "Don't walk here either. This is blocked too.",
+            "blocking":         true,
+            "rects":
+            [ 
+                "57,76,61,79"
+            ]
+        },
+
         { 
             "name" : "Euclid St",
             "rects" :

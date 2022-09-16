@@ -141,6 +141,17 @@ sf::Vector2f Player::getGlobalCenter() const
     return { x, y };
 }
 
+sf::Vector2f Player::getGlobalCenter(   float dx,
+                                        float dy ) const
+{
+    const auto rect = getGlobalBounds();
+    auto x = rect.left + (rect.width / 2) + dx;
+    auto y = rect.top + (rect.height / 2) + dy;
+
+    return { x, y };
+}
+
+
 void Player::addItem(ItemPtr item)
 {
     _inventory.push_back(item);

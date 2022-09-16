@@ -167,6 +167,8 @@ public:
     virtual ScreenAction update(sf::Time elapsed);
 
     sf::Vector2f getPlayerTile() const;
+    sf::Vector2f getPlayerTile(float x, float y) const;
+
     void setPlayerTile(const Tile& tile);
 
     int luaIdx() const { return _luaIdx; }
@@ -192,6 +194,14 @@ protected:
 
     [[maybe_unused]] bool walkPlayer(float baseStepSize);
     void showHelp();
+
+    //
+    // Determine if a move is valid. For example, not running into buildings.
+    //
+    bool            isValidMove(    std::vector<Zone> v,
+                                    float x,
+                                    float y );
+
 
     std::string     _sceneName;
     lua_State*      _luaState = nullptr;
@@ -228,6 +238,7 @@ protected:
 
     sf::View        _gameView;
 
+    
 private:
     void createItems();
     virtual void updateCurrentTile(const TileInfo& info);

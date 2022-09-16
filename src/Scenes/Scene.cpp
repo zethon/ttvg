@@ -484,7 +484,7 @@ ScreenAction Scene::update(sf::Time elapsed)
         << ")";
 
     _debugWindow.setText(ss1.str());
-	
+    
     return Screen::update();
 }
 
@@ -515,8 +515,22 @@ void Scene::draw()
 
 sf::Vector2f Scene::getPlayerTile() const
 {
-    auto playerxy = _player->getGlobalCenter();
-    return _background->getTileFromGlobal(playerxy);
+    auto playerxy       =   _player->getGlobalCenter();
+
+    return                  _background->getTileFromGlobal(playerxy);
+}
+
+//
+// Get the potential new player tile position, 
+// given an x and y offset from the existing player tile position.
+//
+sf::Vector2f Scene::getPlayerTile(float dx, float dy) const
+{
+    auto playerxy       = _player->getGlobalCenter(dx, dy);
+
+    sf::Vector2f ret    = _background->getTileFromGlobal(playerxy);
+
+    return ret;
 }
 
 void Scene::setPlayerTile(const Tile& tile)
@@ -615,6 +629,7 @@ sf::Vector2f Scene::animeCallback()
 bool Scene::walkPlayer(float baseStepSize)
 {
     float stepSize = baseStepSize;
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
     {
         stepSize += 20.f;
@@ -625,49 +640,113 @@ bool Scene::walkPlayer(float baseStepSize)
     }
 
     bool moved = false;
+
+    //
+    // Do not allow player to walk through buildings...
+    //
+
+    //
+    // Get list of "blocked" zones (like buildings? Walls? Water?)
+    //
+    std::vector<Zone> v = _background->getBlockedZones();
+
+    // _logger->debug("Found {} blocked zones", v.size());
+
+    //
+    // Move left
+    //
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
-        auto xx = _player->getGlobalLeft();
-        auto[x, y] = _player->getPosition();
+        auto xx         = _player->getGlobalLeft();
+        auto[x, y]      = _player->getPosition();
+
         assert(xx >= 0);
+
         if (xx == 0) return false;
 
         xx -= stepSize;
+
         if (xx < 0) xx = 0;
+
+        //
+        // Check if this is a valid move to the left...
+        // Compare with "blocked zones"...
+        // 
+        if(!isValidMove(v, (stepSize * -1.0f), 0)) 
+        {
+            return false;
+        }
 
         _player->setGlobalLeft(xx);
         moved = true;
+
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+
+    //
+    // Move right
+    //
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
         const auto boundaryRight = _background->getGlobalBounds().width;
 
         auto x = _player->getGlobalRight();
+        auto y = _player->getGlobalTop();
+
         assert(x <= boundaryRight);
+
         if (x == boundaryRight) return false;
 
         x += stepSize;
         if (x > boundaryRight) x = boundaryRight;
+
+        //
+        // Check if this is a valid move to the right...
+        // 
+        if(!isValidMove(v, stepSize, 0)) 
+        {
+            return false;
+        }
+
         _player->setGlobalRight(x);
         moved = true;
     }
-
+    
+    //
+    // Move up
+    //
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
         auto y = _player->getGlobalTop();
+
         assert(y >= 0);
+
         if (y == 0) return false;
 
         y -= stepSize;
         if (y < 0) y = 0;
+
+        //
+        // Check if this is a valid move up...
+        // 
+        if(!isValidMove(v, 0, (stepSize * -1.0f))) 
+        {
+            return false;
+        }
+
+
         _player->setGlobalTop(y);
         moved = true;
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+
+    //
+    // Move down
+    //
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
         const auto boundaryBottom = _background->getGlobalBounds().height;
 
         auto y = _player->getGlobalBottom();
+
         if (y >= boundaryBottom) return false;
 
         y += stepSize;
@@ -675,6 +754,15 @@ bool Scene::walkPlayer(float baseStepSize)
         {
             y = boundaryBottom;
         }
+
+        //
+        // Check if this is a valid move down...
+        // 
+        if(!isValidMove(v, 0, stepSize)) 
+        {
+            return false;
+        }
+
         _player->setGlobalBottom(y);
         moved = true;
     }
@@ -1186,7 +1274,87 @@ void Scene::toggleHighlight()
     {
         i->setHighlighted(!i->highlighted());
     }
+
+    //
+    // Highlight all zones
+    //
+    // _zone = ...
+
 }
+
+//
+// Determine if move is valid.
+//
+bool Scene::isValidMove(    std::vector<Zone> blockedZones,
+                            float deltaX,
+                            float deltaY    ) 
+{
+
+    //
+    // Get existing current player tile position...
+    //
+
+    sf::Vector2f pTileCoords = getPlayerTile();
+
+    int ox = pTileCoords.x;
+    int oy = pTileCoords.y;
+
+    _logger->debug(
+        "isValidMove() Old x,y: {},{}", 
+            ox, 
+            oy );
+
+    //
+    // Get potential new tile position...
+    //
+    sf::Vector2f pNewTileCoords = getPlayerTile(    deltaX,
+                                                    deltaY  );
+
+    int nx = pNewTileCoords.x;
+    int ny = pNewTileCoords.y;
+
+    _logger->debug(
+        "isValidMove() New x,y: {},{}", 
+            nx,
+            ny );
+
+    for(const auto& zone: blockedZones) {
+
+        // sf::FloatRect zRect = zone.rect;
+
+        int zx1     = (int)zone.rect.left;
+        int zy1     = (int)zone.rect.top;
+
+        int zx2     = zx1 + (int)zone.rect.width;
+        int zy2     = zy1 + (int)zone.rect.height;
+
+        _logger->debug("isValidMove() Checking zone: {}", zone.name);
+
+        _logger->debug(
+            "Comparing zone: {}", 
+                        zone.name );
+
+        _logger->debug(
+            "Comparing zone: {} {} {} {}\n with new position \n {},{} \n ",
+                        zx1, zy1, zx2, zy2, 
+                        nx, ny );
+
+        if( nx >= zx1    &&
+            nx <= zx2    &&
+            ny >= zy1    &&
+            ny <= zy2    ) 
+        {
+            _logger->debug("You cannot move here.");
+            return false; 
+        } else {
+            _logger->debug("Valid move.");
+        }
+
+    }
+
+    return true;
+}
+
 
 } // namespace tt
 
