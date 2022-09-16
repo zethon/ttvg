@@ -19,6 +19,12 @@ void from_json(const nl::json& j, Zone& z)
         z.transition = j["transition"].get<Transition>();
     }
 
+    if (j.contains("blocking"))
+    {
+        z.blocking = j["blocking"].get_to(z.blocking);
+    }
+
+
     if (j.contains("onSelect"))
     {
         j.at("onSelect").get_to(z.callbacks.onSelect);
