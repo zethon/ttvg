@@ -200,6 +200,9 @@ void IntroScreen::initGui()
         window->close();
     });
     _gui->add(tempbtn);
+
+    auto temptext = tgui::TextArea::create();
+
 }
 
 void IntroScreen::draw()
