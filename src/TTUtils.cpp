@@ -2,6 +2,7 @@
 #   include <windows.h>
 #   include <shellapi.h>
 #   include <Shlobj.h>
+#   include <codecvt>
 #else
 #   include <unistd.h>
 #   include <sys/types.h>
@@ -61,6 +62,24 @@ void from_json(const nl::json& j, Vector2u& v)
     {
         j.at("y").get_to(v.y);
     }
+}
+
+void to_json(nl::json& j, const Vector2f& v)
+{
+    j["x"] = v.x;
+    j["y"] = v.y;
+}
+
+void to_json(nl::json& j, const Vector2i& v)
+{
+    j["x"] = v.x;
+    j["y"] = v.y;
+}
+
+void to_json(nl::json& j, const Vector2u& v)
+{
+    j["x"] = v.x;
+    j["y"] = v.y;
 }
 
 }
@@ -132,6 +151,27 @@ std::string getOsString()
 #endif
 }
 
+#ifdef _WINDOWS
+std::string getWindowsFolder(int csidl)
+{
+    std::string retval;
+
+    WCHAR path[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPathW(NULL, csidl, NULL, 0, path)))
+    {
+        std::wstring temp(path);
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
+        retval = convert.to_bytes(temp);
+    }
+    else
+    {
+        throw std::runtime_error("could not retrieve user folder");
+    }
+
+    return retval;
+}
+#endif
+
 std::string getUserFolder()
 {
     std::string retval;
@@ -151,6 +191,20 @@ std::string getUserFolder()
 #else
 struct passwd *pw = getpwuid(getuid());
 retval = pw->pw_dir;
+#endif
+
+    return retval;
+}
+
+std::string getDataFolder()
+{
+    std::string retval;
+
+#ifdef _WINDOWS
+    retval = getWindowsFolder(CSIDL_COMMON_APPDATA);
+#else
+    struct passwd *pw = getpwuid(getuid());
+    retval = pw->pw_dir;
 #endif
 
     return retval;

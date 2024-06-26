@@ -99,6 +99,7 @@ struct ItemCallbacks
 struct ItemInstanceInfo
 {
     std::string objid; // the id of the object this is an instance of
+    std::optional<std::uint32_t> index; // index of the object in an "instances" array
 
     // a null x,y means that the coordinate was not specified,
     // and a value of -1 means it should be picked randomly
@@ -111,6 +112,14 @@ struct ItemInstanceInfo
     std::optional<bool>         obtainable;
 
     ItemCallbacks         callbacks;
+
+    ItemInstanceInfo() = default;
+    ItemInstanceInfo(std::uint32_t idx)
+        : index{idx}
+    {
+        // nothing to do
+    }
+
 
     // will apply the default values if they are set in the `defaults` object
     // and *not* set in this object.
