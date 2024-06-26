@@ -23,7 +23,10 @@ std::string getHackerText()
 
     boost::posix_time::ptime tl = boost::posix_time::second_clock::local_time();
     output << "$> scp ~/* root@166.89.64.107:/subject_t/backups/"
-        << fmt::format("{:04}-{:02}-{:02}", tl.date().year(), tl.date().month(), tl.date().day())
+        << fmt::format("{:04}-{:02}-{:02}", 
+            static_cast<std::uint16_t>(tl.date().year()), 
+            static_cast<std::uint16_t>(tl.date().month()), 
+            static_cast<std::uint16_t>(tl.date().day()))
         << std::endl
         << std::endl;
 

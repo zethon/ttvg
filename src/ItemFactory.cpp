@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include <boost/filesystem.hpp>
 
 #include <lua.hpp>

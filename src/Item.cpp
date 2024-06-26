@@ -126,7 +126,9 @@ void from_json(const nl::json& j, ItemCallbacks& cbs)
 {
     if (j.contains("onSelect"))
     {
-        j["onSelect"].get_to(cbs.onSelect);
+        std::string s;
+        j["onSelect"].get_to(s);
+        cbs.onSelect = s;
     }
 }
 

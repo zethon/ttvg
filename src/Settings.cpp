@@ -1,7 +1,7 @@
 // Ash Crypto
 // Copyright (c) 2017-2020, Adalid Claure <aclaure@gmail.com>
 
-#include <iostream>
+#include <fstream>
 #include <iomanip>
 
 #include <boost/filesystem.hpp>
@@ -88,9 +88,9 @@ void Settings::save(std::string_view filename)
 
     _currentFile = filename;
 
-    boost::filesystem::ofstream out;
+    std::ofstream out;
     out.open(filename.data(),
-        boost::filesystem::ofstream::out | boost::filesystem::ofstream::trunc);
+        std::ofstream::out | std::ofstream::trunc);
 
     out << std::setw(4) << _settings;
     out.close();

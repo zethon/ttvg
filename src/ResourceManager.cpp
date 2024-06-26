@@ -1,3 +1,4 @@
+#include <fstream>
 #include <fmt/core.h>
 
 #include "ResourceManager.h"

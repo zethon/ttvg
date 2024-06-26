@@ -16,13 +16,13 @@ endif(SHARED_SFML)
 # initialize conan libs
 include(CMake/conan.cmake)
 conan_cmake_run(REQUIRES
-    boost/1.77.0
+    boost/1.84.0
     ogg/1.3.5
-    sfml/2.5.1
-    spdlog/1.9.2
-    nlohmann_json/3.10.5
+    sfml/2.6.1
+    spdlog/1.14.1
+    nlohmann_json/3.11.3
     lua/5.4.3
-    zlib/1.2.12
+    zlib/1.3.1
     BASIC_SETUP CMAKE_TARGETS
     GENERATORS cmake_find_package cmake_paths
     BUILD missing
