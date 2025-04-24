@@ -11,7 +11,7 @@ This is a 2D RPG game written in C++ using [SFML](http://sfml-dev.org/) for mult
 
 ## Website
 
-The OFFICIAL website of Tommu Tucson.
+The OFFICIAL website of Tommy Tucson.
 
 [http://ttvg.online](http://www.ttvg.online)
 
