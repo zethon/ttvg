@@ -63,6 +63,13 @@ amb::SettingsPtr registerSettings()
     retval->registerBool("logs.sfx.enabled", false);
     retval->registerBool("video.fullscreen", true);
 
+    // default gamedb folder
+    const std::string dbfolder = fmt::format("{}{}{}",
+        tt::getDataFolder(), PATH_SEPERATOR, "TommyTuscon");
+
+    retval->registerString("database.gamefolder", dbfolder,  
+        std::make_shared<amb::NotEmptyValidator>());
+
     return retval;
 }
 
@@ -100,6 +107,15 @@ void initLogging(std::string_view logfile)
             logfile.data(), 1024 * 1024 * 5, 3);
 
         logger->sinks().push_back(rotating);
+    }
+}
+
+void initGameFolder(const std::string& gamefolder)
+{
+    fs::path folder = gamefolder;
+    if (!fs::exists(folder))
+    {
+        fs::create_directories(folder);
     }
 }
 
@@ -184,6 +200,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // make sure the game folder exists before we start up
+    initGameFolder(settings->value("database.gamefolder", ""s));
+
     std::size_t width   = window_width;
     std::size_t height  = window_height;
     if (vm.count("window-size") > 0)
@@ -266,6 +285,7 @@ int main(int argc, char *argv[])
         win->display();
     }
 
+    settings->save();
     logger->info("game shut down");
     return 0;
 }

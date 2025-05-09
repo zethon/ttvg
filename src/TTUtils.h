@@ -6,6 +6,8 @@
 #include <iterator>
 #include <cmath>
 
+#include <fmt/core.h>
+
 #include <boost/spirit/home/x3.hpp>
 
 #include <nlohmann/json.hpp>
@@ -14,12 +16,26 @@
 
 namespace nl = nlohmann;
 
+// There's some weirdness going on in Ubuntu where using the / operator
+// on Ubuntu was throwing an error in some instances. Instead I set out
+// to use boost::filesystem::path::seperator but that turned out to be
+// a pain since it is multibyte on Windows! So I did this manually.
+#ifdef _WINDOWS
+#   define PATH_SEPERATOR   '\\'
+#else
+#   define PATH_SEPERATOR   '/'
+#endif
+
 namespace sf
 {
 
 void from_json(const nl::json& j, Vector2f& v);
 void from_json(const nl::json& j, Vector2i& v);
 void from_json(const nl::json& j, Vector2u& v);
+
+void to_json(nl::json& j, const Vector2f& v);
+void to_json(nl::json& j, const Vector2i& v);
+void to_json(nl::json& j, const Vector2u& v);
 
 template<typename T>
 void from_json(const nl::json& j, sf::Rect<T>& r)
@@ -165,5 +181,7 @@ inline float distance(const sf::Vector2f& v1, const sf::Vector2f& v2)
 void openBrowser(const std::string& url_str);
 std::string getOsString();
 std::string getUserFolder();
+std::string getDataFolder();
+
 
 } // namespace tt

@@ -35,7 +35,10 @@ set(PROJECT_FILES
 
     ../src/DelayedSound.h
     ../src/DelayedSound.cpp
-    
+
+    ../src/GameState.h
+    ../src/GameState.cpp
+
     ../src/Intersection.h
     ../src/Intersection.cpp
 

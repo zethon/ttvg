@@ -2,6 +2,8 @@
 
 #include <SFML/Audio.hpp>
 
+#include <TGUI/TGUI.hpp>
+
 #include "Screen.h"
 
 #include "../TooterLogger.h"
@@ -16,14 +18,19 @@ class IntroScreen : public Screen
 {
 public:
     inline static constexpr auto BACKGROUND_SONG = "music/intro.wav";
-    inline static constexpr auto SELECTOR_SOUND = "sounds/selector.wav";
+    inline static constexpr auto SELECTOR_SOUND = "sounds/selector2.wav";
     inline static constexpr auto TOMWILLKILL_SOUND = "sounds/tomwillkill.wav";
 
     IntroScreen(ResourceManager& res, sf::RenderTarget& target);
 
+    void draw() override;
     PollResult poll(const sf::Event& e) override;
+
     ScreenAction update() override;
     void close() override;
+
+private: // methods
+    void initGui();
 
 private:
     static const int INTRO_IMAGES = 8;
@@ -39,6 +46,11 @@ private:
     std::vector<SpritePtr>      _sprite;
 
     sf::Clock   _clock;
+
+    tt::PollResult              _menuAction;
+
+    std::unique_ptr<tgui::Gui>      _gui;
+
 };
 
 

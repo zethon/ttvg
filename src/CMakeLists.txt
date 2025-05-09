@@ -4,6 +4,7 @@ set(SOURCE_FILES
     Background.cpp
     DelayedSound.cpp
     Engine.cpp
+    GameState.cpp
     GameWorld.cpp
     Intersection.cpp
     Item.cpp
@@ -47,8 +48,9 @@ set(HEADER_FILES
     Engine.h
     Item.h
     ItemFactory.h
-    GameWorld.h
+    GameState.h
     GameTypes.h
+    GameWorld.h
     Intersection.h
     Path.hpp
     PathFactory.h
