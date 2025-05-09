@@ -28,6 +28,9 @@ struct Zone
     sf::FloatRect               rect;
     std::optional<Transition>   transition;
     Callbacks                   callbacks;
+
+    bool                        blocking;
+
 };
 
 void from_json(const nl::json& j, Zone& z);

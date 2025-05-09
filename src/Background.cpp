@@ -157,4 +157,17 @@ TileInfo Background::getTileInfo(const sf::Vector2f& v)
     return info;
 }
 
+//
+// Get zones for this background.
+//
+std::vector<Zone> Background::getBlockedZones() {
+	std::vector<Zone> v = {};
+   	for(const auto& zone: _zones) {
+        if(zone.blocking == true) {
+   		    v.push_back(zone);
+        }
+  	}
+ 	return v;
+}
+
 } // namespace tt

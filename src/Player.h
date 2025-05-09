@@ -23,6 +23,10 @@ public:
 
     sf::Vector2f getGlobalCenter() const;
 
+    sf::Vector2f getGlobalCenter(   float dx,
+                                    float dy ) const;
+
+
     void addItem(ItemPtr item);
     bool hasItem(const std::string& s);
     bool hasItem(ItemPtr item);
